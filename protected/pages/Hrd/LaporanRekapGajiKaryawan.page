@@ -1,0 +1,233 @@
+<com:TContent ID="Main">
+	<h2>Laporan Rekap Gaji Karyawan</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="Periode" class="control-label">Periode</label>
+				<com:TActiveDropDownList 
+									ID="Periode"
+									Width="190px"
+									AutoPostBack="true"
+									Enabled="false"
+									CausesValidation="false"
+									SelectedValue = "0"
+									OnSelectedIndexChanged = "periodeChanged"
+									CssClass="form-control">
+									<com:TListItem Text="Bulanan" Value="0"/>
+									<com:TListItem Text="Tahunan" Value="1"/>
+									<com:TListItem Text="Mingguan" Value="2"/>
+									</com:TActiveDropDownList>	
+			</div>	
+						
+		</div>		
+	</div>
+	
+	<div class="row">
+		
+		
+		<div class="col-md-3" id="panelBulanan">
+			<div class="form-group">
+				<label for="DDBulan" class="control-label">Bulan</label>
+				<com:TActiveDropDownList 
+									ID="DDBulan"
+									Width="190px"
+									PromptText="--Pilih Bulan--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="true"
+									CssClass="form-control">
+									<com:TListItem Text="Januari" Value="01"/>
+									<com:TListItem Text="Februari" Value="02"/>
+									<com:TListItem Text="Maret" Value="03"/>
+									<com:TListItem Text="April" Value="04"/>
+									<com:TListItem Text="Mei" Value="05"/>
+									<com:TListItem Text="Juni" Value="06"/>
+									<com:TListItem Text="Juli" Value="07"/>
+									<com:TListItem Text="Agustus" Value="08"/>
+									<com:TListItem Text="September" Value="09"/>
+									<com:TListItem Text="Oktober" Value="10"/>
+									<com:TListItem Text="November" Value="11"/>
+									<com:TListItem Text="Desember" Value="12"/>
+									</com:TActiveDropDownList>
+			</div>	
+							
+		</div>
+		
+		<div class="col-md-3" id="panelTahunan">
+			<div class="form-group">
+				<label for="DDTahun" class="control-label">Tahun</label>
+				<com:TActiveDropDownList 
+									ID="DDTahun"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="true"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+			</div>	
+							
+		</div>
+		
+		<div class="col-md-3" id="panelMingguan" Style="Display:None;">
+			<div class="form-group">
+				<label for="mingguan" class="control-label">Mingguan</label>
+				<com:TActiveTextBox 
+					ID="mingguan" 
+					CssClass="form-control daterange"
+					AutoPostback="false"/>
+			</div>	
+							
+		</div>
+					
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<button type="button" class="btn btn-blue btn-icon" OnClick="cariClicked()">
+								Cari
+								<i class="entypo-search"></i>
+							</button>
+				<button type="button" class="btn btn-green btn-icon" OnClick="cetakClicked()">
+								Cetak
+								<i class="entypo-print"></i>
+							</button>
+			</div>
+		</div>	
+					
+	</div>
+	
+
+	
+	<div class="row">	
+		<div class="col-md-12">
+		<div class="form-group">
+			<com:TActiveHiddenField ID="arrKartu"/>
+			<table class="table table-bordered datatable" id="table-1">
+				<thead>
+					<tr>
+						<th width="300px" Rowspan="3">Department</th>
+						<th width="300px" Rowspan="3">Employee ID</th>
+						<th width="300px" Rowspan="3">Nama</th>
+						<th width="300px" Rowspan="3">Posisi</th>
+						<th width="300px" Rowspan="3">Gol</th>
+						<th width="300px" Rowspan="3">PTKP</th>
+						<th width="300px" Rowspan="3">TMK</th>
+						<th width="300px" Rowspan="3">Gaji Pokok</th>
+						<th width="300px" Rowspan="3">Tunjangan Natura</th>
+						<th width="300px" Rowspan="3">Incentive</th>
+						<th width="300px" Rowspan="3">Tunjangan Jabatan</th>
+						<th width="300px" Rowspan="3">Tunjangan Komunikasi</th>
+						<th width="300px" Rowspan="3">Premi Karyawan</th>
+						<th width="300px" colspan="9">Lembur</th>
+						<th width="300px" Rowspan="3">Total Lembur</th>
+						<th width="300px" Rowspan="3">Mangkir</th>
+						<th width="300px" Rowspan="3">Terlambat Masuk Kerja</th>
+						<th width="300px" Rowspan="3">Total Mangkir & Terlambat</th>
+						<th width="300px" Rowspan="3">Total Gaji Kotor</th>
+						<th width="300px" colspan="5">Potongan</th>
+						<th width="300px" Rowspan="3">Total Potongan</th>
+						<th width="300px" Rowspan="3">Gaji Dibayarkan</th>
+					</tr>
+					<tr>
+						<th width="300px" colspan="3">Tarif LPP</th>
+						<th width="300px" colspan="3">Tarif LPPML</th>
+						<th width="300px" colspan="3">Tarif LPPLK</th>
+						
+						<th width="300px" Rowspan="2">BPJS Kesehatan</th>
+						<th width="300px" Rowspan="2">BPJS Ketenagakerjaan</th>
+						<th width="300px" Rowspan="2">Pinjaman</th>
+						<th width="300px" Rowspan="2">Kantin</th>
+						<th width="300px" Rowspan="2">Koperasi</th>
+					</tr>
+					<tr>
+						<th width="300px">Jam</th>
+						<th width="300px">Rp/Tarif</th>
+						<th width="300px">Total</th>
+						
+						<th width="300px">Jam</th>
+						<th width="300px">Rp/Tarif</th>
+						<th width="300px">Total</th>
+						
+						<th width="300px">Jam</th>
+						<th width="300px">Rp/Tarif</th>
+						<th width="300px">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="cariCallback" OnCallback="cariBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+			});
+			
+			function cariClicked()
+			{
+				loadContent();
+				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+				unloadContent();
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					"scrollX": true,
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function cetakClicked()
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+				unloadContent();
+			}
+		</script>
+		
+</com:TContent>

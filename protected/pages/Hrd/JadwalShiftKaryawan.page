@@ -1,0 +1,212 @@
+<com:TContent ID="Main">
+	<h2>Jadwal Shift Karyawan</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+			<label for="DDBulan" class="control-label">Bulan</label>
+				<com:TActiveDropDownList 
+					ID="DDBulan"
+					Width="190px"
+					PromptText="--Pilih Bulan--"
+					PromptValue="empty"
+					OnSelectedIndexChanged="jadwalChanged"
+					Attributes.OnChange="loadContent();"
+					AutoPostBack="true"
+					CausesValidation="true"
+					CssClass="form-control">
+					<com:TListItem Text="Januari" Value="01"/>
+					<com:TListItem Text="Februari" Value="02"/>
+					<com:TListItem Text="Maret" Value="03"/>
+					<com:TListItem Text="April" Value="04"/>
+					<com:TListItem Text="Mei" Value="05"/>
+					<com:TListItem Text="Juni" Value="06"/>
+					<com:TListItem Text="Juli" Value="07"/>
+					<com:TListItem Text="Agustus" Value="08"/>
+					<com:TListItem Text="September" Value="09"/>
+					<com:TListItem Text="Oktober" Value="10"/>
+					<com:TListItem Text="November" Value="11"/>
+					<com:TListItem Text="Desember" Value="12"/>
+				</com:TActiveDropDownList>
+				<com:TRequiredFieldValidator 
+									InitialValue="empty"
+									ControlToValidate="DDBulan"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+			</div>
+		</div>	
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="DDTahun" class="control-label">Tahun</label>
+				<com:TActiveDropDownList 
+									ID="DDTahun"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									OnSelectedIndexChanged="jadwalChanged"
+									Attributes.OnChange="loadContent();"
+									AutoPostBack="true"
+									CausesValidation="true"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+									 
+					<com:TRequiredFieldValidator 
+									InitialValue="empty"
+									ControlToValidate="DDTahun"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+			</div>				
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<com:TActiveButton
+										ID="submitBtn" 
+										Text="Simpan"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>
+									
+					<button type="button" class="btn btn-green btn-icon icon-left btn-add" OnClick="cetakClicked();">
+									<i class="entypo-print"></i>Cetak
+								</button>
+			</div>				
+		</div>
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+		<com:TActiveHiddenField id="arrShift"/>
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				BindGrid();
+			});
+			
+			
+			function ShiftSelect2()
+			{
+				var jsonParam = jQuery('#<%= $this->arrShift->getClientID()%>').val();
+				
+				if(jsonParam != '')
+				{
+					var obj = JSON.parse(jsonParam);
+					console.log(obj);	
+				}	
+				
+				jQuery('.shift_column').select2({
+					placeholder:"Shift",
+					width:"159px",
+					allowClear:true,
+					minimumResultsForSearch:-1,
+					data: obj
+				}).on("change", function(e) 
+				{
+				});
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					"scrollX": true,
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				        ShiftSelect2();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function submitBtnClicked()
+			{
+				var arrShif = [];
+				var i = 0
+				jQuery(".shift_column").each(function() {
+					if(jQuery('#'+this.id).attr('idKaryawan') != undefined && jQuery('#'+this.id).val() != '')
+					{
+						arrShif[i] = {idKaryawan:jQuery('#'+this.id).attr('idKaryawan'), tglJadwal:jQuery('#'+this.id).attr('tglJadwal'), idShift:jQuery('#'+this.id).val()};
+						i++;
+					}
+				});
+				var request= <%= $this->submitCallback->ActiveControl->Javascript %>;
+					request.setCallbackParameter({
+							arrShif:arrShif
+					});
+					request.dispatch();
+				console.log(arrShif.length);
+			}
+			
+			function cetakClicked()
+			{
+				var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+					request.dispatch();
+			}
+			
+		</script>
+		
+</com:TContent>

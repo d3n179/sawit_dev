@@ -1,0 +1,667 @@
+<com:TContent ID="Main">
+	<h2>Segementasi Payroll</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 60%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="DDKategoriPayroll">Kategori Payroll</label>
+								<com:TActiveHiddenField ID="idPayroll"/>
+								<com:TActiveDropDownList 
+									ID="DDKategoriPayroll"
+									PromptText="--Kategori Payroll--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="true"
+									CssClass="form-control">
+									<com:TListItem Value = "1" Text="---Pendapatan---"/>
+									<com:TListItem Value = "2" Text="---Potongan---"/>
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDKategoriPayroll"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>		
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="DDSubKategoriPayroll">Sub Kategori </label>
+								<com:TActiveDropDownList 
+									ID="DDSubKategoriPayroll"
+									PromptText="--Subkategori Payroll--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="subkategoriChanged"
+									Attributes.OnChange="subkategoriChanged();"
+									CausesValidation="true"
+									DataValueField = "id"
+									DataTextField = "nama"
+									CssClass="form-control">
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDSubKategoriPayroll"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="DistribusiLevel">Distribusi (%) </label>
+								<com:TActiveTextBox 
+									ID="DistribusiLevel" 
+									CssClass="form-control mask_decimal" 
+									Attributes.PlaceHolder="%"/>
+								<com:TRequiredFieldValidator 
+									ControlToValidate="DistribusiLevel"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+							</div>
+						</div>		
+					</div>
+					<div class="row">
+						<div class="col-md-3" id="attendPanel">
+							<div class="form-group">
+								<com:TActiveDropDownList 
+									ID="DDDistribusi"
+									PromptText="--Global Distribusi--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="distribusiChanged"
+									Attributes.OnChange="distribusiChanged();"
+									CausesValidation="true"
+									CssClass="form-control">
+									<com:TListItem Value = "1" Text="Alfa"/>
+									<com:TListItem Value = "2" Text="Cuti"/>
+									<com:TListItem Value = "3" Text="Izin"/>
+									<com:TListItem Value = "4" Text="Terlambat"/>
+									<com:TListItem Value = "5" Text="Pulang Lebih Awal"/>
+									<com:TListItem Value = "6" Text="Lembur"/>
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDDistribusi"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>		
+						<div class="col-md-3" id="keteranganPanel" Style="Display:None;">
+							<div class="form-group">
+								<com:TActiveTextBox 
+									ID="keterangan" 
+									CssClass="form-control" 
+									Attributes.PlaceHolder="Keterangan"/>
+								<com:TRequiredFieldValidator 
+									ControlToValidate="keterangan"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-1" id="timePanel1" Style="Display:None;">
+							<div class="form-group">
+								<com:TActiveTextBox 
+									ID="time_limit1" 
+									CssClass="form-control mask_integer" 
+									Attributes.PlaceHolder="Limit1"/>
+								<com:TRequiredFieldValidator 
+									ControlToValidate="time_limit1"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-1" id="timePanel2" Style="Display:None;">
+							<div class="form-group">
+								<com:TActiveTextBox 
+									ID="time_limit2" 
+									CssClass="form-control mask_integer" 
+									Attributes.PlaceHolder="Limit2"/>
+								<com:TRequiredFieldValidator 
+									ControlToValidate="time_limit2"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="keterangan_global">Keterangan </label>
+								<com:TActiveTextBox 
+									ID="keterangan_global" 
+									TextMode="MultiLine"
+									CssClass="form-control" 
+									Attributes.PlaceHolder="Keterangan"/>
+							</div>
+						</div>	
+					</div>
+					<div class="row" >
+						<div class="col-md-3">
+							<div class="form-group">
+								<com:TActiveHiddenField id="arrParameter"/>
+									<com:TActiveButton
+											ID="addBtn" 
+											Text="Add Parameter"
+											Attributes.OnClick="addBtnClicked();"
+											CausesValidation="false"
+											CssClass="btn btn-green">
+										</com:TActiveButton>
+							</div>
+						</div>	
+					</div>
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-parameter">
+									<thead>
+										<tr>
+											<th width="150px">Operator</th>
+											<th width="150px">Parameter</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Payroll');clearForm();getPayrollParam();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="form-group">
+				<table class="table table-bordered table-striped datatable" id="table-1">
+					<thead>
+						<tr>
+							<th width="300px">Kategori Payroll</th>
+							<th width="300px">Kategori</th>
+							<th width="300px">Global Distribusi</th>
+							<th width="300px">Distribusi(%)</th>
+							<th width="300px">Keterangan</th>
+							<th width="150px">Aksi</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="payrollCallback" OnCallback="getPayrollData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				if(localDB.tableExists('PayrollParameterTable'))
+				{
+					localDB.dropTable('PayrollParameterTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('PayrollParameterTable', ["id_edit","parameterId","operatorId","deleted"]);
+				localDB.commit();
+				
+				BindGrid();
+				BindGridParameter();
+			});
+			
+			function addBtnClicked()
+			{			
+				var data = localDB.queryAll('PayrollParameterTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+				
+				if(data.length == 0)
+					var operatorId = "NULL";
+				else
+					var operatorId = "";
+					
+				localDB.insert('PayrollParameterTable', {id_edit: "", 
+														parameterId: "", 
+														operatorId: operatorId,  
+														deleted: "0"});
+				localDB.commit();
+				bindParameterGridLine();
+					
+				
+			}
+			
+			function RenderTempTable(arr)
+			{
+				localDB.truncate('PayrollParameterTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+					localDB.insert('PayrollParameterTable', {id_edit: val.id, 
+																parameterId: val.parameter_id, 
+																operatorId: val.operator_id,  
+																deleted: "0"});
+																
+					localDB.commit();
+				});	
+				
+				bindParameterGridLine();
+				
+			}
+			
+			function bindParameterGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('PayrollParameterTable'))
+				{
+					var data = localDB.queryAll('PayrollParameterTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					jQuery.each(data,function(i,val)
+					{
+						if(val.deleted=="0")
+						{
+							tblBody += '<tr>';
+							tblBody += '<td>';
+							
+							if(val.ID != 1)
+								tblBody += '<input id="Operator-column-ID-'+val.ID+'" idGrid = "'+val.ID+'" class="form-control input-xsmall input-xs operator_column" type="text" value="'+val.operatorId+'">';
+							
+							tblBody += '</td>';
+							tblBody += '<td>';
+							tblBody += '<input id="Parameter-column-ID-'+val.ID+'" idGrid = "'+val.ID+'" class="form-control input-xsmall input-xs parameter_column" type="text" value="'+val.parameterId+'">';
+							tblBody += '</td>';	
+							tblBody += '<td>';
+							tblBody += '<a href="javascript:void(0)" class="btn btn-danger btn-sm btn-icon icon-left" OnClick="deleteParameter('+val.ID+')"><i class="entypo-cancel"></i>Hapus</a>';	
+							tblBody += '</td>';			
+							tblBody += '</tr>';
+						}
+						
+					});	
+				}
+				
+				jQuery("#table-parameter").dataTable().fnDestroy();
+				jQuery("#table-parameter tbody").empty();
+				jQuery("#table-parameter tbody").append(tblBody);
+				BindGridParameter();
+				
+			
+			}
+			
+			function deleteParameter(id)
+			{
+				var data = localDB.queryAll('PayrollParameterTable', { query: {"ID": id}
+																	});							
+				if(data[0].id_edit != "")
+				{
+					localDB.update('PayrollParameterTable', {ID: id}, function(row) {
+						row.deleted = "1";
+						return row;
+					});
+				}
+				else
+				{
+					localDB.deleteRows('PayrollParameterTable', {ID: id});
+					localDB.commit(); 
+				}
+								
+				bindParameterGridLine();	
+			}
+			
+			function updateParameter(id)
+			{
+				var operator = jQuery('#Operator-column-ID-'+id).val();
+				var parameter = jQuery('#Parameter-column-ID-'+id).val();					
+				localDB.update('PayrollParameterTable', {ID: id}, function(row) {
+									row.operatorId = operator;
+									row.parameterId = parameter;
+									return row;
+								});
+								
+			}
+			
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->idPayroll->getClientID()%>').val('');
+				jQuery('#<%= $this->arrParameter->getClientID()%>').val('');
+				jQuery('#<%= $this->DistribusiLevel->getClientID()%>').val('');
+				jQuery('#<%= $this->DDKategoriPayroll->getClientID()%>').val('empty');
+				jQuery('#<%= $this->DDSubKategoriPayroll->getClientID()%>').val('empty');
+				jQuery('#<%= $this->DDDistribusi->getClientID()%>').val('empty');
+				jQuery('#<%= $this->keterangan->getClientID()%>').val('');
+				jQuery('#<%= $this->keterangan_global->getClientID()%>').val('');
+				jQuery('#<%= $this->time_limit1->getClientID()%>').val('');
+				jQuery('#<%= $this->time_limit2->getClientID()%>').val('');
+				
+				if(localDB.tableExists('PayrollParameterTable'))
+				{
+					localDB.dropTable('PayrollParameterTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('PayrollParameterTable', ["id_edit","parameterId","operatorId","deleted"]);
+				localDB.commit();
+				bindParameterGridLine();
+			}
+			
+			function subkategoriChanged()
+			{
+				var DDSubKategoriPayroll = jQuery('#<%= $this->DDSubKategoriPayroll->getClientID()%>').val();
+				
+				if(DDSubKategoriPayroll == '4')
+				{
+					jQuery('#attendPanel').show();
+					jQuery('#timePanel1').hide();
+					jQuery('#timePanel2').hide();
+					jQuery('#keteranganPanel').hide();
+					jQuery('#<%= $this->keterangan->getClientID()%>').attr('placeholder','Alasan');
+				}
+				else
+				{
+					jQuery('#attendPanel').hide();
+					jQuery('#keteranganPanel').show();
+					jQuery('#timePanel1').hide();
+					jQuery('#timePanel2').hide();
+					jQuery('#<%= $this->keterangan->getClientID()%>').attr('placeholder','Global Distribusi');
+					jQuery('#keteranganPanel').prop('disabled',false);
+					jQuery('#attendPanel').prop('disabled',true);
+					jQuery('#timePanel1').prop('disabled',true);
+					jQuery('#timePanel2').prop('disabled',true);
+					
+				}
+				
+			}
+			
+			function distribusiChanged()
+			{
+				var DDSubKategoriPayroll = jQuery('#<%= $this->DDSubKategoriPayroll->getClientID()%>').val();
+				if(DDSubKategoriPayroll == '4')
+				{
+					console.log(jQuery('#<%= $this->DDDistribusi->getClientID()%>').val());
+					
+					var DDDistribusi = jQuery('#<%= $this->DDDistribusi->getClientID()%>').val();
+					
+					jQuery('#keteranganPanel').hide();
+					jQuery('#timqPanel1').hide();
+					jQuery('#timqPanel2').hide();
+						
+					jQuery('#keteranganPanel').prop('disabled',true);
+					jQuery('#timePanel1').prop('disabled',true);
+					jQuery('#timePanel2').prop('disabled',true);
+										
+					if(DDDistribusi == '2' || DDDistribusi == '3')
+					{
+						jQuery('#keteranganPanel').show();
+						jQuery('#timePanel1').hide();
+						jQuery('#timePanel2').hide();
+						
+						jQuery('#keteranganPanel').prop('disabled',false);
+						jQuery('#timePanel1').prop('disabled',true);
+						jQuery('#timePanel2').prop('disabled',true);
+						
+					}
+					else if(DDDistribusi == '4' || DDDistribusi == '5')
+					{
+						jQuery('#keteranganPanel').hide();
+						jQuery('#timePanel1').show();
+						jQuery('#timePanel2').show();
+						
+						jQuery('#keteranganPanel').prop('disabled',true);
+						jQuery('#timePanel1').prop('disabled',false);
+						jQuery('#timePanel2').prop('disabled',false);
+						
+					}
+				}
+			}
+			
+			function BindGridParameter()
+			{
+				var tableSatuan = jQuery('#table-parameter').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+						BindSelect2Grid();
+				    }
+				});
+				
+				
+			}
+			
+			function BindSelect2Grid()
+			{
+				jQuery('.operator_column').select2({
+					placeholder:"Operator",
+					allowClear:true,
+					width:"150px",
+					minimumResultsForSearch:-1,
+					data: [{id:"+",text:"+"},{id:"-",text:"-"},{id:"/",text:"/"},{id:"*",text:"X"}]
+				}).on("change", function(e) 
+				{
+					console.log(jQuery('#'+this.id).attr('idGrid'));
+					updateParameter(jQuery('#'+this.id).attr('idGrid'));
+				});
+				
+				var jsonParam = jQuery('#<%= $this->arrParameter->getClientID()%>').val();
+				
+				if(jsonParam != '')
+				{
+					var obj = JSON.parse(jsonParam);
+					console.log(obj);	
+				}	
+				
+				jQuery('.parameter_column').select2({
+					placeholder:"Parameter",
+					width:"250px",
+					allowClear:true,
+					minimumResultsForSearch:-1,
+					data: obj
+				}).on("change", function(e) 
+				{
+					console.log(jQuery('#'+this.id).attr('idGrid'));
+					updateParameter(jQuery('#'+this.id).attr('idGrid'));
+				});
+				
+				
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					clearForm();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function getPayrollParam()
+			{
+				loadContent();
+				var request= <%= $this->payrollCallback->ActiveControl->Javascript %>;
+					request.dispatch();
+				unloadContent();
+			}
+			
+			function submitBtnClicked()
+			{
+				if(localDB.tableExists('PayrollParameterTable'))
+				{
+					var CHECK = localDB.queryAll('PayrollParameterTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
+					if(CHECK.length > 0)
+					{
+						var PayrollParameterTable = localDB.queryAll('PayrollParameterTable', {sort: [["ID", "ASC"]]});
+						var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							PayrollParameterTable:PayrollParameterTable
+						});
+						request.dispatch();
+						
+        
+					}
+					else
+					{
+						toastr.error("Parameter Belum Dimasukkan !");
+					}
+				}
+				else
+				{
+					toastr.error("Parameter Belum Dimasukkan !");
+				}
+					
+				
+			}
+			
+		</script>
+		
+</com:TContent>

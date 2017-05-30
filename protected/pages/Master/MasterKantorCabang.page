@@ -1,0 +1,330 @@
+<com:TContent ID="Main">
+	<h2>Master Data Kantor Cabang</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+		
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 50%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="nama">Nama Cabang</label>
+								<com:TActiveHiddenField ID="idCabang"/>
+								<com:TActiveTextBox 
+										ID="nama" 
+										CssClass="form-control upper" 
+										Attributes.PlaceHolder="Nama"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="nama"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="telp">Telepon</label>
+								<com:TActiveTextBox 
+										ID="telp" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Telepon"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="telp"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="email">Email</label>
+								<com:TActiveTextBox 
+										ID="email" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Email"/>
+							</div>
+						</div>		
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="cp">Contact Person</label>
+								<com:TActiveTextBox 
+										ID="cp" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Contact Person"/>
+							</div>
+						</div>			
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="alamat">Alamat</label>
+								<com:TActiveTextBox 
+										ID="alamat" 
+										TextMode="MultiLine"
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Alamat"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="alamat"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="DDKota">Kota</label>
+								<com:TActiveDropDownList 
+									ID="DDKota"
+									PromptText="--Pilih Kota--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+										
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDKota"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>	
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="pendapatan">Pendapatan</label>
+								<com:TActiveTextBox 
+										ID="pendapatan" 
+										CssClass="form-control mask_currency" 
+										Attributes.PlaceHolder="Pendapatan"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="pendapatan"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="umk">UMK</label>
+								<com:TActiveTextBox 
+										ID="umk" 
+										CssClass="form-control mask_currency" 
+										Attributes.PlaceHolder="UMK"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="umk"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="ump">UMP</label>
+								<com:TActiveTextBox 
+										ID="ump" 
+										CssClass="form-control mask_currency" 
+										Attributes.PlaceHolder="UMP"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="ump"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>
+					</div>	
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										OnClick="submitBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Kantor Cabang');clearForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th width="150px">Nama Cabang</th>
+					<th width="150px">Alamat</th>
+					<th width="150px">Kota</th>
+					<th width="150px">Telepon</th>
+					<th width="150px">Email</th>
+					<th width="150px">Contact Person</th>
+					<th width="150px">Pendapatan</th>
+					<th width="150px">UMK</th>
+					<th width="150px">UMP</th>
+					<th width="150px">Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				BindGrid();
+			});
+			
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->nama->getClientID()%>').val('');
+				jQuery('#<%= $this->cp->getClientID()%>').val('');
+				jQuery('#<%= $this->alamat->getClientID()%>').val('');
+				jQuery('#<%= $this->telp->getClientID()%>').val('');
+				jQuery('#<%= $this->email->getClientID()%>').val('');
+				jQuery('#<%= $this->pendapatan->getClientID()%>').val('');
+				jQuery('#<%= $this->umk->getClientID()%>').val('');
+				jQuery('#<%= $this->ump->getClientID()%>').val('');
+				jQuery('#<%= $this->DDKota->getClientID()%>').val('empty');
+				jQuery('#<%= $this->idCabang->getClientID()%>').val('');
+			}
+			
+			
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+		</script>
+		
+</com:TContent>

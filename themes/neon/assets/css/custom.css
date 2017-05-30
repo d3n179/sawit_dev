@@ -1,0 +1,13 @@
+/**
+ *
+ * Apply Here your Custom CSS
+ *
+*/
+
+body {
+	
+}
+
+input.upper {
+    text-transform: uppercase;
+}

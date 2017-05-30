@@ -1,0 +1,515 @@
+<com:TContent ID="Main">
+	<h2>Kontrak Penjualan</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade-in" id="modal-1" aria-hidden="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="tgl_kontrak">Tanggal Kontrak</label>
+								<com:TActiveHiddenField ID="idKontrak"/>
+								<com:TActiveTextBox 
+										ID="tgl_kontrak" 
+										CssClass="form-control mask_date date-picker" />
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="tgl_kontrak"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="commodity_type">Commodity Type</label>
+								 <com:TActiveDropDownList 
+									ID="commodity_type"
+									PromptText="--Commodity Type--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="commodityChanged"
+									CausesValidation="true"
+									CssClass="form-control">
+									<com:TListItem Value = "0" Text="CPO - Crude Palm Oil"/>
+									<com:TListItem Value = "1" Text="PK - Palm Kernel"/>
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="commodity_type"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+										
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="id_pembeli">Pembeli</label>
+								 <com:TActiveDropDownList 
+									ID="id_pembeli"
+									PromptText="--Pembeli--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="true"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="id_pembeli"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+										
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="quantity">Jumlah</label>
+								<div class="input-group">
+								 <com:TActiveTextBox 
+										ID="quantity" 
+										CssClass="form-control mask_decimal" 
+										Attributes.PlaceHolder="0"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="quantity"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+									<div class="input-group-btn">					
+											<com:TActiveDropDownList 
+												ID="DDSatuan"
+												PromptText="--Pilih--"
+												PromptValue="empty"
+												Width="100px"
+												AutoPostBack="true"
+												CausesValidation="true"
+												DataTextField="nama"
+												DataValueField="id"
+												CssClass="form-control">
+												</com:TActiveDropDownList>
+												<com:TRequiredFieldValidator 
+													  ControlToValidate="DDSatuan"											 
+													  ErrorMessage=""
+													  Display="Dynamic"
+													  FocusOnError="true" 
+													  CssClass="valRequired"
+													  ControlCssClass="valctrl"
+													  ValidationGroup="val" 
+													  InitialValue="empty"/>
+									</div>
+								</div>
+										
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="pricing">Harga</label>
+								 <com:TActiveTextBox 
+										ID="pricing" 
+										CssClass="form-control mask_decimal" 
+										Attributes.PlaceHolder="0"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="pricing"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>	
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="quality">Quality</label>
+								 <com:TActiveTextBox 
+										ID="quality" 
+										CssClass="form-control" 
+										TextMode="MultiLine"
+										Attributes.PlaceHolder="Quality"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="quality"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="delivery">Delivery Status</label>
+								 <com:TActiveTextBox 
+										ID="delivery" 
+										CssClass="form-control" 
+										TextMode="MultiLine"
+										Attributes.PlaceHolder="Delivery Status"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="delivery"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>	
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="term_of_payment">Term Of Payment</label>
+								 <com:TActiveTextBox 
+										ID="term_of_payment" 
+										CssClass="form-control" 
+										TextMode="MultiLine"
+										Attributes.PlaceHolder="Term of Payment"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="term_of_payment"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>	
+					</div>	
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="remark">REMARKS</label>
+								 <com:TActiveTextBox 
+										ID="remark" 
+										CssClass="form-control" 
+										TextMode="MultiLine"
+										Attributes.PlaceHolder="Remark"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="remark"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>
+					</div>	
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										OnClick="submitBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+									
+									<com:TActiveButton
+										ID="approveBtn" 
+										Text="Setuju"
+										OnClick="approveBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-success">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>	
+									
+									<com:TActiveButton
+										ID="cancelBtn" 
+										Text="Tolak"
+										OnClick="cancelBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-danger">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade custom-width" id="modal-2">
+		<div class="modal-dialog" style="width: 800px; height: 500px; ">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Cetak</h4>
+				</div>
+				<div class="modal-body" style="height: 500px; ">
+					 <iframe id="cetakFrame" height="100%" width="100%"></iframe> 
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Kontrak Penjualan');clearForm();enabledForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="form-group">
+				<table class="table table-bordered table-striped datatable" id="table-1">
+					<thead>
+						<tr>
+							<th width="100px">Status</th>
+							<th width="150px">No Sales</th>
+							<th width="150px">Tgl Kontrak</th>
+							<th width="150px">Pembeli</th>
+							<th width="150px">Commodity Type</th>
+							<th width="100px">Jumlah</th>
+							<th width="100px">Harga</th>
+							<th width="100px">Total</th>
+							<th width="50px">Aksi</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				
+				BindGrid();
+			});
+			
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->idKontrak->getClientID()%>').val('');
+				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').val('');
+				jQuery('#<%= $this->id_pembeli->getClientID()%>').val('empty');
+				jQuery('#<%= $this->commodity_type->getClientID()%>').val('empty');
+				jQuery('#<%= $this->quantity->getClientID()%>').val('');
+				jQuery('#<%= $this->quality->getClientID()%>').val('');
+				jQuery('#<%= $this->pricing->getClientID()%>').val('');
+				jQuery('#<%= $this->term_of_payment->getClientID()%>').val('');
+				jQuery('#<%= $this->remark->getClientID()%>').val('');
+				jQuery('#<%= $this->delivery->getClientID()%>').val('');
+				
+				jQuery('#<%= $this->submitBtn->getClientID()%>').show();
+				jQuery('#<%= $this->approveBtn->getClientID()%>').hide();
+				jQuery('#<%= $this->cancelBtn->getClientID()%>').hide();
+				
+				jQuery('#<%= $this->delivery->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->id_pembeli->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->DDSatuan->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->quantity->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->quality->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->pricing->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->term_of_payment->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->remark->getClientID()%>').prop('disabled',false);
+			}
+			
+			function disabledForm()
+			{
+				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',true);
+				jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',true);
+			}
+			
+			function enabledForm()
+			{
+				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',false);
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					clearForm();
+					disabledForm();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			function prosesClicked(id)
+			{
+				if(confirm('Proses Data Ini ? '))
+				{
+					loadContent();
+					clearForm();
+					
+					jQuery('#<%= $this->submitBtn->getClientID()%>').hide();
+					jQuery('#<%= $this->approveBtn->getClientID()%>').show();
+					jQuery('#<%= $this->cancelBtn->getClientID()%>').show();
+					
+					jQuery('#<%= $this->delivery->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->id_pembeli->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->DDSatuan->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->quantity->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->quality->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->pricing->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->term_of_payment->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->remark->getClientID()%>').prop('disabled',true);
+				
+					var request= <%= $this->prosesCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			
+			function cetakClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+			
+		</script>
+		
+</com:TContent>

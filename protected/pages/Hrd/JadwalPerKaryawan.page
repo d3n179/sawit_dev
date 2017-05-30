@@ -1,0 +1,235 @@
+<com:TContent ID="Main">
+	<h2>Jadwal Absensi Karyawan</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label class="control-label" for="DDKaryawan">Karyawan </label>
+				<com:TActiveDropDownList 
+					ID="DDKaryawan"
+					Width="190px"
+					PromptText="--Pilih Karyawan--"
+					PromptValue=""
+					OnSelectedIndexChanged="jadwalChanged"
+					Attributes.OnChange="loadContent();"
+					AutoPostBack="true"
+					CausesValidation="true"
+					DataTextField="nama"
+					DataValueField="id"
+					CssClass="form-control">
+				</com:TActiveDropDownList>
+				<com:TRequiredFieldValidator 
+									InitialValue=""
+									ControlToValidate="DDKaryawan"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+			</div>
+		</div>	
+	</div>	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+			<label for="DDBulan" class="control-label">Bulan</label>
+				<com:TActiveDropDownList 
+					ID="DDBulan"
+					Width="190px"
+					PromptText="--Pilih Bulan--"
+					PromptValue=""
+					OnSelectedIndexChanged="jadwalChanged"
+					Attributes.OnChange="loadContent();"
+					AutoPostBack="true"
+					CausesValidation="true"
+					CssClass="form-control">
+					<com:TListItem Text="Januari" Value="01"/>
+					<com:TListItem Text="Februari" Value="02"/>
+					<com:TListItem Text="Maret" Value="03"/>
+					<com:TListItem Text="April" Value="04"/>
+					<com:TListItem Text="Mei" Value="05"/>
+					<com:TListItem Text="Juni" Value="06"/>
+					<com:TListItem Text="Juli" Value="07"/>
+					<com:TListItem Text="Agustus" Value="08"/>
+					<com:TListItem Text="September" Value="09"/>
+					<com:TListItem Text="Oktober" Value="10"/>
+					<com:TListItem Text="November" Value="11"/>
+					<com:TListItem Text="Desember" Value="12"/>
+				</com:TActiveDropDownList>
+				<com:TRequiredFieldValidator 
+									InitialValue=""
+									ControlToValidate="DDBulan"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+			</div>
+		</div>	
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="DDTahun" class="control-label">Tahun</label>
+				<com:TActiveDropDownList 
+									ID="DDTahun"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue=""
+									OnSelectedIndexChanged="jadwalChanged"
+									Attributes.OnChange="loadContent();"
+									AutoPostBack="true"
+									CausesValidation="true"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+									 
+					<com:TRequiredFieldValidator 
+									InitialValue=""
+									ControlToValidate="DDTahun"											 
+									ErrorMessage=""
+									Display="Dynamic"
+									FocusOnError="true" 
+									CssClass="valRequired"
+									ControlCssClass="valctrl"
+									ValidationGroup="val" />
+			</div>				
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<com:TActiveButton
+						ID="submitBtn" 
+						Text="Cetak"
+						OnClick="cetakClicked"
+						CausesValidation="true"
+						ValidationGroup="val"
+						CssClass="btn btn-info">
+						 <prop:ClientSide 
+							OnLoading="loadContent();"
+							OnComplete="unloadContent();"/>
+				</com:TActiveButton>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th width="150px">Tanggal Jadwal</th>
+					<th width="150px">Jadwal Masuk</th>
+					<th width="150px">Jadwal Pulang</th>
+					<th width="150px">Lama</th>
+					<th width="150px">Status</th>
+					<th width="150px">Masuk</th>
+					<th width="150px">Pulang</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="dateCallback" OnCallback="dateChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				BindGrid();
+			});
+			
+			
+			function clearForm()
+			{
+			}
+			
+			function dateChanged()
+			{
+				var request= <%= $this->dateCallback->ActiveControl->Javascript %>;
+					request.dispatch();
+			}
+			
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function submitBtnClicked()
+			{
+				var arrAbsen = [];
+				var i = 0
+				jQuery(".status_column").each(function() {
+					if(jQuery('#'+this.id).val() != '')
+					{
+						var idJadwal = jQuery('#'+this.id).attr('idJadwal');
+						arrAbsen[i] = {jadwalId:idJadwal,
+										stHadir:jQuery('#'+this.id).val(), 
+										wktIn:jQuery('#in-ID-'+idJadwal).val(), 
+										wktOut:jQuery('#out-ID-'+idJadwal).val()};
+						i++;
+					}
+				});
+				var request= <%= $this->submitCallback->ActiveControl->Javascript %>;
+					request.setCallbackParameter({
+							arrAbsen:arrAbsen
+					});
+					request.dispatch();
+				console.log(arrAbsen);
+			}
+			
+			
+		</script>
+		
+</com:TContent>

@@ -1,0 +1,737 @@
+<com:TContent ID="Main">
+	<h2>Receiving Order</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 80%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="DDPurchaseOrder">No Purchase Order</label>
+								  <com:TActiveDropDownList 
+									ID="DDPurchaseOrder"
+									PromptText="--Purchase Order--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									CausesValidation="true"
+									CssClass="form-control"
+									OnSelectedIndexChanged="poChanged"
+									DataTextField="no_po"
+									DataValueField="id">
+									<prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDPurchaseOrder"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+										
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="tglRo">Tanggal PO</label>
+								<com:TActiveHiddenField ID="idPo"/>
+								<com:TActiveTextBox 
+										ID="tglPo" 
+										Enabled="false"
+										CssClass="form-control mask_date date-picker" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="supplierName">Supplier</label>
+								 <com:TActiveTextBox 
+										ID="supplierName" 
+										Enabled="false"
+										CssClass="form-control" />
+										
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="noFaktur">No. Faktur</label>
+								 <com:TActiveTextBox 
+										ID="noFaktur" 
+										Enabled="true"
+										CssClass="form-control" />
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="noFaktur"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="tgl_jatuh_tempo">Tgl Jatuh Tempo</label>
+								 <com:TActiveTextBox 
+										ID="tgl_jatuh_tempo" 
+										CssClass="form-control date-picker" />
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="tgl_jatuh_tempo"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>
+					</div>	
+					
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="tableBarang">
+									<thead>
+										<tr>
+											<th width="300px">Product</th>
+											<th width="100px">Satuan</th>
+											<th width="50px">Expired Date</th>
+											<th width="100px">Harga Estimasi</th>
+											<th width="100px">Harga Real</th>
+											<th width="100px">Jumlah Pesan</th>
+											<th width="100px">Sisa Penerimaan</th>
+											<th width="100px">Jumlah Diterima</th>
+											<th width="100px">Discount (%)</th>
+											<th width="100px">Subtotal</th>
+											<th width="50px"></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="i_file">Bukti Penerimaan</label>
+								<div class="controls">
+									<input type="file" id="i_file" name="i_file" value=""> 
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for=""></label>
+								<div class="controls">
+									<img src="" id="srcFile" width="200" height="200" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade custom-width" id="modal-2">
+		<div class="modal-dialog" style="width: 800px; height: 500px; ">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Bukti Penerimaan</h4>
+				</div>
+				<div class="modal-body" style="height: 500px; ">
+					 <img id="imageRC" height="100%" width="100%"></iframe> 
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Receiving Order');clearForm();bindPO();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="form-group">
+				<table class="table table-bordered table-striped datatable" id="table-1">
+					<thead>
+						<tr>
+							<th width="1px"></th>
+							<th width="150px">No Purchase Order</th>
+							<th width="150px">No Receiving Order</th>
+							<th width="150px">Tgl Terima</th>
+							<th width="150px">Supplier</th>
+							<th width="100px">Jumlah Item</th>
+							<th width="100px">Biaya</th>
+							<th width="100px">Bukti Penerimaan</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="bindPOCallback" OnCallback="bindPOCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="viewClickedCallback" OnCallback="viewClickedCallback" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				jQuery('#i_file').change( function(event) {
+				var tmppath = URL.createObjectURL(event.target.files[0]);
+					jQuery("#srcFile").fadeIn("fast").attr('src',URL.createObjectURL(event.target.files[0]));
+				});
+			
+				if(localDB.tableExists('ReceivingOrderTable'))
+				{
+					localDB.dropTable('ReceivingOrderTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('ReceivingOrderTable', ["id_edit",
+															"valid",
+															"IdBarang",
+															"BarangName",
+															"IdSatuan", 
+															"SatuanName",
+															"expiredDate",
+															"hargaEstimasi",
+															"harga",
+															"Jumlah",
+															"SisaPenerimaan",
+															"JumlahDiterima",
+															"discount",
+															"subtotal",
+															"checked",
+															"deleted"]);
+				localDB.commit();
+				
+				BindGrid();
+				bindRequestOrderGridLine();
+			});
+			
+			function uploadImg(id)
+			{
+				if(jQuery('#i_file').val() != '')
+				{
+					var file_data = jQuery("#i_file").prop("files")[0]; // Getting the properties of file from file field
+					var form_data = new FormData(); // Creating object of FormData class
+					form_data.append("file", file_data) // Appending parameter named file with properties of file_field to form_data
+
+						jQuery.ajax({
+						url: "index.php?page=upload&idDoc="+id,
+						dataType: 'json',
+						cache: false,
+						contentType: false,
+						processData: false,
+						data: form_data, // Setting the data attribute of ajax with file_data
+						type: 'post',
+						success: function(data) {
+							// console.log(data);
+							 clearForm();
+						},
+						error: function(data) {
+							// console.log(data);      
+						}
+					}); 
+				}
+					
+			}
+		
+			
+			function clearForm()
+			{
+				jQuery('#i_file').val('');
+				jQuery('#srcFile').attr('src','');
+				jQuery('#<%= $this->tglPo->getClientID()%>').val('');
+				jQuery('#<%= $this->idPo->getClientID()%>').val('');
+				jQuery('#<%= $this->supplierName->getClientID()%>').val('');
+				jQuery('#<%= $this->DDPurchaseOrder->getClientID()%>').val('empty');
+				if(localDB.tableExists('ReceivingOrderTable'))
+				{
+					localDB.truncate('ReceivingOrderTable');
+					localDB.commit();
+				}
+				
+				jQuery("#tableBarang").dataTable().fnDestroy();
+				jQuery("#tableBarang tbody").empty();
+				jQuery("#tableBarang tbody").append('');
+				BindGridBarang();
+				
+			}
+			
+			function bindPO()
+			{
+				var request= <%= $this->bindPOCallback->ActiveControl->Javascript %>;
+					request.dispatch();
+			}
+			
+			function BindGrid()
+			{
+				var table = jQuery('#table-1').DataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+				    }
+				});
+				
+				jQuery('#table-1 tbody').on('click', 'td.details-control', function () {
+						var tr = $(this).closest('tr');
+						var row = table.row( tr );
+				 
+						if ( row.child.isShown() ) {
+							// This row is already open - close it
+							row.child.hide();
+							jQuery(this).removeClass('shown');
+							jQuery(this).addClass('dont_shown');
+						}
+						else {
+							// Open this row
+							row.child( format(row.data()) ).show();
+							jQuery(this).removeClass('dont_shown');
+							jQuery(this).addClass('shown');
+							
+							//console.log(row.data()[0]);
+							var inputHtml = row.data()[0];
+							var id = jQuery(inputHtml).attr('value');
+				
+							loadContent();
+							var request= <%= $this->generateDetailCallback->ActiveControl->Javascript %>;
+								request.setCallbackParameter({
+										id:id
+								});
+								request.dispatch();
+							
+				
+						}
+					} );
+    
+			}
+			
+			function format ( d ) {
+				// `d` is the original data object for the row
+				//console.log(d[0]);
+				var inputHtml = d[0];
+				var id = jQuery(inputHtml).attr('value');
+				var tableDetail = 'tableDetail-'+id;
+				var tableBiaya= 'tableBiayaDetail-'+id;
+				return '<table id="'+tableDetail+'" class="table table-hover datatable" width="200">'+
+					'<thead>'+
+						'<tr>'+
+							'<th width="150px">Product</th>'+
+							'<th width="150px">Satuan</th>'+
+							'<th width="150px">Expired Date</th>'+
+							'<th width="150px">Harga</th>'+
+							'<th width="100px">Jumlah</th>'+
+							'<th width="100px">Discount (%)</th>'+
+							'<th width="100px">Subtotal</th>'+
+						'</tr>'+
+					'</thead>'+
+					'<tbody>'+
+					'</tbody>'+
+				'</table>'+
+				'<table id="'+tableBiaya+'" class="table table-hover datatable" width="200">'+
+					'<thead>'+
+						'<tr>'+
+							'<th width="150px">Nama</th>'+
+							'<th width="150px">Biaya</th>'+
+						'</tr>'+
+					'</thead>'+
+					'<tbody>'+
+					'</tbody>'+
+				'</table>';
+				
+				
+						
+			}
+			
+			function deleteBarang(id)
+			{
+				var data = localDB.queryAll('ReceivingOrderTable', { query: {"ID": id}
+																	});							
+				if(data[0].id_edit != "")
+				{
+					localDB.update('ReceivingOrderTable', {ID: id}, function(row) {
+						row.deleted = "1";
+						return row;
+					});
+				}
+				else
+				{
+					localDB.deleteRows('ReceivingOrderTable', {ID: id});
+					localDB.commit(); 
+				}
+								
+				bindRequestOrderGridLine();	
+			}
+			
+			function updateBarang(id)
+			{
+				var qtyUpdate = jQuery('#tableBarang .Jumlah-column-ID-'+id).val();
+				
+				localDB.update('ReceivingOrderTable', {ID: id}, function(row) {
+									row.Jumlah = qtyUpdate;
+									row.subtotal = row.harga * qtyUpdate;
+									return row;
+								});
+								
+				bindRequestOrderGridLine();		
+						
+				toastr.info("Jumlah Telah Diupdate");
+			}
+			
+			function RenderTempTable(arr)
+			{
+				localDB.truncate('ReceivingOrderTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+									
+					localDB.insert('ReceivingOrderTable', {id_edit: val.id, 
+																valid:'0',
+																IdBarang: val.id_barang, 
+																BarangName: val.nama, 
+																IdSatuan: val.id_satuan, 
+																SatuanName: val.satuan, 
+																expiredDate:'',
+																hargaEstimasi: parseFloat(val.harga_satuan), 
+																harga: "", 
+																Jumlah: val.jumlah,
+																SisaPenerimaan: val.SisaPenerimaan,
+																JumlahDiterima:0,
+																discount:val.discount,
+																subtotal: 0,  
+																checked: "0",
+																deleted: "0"});
+																
+					localDB.commit();
+				});	
+				
+				bindRequestOrderGridLine();
+				
+			}
+			
+			function CheckTerimaBarang()
+			{
+				var ReceivingOrderTableTemp = localDB.queryAll('ReceivingOrderTable', {query: {deleted: "0", valid: "1", checked: "1"},sort: [["ID", "ASC"]]});
+				var ReceivingOrderTable = localDB.queryAll('ReceivingOrderTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
+				
+				var SisaTerima = 0;
+				
+				jQuery.each(ReceivingOrderTable,function(i,val)
+				{
+					SisaTerima += parseFloat(val.SisaPenerimaan);
+				});
+				
+				var JmlTerima = 0;
+				jQuery.each(ReceivingOrderTableTemp,function(i,val)
+				{
+					JmlTerima += parseFloat(val.JumlahDiterima);
+				});
+				
+				console.log(SisaTerima);
+				console.log(JmlTerima);
+				if(SisaTerima > 0 && SisaTerima == JmlTerima)
+				{
+					jQuery('#<%= $this->tgl_jatuh_tempo->getClientID()%>').prop('disabled',false);
+				}
+				else
+				{
+					jQuery('#<%= $this->tgl_jatuh_tempo->getClientID()%>').prop('disabled',true);
+				}
+			}
+			
+			function rowClicked(id)
+			{
+				if(jQuery("#checkBox-column-ID-"+id).is(':checked'))
+				{
+					jQuery("#expiredDate-column-ID-"+id).prop('disabled',false);
+					jQuery("#JumlahDiterima-column-ID-"+id).prop('disabled',false);
+					
+					localDB.update('ReceivingOrderTable', {ID: id}, function(row) {
+									row.checked = "1";
+									return row;
+								});
+					
+				
+				}
+				else
+				{
+					jQuery("#expiredDate-column-ID-"+id).prop('disabled',true);
+					jQuery("#JumlahDiterima-column-ID-"+id).prop('disabled',true);
+					localDB.update('ReceivingOrderTable', {ID: id}, function(row) {
+									row.checked = "0";
+									row.expiredDate = "";
+									row.JumlahDiterima = 0;
+									return row;
+								});
+				}
+				bindRequestOrderGridLine();	
+			}
+			
+			function saveChanged(id)
+			{
+				var expiredDate = jQuery("#expiredDate-column-ID-"+id).val();
+				var jumlahDiterima = jQuery("#JumlahDiterima-column-ID-"+id).val();
+				var harga = parseFloat(jQuery("#harga-column-ID-"+id).val().replace(/\,/g,''));
+				var discount = parseFloat(jQuery("#discount-column-ID-"+id).val());
+				var subtotalTemp = jumlahDiterima * harga;
+				var discTemp = subtotalTemp * (discount / 100);
+				subtotalTemp = subtotalTemp - discTemp;
+				var subtotal = parseFloat(subtotalTemp);
+				localDB.update('ReceivingOrderTable', {ID: id}, function(row) {
+									row.expiredDate = expiredDate;
+									row.JumlahDiterima = jumlahDiterima;
+									row.harga = harga;
+									row.discount = discount;
+									row.subtotal = subtotal;
+									
+									if(expiredDate != '' &&  jumlahDiterima > 0 && harga != '')
+										row.valid = '1';
+									else
+										row.valid = '0';
+										
+									return row;
+								});
+								
+				bindRequestOrderGridLine();	
+								
+			}
+			
+			function JmlChanged(id)
+			{
+				var jumlahDiterima = parseFloat(jQuery("#JumlahDiterima-column-ID-"+id).val());
+				var sisaDiterima = parseFloat(jQuery("#sisaTerima-column-ID-"+id).val());
+				
+				//console.log(jumlahDiterima);
+				//console.log(sisaDiterima);
+				if(jumlahDiterima > sisaDiterima)
+				{
+					var strGen = jQuery("#JumlahDiterima-column-ID-"+id).val();
+					var	newStrgen = strGen.slice(0,-1);
+					jQuery("#JumlahDiterima-column-ID-"+id).val(newStrgen);
+					
+				}
+			}
+			
+			function bindRequestOrderGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('ReceivingOrderTable'))
+				{
+					var data = localDB.queryAll('ReceivingOrderTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					//console.log(data);
+					jQuery.each(data,function(i,val)
+					{
+						if(val.deleted=="0")
+						{	
+							if(val.checked == "0")
+							{
+								var disabled = 'disabled';
+								var checked = '';
+							}
+							else
+							{
+								var disabled = '';
+								var checked = 'checked';
+							}
+								
+							tblBody += '<tr>';
+							tblBody += '<td>'+val.BarangName+'</td>';
+							tblBody += '<td>'+val.SatuanName+'</td>';
+							tblBody += '<td><input id="expiredDate-column-ID-'+val.ID+'" class="form-control expiredDate_column" type="text" value="'+val.expiredDate+'" onblur="saveChanged('+val.ID+');" size="12" '+disabled+'></td>';
+							tblBody += '<td>'+val.hargaEstimasi.toLocaleString('en-US', {minimumFractionDigits: 2})+'</td>';
+							tblBody += '<td><input id="harga-column-ID-'+val.ID+'" class="form-control harga_column" type="text" value="'+val.harga+'" onblur="saveChanged('+val.ID+');" size="12" '+disabled+'></td>';
+							tblBody += '<td>'+val.Jumlah+'</td>';
+							tblBody += '<td><input type="hidden" id="sisaTerima-column-ID-'+val.ID+'" value="'+val.SisaPenerimaan+'">'+val.SisaPenerimaan+'</td>';
+							tblBody += '<td><input id="JumlahDiterima-column-ID-'+val.ID+'" class="form-control JumlahDiterima_column" type="text" value="'+val.JumlahDiterima+'" onblur="saveChanged('+val.ID+');" onkeyup="JmlChanged('+val.ID+');" size="11" '+disabled+'></td>';
+							tblBody += '<td><input id="discount-column-ID-'+val.ID+'" class="form-control discount_column" type="text" value="'+val.discount+'" onblur="saveChanged('+val.ID+');" size="5" '+disabled+'></td>';
+							tblBody += '<td>'+val.subtotal.toLocaleString('en-US', {minimumFractionDigits: 2})+'</td>';
+							tblBody += '<td>';
+							tblBody += '<input type="checkbox" id="checkBox-column-ID-'+val.ID+'" OnChange="rowClicked('+val.ID+')" '+checked+'/>';	
+							tblBody += '</td>';			
+							tblBody += '</tr>';
+						}
+						
+					});	
+				}
+				
+				jQuery("#tableBarang").dataTable().fnDestroy();
+				jQuery("#tableBarang tbody").empty();
+				jQuery("#tableBarang tbody").append(tblBody);
+				BindGridBarang();
+				CheckTerimaBarang();
+					
+			}
+			
+			
+			function BindGridBarang()
+			{
+				var tableSatuan = jQuery('#tableBarang').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+						jQuery(".JumlahDiterima_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+						jQuery(".discount_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+						jQuery(".expiredDate_column").inputmask("mm/yyyy", {yearrange: { minyear: 2014, maxyear: 2999 }});
+						jQuery(".harga_column").inputmask('numeric',{'groupSeparator': '.', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0',radixPoint:".",allowMinus:false,allowPlus:false});
+					 }
+				});
+				
+				
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function submitBtnClicked()
+			{
+				var idPo = jQuery('#<%= $this->DDPurchaseOrder->getClientID()%>').val();
+				var srcFile = jQuery('#i_file').val();
+				
+				if(localDB.tableExists('ReceivingOrderTable'))
+				{
+					var CHECK = localDB.queryAll('ReceivingOrderTable', {query: {deleted: "0", valid: "1"},sort: [["ID", "ASC"]]});
+				}
+				
+				if(idPo != 'empty' && CHECK.length > 0 && srcFile != '')
+				{
+					var ReceivingOrderTable = localDB.queryAll('ReceivingOrderTable', {query: {deleted: "0", valid: "1"},sort: [["ID", "ASC"]]});
+					var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+								ReceivingOrderTable:ReceivingOrderTable
+							});
+						request.dispatch();
+							
+			
+					
+				}
+				else
+				{
+					toastr.error("Lengkapi Data Terlebih Dahulu !");
+				}
+					
+				
+			}
+			
+			function viewClicked(id)
+			{
+				var request= <%= $this->viewClickedCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+								id:id
+							});
+						request.dispatch();
+			}
+		</script>
+		
+</com:TContent>

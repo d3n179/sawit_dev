@@ -1,0 +1,441 @@
+<com:TContent ID="Main">
+	<h2>Admin Request Order</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 60%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="tglRo">Tanggal Order</label>
+								<com:TActiveHiddenField ID="idRo"/>
+								<com:TActiveTextBox 
+										ID="tglRo" 
+										Enabled="false"
+										CssClass="form-control mask_date date-picker" />
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="tglRo"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="tglRo">No Request Order</label>
+								<com:TActiveTextBox 
+										ID="nomorRo" 
+										Enabled="false"
+										CssClass="form-control" />
+							</div>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="catatan">Catatan</label>
+								<com:TActiveTextBox 
+										ID="catatan" 
+										TextMode="MultiLine"
+										CssClass="form-control upper" />
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="catatan"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue=""/>	
+							</div>
+						</div>
+					</div>	
+					
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="tableBarang">
+									<thead>
+										<tr>
+											<th width="300px">Product</th>
+											<th width="300px">Satuan</th>
+											<th width="300px">Harga</th>
+											<th width="300px">Jumlah</th>
+											<th width="300px">Subtotal</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+	
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Approve"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="false"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>	
+									
+									<com:TActiveButton
+										ID="cancelBtn" 
+										Text="Tolak"
+										OnClick="tolakBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-danger">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="form-group">
+				<table class="table table-bordered table-striped datatable" id="table-1">
+					<thead>
+						<tr>
+							<th width="1px"></th>
+							<th width="100px">Status</th>
+							<th width="150px">No Request Order</th>
+							<th width="150px">Tgl Ro</th>
+							<th width="100px">Jumlah Item</th>
+							<th width="100px">Estimasi Biaya</th>
+							<th width="250px">Catatan</th>
+							<th width="150px">Aksi</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				if(localDB.tableExists('AdminRequestOrderTable'))
+				{
+					localDB.dropTable('AdminRequestOrderTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('AdminRequestOrderTable', ["id_edit","IdBarang","BarangName","IdSatuan", "SatuanName","hargaSatuanBesar","harga","Jumlah","subtotal","deleted"]);
+				localDB.commit();
+				
+				BindGrid();
+				BindGridBarang();
+			});
+			
+			function satuanChanged()
+			{
+				var request= <%= $this->satuanChangedCallback->ActiveControl->Javascript %>;
+					request.dispatch();
+			}
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->tglRo->getClientID()%>').val('');
+				jQuery('#<%= $this->idRo->getClientID()%>').val('');
+				if(localDB.tableExists('AdminRequestOrderTable'))
+				{
+					localDB.truncate('AdminRequestOrderTable');
+					localDB.commit();
+				}
+			}
+			
+			function BindGrid()
+			{
+				var table = jQuery('#table-1').DataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+				    }
+				});
+				
+				jQuery('#table-1 tbody').on('click', 'td.details-control', function () {
+						var tr = $(this).closest('tr');
+						var row = table.row( tr );
+				 
+						if ( row.child.isShown() ) {
+							// This row is already open - close it
+							row.child.hide();
+							jQuery(this).removeClass('shown');
+							jQuery(this).addClass('dont_shown');
+						}
+						else {
+							// Open this row
+							row.child( format(row.data()) ).show();
+							jQuery(this).removeClass('dont_shown');
+							jQuery(this).addClass('shown');
+							
+							console.log(row.data()[0]);
+							var inputHtml = row.data()[0];
+							var id = jQuery(inputHtml).attr('value');
+				
+							loadContent();
+							var request= <%= $this->generateDetailCallback->ActiveControl->Javascript %>;
+								request.setCallbackParameter({
+										id:id
+								});
+								request.dispatch();
+							
+				
+						}
+					} );
+    
+			}
+			
+			function format ( d ) {
+				// `d` is the original data object for the row
+				console.log(d[0]);
+				var inputHtml = d[0];
+				var id = jQuery(inputHtml).attr('value');
+				var tableDetail = 'tableDetail-'+id;
+				return '<table id="'+tableDetail+'" class="table table-hover datatable" width="200">'+
+					'<thead>'+
+						'<tr>'+
+							'<th width="150px">Product</th>'+
+							'<th width="150px">Satuan</th>'+
+							'<th width="150px">Harga</th>'+
+							'<th width="100px">Jumlah</th>'+
+							'<th width="100px">Subtotal</th>'+
+						'</tr>'+
+					'</thead>'+
+					'<tbody>'+
+					'</tbody>'+
+				'</table>';
+				
+				
+						
+			}
+			
+			function deleteBarang(id)
+			{
+				var data = localDB.queryAll('AdminRequestOrderTable', { query: {"ID": id}
+																	});							
+				if(data[0].id_edit != "")
+				{
+					localDB.update('AdminRequestOrderTable', {ID: id}, function(row) {
+						row.deleted = "1";
+						return row;
+					});
+				}
+				else
+				{
+					localDB.deleteRows('AdminRequestOrderTable', {ID: id});
+					localDB.commit(); 
+				}
+								
+				bindRequestOrderGridLine();	
+			}
+			
+			function updateBarang(id)
+			{
+				var qtyUpdate = jQuery('#tableBarang .Jumlah-column-ID-'+id).val();
+				
+				localDB.update('AdminRequestOrderTable', {ID: id}, function(row) {
+									row.Jumlah = qtyUpdate;
+									row.subtotal = row.harga * qtyUpdate;
+									return row;
+								});
+								
+				bindRequestOrderGridLine();		
+						
+				toastr.info("Jumlah Telah Diupdate");
+			}
+			
+			function RenderTempTable(arr)
+			{
+				localDB.truncate('AdminRequestOrderTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+					localDB.insert('AdminRequestOrderTable', {id_edit: val.id, 
+																IdBarang: val.id_barang, 
+																BarangName: val.nama, 
+																IdSatuan: val.id_satuan, 
+																SatuanName: val.satuan, 
+																hargaSatuanBesar: parseFloat(val.harga_satuan_besar), 
+																harga: parseFloat(val.harga_satuan), 
+																Jumlah: val.jumlah,
+																subtotal: parseFloat(val.subtotal),  
+																deleted: "0"});
+																
+					localDB.commit();
+				});	
+				
+				bindRequestOrderGridLine();
+				
+			}
+			
+			function bindRequestOrderGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('AdminRequestOrderTable'))
+				{
+					var data = localDB.queryAll('AdminRequestOrderTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					console.log(data);
+					jQuery.each(data,function(i,val)
+					{
+						if(val.deleted=="0")
+						{
+							tblBody += '<tr>';
+							tblBody += '<td>'+val.BarangName+'</td>';
+							tblBody += '<td>'+val.SatuanName+'</td>';
+							tblBody += '<td>'+val.harga.toLocaleString('en-US', {minimumFractionDigits: 2})+'</td>';
+							tblBody += '<td>';
+							tblBody += '<input class="form-control input-xsmall input-xs Jumlah-column-ID-'+val.ID+' jumlah_column" type="text" value="'+val.Jumlah+'">';
+							tblBody += '</td>';	
+							tblBody += '<td>'+val.subtotal.toLocaleString('en-US', {minimumFractionDigits: 2})+'</td>';
+							tblBody += '<td>';
+							tblBody += '<a href="javascript:void(0)" class="btn btn-success btn-sm btn-icon icon-left" OnClick="updateBarang('+val.ID+')"><i class="entypo-floppy"></i>Update</a>';	
+							tblBody += '<a href="javascript:void(0)" class="btn btn-danger btn-sm btn-icon icon-left" OnClick="deleteBarang('+val.ID+')"><i class="entypo-cancel"></i>Hapus</a>';	
+							tblBody += '</td>';			
+							tblBody += '</tr>';
+						}
+						
+					});	
+				}
+				
+				jQuery("#tableBarang").dataTable().fnDestroy();
+				jQuery("#tableBarang tbody").empty();
+				jQuery("#tableBarang tbody").append(tblBody);
+				BindGridBarang();
+					
+			}
+			
+			function BindGridBarang()
+			{
+				var tableSatuan = jQuery('#tableBarang').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+						jQuery(".jumlah_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+					 }
+				});
+				
+				
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Proses Request Order ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function submitBtnClicked()
+			{
+				var msg = 'Approve Request Order ?'; 
+				if(confirm(msg))
+				{
+					if(localDB.tableExists('AdminRequestOrderTable'))
+					{
+						var CHECK = localDB.queryAll('AdminRequestOrderTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
+						if(CHECK.length > 0)
+						{
+							var RequestOrderTable = localDB.queryAll('AdminRequestOrderTable', {sort: [["ID", "ASC"]]});
+							var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+							request.setCallbackParameter({
+								RequestOrderTable:RequestOrderTable
+							});
+							request.dispatch();
+							
+			
+						}
+						else
+						{
+							toastr.error("Product Belum Dimasukkan !");
+						}
+					}
+					else
+					{
+						toastr.error("Product Belum Dimasukkan !");
+					}
+				}
+				else
+				{
+					return false;
+				}
+					
+				
+			}
+			
+		</script>
+		
+</com:TContent>

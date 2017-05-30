@@ -1,0 +1,314 @@
+<com:TContent ID="Main">
+	<h2>Setting Harga TBS</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 60%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">	
+						<div class="col-md-3">
+							<div class="form-group">
+							<label class="control-label" for="tglTransaksi">Tgl Transaksi</label>	
+							<com:TActiveHiddenField ID="tglTransaksi"/>  
+							<com:TActiveTextBox 
+										ID="nmTgl" 
+										Enabled="false"
+										CssClass="form-control" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+							<label class="control-label" for="nmBarang">Nama Barang</label>
+								<com:TActiveHiddenField ID="idBarang"/>
+								<com:TActiveTextBox 
+										ID="nmBarang" 
+										Enabled="false"
+										CssClass="form-control upper" />
+							</div>
+						</div>	
+					</div>
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="tableKomidel">
+									<thead>
+										<tr>
+											<th width="300px">Kategori Harga</th>
+											<th width="300px">Kategori TBS</th>
+											<th width="300px">Harga</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="false"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th>Tgl Transaksi</th>
+					<th>Nama Barang</th>
+					<th>Jumlah Transaksi</th>
+					<th>Total Berat</th>
+					<th width="150px">Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="komidelCallback" OnCallback="komidelCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				if(localDB.tableExists('KomidelTable'))
+				{
+					localDB.dropTable('KomidelTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('KomidelTable', ["idKategoriHarga","NamaKategoriHarga","idKomidel","NamaKomidel","Harga"]);
+				localDB.commit();
+				
+				BindGrid();
+				BindGridKomidel();
+			});
+			
+			
+			function clearForm()
+			{	
+				jQuery('#<%= $this->tglTransaksi->getClientID()%>').val('');
+				jQuery('#<%= $this->idBarang->getClientID()%>').val('');
+				jQuery('#<%= $this->nmBarang->getClientID()%>').val('');
+				
+				jQuery("#tableKomidel").dataTable().fnDestroy();
+				jQuery("#tableKomidel tbody").empty();
+				jQuery("#tableKomidel tbody").append('');
+				BindGridKomidel();
+					
+				if(localDB.tableExists('KomidelTable'))
+				{
+					localDB.truncate('KomidelTable');
+					localDB.commit();
+				}
+			}
+			
+			function RenderTempTable(arr)
+			{
+				localDB.truncate('KomidelTable');
+				localDB.commit();
+				
+					
+				jQuery.each(arr,function(i,val)
+				{
+					localDB.insert('KomidelTable', {
+														idKategoriHarga: val.idKategoriHarga, 
+														NamaKategoriHarga: val.NamaKategoriHarga, 
+														idKomidel: val.idKomidel, 
+														NamaKomidel: val.NamaKomidel, 
+														Harga: val.harga
+													});
+																
+					localDB.commit();
+				});	
+				
+				bindKomidelGridLine();
+				
+			}
+			
+			function bindKomidelGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('KomidelTable'))
+				{
+					var data = localDB.queryAll('KomidelTable', {
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					console.log(data);
+					jQuery.each(data,function(i,val)
+					{
+							tblBody += '<tr>';
+							tblBody += '<td>'+val.NamaKategoriHarga+'</td>';
+							tblBody += '<td>'+val.NamaKomidel+'</td>';
+							tblBody += '<td>';
+							tblBody += '<input class="form-control input-xsmall input-xs Harga-column-ID-'+val.ID+' harga_column" type="text" value="'+val.Harga+'" OnBlur="HargaChanged('+val.ID+');">';
+							tblBody += '</td>';		
+							tblBody += '</tr>';
+					});	
+				}
+				
+				jQuery("#tableKomidel").dataTable().fnDestroy();
+				jQuery("#tableKomidel tbody").empty();
+				jQuery("#tableKomidel tbody").append(tblBody);
+				BindGridKomidel();
+					
+			}
+			
+			function HargaChanged(id)
+			{
+				var harga = parseFloat(jQuery('#tableKomidel .Harga-column-ID-'+id).val().replace(",",""));
+				
+				localDB.update('KomidelTable', {ID: id}, function(row) {
+									row.Harga = harga;
+									return row;
+								});
+								
+				bindKomidelGridLine();	
+			}
+			
+			function BindGridKomidel()
+			{
+				var tableSatuan = jQuery('#tableKomidel').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+						jQuery(".harga_column").inputmask('numeric',{'groupSeparator': '.', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0',radixPoint:".",allowMinus:false,allowPlus:false});
+					 }
+				});
+				
+				
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function editClicked(kategori_barang_id,tglTransaksi)
+			{
+				if(confirm('Proses Data Ini ? '))
+				{
+					console.log(tglTransaksi);
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							kategori_barang_id:kategori_barang_id,tglTransaksi:tglTransaksi
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function submitBtnClicked()
+			{
+				if(localDB.tableExists('KomidelTable'))
+				{
+					var CHECK = localDB.queryAll('KomidelTable', {sort: [["ID", "ASC"]]});
+					if(CHECK.length > 0)
+					{
+						var KomidelTable = localDB.queryAll('KomidelTable', {sort: [["ID", "ASC"]]});
+						var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							KomidelTable:KomidelTable
+						});
+						request.dispatch();
+						
+        
+					}
+					else
+					{
+						toastr.error("Harga Komidel Belum Dimasukkan !");
+					}
+				}
+				else
+				{
+					toastr.error("Harga Komidel Belum Dimasukkan!");
+				}
+					
+				
+			}
+		</script>
+		
+</com:TContent>

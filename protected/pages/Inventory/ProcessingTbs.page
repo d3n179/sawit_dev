@@ -1,0 +1,2833 @@
+<com:TContent ID="Main">
+	<h2>Processing Tbs</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	 <div class="modal fade custom-width" id="modal-2">
+		<div class="modal-dialog" style="width: 800px; height: 500px; ">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Cetak</h4>
+				</div>
+				<div class="modal-body" style="height: 500px; ">
+					 <iframe id="cetakFrame" height="100%" width="100%"></iframe> 
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 90%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+								<ul class="nav nav-tabs bordered"><!-- available classes "bordered", "right-aligned" -->
+									<li class="active">
+										<a href="#setting1" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">Setting 1</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting2" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">Setting 2</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting14" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">Shift Olah</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting3" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">CPO</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting4" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">FFA</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting5" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">BSK</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting6" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">NUT SILO</span>
+											
+										</a>
+									</li>
+									<li>
+										<a href="#setting7" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">KERNEL SILO</span>
+											
+										</a>
+									</li>
+									<li>
+										<a href="#setting8" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">Pengiriman</span>
+											
+										</a>
+									</li>
+									<li>
+										<a href="#setting9" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">Produksi / MUTU  CPO</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting10" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">Produksi / MUTU  PK</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting11" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">OIL RECOVERED</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting12" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">BSS</span>
+										</a>
+									</li>
+									<li>
+										<a href="#setting13" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">ETC</span>
+										</a>
+									</li>
+								</ul>
+								
+								<div class="tab-content">
+									
+									<div class="tab-pane active" id="setting1">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_awal">TBS Awal</label>
+													<com:TActiveHiddenField ID="idProcessing"/>
+													<com:TActiveTextBox 
+															ID="tbs_awal" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Awal"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_awal"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_kebun">TBS Kebun</label>
+													<com:TActiveTextBox 
+															ID="tbs_kebun" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Kebun"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_kebun"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_luar">TBS Luar</label>
+													<com:TActiveTextBox 
+															ID="tbs_luar" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Luar"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_luar"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_potongan">TBS Potongan</label>
+													<com:TActiveTextBox 
+															ID="tbs_potongan" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Potongan"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_potongan"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+										</div>
+										<div class="row">	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_rbs_mentah">TBS Rbs Mentah</label>
+													<com:TActiveTextBox 
+															ID="tbs_rbs_mentah" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Rbs Mentah"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_rbs_mentah"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_rbs_masak">TBS Rbs Masak</label>
+													<com:TActiveTextBox 
+															ID="tbs_rbs_masak" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Rbs Masak"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_rbs_masak"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_restan_ramp">TBS Restan Ramp</label>
+													<com:TActiveTextBox 
+															ID="tbs_restan_ramp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Restan Ramp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_restan_ramp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_restan_lantai">TBS Restan lantai</label>
+													<com:TActiveTextBox 
+															ID="tbs_restan_lantai" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS Restan lantai"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_restan_lantai"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_proses_shift_1">TBS di Proses Shift I</label>
+													<com:TActiveTextBox 
+															ID="tbs_proses_shift_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS di Proses Shift I"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_proses_shift_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="tbs_proses_shift_2">TBS di Proses Shift II</label>
+													<com:TActiveTextBox 
+															ID="tbs_proses_shift_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="TBS di Proses Shift II"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="tbs_proses_shift_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting2">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst_kemarin">BST (Kemarin)</label>
+													<com:TActiveTextBox 
+															ID="bst_kemarin" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="BST (Kemarin)"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst_kemarin"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>		
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="oil_in_process">Oil In Process (Kemarin)</label>
+													<com:TActiveTextBox 
+															ID="oil_in_process" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Oil In Process"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="oil_in_process"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="oil_in_process">PK BSK (Kemarin)</label>
+													<com:TActiveTextBox 
+															ID="pk_bsk" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="PK BSK"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pk_bsk"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+										</div>	
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="cst_1">CST 1</label>
+													<com:TActiveTextBox 
+															ID="cst_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="CST 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cst_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="cst_1_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cst_1_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="cst_2">CST 2</label>
+													<com:TActiveTextBox 
+															ID="cst_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="CST 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cst_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="cst_2_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cst_2_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="cst_3">CST 3</label>
+													<com:TActiveTextBox 
+															ID="cst_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="CST 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cst_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="cst_3_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cst_3_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ot_1">OT 1</label>
+													<com:TActiveTextBox 
+															ID="ot_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="OT 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ot_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="ot_1_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ot_1_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ot_2">OT 2</label>
+													<com:TActiveTextBox 
+															ID="ot_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="OT 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ot_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="ot_2_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ot_2_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="rcv_1">RCV 1</label>
+													<com:TActiveTextBox 
+															ID="rcv_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="RCV 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="rcv_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="rcv_1_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="rcv_1_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="rcv_2">RCV 2</label>
+													<com:TActiveTextBox 
+															ID="rcv_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="RCV 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="rcv_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="rcv_2_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="rcv_2_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="rcv_3">RCV 3</label>
+													<com:TActiveTextBox 
+															ID="rcv_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="RCV 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="rcv_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="rcv_3_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="rcv_3_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="cot">COT</label>
+													<com:TActiveTextBox 
+															ID="cot" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="COT"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cot"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="cot_temp" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temp"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="cot_temp"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting3">		
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst1_cpo_isi">Storage Tank BST 1 / CPO  Isi</label>
+													<com:TActiveTextBox 
+															ID="bst1_cpo_isi" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Storage Tank BST 1 / CPO  Isi"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst1_cpo_isi"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="temp_bst1">Temperatur BST1</label>
+													<com:TActiveTextBox 
+															ID="temp_bst1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temperatur BST1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="temp_bst1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst1_cpo_ffa">BST1 CPO FFA</label>
+													<com:TActiveTextBox 
+															ID="bst1_cpo_ffa" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="BST1 CPO FFA"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst1_cpo_ffa"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst1_cpo_moist">BST1  / CPO Moist K. Air</label>
+													<com:TActiveTextBox 
+															ID="bst1_cpo_moist" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="BST1  / CPO Moist K. Air"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst1_cpo_moist"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst1_cpo_impurities">BST1 / CPO Impurities K.Kot</label>
+													<com:TActiveTextBox 
+															ID="bst1_cpo_impurities" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="BST1 / CPO Impurities K.Kot"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst1_cpo_impurities"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst2_cpo_isi">Storage Tank BST 2 / CPO  Isi</label>
+													<com:TActiveTextBox 
+															ID="bst2_cpo_isi" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Storage Tank BST 2 / CPO  Isi"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst2_cpo_isi"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="temp_bst2">Temperatur BST2</label>
+													<com:TActiveTextBox 
+															ID="temp_bst2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Temperatur BST2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="temp_bst2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst2_cpo_ffa">BST2 CPO FFA</label>
+													<com:TActiveTextBox 
+															ID="bst2_cpo_ffa" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="BST2 CPO FFA"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst2_cpo_ffa"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst2_cpo_moist">BST2  / CPO Moist K. Air</label>
+													<com:TActiveTextBox 
+															ID="bst2_cpo_moist" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="BST2  / CPO Moist K. Air"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst2_cpo_moist"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bst2_cpo_impurities">BST2 / CPO Impurities K.Kot</label>
+													<com:TActiveTextBox 
+															ID="bst2_cpo_impurities" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="BST2 / CPO Impurities K.Kot"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bst2_cpo_impurities"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting4">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_cst_1">CST 1</label>
+													<com:TActiveTextBox 
+															ID="ffa_cst_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="CST 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_cst_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_cst_2">CST 2</label>
+													<com:TActiveTextBox 
+															ID="ffa_cst_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="CST 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_cst_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_cst_3">CST 3</label>
+													<com:TActiveTextBox 
+															ID="ffa_cst_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="CST 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_cst_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_ot_1">OT 1</label>
+													<com:TActiveTextBox 
+															ID="ffa_ot_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="OT 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_ot_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ot_2">OT 2</label>
+													<com:TActiveTextBox 
+															ID="ffa_ot_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="OT 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_ot_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_rcv_1">RCV 1</label>
+													<com:TActiveTextBox 
+															ID="ffa_rcv_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="RCV 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_rcv_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_rcv_2">RCV 2</label>
+													<com:TActiveTextBox 
+															ID="ffa_rcv_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="RCV 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_rcv_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_rcv_3">RCV 3</label>
+													<com:TActiveTextBox 
+															ID="ffa_rcv_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="RCV 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_rcv_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="ffa_cot">COT</label>
+													<com:TActiveTextBox 
+															ID="ffa_cot" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="COT"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="ffa_cot"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="setting5">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bsk_no_1">NO 1</label>
+													<com:TActiveTextBox 
+															ID="bsk_no_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bsk_no_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bsk_no_2">NO 2</label>
+													<com:TActiveTextBox 
+															ID="bsk_no_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 2 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bsk_no_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bsk_no_3">NO 3</label>
+													<com:TActiveTextBox 
+															ID="bsk_no_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bsk_no_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bsk_lantai">Lantai</label>
+													<com:TActiveTextBox 
+															ID="bsk_lantai" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Lantai"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bsk_lantai"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting6">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="nut_silo_no_1">NO 1</label>
+													<com:TActiveTextBox 
+															ID="nut_silo_no_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="nut_silo_no_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="nut_silo_no_2">NO 2</label>
+													<com:TActiveTextBox 
+															ID="nut_silo_no_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="nut_silo_no_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="nut_silo_no_3">NO 3</label>
+													<com:TActiveTextBox 
+															ID="nut_silo_no_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="nut_silo_no_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="nut_silo_no_4">NO 4</label>
+													<com:TActiveTextBox 
+															ID="nut_silo_no_4" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 4"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="nut_silo_no_4"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="nut_silo_lantai">Lantai</label>
+													<com:TActiveTextBox 
+															ID="nut_silo_lantai" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Lantai"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="nut_silo_lantai"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting7">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="kernel_silo_no_1">NO 1</label>
+													<com:TActiveTextBox 
+															ID="kernel_silo_no_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="kernel_silo_no_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="kernel_silo_no_2">NO 2</label>
+													<com:TActiveTextBox 
+															ID="kernel_silo_no_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="kernel_silo_no_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="kernel_silo_no_3">NO 3</label>
+													<com:TActiveTextBox 
+															ID="kernel_silo_no_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="kernel_silo_no_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="kernel_silo_lantai">Lantai</label>
+													<com:TActiveTextBox 
+															ID="kernel_silo_lantai" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Lantai"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="kernel_silo_lantai"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting8">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_cpo">Pengiriman CPO</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_cpo" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman CPO"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_cpo"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>	
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_kernel">Pengiriman Kernel </label>
+													<com:TActiveTextBox 
+															ID="pengiriman_kernel" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman Kernel"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_kernel"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_cangkang">Pengiriman Cangkang</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_cangkang" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman Cangkang"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_cangkang"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_fibre">Pengiriman Fibre</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_fibre" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman Fibre"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_fibre"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_limbah">Pengiriman Limbah</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_limbah" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman Limbah"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_limbah"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="reject_cpo">Reject CPO</label>
+													<com:TActiveTextBox 
+															ID="reject_cpo" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Reject CPO"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="reject_cpo"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_jangkos">Pengiriman Jangkos</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_jangkos" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman Jangkos"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_jangkos"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_cpo_pagi_malam">Pengiriman CPO pagi hari yang semalam</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_cpo_pagi_malam" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman CPO pagi hari yang semalam"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_cpo_pagi_malam"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_cpo_pagi_ini">Pengiriman CPO pagi hari ini</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_cpo_pagi_ini" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman CPO pagi hari ini"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_cpo_pagi_ini"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengiriman_cpo_ffa_tinggi">Pengiriman CPO FFA Tinggi</label>
+													<com:TActiveTextBox 
+															ID="pengiriman_cpo_ffa_tinggi" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengiriman CPO FFA Tinggi"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengiriman_cpo_ffa_tinggi"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="oil_dalam_mobil_cpo">Oil dalam mobil Tangki CPO</label>
+													<com:TActiveTextBox 
+															ID="oil_dalam_mobil_cpo" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Oil dalam mobil Tangki CPO"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="oil_dalam_mobil_cpo"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="oil_dalam_mobil_cpo_malam">Oil dalam mobil Tangki CPO Semalam</label>
+													<com:TActiveTextBox 
+															ID="oil_dalam_mobil_cpo_malam" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Oil dalam mobil Tangki CPO Semalam"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="oil_dalam_mobil_cpo_malam"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="reject_kernel">Reject Kernel</label>
+													<com:TActiveTextBox 
+															ID="reject_kernel" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Reject Kernel"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="reject_kernel"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting9">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="mutu_cpo_ffa">FFA</label>
+													<com:TActiveTextBox 
+															ID="mutu_cpo_ffa" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="FFA"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="mutu_cpo_ffa"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="mutu_cpo_moisture">Moisture</label>
+													<com:TActiveTextBox 
+															ID="mutu_cpo_moisture" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Moisture"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="mutu_cpo_moisture"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="mutu_cpo_impurities">Impurities</label>
+													<com:TActiveTextBox 
+															ID="mutu_cpo_impurities" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Impurities"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="mutu_cpo_impurities"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="drain_minyak">Drain Minyak</label>
+													<com:TActiveTextBox 
+															ID="drain_minyak" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Drain Minyak"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="drain_minyak"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>	
+									
+									<div class="tab-pane" id="setting10">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="mutu_pk_moisture">Moisture</label>
+													<com:TActiveTextBox 
+															ID="mutu_pk_moisture" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Moisture"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="mutu_pk_moisture"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="mutu_pk_impurities">Impurities</label>
+													<com:TActiveTextBox 
+															ID="mutu_pk_impurities" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Impurities"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="mutu_pk_impurities"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>	
+									
+									<div class="tab-pane" id="setting11">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="nomor_kolam_tanah">Nomor Kolam Tanah</label>
+													<com:TActiveTextBox 
+															ID="nomor_kolam_tanah" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Nomor Kolam Tanah"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="nomor_kolam_tanah"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="mutu_pk_impurities">Kolam Tanah</label>
+													<com:TActiveTextBox 
+															ID="kolam_tanah" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Kolam Tanah"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="kolam_tanah"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="oil_recovered_ffa">FFA</label>
+													<com:TActiveTextBox 
+															ID="oil_recovered_ffa" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="FFA"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="oil_recovered_ffa"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="oil_recovered_ffa">Moisture</label>
+													<com:TActiveTextBox 
+															ID="oil_recovered_moisture" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Moisture"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="oil_recovered_moisture"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="pengutipan_minyak">Pengutipan Minyak</label>
+													<com:TActiveTextBox 
+															ID="pengutipan_minyak" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Pengutipan Minyak"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="pengutipan_minyak"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="produksi_abu_janjang_goni">Produksi Abu Janjang</label>
+													<com:TActiveTextBox 
+															ID="produksi_abu_janjang_goni" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Goni"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="produksi_abu_janjang_goni"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="produksi_abu_janjang_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="KG"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="produksi_abu_janjang_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>	
+									
+									<div class="tab-pane" id="setting12">
+										<div class="row">
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bss_no_1">NO 1</label>
+													<com:TActiveTextBox 
+															ID="bss_no_1" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 1"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bss_no_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bss_no_2">NO 2</label>
+													<com:TActiveTextBox 
+															ID="bss_no_2" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 2"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bss_no_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bss_no_3">NO 3</label>
+													<com:TActiveTextBox 
+															ID="bss_no_3" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="NO 3"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bss_no_3"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="bss_lantai">Lantai</label>
+													<com:TActiveTextBox 
+															ID="bss_lantai" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Lantai"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="bss_lantai"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting13">
+										<div class="row">
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_cst1_kg_cm">CST1 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_cst1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cst1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_cst1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cst1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_cst2_kg_cm">CST2 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_cst2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cst2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_cst2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cst2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_cst3_kg_cm">CST3 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_cst3_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cst3_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_cst3_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cst3_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ot1_kg_cm">OT1 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_ot1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ot1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ot1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ot1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ot2_kg_cm">OT2 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_ot2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ot2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ot2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ot2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_rcv1_kg_cm">RCV1 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_rcv1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_rcv1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_rcv1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_rcv1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_rcv2_kg_cm">RCV2 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_rcv2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_rcv2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_rcv2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_rcv2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_rcv3_kg_cm">RCV3 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_rcv3_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_rcv3_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_rcv3_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_rcv3_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_cot_kg_cm">COT kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_cot_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cot_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_cot_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_cot_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bst1_kg_cm">BST1 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_bst1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bst1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bst1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bst1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bst2_kg_cm">BST2 kg/cm</label>
+													<com:TActiveTextBox 
+															ID="etc_bst2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bst2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bst2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bst2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ks1_kg_cm">KS1</label>
+													<com:TActiveTextBox 
+															ID="etc_ks1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ks1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ks1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ks1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ks2_kg_cm">KS2</label>
+													<com:TActiveTextBox 
+															ID="etc_ks2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ks2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ks2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ks2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ks3_kg_cm">KS3</label>
+													<com:TActiveTextBox 
+															ID="etc_ks3_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ks3_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ks3_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ks3_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ns1_kg_cm">NS1</label>
+													<com:TActiveTextBox 
+															ID="etc_ns1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ns1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ns2_kg_cm">NS2</label>
+													<com:TActiveTextBox 
+															ID="etc_ns2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ns2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ns3_kg_cm">NS3</label>
+													<com:TActiveTextBox 
+															ID="etc_ns3_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns3_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ns3_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns3_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_ns4_kg_cm">NS4</label>
+													<com:TActiveTextBox 
+															ID="etc_ns4_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns4_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_ns4_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_ns4_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bsk1_kg_cm">BSK1</label>
+													<com:TActiveTextBox 
+															ID="etc_bsk1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bsk1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bsk1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bsk1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bsk2_kg_cm">BSK2</label>
+													<com:TActiveTextBox 
+															ID="etc_bsk2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bsk2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bsk2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bsk2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bsk3_kg_cm">BSK3</label>
+													<com:TActiveTextBox 
+															ID="etc_bsk3_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bsk3_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bsk3_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bsk3_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bss1_kg_cm">BSS1</label>
+													<com:TActiveTextBox 
+															ID="etc_bss1_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bss1_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bss1_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bss1_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bss2_kg_cm">BSS2</label>
+													<com:TActiveTextBox 
+															ID="etc_bss2_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bss2_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bss2_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bss2_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<div class="form-group">
+													<label class="control-label" for="etc_bss3_kg_cm">BSS3</label>
+													<com:TActiveTextBox 
+															ID="etc_bss3_kg_cm" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg/cm"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bss3_kg_cm"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="etc_bss3_kg" 
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="kg"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="etc_bss3_kg"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="tab-pane" id="setting14">
+										<div class="row">
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_olah_tbs_1">Jam Olah TBS - Shift I</label>
+													<com:TActiveTextBox 
+															ID="jam_olah_tbs_1" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_olah_tbs_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_olah_tbs_2">Jam Olah TBS - Shift II</label>
+													<com:TActiveTextBox 
+															ID="jam_olah_tbs_2" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_olah_tbs_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_olah_nut_1">Jam Olah Nut - Shift I</label>
+													<com:TActiveTextBox 
+															ID="jam_olah_nut_1" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_olah_nut_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_olah_nut_2">Jam Olah Nut - Shift II</label>
+													<com:TActiveTextBox 
+															ID="jam_olah_nut_2" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_olah_nut_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_start_1">Jam Start - Shift I</label>
+													<com:TActiveTextBox 
+															ID="jam_start_1" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_start_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_start_2">Jam Start - Shift II</label>
+													<com:TActiveTextBox 
+															ID="jam_start_2" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_start_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_start_1">Jam Stop - Shift I</label>
+													<com:TActiveTextBox 
+															ID="jam_stop_1" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_stop_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_stop_2">Jam Stop - Shift II</label>
+													<com:TActiveTextBox 
+															ID="jam_stop_2" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_stop_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_main_1">Maint/Cleaning/Fire Up - Shift I</label>
+													<com:TActiveTextBox 
+															ID="jam_main_1" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_main_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_main_2">Maint/Cleaning/Fire Up - Shift II</label>
+													<com:TActiveTextBox 
+															ID="jam_main_2" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_main_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_down_1">Down Time/Stagnasi - Shift I</label>
+													<com:TActiveTextBox 
+															ID="jam_down_1" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_down_1"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="control-label" for="jam_down_2">Down Time/Stagnasi - Shift II</label>
+													<com:TActiveTextBox 
+															ID="jam_down_2" 
+															CssClass="form-control mask_time" 
+															Attributes.PlaceHolder="00:00"/>
+															<com:TRequiredFieldValidator 
+															  ControlToValidate="jam_down_2"											 
+															  ErrorMessage=""
+															  Display="Dynamic"
+															  FocusOnError="true" 
+															  CssClass="valRequired"
+															  ControlCssClass="valctrl"
+															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+						</div>		
+					</div>
+					
+					
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										OnClick="submitBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="checkTodayProcessing();jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Processing Tbs');" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th width="300px">No Processing</th>
+					<th width="300px">Tgl Processing</th>
+					<th width="150px">Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="checkProcessingCallback" OnCallback="checkProcessing" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				
+				BindGrid();
+			});
+			
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->idProcessing->getClientID()%>').val('');
+				jQuery(".form-control").val('');
+			}
+			
+			
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function checkTodayProcessing()
+			{
+				loadContent();
+				var request= <%= $this->checkProcessingCallback->ActiveControl->Javascript %>;
+					request.dispatch();
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function cetakClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+		</script>
+		
+</com:TContent>

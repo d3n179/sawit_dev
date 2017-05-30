@@ -1,0 +1,444 @@
+<com:TContent ID="Main">
+	<h2>Master Barang</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 60%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label">Nama</label>
+								<com:TActiveHiddenField ID="idBarang"/>
+								<com:TActiveTextBox 
+										ID="nama" 
+										CssClass="form-control upper" 
+										Attributes.PlaceHolder="Nama"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="nama"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label">Kelompok</label>
+								<com:TActiveDropDownList 
+									ID="DDKelompok"
+									PromptText="--Pilih Kelompok--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									CssClass="form-control">
+									<com:TListItem Value="0" Text="Assets"/>
+									<com:TListItem Value="1" Text="Barang Lancar"/>
+									</com:TActiveDropDownList>
+										
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDKelompok"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>	
+						
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label">Kategori</label>
+								<com:TActiveDropDownList 
+									ID="DDKategori"
+									PromptText="--Pilih Kategori--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+										
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDKategori"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label" for="min_stock">Min Stock</label>
+								 <com:TActiveTextBox 
+										ID="min_stock" 
+										CssClass="form-control mask_decimal" 
+										Attributes.PlaceHolder="0"/>
+										
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label" for="max_stock">Max Stock</label>
+								 <com:TActiveTextBox 
+										ID="max_stock" 
+										CssClass="form-control mask_decimal" 
+										Attributes.PlaceHolder="0"/>
+										
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label" for="max_beli_bulanan">Max Pembelian/Bulan</label>
+								 <com:TActiveTextBox 
+										ID="max_beli_bulanan" 
+										CssClass="form-control mask_decimal" 
+										Attributes.PlaceHolder="0"/>
+										
+							</div>
+						</div>	
+					</div>
+					<div class="row">	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label">Satuan</label>
+								 <com:TActiveDropDownList 
+									ID="DDSatuan"
+									PromptText="--Pilih Satuan--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+										
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDSatuan"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="valJml" 
+										  InitialValue="empty"/>
+							</div>
+						</div>		
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label" for="Jumlah">Jumlah</label>
+								 <com:TActiveTextBox 
+										ID="Jumlah" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="0"/>
+										
+							</div>
+						</div>		
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label" for=""></label>
+								<com:TActiveHiddenField ID="arrSatuan"/>
+								<com:TActiveButton
+										ID="tambahBtnBtn" 
+										Text="Tambah"
+										OnClick="tambahBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="valJml"
+										CssClass="btn btn-success">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>
+										
+							</div>
+						</div>	
+					</div>
+					
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="tableSatuan">
+									<thead>
+										<tr>
+											<th width="1px"></th>
+											<th width="300px">Satuan</th>
+											<th width="300px">Jumlah</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+	
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										OnClick="submitBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Barang');clearForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="form-group">
+				<table class="table table-bordered table-striped datatable" id="table-1">
+					<thead>
+						<tr>
+							<th width="1px"></th>
+							<th width="200px">Nama Barang</th>
+							<th width="200px">Kelompok</th>
+							<th width="200px">Kategori</th>
+							<th width="100px">Stok</th>
+							<th width="100px">Minimum Stok</th>
+							<th width="100px">Maximum Stok</th>
+							<th width="100px">Maximum Pembelian / Bulan</th>
+							<th width="100px">Aksi</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				jQuery('#<%= $this->Jumlah->getClientID()%>').numeric({ decimal : ".",  negative : false, scale: 2 });
+				BindGrid();
+				BindGridSatuan();
+			});
+			
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->nama->getClientID()%>').val('');
+				jQuery('#<%= $this->idBarang->getClientID()%>').val('');
+				jQuery('#<%= $this->DDSatuan->getClientID()%>').val('empty');
+				var request= <%= $this->clearCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+			}
+			
+			function BindGrid()
+			{
+				var table = jQuery('#table-1').DataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+				    }
+				});
+				
+				jQuery('#table-1 tbody').on('click', 'td.details-control', function () {
+						var tr = $(this).closest('tr');
+						var row = table.row( tr );
+				 
+						if ( row.child.isShown() ) {
+							// This row is already open - close it
+							row.child.hide();
+							jQuery(this).removeClass('shown');
+							jQuery(this).addClass('dont_shown');
+						}
+						else {
+							// Open this row
+							row.child( format(row.data()) ).show();
+							jQuery(this).removeClass('dont_shown');
+							jQuery(this).addClass('shown');
+							
+							console.log(row.data()[0]);
+							var inputHtml = row.data()[0];
+							var id = jQuery(inputHtml).attr('value');
+				
+							loadContent();
+							var request= <%= $this->generateDetailCallback->ActiveControl->Javascript %>;
+								request.setCallbackParameter({
+										id:id
+								});
+								request.dispatch();
+							
+				
+						}
+					} );
+    
+			}
+			
+			function format ( d ) {
+				// `d` is the original data object for the row
+				console.log(d[0]);
+				var inputHtml = d[0];
+				var id = jQuery(inputHtml).attr('value');
+				var tableDetail = 'tableDetail-'+id;
+				return '<table id="'+tableDetail+'" class="table table-hover datatable" width="200">'+
+					'<thead>'+
+						'<tr>'+
+							'<th width="50px">Urutan</th>'+
+							'<th width="150px">Nama Satuan</th>'+
+							'<th width="100px">Jumlah</th>'+
+						'</tr>'+
+					'</thead>'+
+					'<tbody>'+
+					'</tbody>'+
+				'</table>';
+				
+				
+						
+			}
+			
+			function BindGridSatuan()
+			{
+				var tableSatuan = jQuery('#tableSatuan').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+				    }
+				});
+				
+				
+			}
+			
+			function BindGridHargaPotong()
+			{
+			}
+			
+			
+			function BindGridBahan()
+			{
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			
+			function hargaClicked(id)
+			{
+			}
+			
+			
+			function deleteSatuan(urutan)
+			{
+				loadContent();
+				var request= <%= $this->deleteSatuanCallback->ActiveControl->Javascript %>;
+					request.setCallbackParameter({
+						urutan:urutan
+					});
+					request.dispatch();
+			}
+			
+			
+			function deleteHargaPotong(id)
+			{
+			}
+			
+			function editHargaPotong(id)
+			{
+			}
+		
+			function deleteBahan(id)
+			{
+			}
+		</script>
+		
+</com:TContent>

@@ -1,0 +1,276 @@
+<com:TContent ID="Main">
+	<com:TActivePanel ID="GrafikAdmin">
+	<div class="grid-item col-md-12">
+	<div class="grid-item-content" >
+		<div class="portlet-title margin-bottom-0">
+            <div class="actions" style="width:100%;">
+				<div class="row">
+					<div class="col-md-2" >
+						<com:TActiveDropDownList 
+									ID="DDSupplier"
+									Width="190px"
+									PromptText="--Pilih Supplier--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="getRenderPembelianChart"
+									CausesValidation="true"
+									CssClass="form-control input-sm"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+					</div>
+					<div class="col-md-2" >
+						<com:TActiveDropDownList 
+									ID="DDTahunSupplier"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="getRenderPembelianChart"
+									CausesValidation="true"
+									CssClass="form-control input-sm"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+					</div>
+				</div>
+            </div>
+        </div>
+        <div class="portlet-body padding-top-0">
+            <div class="row">
+                <div class="col-md-12" align="center">
+                    <div id="pembelian" class="pembelian" style="margin: 0 auto"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>	
+<div class="grid-item col-md-6">
+	<div class="grid-item-content">
+		<div class="portlet-title margin-bottom-0">
+            <div class="actions" style="width:100%;">
+				<div class="row">
+					<div class="col-sm-12" align="right">
+						<com:TActiveDropDownList 
+									ID="DDTahunPendapatan"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="getRenderPendapatanChart"
+									CausesValidation="true"
+									CssClass="form-control input-sm"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+					</div>
+				</div>
+            </div>
+        </div>
+        <div class="portlet-body padding-top-0">
+            <div class="row">
+                <div class="col-md-12" align="center">
+                    <div id="pendapatan" class="pendapatan" style="margin: 0 auto"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>
+<div class="grid-item col-md-6">
+	<div class="grid-item-content" >
+		<div class="portlet-title margin-bottom-0">
+            <div class="actions" style="width:100%;">
+				<div class="row">
+					<div class="col-sm-12" align="right">
+						<com:TActiveDropDownList 
+									ID="DDTahunPengeluaran"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="getRenderPengeluaranChart"
+									CausesValidation="true"
+									CssClass="form-control input-sm"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+					</div>
+				</div>
+            </div>
+        </div>
+        <div class="portlet-body padding-top-0">
+            <div class="row">
+                <div class="col-md-12" align="center">
+                    <div id="pengeluaran" class="pengeluaran" style="margin: 0 auto"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>	
+</com:TActivePanel>
+<script type="text/javascript">
+	jQuery(document).ready(function(jQuery)
+	{
+		//renderPendapatan();
+	});
+
+	function renderPendapatan(arrData)
+	{
+		jQuery('#pendapatan').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: 'Pendapatan Bulanan'
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: {
+				categories: [
+					'Jan',
+					'Feb',
+					'Mar',
+					'Apr',
+					'May',
+					'Jun',
+					'Jul',
+					'Aug',
+					'Sep',
+					'Oct',
+					'Nov',
+					'Dec'
+				],
+				crosshair: true
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: 'Rp'
+				}
+			},
+			tooltip: {
+				headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+					'<td style="padding:0"><b>{point.y:.1f} Rp</b></td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				column: {
+					pointPadding: 0.2,
+					borderWidth: 0
+				}
+			},
+			series: arrData
+		});
+	}
+	
+	function renderPengeluaran(arrData)
+	{	
+		jQuery('#pengeluaran').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: 'Pengeluaran Bulanan'
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: {
+				categories: [
+					'Jan',
+					'Feb',
+					'Mar',
+					'Apr',
+					'May',
+					'Jun',
+					'Jul',
+					'Aug',
+					'Sep',
+					'Oct',
+					'Nov',
+					'Dec'
+				],
+				crosshair: true
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: 'Rp'
+				}
+			},
+			tooltip: {
+				headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+					'<td style="padding:0"><b>{point.y:.1f} Rp</b></td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				column: {
+					pointPadding: 0.2,
+					borderWidth: 0
+				}
+			},
+			series: arrData
+		});
+	}
+	
+	function renderPembelian(arrData)
+	{	
+		jQuery('#pembelian').highcharts({
+			chart: {
+				type: 'column'
+			},
+			title: {
+				text: 'Pembelian Per Supplier Bulanan'
+			},
+			subtitle: {
+				text: ''
+			},
+			xAxis: {
+				categories: [
+					'Jan',
+					'Feb',
+					'Mar',
+					'Apr',
+					'May',
+					'Jun',
+					'Jul',
+					'Aug',
+					'Sep',
+					'Oct',
+					'Nov',
+					'Dec'
+				],
+				crosshair: true
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: 'Rp'
+				}
+			},
+			tooltip: {
+				headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+					'<td style="padding:0"><b>{point.y:.1f} Rp</b></td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				column: {
+					pointPadding: 0.2,
+					borderWidth: 0
+				}
+			},
+			series: arrData
+		});
+	}
+</script>
+</com:TContent>

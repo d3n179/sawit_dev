@@ -1,0 +1,290 @@
+<com:TContent ID="Main">
+	<h2>Master Category Product</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade" id="modal-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Category Type</label>
+							<div class="col-sm-5">
+								<com:TActiveRadioButtonList
+										  ID="RBTypeBrng"
+										  RepeatDirection="Horizontal" 
+										  CausesValidation="false" 
+										  AutoPostBack="false">
+									<com:TListItem Text="Biasa" Value="0" />
+									<com:TListItem Text="Sawit"  Value="1" />                                   
+								  </com:TActiveRadioButtonList>	
+								  <com:TRequiredFieldValidator 
+										  ControlToValidate="RBTypeBrng"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Category Name</label>
+							<div class="col-sm-5">
+								<com:TActiveHiddenField ID="idKategoriBarang"/>
+								<com:TActiveTextBox 
+										ID="nama" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Nama"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="nama"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">Coa</label>
+							<div class="col-sm-5">
+								<com:TActiveTextBox 
+										ID="DDCoa" 
+										CssClass="form-control" />
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDCoa"										 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>			
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										OnClick="submitBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Kategori');clearForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th width="200px">Tipe Name</th>
+					<th width="300px">Category Name</th>
+					<th width="150px">Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				bindSelect2();
+				BindGrid();
+			});
+			
+			function bindSelect2()
+			{
+				jQuery('#<%= $this->DDCoa->getClientID()%>').select2({
+					placeholder: 'Pilih Coa',
+					allowClear: true,
+					minimumInputLength: 0,
+					ajax: {
+							url: 'index.php?page=GenerateConf&data=coa',
+							dataType: 'json',
+							delay: 250,
+							data: function (term, page) { // page is the one-based page number tracked by Select2
+								return {
+									q: term, //search term
+									page_limit:10,
+									table_name:"tbm_coa",
+									field_name:"CONCAT(kode_coa,' - ',nama)",
+									field_sortby:"nama",
+									page_number: page // page number
+								};
+							},
+							results: function (data, page) {
+								var more = (page * 10) < data.TotalRows; // whether or not there are more results available
+					 
+								// notice we return the value of more so Select2 knows if more results can be loaded
+								return {results: data.Rows, more: more};
+							},
+							cache: true
+						},
+					initSelection: function (element, callback) {
+                        var id = jQuery(element).val();
+                        if (id !== "") {
+                            jQuery.ajax({ // ajax call starts
+                                delay: 250,
+                                url:'index.php?page=GenerateConf&data=coa', // JQuery loads serverside.php
+                                data:{
+                                    id:id,
+                                    table_name:"tbm_coa",
+                                    multiple:'false',
+                                    field_name:"CONCAT(kode_coa,' - ',nama)",
+									field_sortby:"nama"
+                                },
+                                cache: true,
+                                dataType:'json', // Choosing a JSON datatype
+                                success: function(data) // Variable data contains the data we get from serverside
+                                {
+                                    if(data.Rows.length>0)
+                                    {
+										
+                                        callback(data.Rows[0]);
+                                    }
+                                    else
+                                    {
+                                        callback();
+									}
+                                },
+                                error: function(data)
+                                {
+                                    //console.log(data);
+                                }
+                            });
+                        }
+                    },
+                    formatSelection: function(data) { 
+					   return data.text; 
+					}   
+                    }).off("change");
+			}
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->nama->getClientID()%>').val('');
+				jQuery('#<%= $this->idKategoriBarang->getClientID()%>').val('');
+				var request= <%= $this->clearCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+			}
+			
+			
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+		</script>
+		
+</com:TContent>

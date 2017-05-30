@@ -1,0 +1,613 @@
+<com:TContent ID="Main">
+	<h2>Pembayaran Tbs</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 100%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">	
+						<div class="col-md-3">
+							<div class="form-group">
+							<label class="control-label" for="Pemasok">Pemasok</label>	  
+							<com:TActiveHiddenField ID="idBarang"/>
+							<com:TActiveHiddenField ID="idPemasok"/>
+							<com:TActiveTextBox 
+										ID="Pemasok" 
+										Enabled="false"
+										CssClass="form-control upper" />
+							</div>
+						</div>		
+						<div class="col-md-3">
+							<div class="form-group">
+							<label class="control-label" for="jnsKelapaSawit">Jenis Kelapa Sawit</label>
+								<com:TActiveTextBox 
+										ID="jnsKelapaSawit" 
+										Enabled="false"
+										CssClass="form-control upper" />
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="DDCoa">Coa</label>
+								<com:TActiveTextBox 
+										ID="DDCoa" 
+										CssClass="form-control" />
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDCoa"										 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+					</div>
+					
+					<div class="row">
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="DDJnsBayar">Jenis Pembayaran</label>
+							 <com:TActiveDropDownList 
+									ID="DDJnsBayar"
+									PromptText="--Jenis Pembayaran--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									CausesValidation="true"
+									CssClass="form-control"
+									OnSelectedIndexChanged="jnsByrChanged">
+									<com:TListItem Text="Cash" Value="0"/>
+									<com:TListItem Text="Transfer" Value="1"/>
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDJnsBayar"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="DDBank">Bank</label>
+							 			  
+								 <com:TActiveDropDownList 
+									ID="DDBank"
+									Enabled="false"
+									PromptText="--Pilih Bank--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="true"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDBank"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="noRef">No Referensi / No Rekening</label>
+									<com:TActiveTextBox 
+										ID="noRef" 
+										Enabled="false"
+										CausesValidation="true"
+										CssClass="form-control" />
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="noRef"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+					</div>
+					
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="tableBayar">
+									<thead>
+										<tr>
+											<th >TBS Diterima</th>
+											<th >Harga</th>
+											<th >Subtotal TBS</th>
+											<th >Bongkar SPSI</th>
+											<th >Jumlah Bongkar</th>
+											<th >Subtotal SPSI</th>
+											<th >Fee</th>
+											<th >Subtotal Fee</th>
+											<th >PPN (%)</th>
+											<th >PPH (%)</th>
+											<th >Total Pembayaran</th>
+											<th >Kategori TBS</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th>Tgl Transaksi</th>
+					<th>Pemasok</th>
+					<th>Barang</th>
+					<th>Jumlah Kendaraan</th>
+					<th>Total Berat</th>
+					<th width="150px">Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="komidelCallback" OnCallback="komidelCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				if(localDB.tableExists('BayarTbsTable'))
+				{
+					localDB.dropTable('BayarTbsTable');
+					localDB.commit();
+				}
+											
+				localDB.createTable('BayarTbsTable', ["idTransaksi",
+														"jenis_kendaraan",
+														"no_polisi",
+														"netto_2",
+														"harga",
+														"subtotal_tbs",
+														"netto_1",
+														"jenis_bongkar",
+														"jumlah_bongkar",
+														"subtotal_spsi",
+														"fee",
+														"subtotal_fee",
+														"ppn",
+														"pph",
+														"total_tbs_order",
+														"kategori_tbs"]);
+				localDB.commit();
+				bindSelect2();
+				BindGrid();
+			});
+			
+			
+			function bindSelect2()
+			{
+				jQuery('#<%= $this->DDCoa->getClientID()%>').select2({
+					placeholder: 'Pilih Coa',
+					allowClear: true,
+					minimumInputLength: 0,
+					ajax: {
+							url: 'index.php?page=GenerateConf&data=coa',
+							dataType: 'json',
+							delay: 250,
+							data: function (term, page) { // page is the one-based page number tracked by Select2
+								return {
+									q: term, //search term
+									page_limit:10,
+									table_name:"tbm_coa",
+									field_name:"CONCAT(kode_coa,' - ',nama)",
+									field_sortby:"nama",
+									page_number: page // page number
+								};
+							},
+							results: function (data, page) {
+								var more = (page * 10) < data.TotalRows; // whether or not there are more results available
+					 
+								// notice we return the value of more so Select2 knows if more results can be loaded
+								return {results: data.Rows, more: more};
+							},
+							cache: true
+						},
+					initSelection: function (element, callback) {
+                        var id = jQuery(element).val();
+                        if (id !== "") {
+                            jQuery.ajax({ // ajax call starts
+                                delay: 250,
+                                url:'index.php?page=GenerateConf&data=coa', // JQuery loads serverside.php
+                                data:{
+                                    id:id,
+                                    table_name:"tbm_coa",
+                                    multiple:'false',
+                                    field_name:"CONCAT(kode_coa,' - ',nama)",
+									field_sortby:"nama"
+                                },
+                                cache: true,
+                                dataType:'json', // Choosing a JSON datatype
+                                success: function(data) // Variable data contains the data we get from serverside
+                                {
+                                    if(data.Rows.length>0)
+                                    {
+										
+                                        callback(data.Rows[0]);
+                                    }
+                                    else
+                                    {
+                                        callback();
+									}
+                                },
+                                error: function(data)
+                                {
+                                    //console.log(data);
+                                }
+                            });
+                        }
+                    },
+                    formatSelection: function(data) { 
+					   return data.text; 
+					}   
+                    }).off("change");
+			}
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->Pemasok->getClientID()%>').val('');
+				
+				jQuery('#<%= $this->jnsKelapaSawit->getClientID()%>').val('');
+				jQuery('#<%= $this->idBarang->getClientID()%>').val('');
+				jQuery('#<%= $this->idPemasok->getClientID()%>').val('');
+				
+				jQuery("#tableBayar").dataTable().fnDestroy();
+				jQuery("#tableBayar tbody").empty();
+				jQuery("#tableBayar tbody").append('');
+				BindGridBayar();
+					
+				if(localDB.tableExists('BayarTbsTable'))
+				{
+					localDB.truncate('BayarTbsTable');
+					localDB.commit();
+				}
+				
+			}
+			
+			function RenderTempTable(arr)
+			{
+				localDB.truncate('BayarTbsTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+					var arr = HasilPembayaran(val.netto_2,val.harga,val.netto_1,val.jenis_bongkar,val.jumlah_bongkar,val.fee,val.ppn,val.pph);
+					console.log(arr);
+					localDB.insert('BayarTbsTable', {idTransaksi:val.idTransaksi,
+														jenis_kendaraan:val.jenis_kendaraan,
+														no_polisi:val.no_polisi,
+														netto_2:val.netto_2,
+														harga:val.harga,
+														subtotal_tbs:arr.subtotalTbs,
+														netto_1:val.netto_1,
+														jenis_bongkar:val.jenis_bongkar,
+														jumlah_bongkar:val.jumlah_bongkar,
+														subtotal_spsi:arr.subtotalSpsi,
+														fee:val.fee,
+														subtotal_fee:arr.subtotalFee,
+														ppn:val.ppn,
+														pph:val.pph,
+														total_tbs_order:arr.TotalTBS,
+														kategori_tbs:val.kategori_tbs});
+																
+					localDB.commit();
+				});	
+				
+				bindBayarGridLine();
+				
+			}
+			
+			function bindBayarGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('BayarTbsTable'))
+				{
+					var data = localDB.queryAll('BayarTbsTable', {
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					console.log(data);
+					jQuery.each(data,function(i,val)
+					{						
+							tblBody += '<tr>';
+							tblBody += '<td><input id="netto_2-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.netto_2+'" maxlength="9" size="9" disabled></td>';
+							tblBody += '<td><input id="harga-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.harga+'" maxlength="15" size="15" disabled></td>';
+							tblBody += '<td><input id="subtotaltbs-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_tbs+'" maxlength="15" size="15"></td>';
+							tblBody += '<td><input id="bongkar-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.netto_1+'" maxlength="9" size="9"></td>';
+							tblBody += '<td><input type="hidden" id="jnsbongkar-column-ID-'+val.ID+'" value="'+val.jenis_bongkar+'"/><input id="jmlbongkar-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.jumlah_bongkar+'" maxlength="9" size="9"></td>';
+							tblBody += '<td><input id="subtotalspsi-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_spsi+'" maxlength="15" size="15"></td>';
+							tblBody += '<td><input id="fee-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.fee+'" maxlength="9" size="9"></td>';
+							tblBody += '<td><input id="subtotalfee-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_fee+'" maxlength="15" size="15"></td>';
+							tblBody += '<td><input id="ppn-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" type="text" onBlur="quantityEdited('+val.ID+');" value="'+val.ppn+'" maxlength="5" size="5"></td>';
+							tblBody += '<td><input id="pph-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" type="text" onBlur="quantityEdited('+val.ID+');" value="'+val.pph+'" maxlength="5" size="5"></td>';
+							tblBody += '<td><input id="totaltbs-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.total_tbs_order+'" maxlength="15" size="15"></td>';
+							tblBody += '<td>'+val.kategori_tbs+'</td>';
+							tblBody += '</tr>';
+					});	
+				}
+				
+				jQuery("#tableBayar").dataTable().fnDestroy();
+				jQuery("#tableBayar tbody").empty();
+				jQuery("#tableBayar tbody").append(tblBody);
+				BindGridBayar();
+					
+			}
+			
+			function quantityEdited(id)
+			{
+				var netto_2 = parseFloat(jQuery('#netto_2-column-ID-'+id).val());
+				var harga = parseFloat(jQuery('#harga-column-ID-'+id).val().replace(/\,/g,''));
+				var netto_1 = parseFloat(jQuery('#bongkar-column-ID-'+id).val());
+				var jenis_bongkar = parseFloat(jQuery('#jnsbongkar-column-ID-'+id).val());
+				var jumlah_bongkar = parseFloat(jQuery('#jmlbongkar-column-ID-'+id).val());
+				var fee = parseFloat(jQuery('#fee-column-ID-'+id).val());
+				var ppn = parseFloat(jQuery('#ppn-column-ID-'+id).val());
+				var pph = parseFloat(jQuery('#pph-column-ID-'+id).val());
+				
+				var arr = HasilPembayaran(netto_2,harga,netto_1,jenis_bongkar,jumlah_bongkar,fee,ppn,pph);
+					console.log(arr);
+														
+				localDB.update('BayarTbsTable', {ID: id}, function(row) {
+									row.netto_2 = netto_2;
+									row.harga = harga;
+									row.subtotal_tbs = arr.subtotalTbs;
+									row.netto_1 = netto_1;
+									row.jumlah_bongkar = jumlah_bongkar;
+									row.subtotal_spsi = arr.subtotalSpsi;
+									row.fee = fee;
+									row.subtotal_fee = arr.subtotalFee;
+									row.ppn = ppn;
+									row.pph = pph;
+									row.total_tbs_order = arr.TotalTBS;
+														
+									return row;
+								});
+								
+				bindBayarGridLine();	
+			}
+			
+			function subtotalEdited(id)
+			{
+				var subtotalTbs = parseFloat(jQuery('#subtotaltbs-column-ID-'+id).val().replace(/\,/g,''));
+				var subtotalspsi = parseFloat(jQuery('#subtotalspsi-column-ID-'+id).val().replace(/\,/g,''));
+				var subtotalfee = parseFloat(jQuery('#subtotalfee-column-ID-'+id).val().replace(/\,/g,''));
+				var TotalTBS = parseFloat(jQuery('#totaltbs-column-ID-'+id).val().replace(/\,/g,''));
+				
+				console.log(subtotalTbs);
+				console.log(subtotalspsi);
+				console.log(subtotalfee);
+				console.log(TotalTBS);
+				localDB.update('BayarTbsTable', {ID: id}, function(row) {
+									row.subtotal_tbs = subtotalTbs;
+									row.subtotal_spsi = subtotalspsi;
+									row.subtotal_fee = subtotalfee;
+									row.total_tbs_order = TotalTBS;
+														
+									return row;
+								});
+								
+				bindBayarGridLine();	
+			}
+			
+			function BindGridBayar()
+			{
+				var tableSatuan = jQuery('#tableBayar').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+						jQuery(".currency_column").inputmask('numeric',{'groupSeparator': '.', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0',radixPoint:".",allowMinus:false,allowPlus:false});
+						jQuery(".quantity_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+					 }
+				});
+				
+				
+			}
+			
+			function HasilPembayaran(TBSTerima,hargaTbs,bongkarSpsi,jnsBongkar,jmlBongkar,fee,ppn,pph)
+			{
+				
+				if(isNaN(hargaTbs))
+					var subtotalTbs = TBSTerima * 0;
+				else
+					var subtotalTbs = TBSTerima * hargaTbs;
+				
+				
+				if(jnsBongkar == '0')
+				{
+					if(isNaN(jmlBongkar))
+						var subtotalSpsi = bongkarSpsi * 0;
+					else
+						var subtotalSpsi = bongkarSpsi * jmlBongkar;
+				}
+				else
+				{
+					if(isNaN(jmlBongkar))
+						var subtotalSpsi =  0;
+					else
+						var subtotalSpsi = jmlBongkar;
+				}
+						
+				if(isNaN(fee))
+					var subtotalFee = TBSTerima * 0;
+				else
+					var subtotalFee = TBSTerima * fee;
+					
+				if(isNaN(ppn))
+					var JmlPPN = subtotalTbs * 0;
+				else
+					var JmlPPN = subtotalTbs * (ppn / 100);
+				
+				
+				if(isNaN(pph))
+					var JmlPPH = subtotalTbs * 0;
+				else
+					var JmlPPH = subtotalTbs * (pph / 100);
+				
+				var TotalTBS = subtotalTbs - subtotalSpsi + subtotalFee + JmlPPN - JmlPPH;
+				
+				
+				var arrHasil = {subtotalTbs:subtotalTbs,subtotalSpsi:subtotalSpsi,subtotalFee:subtotalFee,JmlPPN:JmlPPN,JmlPPH:JmlPPH,TotalTBS:TotalTBS};
+				
+				return arrHasil;
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function editClicked(idPemasok,idBarang,kategoriBarangId,tglTransaksi)
+			{
+				if(confirm('Proses Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							idPemasok:idPemasok,idBarang:idBarang,kategoriBarangId:kategoriBarangId,tglTransaksi:tglTransaksi
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function submitBtnClicked()
+			{
+				if(jQuery('#<%= $this->DDCoa->getClientID()%>').val() != '')
+				{
+					if(localDB.tableExists('BayarTbsTable'))
+					{
+						var CHECK = localDB.queryAll('BayarTbsTable', {sort: [["ID", "ASC"]]});
+						if(CHECK.length > 0)
+						{
+							var BayarTbsTable = localDB.queryAll('BayarTbsTable', {sort: [["ID", "ASC"]]});
+							var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+							request.setCallbackParameter({
+								BayarTbsTable:BayarTbsTable
+							});
+							request.dispatch();
+							
+			
+						}
+						else
+						{
+							toastr.error("Transaksi Belum Dimasukkan !");
+						}
+					}
+					else
+					{
+						toastr.error("Transaksi Belum Dimasukkan!");
+					}
+				}
+					
+				
+			}
+			
+		</script>
+		
+</com:TContent>

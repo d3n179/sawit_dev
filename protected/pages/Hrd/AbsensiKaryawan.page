@@ -1,0 +1,197 @@
+<com:TContent ID="Main">
+	<h2>Absensi Karyawan</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label class="control-label" for="tglAbsensi">Tgl Absensi </label>
+				<com:TActiveTextBox 
+						ID="tglAbsensi" 
+						AutoPostBack="false"
+						Attributes.OnChange="dateChanged();"
+						CssClass="form-control date-picker" 
+						Attributes.PlaceHolder="Tgl Absensi"/>
+					<com:TRequiredFieldValidator 
+						ControlToValidate="tglAbsensi"											 
+						ErrorMessage=""
+						Display="Dynamic"
+						FocusOnError="true" 
+						CssClass="valRequired"
+						ControlCssClass="valctrl"
+					ValidationGroup="val" />
+			</div>
+		</div>	
+	</div>	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<com:TActiveHiddenField id="arrStatus"/>
+				<com:TActiveButton
+						ID="submitBtn" 
+						Text="Simpan"
+						Attributes.OnClick="submitBtnClicked();"
+						CausesValidation="true"
+						ValidationGroup="val"
+						CssClass="btn btn-info">
+						 <prop:ClientSide 
+							OnLoading="loadContent();"
+							OnComplete="unloadContent();"/>
+				</com:TActiveButton>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th width="150px">NIK</th>
+					<th width="150px">Nama Karyawan</th>
+					<th width="150px">IN</th>
+					<th width="150px">OUT</th>
+					<th width="150px">Lama</th>
+					<th width="150px">Status</th>
+					<th width="150px">IN</th>
+					<th width="150px">OUT</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="dateCallback" OnCallback="dateChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				BindGrid();
+			});
+			
+			
+			function clearForm()
+			{
+			}
+			
+			function dateChanged()
+			{
+				var request= <%= $this->dateCallback->ActiveControl->Javascript %>;
+					request.dispatch();
+			}
+			
+			function StatusSelect2()
+			{
+				var jsonParam = jQuery('#<%= $this->arrStatus->getClientID()%>').val();
+				
+				if(jsonParam != '')
+				{
+					var obj = JSON.parse(jsonParam);
+					console.log(obj);	
+				}	
+				
+				jQuery('.status_column').select2({
+					placeholder:"Status",
+					width:"159px",
+					allowClear:true,
+					minimumResultsForSearch:-1,
+					data: obj
+				}).on("change", function(e) 
+				{
+					id = jQuery('#'+this.id).attr('idJadwal');
+					jQuery('#in-ID'+id).prop('disabled',true);
+					jQuery('#out-ID-'+id).prop('disabled',true);
+					
+					if(e.val == "0")
+					{
+						jQuery('#in-ID-'+id).prop('disabled',false);
+						jQuery('#out-ID-'+id).prop('disabled',false);
+					}
+					else
+					{
+						jQuery('#in-ID-'+id).prop('disabled',true);
+						jQuery('#out-ID-'+id).prop('disabled',true);
+					}
+				});
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				        StatusSelect2();
+				        jQuery(".in_column").inputmask("h:s",{ "placeholder": "__:__" ,"onincomplete": function(){ jQuery('#'+this.id).val(''); }});
+				        jQuery(".out_column").inputmask("h:s",{ "placeholder": "__:__" ,"onincomplete": function(){ jQuery('#'+this.id).val(''); }});
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function submitBtnClicked()
+			{
+				var arrAbsen = [];
+				var i = 0
+				jQuery(".status_column").each(function() {
+					if(jQuery('#'+this.id).val() != '')
+					{
+						var idJadwal = jQuery('#'+this.id).attr('idJadwal');
+						arrAbsen[i] = {jadwalId:idJadwal,
+										stHadir:jQuery('#'+this.id).val(), 
+										wktIn:jQuery('#in-ID-'+idJadwal).val(), 
+										wktOut:jQuery('#out-ID-'+idJadwal).val()};
+						i++;
+					}
+				});
+				var request= <%= $this->submitCallback->ActiveControl->Javascript %>;
+					request.setCallbackParameter({
+							arrAbsen:arrAbsen
+					});
+					request.dispatch();
+				console.log(arrAbsen);
+			}
+			
+			
+		</script>
+		
+</com:TContent>

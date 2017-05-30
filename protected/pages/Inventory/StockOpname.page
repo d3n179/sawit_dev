@@ -1,0 +1,527 @@
+<com:TContent ID="Main">
+	<h2>Stock Opname</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<ul class="nav nav-tabs"><!-- available classes "bordered", "right-aligned" -->
+				<li class="active">
+					<a href="#listTab" data-toggle="tab">
+						<i class="fa fa-list "></i> Stock Opname 
+					</a>
+				</li>
+				<li>
+				<a href="#formTab" data-toggle="tab">
+						<i class="fa fa-plus"></i> Tambah Data
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="listTab">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<a href="javascript:;"  Onclick="formTabShow();" class="btn btn-info btn-icon icon-left btn-add"><i class="entypo-plus" ></i>Tambah</a>
+							</div>
+						</div>	
+					</div>	
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-1">
+									<thead>
+										<tr>
+											<th width="150px">No Stock Opname</th>
+											<th width="150px">Tgl Stock Opname</th>
+											<th width="150px">Jumlah Barang</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>	
+					</div>	
+				</div>
+				
+				<div class="tab-pane" id="formTab">
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<com:TActiveHiddenField ID="idStockOpname"/>
+									<com:TActiveButton
+											ID="submitBtn" 
+											Text="Simpan"
+											Attributes.OnClick="submitBtnClicked();"
+											CausesValidation="true"
+											ValidationGroup="val"
+											CssClass="btn btn-info">
+											 <prop:ClientSide 
+												OnLoading="loadContent();"
+												OnComplete="unloadContent();"/>
+										</com:TActiveButton>
+								</div>
+							</div>	
+						</div>	
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="tgl_transaksi">Tanggal Stock Opname</label>
+									 <com:TActiveTextBox 
+											ID="tgl_transaksi" 
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_transaksi"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-stock-opname">
+									<thead>
+										<tr>
+											<th width="150px">Nama Barang</th>
+											<th width="150px">Satuan</th>
+											<th width="150px">Stock Awal</th>
+											<th width="150px">Stock Akhir</th>
+											<th width="150px">Perbedaan</th>
+											<th width="50px"></th>
+											<th width="50px"></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="loadProductCallback" OnCallback="loadProductProses" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				if(localDB.tableExists('StockOpnameTable'))
+				{
+					localDB.dropTable('StockOpnameTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('StockOpnameTable', ["id_edit",
+															"idBarang",
+															"namaBarang",
+															"idSatuan", 
+															"namaSatuan",
+															"stokAwal",
+															"stokAkhir",
+															"perbedaan",
+															"jns_perbedaan",
+															"checked",
+															"deleted"]);
+				localDB.commit();
+				
+				jQuery('a[href="#formTab"]').hide();
+				jQuery('a[href="#listTab"]').on('shown.bs.tab', function (e) 
+				{
+					Prado.Validation.reset('val');
+					jQuery('.form-body select').val('empty');
+					jQuery('.form-control').val('');
+					clearForm();
+					jQuery('a[href="#formTab"]').hide();
+					jQuery('#<%= $this->idStockOpname->getClientID()%>').val('');
+					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
+				});
+				
+				jQuery(".btn-add").on('click',function()
+				{
+					jQuery('a[href="#formTab"]').on('shown.bs.tab', function (e) 
+					{
+						Prado.Validation.reset('val');
+						var target = e.target.attributes.href.value;
+						jQuery(target +' input:first').focus();
+					});
+				});
+				BindGrid();
+				BindGridStock();
+			});
+			
+			function formTabShow()
+			{
+				var request= <%= $this->loadProductCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+						
+				jQuery("a[href=\"#formTab\"]").tab("show");
+			}
+			
+			function clearForm()
+			{	
+				jQuery("#table-stock-opname").dataTable().fnDestroy();
+				jQuery("#table-stock-opname tbody").empty();
+				jQuery("#table-stock-opname tbody").append("");
+			}
+			
+			function mysql_real_escape_string (str) {
+				return str.replace(/[\0\x08\x09\x1a\n\r"'\\\%]/g, function (char) {
+					switch (char) {
+						case "\0":
+							return "\\0";
+						case "\x08":
+							return "\\b";
+						case "\x09":
+							return "\\t";
+						case "\x1a":
+							return "\\z";
+						case "\n":
+							return "\\n";
+						case "\r":
+							return "\\r";
+						case "\"":
+						case "'":
+						case "\\":
+						case "%":
+							return "\\"+char; // prepends a backslash to backslash, percent,
+											  // and double/single quotes
+					}
+				});
+			}
+
+			function RenderTempTable(arr)
+			{
+				console.log(arr);
+				localDB.truncate('StockOpnameTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+					console.log(arr);				
+					localDB.insert('StockOpnameTable', {id_edit: '', 
+																idBarang: val.idBarang, 
+																namaBarang: val.namaBarang, 
+																idSatuan: val.idSatuan, 
+																namaSatuan: val.namaSatuan, 
+																stokAwal: val.stokAwal, 
+																stokAkhir: 0, 
+																perbedaan: 0, 
+																jns_perbedaan: 0, 
+																checked: "0",
+																deleted: "0"});
+																
+					localDB.commit();
+				});	
+				
+				bindStockOpnameGridLine();
+				
+			}
+			
+			function bindStockOpnameGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('StockOpnameTable'))
+				{
+					var data = localDB.queryAll('StockOpnameTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					console.log(data);
+					jQuery.each(data,function(i,val)
+					{
+						if(val.deleted=="0")
+						{	
+							if(val.checked == "0")
+							{
+								var disabled = 'disabled';
+								var checked = '';
+							}
+							else
+							{
+								var disabled = '';
+								var checked = 'checked';
+							}
+							
+							if(val.jns_perbedaan == '1')//Surplus
+								var JnsBeda = '<blockquote class="blockquote-green"><p>Surplus</p></blockquote>';
+							else if(val.jns_perbedaan == '2')//Deficit
+								var JnsBeda = '<blockquote class="blockquote-red"><p>Deficit</p></blockquote>';
+							else if(val.jns_perbedaan == '3')//Equal
+								var JnsBeda = '<blockquote class="blockquote-blue"><p>Equal</p></blockquote>';
+							else
+								var JnsBeda = '';
+								
+							if(val.stokAkhir > 0)
+								var stokAkhir = val.stokAkhir;
+							else
+								var stokAkhir = '';
+								
+							tblBody += '<tr>';
+							tblBody += '<td>'+val.namaBarang+'</td>';
+							tblBody += '<td>'+val.namaSatuan+'</td>';
+							tblBody += '<td>'+val.stokAwal+'</td>';
+							tblBody += '<td><input id="stock-akhir-column-ID-'+val.ID+'" class="form-control stock_akhir_column" type="text" value="'+stokAkhir+'" onblur="saveChanged('+val.ID+');" size="12" '+disabled+' placeholder="0"></td>';
+							tblBody += '<td>';
+							tblBody += val.perbedaan;
+							tblBody += '</td>';	
+							tblBody += '<td>';
+							tblBody += JnsBeda;
+							tblBody += '</td>';	
+							tblBody += '<td>';
+							tblBody += '<input type="checkbox" id="checkBox-column-ID-'+val.ID+'" OnChange="rowClicked('+val.ID+')" '+checked+'/>';	
+							tblBody += '</td>';			
+							tblBody += '</tr>';
+						}
+						
+					});	
+				}
+				
+				jQuery("#table-stock-opname").dataTable().fnDestroy();
+				jQuery("#table-stock-opname tbody").empty();
+				jQuery("#table-stock-opname tbody").append(tblBody);
+				BindGridStock();
+					
+			}
+			
+			function saveChanged(id)
+			{
+				var stokAkhir = jQuery("#stock-akhir-column-ID-"+id).val();
+				
+				localDB.update('StockOpnameTable', {ID: id}, function(row) {
+					
+									row.stokAkhir = stokAkhir;
+									
+									if(stokAkhir > row.stokAwal)
+									{
+										row.jns_perbedaan = '1';
+										row.perbedaan = stokAkhir - row.stokAwal;
+									}
+									else if(stokAkhir < row.stokAwal)
+									{
+										row.jns_perbedaan =  '2';
+										row.perbedaan =  row.stokAwal - stokAkhir;
+									}
+									else if(row.stokAwal == stokAkhir)
+									{
+										row.jns_perbedaan ='3';
+										row.perbedaan = 0;
+									}
+										
+									return row;
+								});
+								
+				bindStockOpnameGridLine();	
+								
+			}
+			
+			function rowClicked(id)
+			{
+				if(jQuery("#checkBox-column-ID-"+id).is(':checked'))
+				{
+					jQuery("#stock-akhir-column-ID-"+id).prop('disabled',false);
+					
+					localDB.update('StockOpnameTable', {ID: id}, function(row) {
+									row.checked = "1";
+									return row;
+								});
+					
+				
+				}
+				else
+				{
+					jQuery("#stock-akhir-column-ID-"+id).prop('disabled',true);
+					localDB.update('StockOpnameTable', {ID: id}, function(row) {
+									row.checked = "0";
+									row.stokAkhir = 0;
+									row.perbedaan = 0;
+									row.jns_perbedaan = '0';
+									return row;
+								});
+				}
+				bindStockOpnameGridLine();	
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function BindGridStock()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-stock-opname");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				        jQuery(".stock_akhir_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function submitBtnClicked()
+			{
+				if(localDB.tableExists('StockOpnameTable'))
+				{
+					var CHECK = localDB.queryAll('StockOpnameTable', {query: {deleted: "0", checked: "1"},sort: [["ID", "ASC"]]});
+				}
+				
+				if(CHECK.length > 0)
+				{
+					var StockOpnameTable = localDB.queryAll('StockOpnameTable', {query: {deleted: "0", checked: "1"},sort: [["ID", "ASC"]]});
+					var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+								StockOpnameTable:StockOpnameTable
+							});
+						request.dispatch();
+							
+			
+					
+				}
+				else
+				{
+					toastr.error("Data Stock Opname Belum Lengkap!");
+				}
+			}
+		
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			
+			function cetakClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+			
+		</script>
+		
+</com:TContent>

@@ -1,0 +1,290 @@
+<com:TContent ID="Main">
+	<h2>Resign Form</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<ul class="nav nav-tabs"><!-- available classes "bordered", "right-aligned" -->
+				<li class="active">
+					<a href="#listTab" data-toggle="tab">
+						<i class="fa fa-list "></i> Resign Form 
+					</a>
+				</li>
+				<li>
+				<a href="#formTab" data-toggle="tab">
+						<i class="fa fa-plus"></i> Tambah Data
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="listTab">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<a href="javascript:;"  Onclick="formTabShow();" class="btn btn-info btn-icon icon-left btn-add"><i class="entypo-plus" ></i>Tambah</a>
+								<button type="button" class="btn btn-green btn-icon icon-left btn-add" OnClick="cetakClicked();">
+									<i class="entypo-print"></i>Cetak
+								</button>
+							</div>
+						</div>	
+					</div>	
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-1">
+									<thead>
+										<tr>
+											<th width="150px">Nama Karyawan</th>
+											<th width="150px">Tgl Resign</th>
+											<th width="150px">Kategori Resign</th>
+											<th width="150px">Keterangan</th>
+											<!--<th width="50px">Aksi</th>-->
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>	
+					</div>	
+				</div>
+				
+				<div class="tab-pane" id="formTab">
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<com:TActiveHiddenField ID="idResign"/>
+									<com:TActiveButton
+											ID="submitBtn" 
+											Text="Simpan"
+											OnClick="submitBtnClicked"
+											CausesValidation="true"
+											ValidationGroup="val"
+											CssClass="btn btn-info">
+											 <prop:ClientSide 
+												OnLoading="loadContent();"
+												OnComplete="unloadContent();"/>
+										</com:TActiveButton>
+								</div>
+							</div>	
+						</div>	
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="tgl_resign">Tanggal Resign</label>
+									 <com:TActiveTextBox 
+											ID="tgl_resign" 
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_resign"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="id_karyawan">Karyawan</label>
+									 <com:TActiveDropDownList 
+										ID="id_karyawan"
+										PromptText="--Karyawan--"
+										PromptValue="empty"
+										AutoPostBack="false"
+										CausesValidation="true"
+										DataTextField="nama"
+										DataValueField="id"
+										CssClass="form-control">
+										</com:TActiveDropDownList>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="id_karyawan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label" for="kategori_resign">Kategori Resign</label>
+									 <com:TActiveTextBox 
+											ID="kategori_resign" 
+											TextMode="MultiLine"
+											CssClass="form-control" />
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label" for="keterangan">Keterangan</label>
+									 <com:TActiveTextBox 
+											ID="keterangan" 
+											TextMode="MultiLine"
+											CssClass="form-control" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="loadKaryawanCallback" OnCallback="BindKaryawan" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				jQuery('a[href="#formTab"]').hide();
+				jQuery('a[href="#listTab"]').on('shown.bs.tab', function (e) 
+				{
+					Prado.Validation.reset('val');
+					jQuery('.form-body select').val('empty');
+					jQuery('.form-control').val('');
+					jQuery('a[href="#formTab"]').hide();
+					jQuery('#<%= $this->idResign->getClientID()%>').val('');
+					bindSelect2();
+					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
+				});
+				
+				jQuery(".btn-add").on('click',function()
+				{
+					jQuery('a[href="#formTab"]').on('shown.bs.tab', function (e) 
+					{
+						Prado.Validation.reset('val');
+						var target = e.target.attributes.href.value;
+						jQuery(target +' input:first').focus();
+					});
+				});
+				BindGrid();
+			});
+			
+			function formTabShow()
+			{
+				loadContent();
+					var request= <%= $this->loadKaryawanCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+				unloadContent();		
+				jQuery("a[href=\"#formTab\"]").tab("show");
+			}
+			
+			function clearForm()
+			{
+				
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			
+			function cetakClicked()
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+			}
+			
+			
+		</script>
+		
+</com:TContent>

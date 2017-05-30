@@ -1,0 +1,457 @@
+<com:TContent ID="Main">
+	<h2>Master Department</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="modal fade" id="modal-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="kode">Kode Department</label>
+								<com:TActiveTextBox 
+										ID="kode" 
+										CssClass="form-control mask_integer" 
+										Attributes.PlaceHolder="Kode"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="kode"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="nama">Nama Department</label>
+								<com:TActiveHiddenField ID="idDepartment"/>
+								<com:TActiveTextBox 
+										ID="nama" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Nama"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="nama"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+					</div>	
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="kodeSub">Kode Sub Department</label>
+								<com:TActiveTextBox 
+										ID="kodeSub" 
+										CssClass="form-control mask_integer" 
+										Attributes.PlaceHolder="Kode Sub Department"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="kodeSub"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="valJml" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="namaSub">Nama Sub Department</label>
+								<com:TActiveHiddenField ID="idSubDepartment"/>
+								<com:TActiveTextBox 
+										ID="namaSub" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Nama Sub Department"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="namaSub"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="valJml" />
+							</div>
+						</div>	
+					</div>	
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<com:TActiveButton
+										ID="tambahBtnBtn" 
+										Text="Simpan"
+										Attributes.OnClick="tambahBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="valJml"
+										CssClass="btn btn-success">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>
+							</div>
+						</div>	
+					</div>	
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="tableSubDepartment">
+									<thead>
+										<tr>
+											<th width="300px">Kode Sub Department</th>
+											<th width="300px">Nama Sub Department</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>		
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Department');clearForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+	<div class="form-group">
+	<table class="table table-bordered table-striped datatable" id="table-1">
+			<thead>
+				<tr>
+					<th width="150px">Kode Department</th>
+					<th width="300px">Nama Department</th>
+					<th width="150px">Aksi</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				clearTempTable();
+				BindGrid();
+				BindGridSub();
+			});
+			
+			
+			function clearForm()
+			{
+				jQuery('#<%= $this->nama->getClientID()%>').val('');
+				jQuery('#<%= $this->kode->getClientID()%>').val('');
+				jQuery('#<%= $this->idDepartment->getClientID()%>').val('');
+				jQuery('#<%= $this->namaSub->getClientID()%>').val('');
+				jQuery('#<%= $this->kodeSub->getClientID()%>').val('');
+				jQuery('#<%= $this->idSubDepartment->getClientID()%>').val('');
+				clearTempTable();
+				bindSubdepartmentGridLine();
+			}
+			
+			function tambahBtnClicked()
+			{
+				var namaSub = jQuery('#<%= $this->namaSub->getClientID()%>').val();
+				var kodeSub = jQuery('#<%= $this->kodeSub->getClientID()%>').val();
+				var idSubDepartment = jQuery('#<%= $this->idSubDepartment->getClientID()%>').val();
+				
+				if(kodeSub != '' && namaSub != '' && idSubDepartment == '')
+				{
+					var CHECK = localDB.queryAll('SubdepartmentTable', {
+						query: {kodeSub: kodeSub, namaSub: namaSub}
+					});
+					
+					if(CHECK.length == 0)
+					{												
+						localDB.insert('SubdepartmentTable', {id_edit: idSubDepartment, 
+																kodeSub: kodeSub, 
+																namaSub: namaSub, 
+																deleted: "0"});
+						localDB.commit();
+						bindSubdepartmentGridLine();
+					
+						jQuery('#<%= $this->namaSub->getClientID()%>').val('');
+						jQuery('#<%= $this->kodeSub->getClientID()%>').val('');
+						jQuery('#<%= $this->idSubDepartment->getClientID()%>').val('');
+					
+					}
+					else
+					{
+						toastr.error("Subdepartment Sudah Dimasukkan Sebelumnya !");
+					}
+				}
+				else if(kodeSub != '' && namaSub != '' && idSubDepartment != '')
+				{
+					localDB.update('SubdepartmentTable', {ID: idSubDepartment}, function(row) {
+						row.namaSub = namaSub;
+						row.kodeSub = kodeSub;
+						return row;
+					});
+					
+					jQuery('#<%= $this->namaSub->getClientID()%>').val('');
+					jQuery('#<%= $this->kodeSub->getClientID()%>').val('');
+					jQuery('#<%= $this->idSubDepartment->getClientID()%>').val('');
+					bindSubdepartmentGridLine();
+				}
+			}
+			
+			function renderTempTable(arr)
+			{
+				localDB.truncate('SubdepartmentTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+					localDB.insert('SubdepartmentTable', {id_edit: val.id, 
+																kodeSub: val.kode, 
+																namaSub: val.nama, 
+																deleted: "0"});
+																
+					localDB.commit();
+				});	
+				
+				bindSubdepartmentGridLine();
+				
+			}
+			
+			function bindSubdepartmentGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('SubdepartmentTable'))
+				{
+					var data = localDB.queryAll('SubdepartmentTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					console.log(data);
+					jQuery.each(data,function(i,val)
+					{
+						if(val.deleted=="0")
+						{
+							tblBody += '<tr>';
+							tblBody += '<td>'+val.kodeSub+'</td>';
+							tblBody += '<td>'+val.namaSub+'</td>';
+							tblBody += '<td>';
+							tblBody += '<a href="javascript:void(0)" class="btn btn-success btn-sm btn-icon icon-left" OnClick="editSub('+val.ID+')"><i class="entypo-pencil"></i>Edit</a>';	
+							tblBody += '<a href="javascript:void(0)" class="btn btn-danger btn-sm btn-icon icon-left" OnClick="deleteSub('+val.ID+')"><i class="entypo-cancel"></i>Hapus</a>';	
+							tblBody += '</td>';			
+							tblBody += '</tr>';
+						}
+						
+					});	
+				}
+				
+				jQuery("#tableSubDepartment").dataTable().fnDestroy();
+				jQuery("#tableSubDepartment tbody").empty();
+				jQuery("#tableSubDepartment tbody").append(tblBody);
+				BindGridSub();
+					
+			}
+			
+			function editSub(ID)
+			{
+				var data = localDB.queryAll('SubdepartmentTable', {query:{"ID": ID}});	
+																	
+				jQuery('#<%= $this->namaSub->getClientID()%>').val(data[0].namaSub);
+				jQuery('#<%= $this->kodeSub->getClientID()%>').val(data[0].kodeSub);
+				jQuery('#<%= $this->idSubDepartment->getClientID()%>').val(ID);		
+							
+			}
+			
+			function deleteSub(ID)
+			{
+				var data = localDB.queryAll('SubdepartmentTable', { query: {"ID": ID}
+																	});							
+				if(data[0].id_edit != "")
+				{
+					localDB.update('SubdepartmentTable', {ID: ID}, function(row) {
+						row.deleted = "1";
+						return row;
+					});
+				}
+				else
+				{
+					localDB.deleteRows('SubdepartmentTable', {ID: ID});
+					localDB.commit(); 
+				}
+								
+				bindSubdepartmentGridLine();	
+			}
+			
+			function clearTempTable()
+			{
+				if(localDB.tableExists('SubdepartmentTable'))
+				{
+					localDB.dropTable('SubdepartmentTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('SubdepartmentTable', ["id_edit","kodeSub","namaSub","deleted"]);
+				localDB.commit();
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function BindGridSub()
+			{
+				var tableSubDepartment = jQuery('#tableSubDepartment').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+				    }
+				});
+				
+				
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function submitBtnClicked()
+			{
+				var nama = jQuery('#<%= $this->nama->getClientID()%>').val();
+				var kode = jQuery('#<%= $this->kode->getClientID()%>').val();
+				
+				if(nama != '' && kode != '')
+				{
+					var SubdepartmentTable = localDB.queryAll('SubdepartmentTable', {sort: [["ID", "ASC"]]});
+					var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							SubdepartmentTable:SubdepartmentTable
+						});
+						request.dispatch();
+				}
+			}
+			
+		</script>
+		
+</com:TContent>

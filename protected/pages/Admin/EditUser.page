@@ -1,0 +1,123 @@
+<com:TContent ID="Main">
+	<h2>Ubah Password</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+<div class="row">
+	<div class="col-md-3">
+		<div class="form-group">
+			<label for="username" class="control-label">Username</label>
+				<com:TActiveTextBox 
+					ID="username" 
+					CssClass="form-control" 
+					Enabled="false"
+					Attributes.PlaceHolder="Username"/>
+		</div>	
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<div class="form-group">
+			<label for="nama" class="control-label">Nama</label>
+				<com:TActiveTextBox 
+					ID="nama" 
+					CssClass="form-control" 
+					Attributes.PlaceHolder="Nama"/>
+				<com:TRequiredFieldValidator 
+					ControlToValidate="nama"											 
+					ErrorMessage=""
+					Display="Dynamic"
+					FocusOnError="true" 
+					CssClass="valRequired"
+					ControlCssClass="valctrl"
+					ValidationGroup="val" />
+		</div>	
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<div class="form-group">
+			<label for="password_lama" class="control-label">Password Lama</label>
+				<com:TActiveTextBox 
+					ID="password_lama" 
+					CssClass="form-control" 
+					TextMode="Password"
+					Attributes.PlaceHolder="Password Lama"/>
+				<com:TRequiredFieldValidator 
+					ControlToValidate="password_lama"											 
+					ErrorMessage=""
+					Display="Dynamic"
+					FocusOnError="true" 
+					CssClass="valRequired"
+					ControlCssClass="valctrl"
+					ValidationGroup="val" />
+		</div>	
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<div class="form-group">
+			<label for="password_baru" class="control-label">Password Baru</label>
+				<com:TActiveTextBox 
+					ID="password_baru" 
+					CssClass="form-control" 
+					TextMode="Password"
+					Attributes.PlaceHolder="Password Baru"/>
+				<com:TRequiredFieldValidator 
+					ControlToValidate="password_baru"											 
+					ErrorMessage=""
+					Display="Dynamic"
+					FocusOnError="true" 
+					CssClass="valRequired"
+					ControlCssClass="valctrl"
+					ValidationGroup="val" />
+		</div>	
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<div class="form-group">
+			<label for="ketik_ulang" class="control-label">Ketik Ulang</label>
+				<com:TActiveTextBox 
+					ID="ketik_ulang" 
+					CssClass="form-control" 
+					TextMode="Password"
+					Attributes.PlaceHolder="Ketik Ulang"/>
+				<com:TRequiredFieldValidator 
+					ControlToValidate="ketik_ulang"											 
+					ErrorMessage=""
+					Display="Dynamic"
+					FocusOnError="true" 
+					CssClass="valRequired"
+					ControlCssClass="valctrl"
+					ValidationGroup="val" />
+		</div>	
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<div class="form-group">
+			<com:TActiveButton
+				ID="submitBtn" 
+				Text="Submit"
+				OnClick="updateUserClicked"
+				CausesValidation="true"
+				ValidationGroup="val"
+				CssClass="btn btn-info">
+			 <prop:ClientSide 
+				OnLoading="loadContent();"
+				OnComplete="unloadContent();"/>
+			</com:TActiveButton>
+		</div>	
+	</div>
+</div>					
+	</com:TActivePanel>	<!--form End-->
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				
+						
+			});
+			
+		</script>
+		
+</com:TContent>
