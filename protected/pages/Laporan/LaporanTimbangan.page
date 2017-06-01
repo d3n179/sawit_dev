@@ -27,6 +27,14 @@
 					CssClass="form-control" />
 			</div>	
 		</div>	
+		<div class="col-md-2">
+			<div class="form-group">
+				<label for="nmBarang" class="control-label">Komidel</label>
+				<com:TActiveTextBox 
+					ID="komidelTbs" 
+					CssClass="form-control" />
+			</div>	
+		</div>	
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="DDTbs" class="control-label">Kategori Tbs</label>
@@ -59,6 +67,7 @@
 									<com:TListItem Text="Bulanan" Value="0"/>
 									<com:TListItem Text="Tahunan" Value="1"/>
 									<com:TListItem Text="Mingguan" Value="2"/>
+									<com:TListItem Text="Harian" Value="3"/>
 									</com:TActiveDropDownList>	
 			</div>	
 						
@@ -121,6 +130,17 @@
 				<com:TActiveTextBox 
 					ID="mingguan" 
 					CssClass="form-control daterange"
+					AutoPostback="false"/>
+			</div>	
+							
+		</div>
+		
+		<div class="col-md-2" id="panelHarian" Style="Display:None;">
+			<div class="form-group">
+				<label for="harian" class="control-label">Harian</label>
+				<com:TActiveTextBox 
+					ID="harian" 
+					CssClass="form-control date-picker"
 					AutoPostback="false"/>
 			</div>	
 							

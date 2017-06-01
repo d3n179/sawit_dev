@@ -25,11 +25,25 @@ class MasterKategoriPemasok extends MainConf
 		}
 	}
 	
+	public function jenisChanged()
+	{
+		if($this->DDJenisKategori->SelectedValue == '0')
+		{
+			//$this->ppnPanel->Visible= true;
+			$this->ppnPanel->Enabled= true;
+		}
+		else
+		{
+			//$this->ppnPanel->Visible= false;
+			$this->ppnPanel->Enabled= false;
+		}
+	}
 	
 	public function BindGrid()
 	{
 		$sql = "SELECT 
 					tbm_kategori_pemasok.id,
+					tbm_kategori_pemasok.jenis_kategori,
 					tbm_kategori_pemasok.nama,
 					tbm_kategori_pemasok.ppn,
 					tbm_kategori_pemasok.pph
@@ -47,8 +61,13 @@ class MasterKategoriPemasok extends MainConf
 		{
 			foreach($Record as $row)
 			{
-			
+				if($row['jenis_kategori'] == '0')
+					$jnsKategori = "Pemasok TBS";
+				else
+					$jnsKategori = "Pemasok Barang";
+					
 				$tblBody .= '<tr>';
+				$tblBody .= '<td>'.$jnsKategori.'</td>';
 				$tblBody .= '<td>'.$row['nama'].'</td>';
 				$tblBody .= '<td>'.$row['ppn'].'</td>';
 				$tblBody .= '<td>'.$row['pph'].'</td>';
@@ -75,6 +94,7 @@ class MasterKategoriPemasok extends MainConf
 		{
 			$this->modalJudul->Text = 'Edit Kategori Supplier';
 			$this->idKategoriPemasok->Value = $id;
+			$this->DDJenisKategori->SelectedValue = $Record->jenis_kategori;
 			$this->nama->Text = $Record->nama;
 			$this->ppn->Text = $Record->ppn;
 			$this->pph->Text = $Record->pph;
@@ -141,11 +161,13 @@ class MasterKategoriPemasok extends MainConf
 				$msg = "Data Berhasil Disimpan";
 			}
 			
+			$Record->jenis_kategori = $this->DDJenisKategori->SelectedValue;
 			$Record->nama = $nama;
 			$Record->ppn = $this->ppn->Text;
 			$Record->pph = $this->pph->Text;
 			$Record->save(); 
 			
+			$this->DDJenisKategori->SelectedValue = '';
 			$this->nama->Text = '';
 			$this->pph->Text = '';;
 			$this->ppn->Text = '';

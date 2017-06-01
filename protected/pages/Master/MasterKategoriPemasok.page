@@ -2,8 +2,8 @@
 	<h2>Master Category Supplier</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
-	<div class="modal fade" id="modal-1">
-		<div class="modal-dialog">
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 50%;">
 			<div class="modal-content">
 				
 				<div class="modal-header">
@@ -15,7 +15,31 @@
 					<div class="row">
 						<div class="col-md-3">
 							<div class="form-group">
-								<label class="control-label" for="nama">Category Name</label>
+								<label class="control-label" for="nama">Jenis Kategori</label>
+								<com:TActiveDropDownList 
+									ID="DDJenisKategori"
+									PromptText="--Pilih--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									Attributes.OnChange="jenisChanged();"
+									CssClass="form-control">
+									<com:TListItem Value="0" Text="Pemasok TBS"/>
+									<com:TListItem Value="1" Text="Pemasok Barang"/>
+									</com:TActiveDropDownList>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDJenisKategori"		
+										  InitialValue="empty"									 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="nama">Nama Kategori</label>
 								<com:TActiveHiddenField ID="idKategoriPemasok"/>
 								<com:TActiveTextBox 
 										ID="nama" 
@@ -31,6 +55,7 @@
 										  ValidationGroup="val" />
 							</div>
 						</div>	
+						<com:TActivePanel id="ppnPanel">
 						<div class="col-md-3">
 							<div class="form-group">
 								<label class="control-label" for="ppn">PPN (%)</label>
@@ -64,7 +89,8 @@
 										  ControlCssClass="valctrl"
 										  ValidationGroup="val" />
 							</div>
-						</div>			
+						</div>
+						</com:TActivePanel>			
 					</div>
 				</div>
 				
@@ -101,7 +127,8 @@
 	<table class="table table-bordered table-striped datatable" id="table-1">
 			<thead>
 				<tr>
-					<th width="300px">Category Name</th>
+					<th width="300px">Jenis Kategori</th>
+					<th width="300px">Nama Kategori</th>
 					<th width="300px">Ppn(%)</th>
 					<th width="300px">Pph(%)</th>
 					<th width="150px">Aksi</th>
@@ -132,15 +159,38 @@
 			
 			function clearForm()
 			{
+				
+				jQuery('#<%= $this->DDJenisKategori->getClientID()%>').val('empty');
 				jQuery('#<%= $this->nama->getClientID()%>').val('');
 				jQuery('#<%= $this->ppn->getClientID()%>').val('');
 				jQuery('#<%= $this->pph->getClientID()%>').val('');
+				jQuery('#<%= $this->ppn->getClientID()%>').prop('disabled',true);
+				jQuery('#<%= $this->pph->getClientID()%>').prop('disabled',true);
 				jQuery('#<%= $this->idKategoriPemasok->getClientID()%>').val('');
 				var request= <%= $this->clearCallback->ActiveControl->Javascript %>;
 						request.dispatch();
 			}
 			
 			
+			function jenisChanged()
+			{
+				var jenisKategori = jQuery('#<%= $this->DDJenisKategori->getClientID()%>').val();
+				if(jenisKategori == '0')
+				{
+					jQuery('#<%= $this->ppn->getClientID()%>').prop('disabled',false);
+					jQuery('#<%= $this->pph->getClientID()%>').prop('disabled',false);
+				}
+				else if(jenisKategori == '1')
+				{
+					jQuery('#<%= $this->ppn->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->pph->getClientID()%>').prop('disabled',true);
+				}
+				else
+				{
+					jQuery('#<%= $this->ppn->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->pph->getClientID()%>').prop('disabled',true);
+				}
+			}
 			
 			function BindGrid()
 			{

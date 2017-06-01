@@ -164,7 +164,7 @@ class Home extends MainConf
 			
 			$sql = "SELECT
 						SUM(
-							tbt_pembayaran_tbs.total_tbs_order
+							tbt_pembayaran_tbs.jumlah_pembayaran
 						) AS total_tbs_order
 					FROM
 						tbt_pembayaran_tbs
@@ -239,14 +239,14 @@ class Home extends MainConf
 			
 			$sql = "SELECT
 						SUM(
-							tbt_pembayaran_tbs.total_tbs_order
+							tbt_pembayaran_tbs_detail.total_tbs_order
 						) AS total_tbs_order
 					FROM
-						tbt_pembayaran_tbs
-					INNER JOIN tbt_tbs_order ON tbt_tbs_order.id = tbt_pembayaran_tbs.id_tbs_order
+						tbt_pembayaran_tbs_detail
+					INNER JOIN tbt_tbs_order ON tbt_tbs_order.id = tbt_pembayaran_tbs_detail.id_tbs_order
 					WHERE
 						tbt_tbs_order.deleted = '0'
-					AND tbt_pembayaran_tbs.deleted = '0'
+					AND tbt_pembayaran_tbs_detail.deleted = '0'
 					AND tbt_tbs_order.id_pemasok = '$idPemasok'
 					AND MONTH (tbt_tbs_order.tgl_transaksi) = '$i'
 					AND YEAR (tbt_tbs_order.tgl_transaksi) = '$tahunPembelian'";

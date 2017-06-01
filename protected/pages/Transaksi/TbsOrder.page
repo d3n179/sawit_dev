@@ -299,10 +299,50 @@
 		</div>
 	</div>
 	
+	
+	<div class="modal fade custom-width" id="modal-2">
+		<div class="modal-dialog" style="width: 70%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"><com:TActiveLabel ID="modalJudulDetail"/></h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+							<table class="table table-bordered table-striped datatable" id="table-2">
+								<thead>
+									<tr>
+										<th>Jenis Sawit</th>
+										<th>Kategori Sawit</th>
+										<th>Total Masuk</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+							</div>
+						</div>	
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
 				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Data');clearForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+				<a href="javascript:;" onclick="jQuery('#modal-2').modal('show');jQuery('#<%= $this->modalJudulDetail->getClientID()%>').text('Detail Timbangan Hari Ini');detailClicked();" class="btn btn-primary btn-icon icon-left"><i class="entypo-search" ></i>Detail</a>
 			</div>
 		</div>	
 	</div>	
@@ -343,11 +383,14 @@
 	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="komidelCallback" OnCallback="komidelCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="detailClickedCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
+	
 	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
 			{
 				BindGrid();
+				BindGridDetail();
 			});
 			
 			
@@ -405,6 +448,49 @@
 						});
 						request.dispatch();
 						
+			}
+			
+			function detailClicked()
+			{
+				var request= <%= $this->detailClickedCallback->ActiveControl->Javascript %>;
+						request.dispatch();	
+			}
+			
+			function BindGridDetail()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-2");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
 			}
 			
 			function BindGrid()

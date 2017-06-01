@@ -457,7 +457,7 @@
 																SatuanName: val.satuan, 
 																expiredDate:'',
 																hargaEstimasi: parseFloat(val.harga_satuan), 
-																harga: "", 
+																harga:  parseFloat(val.harga_satuan),  
 																Jumlah: val.jumlah,
 																SisaPenerimaan: val.SisaPenerimaan,
 																JumlahDiterima:0,

@@ -83,10 +83,12 @@
 										ID="hargaSatuanBesar" />
 								<com:TActiveTextBox 
 										ID="harga" 
+										Text="0"
 										CssClass="form-control mask_currency" />
 								<com:TRequiredFieldValidator 
 										  ControlToValidate="harga"											 
 										  ErrorMessage=""
+										  Enabled="false"
 										  Display="Dynamic"
 										  FocusOnError="true" 
 										  CssClass="valRequired"
@@ -259,7 +261,7 @@
 									q: term, //search term
 									page_limit:10,
 									table_name:"tbm_barang",
-									field_name:"tbm_barang.nama",
+									field_name:"CONVERT(tbm_barang.nama USING utf8)",
 									field_sortby:"tbm_barang.nama",
 									table_join:" INNER JOIN tbm_kategori_barang ON tbm_kategori_barang.id = tbm_barang.kategori_id ",
 									custom_query:[['tbm_kategori_barang.tipe_kategori','EQUAL',0]],
@@ -443,7 +445,11 @@
 				
 				var hargaSatuanBesar = parseFloat(jQuery('#<%= $this->hargaSatuanBesar->getClientID()%>').val());
 				var harga = parseFloat(jQuery('#<%= $this->harga->getClientID()%>').val().replace(/\,/g,''));
-				var subtotal = harga * Jumlah;
+				
+				if(harga > 0)
+					var subtotal = harga * Jumlah;
+				else
+					var subtotal = 0 * Jumlah;
 		
 				subtotal = parseFloat(subtotal);
 				console.log(BarangName);

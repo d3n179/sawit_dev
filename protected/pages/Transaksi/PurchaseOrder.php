@@ -13,8 +13,10 @@ class PurchaseOrder extends MainConf
 							tbm_pemasok.nama
 						FROM
 							tbm_pemasok
+							INNER JOIN tbm_kategori_pemasok ON tbm_kategori_pemasok.id = tbm_pemasok.kategori_id
 						WHERE
-							tbm_pemasok.deleted = '0' ";
+							tbm_pemasok.deleted = '0' 
+							AND tbm_kategori_pemasok.jenis_kategori = '1' ";
 					
 			$arr = $this->queryAction($sql,'S');
 			$this->DDSupplier->DataSource = $arr;

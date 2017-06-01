@@ -1,5 +1,5 @@
 <?PHP
-class LaporanPembayaranTbs extends MainConf
+class LaporanPembayaranPurchaseOrder extends MainConf
 {
 
 	public function onLoadComplete($param)
@@ -7,6 +7,16 @@ class LaporanPembayaranTbs extends MainConf
 		parent::onLoadComplete($param);
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
+			$sql = "SELECT
+						tbm_kategori_barang.id,
+						tbm_kategori_barang.nama
+					FROM
+						tbm_kategori_barang
+					WHERE
+						tbm_kategori_barang.deleted = '0' AND tbm_kategori_barang.tipe_kategori = '0' ";
+			$arr = $this->queryAction($sql,'S');
+			$this->DDKategori->DataSource = $arr;
+			$this->DDKategori->DataBind();
 			
 			//$this->cariBtnClicked($sender,$param);
 			$tahun = date("Y");
@@ -86,20 +96,44 @@ class LaporanPembayaranTbs extends MainConf
 		$periode = $this->Periode->SelectedValue;
 		
 		$sqlTrans = "SELECT
-					tbt_pembayaran_tbs.no_pembayaran,
-					tbt_pembayaran_tbs.tgl_pembayaran,
+					tbt_pembayaran_po.no_pembayaran,
+					tbt_pembayaran_po.tgl_pembayaran,
+					tbt_purchase_order.no_po,
 					tbm_pemasok.nama,
-					tbt_pembayaran_tbs.jns_bayar,
-					tbt_pembayaran_tbs.jumlah_pembayaran
+					tbt_pembayaran_po.jns_bayar,
+					tbt_pembayaran_po.total_pembayaran
 				FROM
-					tbt_pembayaran_tbs
-				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_pembayaran_tbs.id_pemasok
+					tbt_pembayaran_po
+				INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_pembayaran_po.id_po
+				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_purchase_order.id_supplier
+				INNER JOIN tbt_purchase_order_detail ON tbt_purchase_order_detail.id_po = tbt_purchase_order.id
+				INNER JOIN tbm_barang ON tbm_barang.id = tbt_purchase_order_detail.id_barang
 				WHERE
-					tbt_pembayaran_tbs.deleted = '0' ";
+					tbt_pembayaran_po.deleted = '0' ";
 						
+		if($this->noPo->Text != '')
+		{
+			$sqlTrans .=" AND tbt_purchase_order.no_po = '".$this->noPo->Text."' ";
+		}
+		
 		if($this->nmPemasok->Text != '')
 		{
 			$sqlTrans .=" AND tbm_pemasok.nama LIKE '%".$this->nmPemasok->Text."%' ";
+		}
+		
+		if($this->kodeBarang->Text != '')
+		{
+			$sqlTrans .=" AND tbm_barang.kode_barang = '".$this->kodeBarang->Text."' ";
+		}
+		
+		if($this->nmBarang->Text != '')
+		{
+			$sqlTrans .=" AND tbm_barang.nama LIKE '%".$this->nmBarang->Text."%' ";
+		}
+		
+		if($this->DDKategori->SelectedValue != '')
+		{
+			$sqlTrans .=" AND tbm_kategori_barang.id = '".$this->DDKategori->SelectedValue."' ";
 		}
 		
 		if($periode == '0')
@@ -108,7 +142,7 @@ class LaporanPembayaranTbs extends MainConf
 			$tahun = $this->DDTahun->SelectedValue;
 			if($bulan != '' && $tahun != '')
 			{
-				$sqlTrans .="AND MONTH(tbt_pembayaran_tbs.tgl_pembayaran) = '$bulan' AND YEAR(tbt_pembayaran_tbs.tgl_pembayaran) = '$tahun' ";
+				$sqlTrans .="AND MONTH(tbt_pembayaran_po.tgl_pembayaran) = '$bulan' AND YEAR(tbt_pembayaran_po.tgl_pembayaran) = '$tahun' ";
 			}
 		}
 		elseif($periode == '1')
@@ -116,7 +150,7 @@ class LaporanPembayaranTbs extends MainConf
 			$tahun = $this->DDTahun->SelectedValue;
 			if($tahun != '')
 			{
-				$sqlTrans .="AND YEAR(tbt_pembayaran_tbs.tgl_pembayaran) = '$tahun' ";
+				$sqlTrans .="AND YEAR(tbt_pembayaran_po.tgl_pembayaran) = '$tahun' ";
 			}
 		}				
 		elseif($periode == '2')
@@ -135,7 +169,7 @@ class LaporanPembayaranTbs extends MainConf
 				
 				$tgl1 = $this->ConvertDate($tgl1,'2');
 				$tgl2 = $this->ConvertDate($tgl2,'2');
-				$sqlTrans .="AND tbt_pembayaran_tbs.tgl_pembayaran BETWEEN '$tgl1' AND '$tgl2' ";
+				$sqlTrans .="AND tbt_pembayaran_po.tgl_pembayaran BETWEEN '$tgl1' AND '$tgl2' ";
 			}
 		}	
 		elseif($periode == '3')
@@ -144,12 +178,12 @@ class LaporanPembayaranTbs extends MainConf
 			if($harian != '')
 			{
 				$tgl = $this->ConvertDate($harian,'2');
-				$sqlTrans .="AND tbt_pembayaran_tbs.tgl_pembayaran = '$tgl' ";
+				$sqlTrans .="AND tbt_pembayaran_po.tgl_pembayaran = '$tgl' ";
 			}
 		}	
 		
 		$sqlTrans .= " GROUP BY
-					tbt_pembayaran_tbs.id ";
+					tbt_pembayaran_po.id ";
 					
 		$this->setViewState('sql',$sqlTrans);
 		var_dump($sqlTrans);
@@ -168,9 +202,10 @@ class LaporanPembayaranTbs extends MainConf
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['no_pembayaran'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_pembayaran'],'3').'</td>';
+				$tblBody .= '<td>'.$row['no_po'].'</td>';
 				$tblBody .= '<td>'.$row['nama'].'</td>';
 				$tblBody .= '<td>'.$jnsBayar.'</td>';
-				$tblBody .= '<td>'.number_format($row['jumlah_pembayaran'],2,'.',',').'</td>';		
+				$tblBody .= '<td>'.number_format($row['total_pembayaran'],2,'.',',').'</td>';		
 				$tblBody .= '</tr>';
 			}
 		}
@@ -247,9 +282,9 @@ class LaporanPembayaranTbs extends MainConf
 	{
 		$session=new THttpSession;
 		$session->open();
-		$session['cetakLapPembayaranTbsSql'] = $this->getViewState('sql');
+		$session['cetakLapPembayaranPurchaseOrderSql'] = $this->getViewState('sql');
 		
-		$this->Response->redirect($this->Service->constructUrl('Laporan.cetakLaporanPembayaranTbsPdf',
+		$this->Response->redirect($this->Service->constructUrl('Laporan.cetakLaporanPembayaranPurchaseOrderPdf',
 			array(
 				'periode'=>$this->Periode->SelectedValue,
 				'bln'=>$this->DDBulan->SelectedValue,

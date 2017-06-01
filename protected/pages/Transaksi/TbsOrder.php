@@ -13,8 +13,10 @@ class TbsOrder extends MainConf
 							tbm_pemasok.nama
 						FROM
 							tbm_pemasok
+							INNER JOIN tbm_kategori_pemasok ON tbm_kategori_pemasok.id = tbm_pemasok.kategori_id
 						WHERE
-							tbm_pemasok.deleted = '0' ";
+							tbm_pemasok.deleted = '0' 
+							AND tbm_kategori_pemasok.jenis_kategori = '0' ";
 					
 			$arrPemasok= $this->queryAction($sqlPemasok,'S');
 			$this->DDPemasok->DataSource = $arrPemasok;
@@ -138,6 +140,8 @@ class TbsOrder extends MainConf
 				INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order.id_komidel
 				WHERE
 					tbt_tbs_order.deleted = '0'
+					AND tbt_tbs_order.status = '0'
+					AND tbt_tbs_order.tgl_transaksi = CURDATE()
 				ORDER BY tbt_tbs_order.id ASC ";
 		$Record = $this->queryAction($sql,'S');
 		
@@ -180,6 +184,56 @@ class TbsOrder extends MainConf
 		}
 		
 		return 	$tblBody;
+	}
+	
+	public function detailClicked($sender,$param)
+	{
+		$sql = "SELECT
+					tbm_barang.nama,
+					SUM(tbt_tbs_order.netto_2) AS jml_masuk,
+					tbm_setting_komidel.nama AS kategori_tbs
+				FROM
+					tbt_tbs_order
+				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
+				INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
+				INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order.id_komidel
+				WHERE
+					tbt_tbs_order.deleted = '0'
+				AND tbt_tbs_order.tgl_transaksi = CURDATE()
+				GROUP BY
+					tbm_barang.id,
+					tbm_setting_komidel.id
+				ORDER BY
+					tbt_tbs_order.id ASC";
+		$Record = $this->queryAction($sql,'S');
+		
+		$count = count($Record);
+		$tblBody = '';
+		if($count > 0)
+		{
+			foreach($Record as $row)
+			{
+				$actionBtn='';
+				
+				$tblBody .= '<tr>';
+				$tblBody .= '<td>'.$row['nama'].'</td>';
+				$tblBody .= '<td>'.$row['kategori_tbs'].'</td>';	
+				$tblBody .= '<td>'.$row['jml_masuk'].'</td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		else
+		{
+			$tblBody = '';
+		}
+		
+		$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery("#table-2").dataTable().fnDestroy();
+						jQuery("#table-2 tbody").empty();
+						jQuery("#table-2 tbody").append("'.$tblBody.'");
+						BindGridDetail();');	
+						
 	}
 	
 	public function editForm($sender,$param)

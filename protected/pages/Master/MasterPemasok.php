@@ -7,12 +7,12 @@ class MasterPemasok extends MainConf
 		parent::onPreRenderComplete($param);
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
-			$sqlKategori = "SELECT id,nama FROM tbm_kategori_pemasok WHERE deleted ='0' ";
+			$sqlKategori = "SELECT id,nama FROM tbm_kategori_pemasok WHERE deleted ='0' AND jenis_kategori = '1' ";
 			$arrKategori = $this->queryAction($sqlKategori,'S');
 			$this->DDKategori->DataSource = $arrKategori;
 			$this->DDKategori->DataBind();
 			
-			$sqlKategoriHarga = "SELECT id,nama FROM tbm_kategori_pemasok WHERE deleted ='0' ";
+			$sqlKategoriHarga = "SELECT id,nama FROM tbm_kategori_harga WHERE deleted ='0' ";
 			$arrKategoriHarga = $this->queryAction($sqlKategoriHarga,'S');
 			$this->DDKategoriHarga->DataSource = $arrKategoriHarga;
 			$this->DDKategoriHarga->DataBind();
@@ -39,6 +39,15 @@ class MasterPemasok extends MainConf
 		}
 	}
 	
+	public function kategoriChanged()
+	{
+		$idKategori = $this->DDKategori->SelectedValue;
+		$PemasokKategoriRecord = PemasokKategoriRecord::finder()->findByPk($idKategori);
+		
+		$this->getPage()->getClientScript()->registerEndScript
+						('','
+						kategoriChanged('.$PemasokKategoriRecord->jenis_kategori.');');	
+	}
 	
 	public function BindGrid()
 	{
@@ -56,9 +65,10 @@ class MasterPemasok extends MainConf
 				FROM 
 					tbm_pemasok
 				INNER JOIN tbm_kategori_pemasok ON tbm_kategori_pemasok.id = tbm_pemasok.kategori_id
-				INNER JOIN tbm_kategori_harga ON tbm_kategori_harga.id = tbm_pemasok.id_kategori_harga
+				LEFT JOIN tbm_kategori_harga ON tbm_kategori_harga.id = tbm_pemasok.id_kategori_harga
 				WHERE 
 					tbm_pemasok.deleted = '0' 
+					AND tbm_kategori_pemasok.jenis_kategori = '1'
 				ORDER BY 
 					tbm_pemasok.id ASC ";
 		$Record = $this->queryAction($sql,'S');
@@ -72,14 +82,11 @@ class MasterPemasok extends MainConf
 			
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['kategori'].'</td>';
-				$tblBody .= '<td>'.$row['kategori_harga'].'</td>';
 				$tblBody .= '<td>'.$row['nama'].'</td>';
 				$tblBody .= '<td>'.$row['alamat'].'</td>';
 				$tblBody .= '<td>'.$row['telepon'].'</td>';
 				$tblBody .= '<td>'.$row['fax'].'</td>';
 				$tblBody .= '<td>'.$row['contact_person'].'</td>';
-				$tblBody .= '<td>'.$row['no_sp'].'</td>';
-				$tblBody .= '<td>'.$row['fee'].'</td>';
 				$tblBody .= '<td>';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
@@ -112,6 +119,8 @@ class MasterPemasok extends MainConf
 			$this->DDKategoriHarga->SelectedValue = $Record->id_kategori_harga;
 			$this->no_sp->Text = $Record->no_sp;
 			
+			$PemasokKategoriRecord = PemasokKategoriRecord::finder()->findByPk($Record->kategori_id);
+		
 			$sql = "SELECT
 						tbm_kendaraan_pemasok.id,
 						tbm_kendaraan_pemasok.id_jenis_kendaraan,
@@ -130,6 +139,7 @@ class MasterPemasok extends MainConf
 					('','
 					unloadContent();
 					RenderTempTable('.$arrJson.');
+					kategoriChanged('.$PemasokKategoriRecord->jenis_kategori.')
 					jQuery("#modal-1").modal("show");');
 			
 		}

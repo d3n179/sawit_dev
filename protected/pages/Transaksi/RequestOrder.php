@@ -55,7 +55,7 @@ class RequestOrder extends MainConf
 							tbm_satuan.deleted = '0'
 						AND tbm_satuan_barang.deleted = '0'
 						AND tbm_satuan_barang.id_barang = '$idBarang' ";
-						
+			var_dump($sqlSatuan);			
 			$arrSatuan = $this->queryAction($sqlSatuan,'S');
 			$this->DDSatuan->DataSource = $arrSatuan;
 			$this->DDSatuan->DataBind();
@@ -306,42 +306,50 @@ class RequestOrder extends MainConf
 		
 		$idMaxSatuan = BarangSatuanRecord::finder()->find('urutan = ? AND id_barang = ? AND deleted = ?','1',$Barang,'0')->id_satuan;
 		$MaxBeliBulanan = BarangRecord::finder()->findByPk($Barang)->max_beli_bulanan;
-		$sqlStock = "SELECT
-							SUM(tbd_stok_barang.stok) AS stok
-						FROM
-							tbd_stok_barang
-						WHERE
-							tbd_stok_barang.expired_date > CURDATE()
-						AND id_barang = '$Barang'
-						AND deleted != '1' ";
-		$arrStock = $this->queryAction($sqlStock,'S');
-		$CurrentStock = $arrStock[0]['stok'];
-		$CurrentStock = $this->getTargetUom($Barang,$CurrentStock,'0','1',$idMaxSatuan);
-		
-		$AddStock = $Jumlah;
-		$AddStock = $this->getTargetUom($Barang,$AddStock,$Satuan,'1',$idMaxSatuan);
-		
-		$TotalStock = $CurrentStock + $AddStock;
-		
-		var_dump($CurrentStock);
-		var_dump($AddStock);
-		var_dump($TotalStock);
-		if($TotalStock > $MaxBeliBulanan)
+		if($MaxBeliBulanan > 0)
 		{
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					toastr.error("Jumlah Pembelian Bulanan telah melebihi maksimum pembelian bulanan !");
-					');
+			$sqlStock = "SELECT
+								SUM(tbd_stok_barang.stok) AS stok
+							FROM
+								tbd_stok_barang
+							WHERE
+								tbd_stok_barang.expired_date > CURDATE()
+							AND id_barang = '$Barang'
+							AND deleted != '1' ";
+			$arrStock = $this->queryAction($sqlStock,'S');
+			$CurrentStock = $arrStock[0]['stok'];
+			$CurrentStock = $this->getTargetUom($Barang,$CurrentStock,'0','1',$idMaxSatuan);
+			
+			$AddStock = $Jumlah;
+			$AddStock = $this->getTargetUom($Barang,$AddStock,$Satuan,'1',$idMaxSatuan);
+			
+			$TotalStock = $CurrentStock + $AddStock;
+			if($TotalStock > $MaxBeliBulanan)
+			{
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						toastr.error("Jumlah Pembelian Bulanan telah melebihi maksimum pembelian bulanan !");
+						');
+			}
+			else
+			{
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						addBarang();
+						');
+			}
 		}
 		else
 		{
 			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					addBarang();
-					');
+						('','
+						unloadContent();
+						addBarang();
+						');
 		}
+		
 	}
 	
 	public function generateDetailCallback($sender,$param)

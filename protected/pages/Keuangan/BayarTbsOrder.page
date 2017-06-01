@@ -18,6 +18,7 @@
 							<label class="control-label" for="Pemasok">Pemasok</label>	  
 							<com:TActiveHiddenField ID="idBarang"/>
 							<com:TActiveHiddenField ID="idPemasok"/>
+							<com:TActiveHiddenField ID="tglTbs"/>
 							<com:TActiveTextBox 
 										ID="Pemasok" 
 										Enabled="false"
@@ -31,6 +32,35 @@
 										ID="jnsKelapaSawit" 
 										Enabled="false"
 										CssClass="form-control upper" />
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="total_tbs">Total TBS</label>
+								<com:TActiveTextBox 
+										ID="total_tbs" 
+										Enabled="false"
+										CssClass="form-control mask_currency" />
+							</div>
+						</div>	
+						
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="total_tbs_dibayar">Sudah Dibayar</label>
+								<com:TActiveTextBox 
+										ID="total_tbs_dibayar" 
+										Enabled="false"
+										CssClass="form-control mask_currency" />
+							</div>
+						</div>
+						
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="sisa_bayar">Sisa Pembayaran</label>
+								<com:TActiveTextBox 
+										ID="sisa_bayar" 
+										Enabled="false"
+										CssClass="form-control mask_currency" />
 							</div>
 						</div>	
 						<div class="col-md-2">
@@ -49,9 +79,24 @@
 										  ValidationGroup="val" />
 							</div>
 						</div>	
-					</div>
-					
-					<div class="row">
+						
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="sisa_bayar">Jumlah Pembayaran</label>
+								<com:TActiveTextBox 
+										ID="jml_bayar" 
+										Enabled="true"
+										CssClass="form-control mask_currency" />
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="jml_bayar"										 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>
 						<div class="col-md-2">
 							<div class="form-group">
 							<label class="control-label" for="DDJnsBayar">Jenis Pembayaran</label>
@@ -139,7 +184,7 @@
 											<th >Subtotal Fee</th>
 											<th >PPN (%)</th>
 											<th >PPH (%)</th>
-											<th >Total Pembayaran</th>
+											<th >Total</th>
 											<th >Kategori TBS</th>
 										</tr>
 									</thead>
@@ -212,7 +257,8 @@
 					localDB.commit();
 				}
 											
-				localDB.createTable('BayarTbsTable', ["idTransaksi",
+				localDB.createTable('BayarTbsTable', ["idPembayaranDetail",
+														"idTransaksi",
 														"jenis_kendaraan",
 														"no_polisi",
 														"netto_2",
@@ -227,7 +273,8 @@
 														"ppn",
 														"pph",
 														"total_tbs_order",
-														"kategori_tbs"]);
+														"kategori_tbs",
+														"status"]);
 				localDB.commit();
 				bindSelect2();
 				BindGrid();
@@ -307,8 +354,14 @@
 				jQuery('#<%= $this->Pemasok->getClientID()%>').val('');
 				
 				jQuery('#<%= $this->jnsKelapaSawit->getClientID()%>').val('');
+				jQuery('#<%= $this->tglTbs->getClientID()%>').val('');
 				jQuery('#<%= $this->idBarang->getClientID()%>').val('');
 				jQuery('#<%= $this->idPemasok->getClientID()%>').val('');
+				
+				jQuery('#<%= $this->total_tbs->getClientID()%>').val('');
+				jQuery('#<%= $this->total_tbs_dibayar->getClientID()%>').val('');
+				jQuery('#<%= $this->jml_bayar->getClientID()%>').val('');
+				jQuery('#<%= $this->sisa_bayar->getClientID()%>').val('');
 				
 				jQuery("#tableBayar").dataTable().fnDestroy();
 				jQuery("#tableBayar tbody").empty();
@@ -330,9 +383,12 @@
 					
 				jQuery.each(arr,function(i,val)
 				{
+					if(val.status == '0')
+					{
 					var arr = HasilPembayaran(val.netto_2,val.harga,val.netto_1,val.jenis_bongkar,val.jumlah_bongkar,val.fee,val.ppn,val.pph);
 					console.log(arr);
-					localDB.insert('BayarTbsTable', {idTransaksi:val.idTransaksi,
+					localDB.insert('BayarTbsTable', {idPembayaranDetail:val.idPembayaranDetail,
+														idTransaksi:val.idTransaksi,
 														jenis_kendaraan:val.jenis_kendaraan,
 														no_polisi:val.no_polisi,
 														netto_2:val.netto_2,
@@ -347,7 +403,30 @@
 														ppn:val.ppn,
 														pph:val.pph,
 														total_tbs_order:arr.TotalTBS,
-														kategori_tbs:val.kategori_tbs});
+														kategori_tbs:val.kategori_tbs,
+														status:val.status});
+					}
+					else
+					{
+						localDB.insert('BayarTbsTable', {idPembayaranDetail:val.idPembayaranDetail,
+														idTransaksi:val.idTransaksi,
+														jenis_kendaraan:val.jenis_kendaraan,
+														no_polisi:val.no_polisi,
+														netto_2:val.netto_2,
+														harga:val.harga,
+														subtotal_tbs:val.subtotal_tbs,
+														netto_1:val.netto_1,
+														jenis_bongkar:val.jenis_bongkar,
+														jumlah_bongkar:val.jumlah_bongkar,
+														subtotal_spsi:val.subtotal_spsi,
+														fee:val.fee,
+														subtotal_fee:val.subtotal_fee,
+														ppn:val.ppn,
+														pph:val.pph,
+														total_tbs_order:val.total_tbs_order,
+														kategori_tbs:val.kategori_tbs,
+														status:val.status});
+					}
 																
 					localDB.commit();
 				});	
@@ -366,24 +445,46 @@
 					
 																		});
 					console.log(data);
+					var totalTbsOrder = 0;
 					jQuery.each(data,function(i,val)
-					{						
+					{		
+						if(val.status == '1')
+							var disabled= 'disabled';
+						else
+							var disabled= '';
+							
 							tblBody += '<tr>';
 							tblBody += '<td><input id="netto_2-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.netto_2+'" maxlength="9" size="9" disabled></td>';
 							tblBody += '<td><input id="harga-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.harga+'" maxlength="15" size="15" disabled></td>';
-							tblBody += '<td><input id="subtotaltbs-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_tbs+'" maxlength="15" size="15"></td>';
-							tblBody += '<td><input id="bongkar-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.netto_1+'" maxlength="9" size="9"></td>';
-							tblBody += '<td><input type="hidden" id="jnsbongkar-column-ID-'+val.ID+'" value="'+val.jenis_bongkar+'"/><input id="jmlbongkar-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.jumlah_bongkar+'" maxlength="9" size="9"></td>';
-							tblBody += '<td><input id="subtotalspsi-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_spsi+'" maxlength="15" size="15"></td>';
-							tblBody += '<td><input id="fee-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.fee+'" maxlength="9" size="9"></td>';
-							tblBody += '<td><input id="subtotalfee-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_fee+'" maxlength="15" size="15"></td>';
-							tblBody += '<td><input id="ppn-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" type="text" onBlur="quantityEdited('+val.ID+');" value="'+val.ppn+'" maxlength="5" size="5"></td>';
-							tblBody += '<td><input id="pph-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" type="text" onBlur="quantityEdited('+val.ID+');" value="'+val.pph+'" maxlength="5" size="5"></td>';
-							tblBody += '<td><input id="totaltbs-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.total_tbs_order+'" maxlength="15" size="15"></td>';
+							tblBody += '<td><input id="subtotaltbs-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_tbs+'" maxlength="15" size="15" '+disabled+'></td>';
+							tblBody += '<td><input id="bongkar-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.netto_1+'" maxlength="9" size="9" '+disabled+'></td>';
+							tblBody += '<td><input type="hidden" id="jnsbongkar-column-ID-'+val.ID+'" value="'+val.jenis_bongkar+'"/><input id="jmlbongkar-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.jumlah_bongkar+'" maxlength="9" size="9" '+disabled+'></td>';
+							tblBody += '<td><input id="subtotalspsi-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_spsi+'" maxlength="15" size="15" '+disabled+'></td>';
+							tblBody += '<td><input id="fee-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" onBlur="quantityEdited('+val.ID+');" type="text" value="'+val.fee+'" maxlength="9" size="9" '+disabled+'></td>';
+							tblBody += '<td><input id="subtotalfee-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.subtotal_fee+'" maxlength="15" size="15" '+disabled+'></td>';
+							tblBody += '<td><input id="ppn-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" type="text" onBlur="quantityEdited('+val.ID+');" value="'+val.ppn+'" maxlength="5" size="5" '+disabled+'></td>';
+							tblBody += '<td><input id="pph-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs quantity_column" type="text" onBlur="quantityEdited('+val.ID+');" value="'+val.pph+'" maxlength="5" size="5" '+disabled+'></td>';
+							tblBody += '<td><input id="totaltbs-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs currency_column" onBlur="subtotalEdited('+val.ID+');" type="text" value="'+val.total_tbs_order+'" maxlength="15" size="15" '+disabled+'></td>';
 							tblBody += '<td>'+val.kategori_tbs+'</td>';
 							tblBody += '</tr>';
+							
+							totalTbsOrder += parseFloat(val.total_tbs_order);
 					});	
 				}
+				
+				jQuery('#<%= $this->total_tbs->getClientID()%>').val(totalTbsOrder);
+				var tbsSudahDibayar = parseFloat(jQuery('#<%= $this->total_tbs_dibayar->getClientID()%>').val().replace(/\,/g,''));
+				
+				if(tbsSudahDibayar > 0)
+					var sisaBayar = totalTbsOrder - tbsSudahDibayar;
+				else
+					var sisaBayar = totalTbsOrder;
+				
+				console.log(totalTbsOrder);
+				console.log(tbsSudahDibayar);
+				console.log(sisaBayar);
+				
+				jQuery('#<%= $this->sisa_bayar->getClientID()%>').val(sisaBayar);
 				
 				jQuery("#tableBayar").dataTable().fnDestroy();
 				jQuery("#tableBayar tbody").empty();

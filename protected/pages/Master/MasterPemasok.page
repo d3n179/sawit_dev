@@ -1,5 +1,5 @@
 <com:TContent ID="Main">
-	<h2>Master Supplier</h2>
+	<h2>Master Supplier Barang</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
 	<div class="modal fade custom-width" id="modal-1">
@@ -15,14 +15,15 @@
 					<div class="row">
 						<div class="col-md-3">
 							<div class="form-group">
-							<label for="DDKategori" class="control-label">Supplier Category</label>
+							<label for="DDKategori" class="control-label">Kategori Pemasok</label>
 								<com:TActiveHiddenField ID="idPemasok"/>
 								<com:TActiveDropDownList 
 									ID="DDKategori"
 									Width="190px"
 									PromptText="--Pilih Kategori--"
 									PromptValue="empty"
-									AutoPostBack="false"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="kategoriChanged"
 									CausesValidation="false"
 									CssClass="form-control"
 									DataTextField="nama"
@@ -40,10 +41,9 @@
 										  InitialValue="empty"/>
 							</div>
 						</div>		
-						
-						<div class="col-md-3">
+						<div class="col-md-3" ID="tbsSupplierPanel" Style="Display:None;">
 							<div class="form-group">
-							<label for="DDKategori" class="control-label">Price Category</label>
+							<label for="DDKategori" class="control-label">Kategori Harga</label>
 								<com:TActiveDropDownList 
 									ID="DDKategoriHarga"
 									Width="190px"
@@ -67,10 +67,28 @@
 										  InitialValue="empty"/>
 							</div>
 						</div>
-						
+						<div class="col-md-3" ID="tbsSupplierPanel2" Style="Display:None;">
+							<div class="form-group">
+								<label for="contact_person" class="control-label">No SP</label>
+								<com:TActiveTextBox 
+										ID="no_sp" 
+										CssClass="form-control upper"
+										Attributes.PlaceHolder="NO SP"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="no_sp"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>	
+						</div>
+					</div>
+					<div class="row">
 						<div class="col-md-3">
 							<div class="form-group">
-							<label for ="nama" class="control-label">Name</label>
+							<label for ="nama" class="control-label">Nama Pemasok</label>
 								<com:TActiveTextBox 
 										ID="nama" 
 										CssClass="form-control" 
@@ -143,24 +161,6 @@
 										ID="contact_person" 
 										CssClass="form-control"
 										Attributes.PlaceHolder="fax"/>
-							</div>	
-						</div>
-						
-						<div class="col-md-3">
-							<div class="form-group">
-								<label for="contact_person" class="control-label">No SP</label>
-								<com:TActiveTextBox 
-										ID="no_sp" 
-										CssClass="form-control upper"
-										Attributes.PlaceHolder="NO SP"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="no_sp"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
 							</div>	
 						</div>
 					</div>
@@ -252,7 +252,7 @@
 									<com:TActiveButton
 										ID="submitBtn" 
 										Text="Submit"
-										Attributes.OnClick="submitBtnClicked();"
+										OnClick="submitBtnClicked"
 										CausesValidation="true"
 										ValidationGroup="val"
 										CssClass="btn btn-info">
@@ -280,14 +280,11 @@
 			<thead>
 				<tr>
 					<th width="300px">Supplier Category</th>
-					<th width="300px">Price Category</th>
 					<th width="300px">Name</th>
 					<th width="300px">Alamat</th>
 					<th width="150px">Telepon</th>
 					<th width="150px">Fax</th>
 					<th width="150px">Contact Person</th>
-					<th width="150px">No SP</th>
-					<th width="150px">Fee</th>
 					<th width="150px">Aksi</th>
 				</tr>
 			</thead>
@@ -344,6 +341,24 @@
 			}
 			
 			
+			function kategoriChanged(jenisKategori)
+			{
+				if(jenisKategori == '0')
+				{
+					jQuery('#tbsSupplierPanel').show();
+					jQuery('#tbsSupplierPanel2').show();
+					jQuery('#<%= $this->no_sp->getClientID()%>').prop('disabled',false);
+					jQuery('#<%= $this->DDKategoriHarga->getClientID()%>').prop('disabled',false);
+					
+				}
+				else
+				{
+					jQuery('#tbsSupplierPanel').hide();
+					jQuery('#tbsSupplierPanel2').hide();
+					jQuery('#<%= $this->no_sp->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->DDKategoriHarga->getClientID()%>').prop('disabled',true);
+				}
+			}
 			
 			function BindGrid()
 			{

@@ -53,6 +53,7 @@ class LaporanTimbangan extends MainConf
 		{
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
+					jQuery("#panelHarian").hide();
 					jQuery("#panelMingguan").hide();
 					jQuery("#panelTahunan").show();
 					jQuery("#panelBulanan").show();
@@ -62,6 +63,7 @@ class LaporanTimbangan extends MainConf
 		{
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
+					jQuery("#panelHarian").hide();
 					jQuery("#panelMingguan").hide();
 					jQuery("#panelTahunan").show();
 					jQuery("#panelBulanan").hide();
@@ -71,7 +73,18 @@ class LaporanTimbangan extends MainConf
 		{
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
+					jQuery("#panelHarian").hide();
 					jQuery("#panelMingguan").show();
+					jQuery("#panelTahunan").hide();
+					jQuery("#panelBulanan").hide();
+					');
+		}
+		elseif($periode == '3')
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+					('','
+					jQuery("#panelHarian").show();
+					jQuery("#panelMingguan").hide();
 					jQuery("#panelTahunan").hide();
 					jQuery("#panelBulanan").hide();
 					');
@@ -121,6 +134,11 @@ class LaporanTimbangan extends MainConf
 			$sqlTrans .=" AND tbm_barang.nama = '".$this->nmBarang->Text."' ";
 		}
 		
+		if($this->komidelTbs->Text != '')
+		{
+			$sqlTrans .=" AND tbt_tbs_order.komidel = '".$this->komidelTbs->Text."' ";
+		}
+		
 		if($this->DDTbs->SelectedValue != '')
 		{
 			$sqlTrans .=" AND tbm_setting_komidel.id = '".$this->DDTbs->SelectedValue."' ";
@@ -161,7 +179,17 @@ class LaporanTimbangan extends MainConf
 				$tgl2 = $this->ConvertDate($tgl2,'2');
 				$sqlTrans .="AND tbt_tbs_order.tgl_transaksi BETWEEN '$tgl1' AND '$tgl2' ";
 			}
+		}	
+		elseif($periode == '3')
+		{
+			$harian = $this->harian->Text;
+			if($harian != '')
+			{
+				$tgl = $this->ConvertDate($harian,'2');
+				$sqlTrans .="AND tbt_tbs_order.tgl_transaksi = '$tgl' ";
+			}
 		}		
+		var_dump($sqlTrans);
 		$this->setViewState('sql',$sqlTrans);
 		
 		$arrTrans = $this->queryAction($sqlTrans,'S');
@@ -223,7 +251,8 @@ class LaporanTimbangan extends MainConf
 				'periode'=>$this->Periode->SelectedValue,
 				'bln'=>$this->DDBulan->SelectedValue,
 				'thn'=>$this->DDTahun->SelectedValue,
-				'mingguan'=>$this->mingguan->Text)));
+				'mingguan'=>$this->mingguan->Text,
+				'harian'=>$this->harian->Text)));
 	}
 	
 }

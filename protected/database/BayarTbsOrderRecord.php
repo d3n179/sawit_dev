@@ -8,26 +8,17 @@ class BayarTbsOrderRecord extends TActiveRecord
 
 	public $id;
 	public $no_pembayaran;
-	public $id_tbs_order;
 	public $tgl_pembayaran;
 	public $wkt_pembayaran;
-	public $netto_1;
-	public $jumlah_bongkar;
-	public $subtotal_spsi;
-	public $netto_2;
-	public $harga;
-	public $subtotal_tbs;
-	public $fee;
-	public $subtotal_fee;
-	public $ppn;
-	public $pph;
-	public $total_tbs_order;
+	public $id_barang;
+	public $id_pemasok;
+	public $tgl_tbs;
+	public $jumlah_pembayaran;
 	public $id_coa;
 	public $jns_bayar;
 	public $id_bank;
 	public $no_ref;
 	public $deleted;
-
 
 
 	public static function finder($className=__CLASS__)

@@ -343,6 +343,12 @@ class DataProvider
 		}
 		
 		$Rows = MainConf::queryAction($sql,'S');
+		foreach($Rows as $subkey => $subArray)
+		{
+			$textUtf = utf8_encode($subArray['text']);
+			$Rows[$subkey]['text'] = $textUtf;
+		}
+		
 		$data = array(
 			'TotalRows' => $TotalRows,
 			'Rows' => $Rows,

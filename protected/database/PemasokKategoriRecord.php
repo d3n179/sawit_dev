@@ -7,6 +7,7 @@ class PemasokKategoriRecord extends TActiveRecord
 	const TABLE='tbm_kategori_pemasok';
 
 	public $id;
+	public $jenis_kategori;
 	public $nama;
 	public $ppn;
 	public $pph;

@@ -5,13 +5,53 @@
 	<div class="row">
 		<div class="col-md-2">
 			<div class="form-group">
+				<label for="noPo" class="control-label">No Purchase Order</label>
+				<com:TActiveTextBox 
+					ID="noPo" 
+					CssClass="form-control" />
+			</div>	
+		</div>
+		<div class="col-md-2">
+			<div class="form-group">
 				<label for="nmPemasok" class="control-label">Nama Pemasok</label>
 				<com:TActiveTextBox 
 					ID="nmPemasok" 
 					CssClass="form-control" />
 			</div>	
 		</div>	
-	</div>	
+		<div class="col-md-2">
+			<div class="form-group">
+				<label for="nmBarang" class="control-label">Kode Barang</label>
+				<com:TActiveTextBox 
+					ID="kodeBarang" 
+					CssClass="form-control" />
+			</div>	
+		</div>	
+		<div class="col-md-2">
+			<div class="form-group">
+				<label for="nmBarang" class="control-label">Nama Barang</label>
+				<com:TActiveTextBox 
+					ID="nmBarang" 
+					CssClass="form-control" />
+			</div>	
+		</div>	
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="DDTbs" class="control-label">Kategori Barang</label>
+				<com:TActiveDropDownList 
+									ID="DDKategori"
+									PromptText="--Pilih Kategori--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+			</div>	
+		</div>			
+	</div>
+		
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
@@ -133,6 +173,7 @@
 					<tr>
 						<th>No Pembayaran</th>
 						<th>Tgl Pembayaran</th>
+						<th>No Purchase Order</th>
 						<th>Pemasok</th>
 						<th>Jenis Pembayaran</th>
 						<th>Total Pembayaran</th>

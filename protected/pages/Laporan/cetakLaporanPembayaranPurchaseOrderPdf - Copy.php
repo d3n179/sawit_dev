@@ -1,5 +1,5 @@
 <?PHP
-class cetakLaporanTimbanganPdf extends MainConf
+class cetakLaporanPembayaranPurchaseOrderPdf extends MainConf
 {
 	public function onPreInit($param)
 	{
@@ -56,7 +56,7 @@ class cetakLaporanTimbanganPdf extends MainConf
 		
 		$profilPerusahaan = $this->profilPerusahaan();	
 			
-		$pdf=new reportKwitansi('L','mm','legal');
+		$pdf=new reportKwitansi('P','mm','legal');
 		$pdf->AliasNbPages(); 
 		$pdf->AddPage();
 		
@@ -77,45 +77,44 @@ class cetakLaporanTimbanganPdf extends MainConf
 		$pdf->SetFont('Arial','BU',10);
 		
 		$pdf->SetFont('Arial','B',10);
-		$pdf->Cell(0,5,'LAPORAN TIMBANGAN TBS','0',0,'C');
+		$pdf->Cell(0,5,'LAPORAN PEMBAYARAN PURCHASE ORDER','0',0,'C');
 		$pdf->Ln(5);
 		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'C');
 		$pdf->Ln(5);
-		$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C','C','C','C','C'));
-		$pdf->SetWidths(array(10,20,25,35,30,20,20,30,27,30,20,20,20,35));
-		$pdf->Row(array('NO','NO. SP','NO. POLISI','N. BARANG','SUPPLIER','BRUTTO','TARRA','NETTO I','POTONGAN (%)','HSIL. POTONGAN','NETTO II','JLH TANDAN','KOMIDEL',"KATEGORI TBS"));
+		$pdf->SetAligns(array('C','C','C','C','C','C','C'));
+		$pdf->SetWidths(array(10,25,30,35,35,25,35));
+		$pdf->Row(array('No','No. Pembayaran','Tgl. Pembayaran','No. Purchase Order','Pemasok','Jenis Pembayaran','Total Pembayaran'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
-		$pdf->SetAligns(array('C','L','L','L','L','R','R','R','R','R','R','R','R','L'));
+		$pdf->SetAligns(array('C','L','L','L','L','L','R'));
 		$session=new THttpSession;
 		$session->open();
-		$sql = $session['cetakLapTimbanganSql'];
+		$sql = $session['cetakLapPembayaranPurchaseOrderSql'];
 		$arrData=$this->queryAction($sql,'S');
 		$no = 0;
-		$ttlBruto = 0;
-		$ttlTarra = 0;
-		$ttlNetto1 = 0;
-		$ttlPotongan = 0;
-		$ttlHslPotongan = 0;
-		$ttlNetto2 = 0;
-		$ttlTandan = 0;
+		$ttlBayar = 0;
 		foreach($arrData as $row)
 		{
+			if($row['jns_bayar'] == '0')
+				$jnsBayar = 'Cash';
+			else
+				$jnsBayar = 'Bank Transfer';
+					
 			$no++;
-			$pdf->Row(array($no,$row['no_sp'],$row['no_polisi'],$row['barang'],$row['pemasok'],$row['bruto'],$row['tarra'],$row['netto_1'],$row['potongan'],$row['hasil_potongan'],$row['netto_2'],$row['jml_tandan'],$row['komidel'],$row['kategori_tbs']));
+			$pdf->Row(array($no,
+							$row['no_pembayaran'],
+							$this->ConvertDate($row['tgl_pembayaran'],'3'),
+							$row['no_po'],
+							$row['nama'],
+							$jnsBayar,
+							number_format($row['total_pembayaran'],2,'.',',')));
 			
-			
-			$ttlBruto += $row['bruto'];
-			$ttlTarra += $row['tarra'];
-			$ttlNetto1 += $row['netto_1'];
-			$ttlPotongan += $row['potongan'];
-			$ttlHslPotongan += $row['hasil_potongan'];
-			$ttlNetto2 += $row['netto_2'];
-			$ttlTandan += $row['jml_tandan'];
+			$ttlBayar += $row['total_pembayaran'];
 		}
-		$pdf->SetWidths(array(120,20,20,30,27,30,20,20,20,35));
+		$pdf->SetWidths(array(160,35));
+		$pdf->SetAligns(array('C','R'));
 		$pdf->SetFont('Arial','B',8);
-		$pdf->Row(array("Total",$ttlBruto,$ttlTarra,$ttlNetto1,$ttlPotongan / $no,$ttlHslPotongan,$ttlNetto2,$ttlTandan,"",""));
+		$pdf->Row(array("Total",number_format($ttlBayar,2,'.',',')));
 			
 		$pdf->Output();	
 	}
