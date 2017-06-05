@@ -48,6 +48,7 @@ class BayarTbsOrder extends MainConf
 	{
 		$sql = "SELECT
 					tbt_tbs_order.id,
+					tbt_tbs_order.no_tbs_order,
 					tbt_tbs_order.id_pemasok,
 					tbt_tbs_order.id_barang,
 					tbt_tbs_order.no_tbs_order,
@@ -55,20 +56,20 @@ class BayarTbsOrder extends MainConf
 					tbm_pemasok.nama AS pemasok,
 					tbm_barang.nama AS barang,
 					tbm_kategori_barang.id AS kategori_barang_id,
-					COUNT(tbt_tbs_order.no_polisi) AS jml_kendaraan,
-					SUM(tbt_tbs_order.netto_2) AS Total_Berat
+					COUNT(tbt_tbs_order_detail.no_polisi) AS jml_kendaraan,
+					SUM(tbt_tbs_order_detail.netto_2) AS Total_Berat
 				FROM
 					tbt_tbs_order
+				INNER JOIN tbt_tbs_order_detail ON tbt_tbs_order_detail.id_tbs_order = tbt_tbs_order.id
 				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
 				INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
 				INNER JOIN tbm_kategori_barang ON tbm_kategori_barang.id = tbm_barang.kategori_id
 				WHERE
 					tbt_tbs_order.deleted = '0'
+				AND tbt_tbs_order_detail.deleted = '0'
 				AND (tbt_tbs_order.`status` = '0' OR tbt_tbs_order.`status` = '1')
 				GROUP BY
-					tbt_tbs_order.id_pemasok,
-					tbt_tbs_order.id_barang,
-					tbt_tbs_order.tgl_transaksi
+					tbt_tbs_order.id
 				ORDER BY
 					tbt_tbs_order.id ASC ";
 					
@@ -109,13 +110,12 @@ class BayarTbsOrder extends MainConf
 			{
 				$actionBtn='';
 				
-				$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id_pemasok'].','.$row['id_barang'].','.$row['kategori_barang_id'].',\''.$row['tgl_transaksi'].'\')\"><i class=\"entypo-pencil\" ></i>Proses</a>&nbsp;&nbsp;';
-				
+				$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Proses</a>&nbsp;&nbsp;';
 				
 				$idSatuan = BarangSatuanRecord::finder()->find('id_barang = ? AND urutan = ?',$row['id_barang'],'1')->id_satuan;
 				$nmSatuan = SatuanRecord::finder()->findByPk($idSatuan)->nama;
 				$tblBody .= '<tr>';
-				//$tblBody .= '<td>'.$row['no_tbs_order'].'</td>';
+				$tblBody .= '<td>'.$row['no_tbs_order'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
 				$tblBody .= '<td>'.$row['pemasok'].'</td>';
 				$tblBody .= '<td>'.$row['barang'].'</td>';
@@ -140,78 +140,111 @@ class BayarTbsOrder extends MainConf
 	
 	public function editForm($sender,$param)
 	{
-		$idPemasok = $param->CallbackParameter->idPemasok;
-		$idBarang = $param->CallbackParameter->idBarang;
-		$kategoriBarangId = $param->CallbackParameter->kategoriBarangId;
-		$tglTransaksi = $param->CallbackParameter->tglTransaksi;
+		$id = $param->CallbackParameter->id;
+		$TbsOrderRecord = TbsOrderRecord::finder()->findByPk($id);
+		$idBarang = $TbsOrderRecord->id_barang;
+		$idPemasok = $TbsOrderRecord->id_pemasok;
+		$tglTransaksi = $TbsOrderRecord->tgl_transaksi;
+		$kategoriBarangId = BarangRecord::finder()->findByPK($idBarang)->kategori_id;
+		
+		
 		$nmPemasok = PemasokRecord::finder()->findBypk($idPemasok)->nama;
 		$nmbarang = BarangRecord::finder()->findBypk($idBarang)->nama;
 		
+		$this->idTbsOrder->Value = $id;
+		$this->statusTbsOrder->Value = $TbsOrderRecord->status;
 		$this->tglTbs->Value = $tglTransaksi;
 		$this->idBarang->Value = $idBarang;
 		$this->idPemasok->Value = $idPemasok;
+		var_dump($id);
+		if($TbsOrderRecord->status == '1')
+			$this->jatuh_tempo->Text = $this->ConvertDate($TbsOrderRecord->tgl_jatuh_tempo,'1');
+		else
+			$this->jatuh_tempo->Text = '';
 		
 		$this->Pemasok->Text = $nmPemasok;
 		$this->jnsKelapaSawit->Text = $nmbarang;
 		
 			$this->modalJudul->Text = 'Proses Pembayaran';
 			
-			$sql = "SELECT
-						tbt_pembayaran_tbs_detail.id AS idPembayaranDetail,
-						tbt_tbs_order.id AS idTransaksi,
-						tbt_tbs_order.no_polisi,
-						tbm_jenis_kendaraan.jenis_kendaraan,
-						tbt_tbs_order.netto_1,
-						tbt_tbs_order.netto_2,
-						tbt_harga_tbs_order.harga,
-						tbt_pembayaran_tbs_detail.subtotal_tbs,
-						tbm_jenis_kendaraan.jenis_bongkar,
-						tbm_jenis_kendaraan.jumlah_bongkar,
-						tbt_pembayaran_tbs_detail.subtotal_spsi,
-						IF(tbm_pemasok.fee > 0,tbm_pemasok.fee,0) as fee,
-						tbt_pembayaran_tbs_detail.subtotal_fee,
-						tbm_kategori_pemasok.ppn,
-						tbm_kategori_pemasok.pph,
-						tbt_pembayaran_tbs_detail.total_tbs_order,
-						tbm_setting_komidel.nama AS kategori_tbs,
-						tbt_tbs_order.`status`
-					FROM
-						tbt_tbs_order
-					INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
-					INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order.id_komidel
-					INNER JOIN tbm_jenis_kendaraan ON tbm_jenis_kendaraan.id = tbt_tbs_order.id_jenis_kendaraan
-					INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
-					LEFT JOIN tbt_harga_tbs_order ON tbt_harga_tbs_order.id_komidel = tbt_tbs_order.id_komidel 
-						AND tbt_harga_tbs_order.tgl_transaksi = '$tglTransaksi' AND tbt_harga_tbs_order.id_barang = '$kategoriBarangId' 
-						AND tbt_harga_tbs_order.id_kategori_harga = tbm_pemasok.id_kategori_harga
-					INNER JOIN tbm_kategori_pemasok ON tbm_kategori_pemasok.id = tbm_pemasok.kategori_id
-					LEFT JOIN tbt_pembayaran_tbs_detail ON tbt_pembayaran_tbs_detail.id_tbs_order = tbt_tbs_order.id
-					WHERE
-						tbt_tbs_order.deleted = '0'
-						AND tbt_tbs_order.tgl_transaksi = '$tglTransaksi'
-						AND tbt_tbs_order.id_pemasok = '$idPemasok'
-						AND tbt_tbs_order.id_barang = '$idBarang'
-						AND (tbt_tbs_order.`status` = '0' OR tbt_tbs_order.`status` = '1')
-					ORDER BY
-						tbt_tbs_order.id ASC ";
-			$array = $this->queryAction($sql,'S');
-			foreach($array as $subkey => $subArray)
+			if($TbsOrderRecord->status == '0')
 			{
-				if($subArray['idPembayaranDetail'] != '')
-				{
-					$BayarTbsOrderDetailRecord = BayarTbsOrderDetailRecord::finder()->findByPk($subArray['idPembayaranDetail']);
-					if($BayarTbsOrderDetailRecord)
-					{
-						$array[$subkey]['netto_1'] = $BayarTbsOrderDetailRecord->netto_1;
-						$array[$subkey]['netto_2'] = $BayarTbsOrderDetailRecord->netto_2;
-						$array[$subkey]['harga'] = $BayarTbsOrderDetailRecord->harga;
-						$array[$subkey]['jumlah_bongkar'] = $BayarTbsOrderDetailRecord->jumlah_bongkar;
-						$array[$subkey]['fee'] = $BayarTbsOrderDetailRecord->fee;
-						$array[$subkey]['ppn'] = $BayarTbsOrderDetailRecord->ppn;
-						$array[$subkey]['pph'] = $BayarTbsOrderDetailRecord->pph;
-					}
-				}
+				$sql = "SELECT
+							tbt_tbs_order_detail.id AS idTransaksi,
+							tbt_tbs_order_detail.no_polisi,
+							tbm_jenis_kendaraan.jenis_kendaraan,
+							tbt_tbs_order_detail.netto_1,
+							tbt_tbs_order_detail.netto_2,
+							tbt_harga_tbs_order.harga,
+							tbt_tbs_order_detail.subtotal_tbs,
+							tbm_jenis_kendaraan.jenis_bongkar,
+							tbm_jenis_kendaraan.jumlah_bongkar,
+							tbt_tbs_order_detail.subtotal_spsi,
+							IF(tbm_pemasok.fee > 0,tbm_pemasok.fee,0) as fee,
+							tbt_tbs_order_detail.subtotal_fee,
+							tbm_kategori_pemasok.ppn,
+							tbm_kategori_pemasok.pph,
+							tbt_tbs_order_detail.total_tbs_order,
+							tbm_setting_komidel.nama AS kategori_tbs,
+							tbt_tbs_order.`status`
+						FROM
+							tbt_tbs_order_detail
+						INNER JOIN tbt_tbs_order ON tbt_tbs_order.id = tbt_tbs_order_detail.id_tbs_order
+						INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
+						INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order_detail.id_komidel
+						INNER JOIN tbm_jenis_kendaraan ON tbm_jenis_kendaraan.id = tbt_tbs_order_detail.id_jenis_kendaraan
+						INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
+						LEFT JOIN tbt_harga_tbs_order ON tbt_harga_tbs_order.id_komidel = tbt_tbs_order_detail.id_komidel 
+							AND tbt_harga_tbs_order.tgl_transaksi = '$tglTransaksi' AND tbt_harga_tbs_order.id_barang = '$idBarang' 
+							AND tbt_harga_tbs_order.id_kategori_harga = tbm_pemasok.id_kategori_harga
+						INNER JOIN tbm_kategori_pemasok ON tbm_kategori_pemasok.id = tbm_pemasok.kategori_id
+						WHERE
+							tbt_tbs_order.deleted = '0'
+							AND tbt_tbs_order_detail.id_tbs_order = '$id'
+							AND tbt_tbs_order_detail.deleted = '0'
+						ORDER BY
+							tbt_tbs_order.id ASC ";
 			}
+			else
+			{
+				$sql = "SELECT
+							tbt_tbs_order_detail.id AS idTransaksi,
+							tbt_tbs_order_detail.no_polisi,
+							tbm_jenis_kendaraan.jenis_kendaraan,
+							tbt_tbs_order_detail.netto_1,
+							tbt_tbs_order_detail.netto_2,
+							tbt_tbs_order_detail.harga,
+							tbt_tbs_order_detail.subtotal_tbs,
+							tbm_jenis_kendaraan.jenis_bongkar,
+							tbm_jenis_kendaraan.jumlah_bongkar,
+							tbt_tbs_order_detail.subtotal_spsi,
+							tbt_tbs_order_detail.fee,
+							tbt_tbs_order_detail.subtotal_fee,
+							tbt_tbs_order_detail.ppn,
+							tbt_tbs_order_detail.pph,
+							tbt_tbs_order_detail.total_tbs_order,
+							tbm_setting_komidel.nama AS kategori_tbs,
+							tbt_tbs_order.`status`
+						FROM
+							tbt_tbs_order_detail
+						INNER JOIN tbt_tbs_order ON tbt_tbs_order.id = tbt_tbs_order_detail.id_tbs_order
+						INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
+						INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order_detail.id_komidel
+						INNER JOIN tbm_jenis_kendaraan ON tbm_jenis_kendaraan.id = tbt_tbs_order_detail.id_jenis_kendaraan
+						INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
+						LEFT JOIN tbt_harga_tbs_order ON tbt_harga_tbs_order.id_komidel = tbt_tbs_order_detail.id_komidel 
+							AND tbt_harga_tbs_order.tgl_transaksi = '$tglTransaksi' AND tbt_harga_tbs_order.id_barang = '$idBarang' 
+							AND tbt_harga_tbs_order.id_kategori_harga = tbm_pemasok.id_kategori_harga
+						INNER JOIN tbm_kategori_pemasok ON tbm_kategori_pemasok.id = tbm_pemasok.kategori_id
+						WHERE
+							tbt_tbs_order.deleted = '0'
+							AND tbt_tbs_order_detail.id_tbs_order = '$id'
+							AND tbt_tbs_order_detail.deleted = '0'
+						ORDER BY
+							tbt_tbs_order.id ASC ";
+
+			}
+			$array = $this->queryAction($sql,'S');
 			
 			$query = "SELECT
 					SUM(
@@ -220,13 +253,18 @@ class BayarTbsOrder extends MainConf
 				FROM
 					tbt_pembayaran_tbs
 				WHERE
-					tbt_pembayaran_tbs.id_barang = '$idBarang'
-				AND tbt_pembayaran_tbs.id_pemasok = '$idPemasok'
-				AND tbt_pembayaran_tbs.tgl_tbs = '$tglTransaksi' ";
+					tbt_pembayaran_tbs.id_tbs_order = '$id'
+					AND tbt_pembayaran_tbs.deleted = '0' ";
 				
 			$arrQuery = $this->queryAction($query,'S');
 			
-			$this->total_tbs_dibayar->Text = $arrQuery[0]['jumlah_pembayaran'];
+			$sudahDibayar = 0;
+			foreach($arrQuery as $rowQuery)
+			{
+				$sudahDibayar += $rowQuery['jumlah_pembayaran'];
+			}
+			
+			$this->total_tbs_dibayar->Text = $sudahDibayar;
 			
 			$arrJson = json_encode($array,true);	
 			$this->getPage()->getClientScript()->registerEndScript
@@ -238,11 +276,63 @@ class BayarTbsOrder extends MainConf
 		
 	}
 	
+	public function importBtnClicked($sender,$param)
+	{
+		$sql = "SELECT
+					*
+				FROM
+					tbm_kategori_pelanggan
+				WHERE
+					deleted = '0'";
+					
+		$arr = $this->queryAction($sql,'S');
+		foreach($arr as $row)
+		{
+			$idLama = $row['id'];
+			$PemasokKategoriRecord = new PemasokKategoriRecord();
+			$PemasokKategoriRecord->jenis_kategori = '1';
+			$PemasokKategoriRecord->nama = $row['nama'];
+			$PemasokKategoriRecord->ppn = 0;
+			$PemasokKategoriRecord->pph = 0;
+			$PemasokKategoriRecord->deleted = 0;
+			$PemasokKategoriRecord->save();
+			
+			$sqlUpdate = "UPDATE tbm_pelanggan SET kategori_id = '".$PemasokKategoriRecord->id."' WHERE kategori_id = '".$idLama."' ";
+			$this->queryAction($sqlUpdate,'C');
+		}
+		
+		$sql = "SELECT
+					*
+				FROM
+					tbm_pelanggan
+				WHERE
+					deleted = '0'";
+					
+		$arr = $this->queryAction($sql,'S');
+		foreach($arr as $row)
+		{
+			$PemasokRecord = new PemasokRecord();
+			$PemasokRecord->kategori_id = $row['kategori_id'];
+			$PemasokRecord->nama = $row['nama'];
+			$PemasokRecord->alamat = $row['alamat'];
+			$PemasokRecord->telepon = $row['telepon'];
+			$PemasokRecord->fax = '';
+			$PemasokRecord->contact_person = '';
+			$PemasokRecord->fee = 0;
+			$PemasokRecord->no_sp = '0';
+			$PemasokRecord->id_kategori_harga = '0';
+			$PemasokRecord->deleted = 0;
+			$PemasokRecord->save();
+			
+		}
+		
+	}
 	
 	public function submitBtnClicked($sender,$param)
 	{
 		$idBarang = $this->idBarang->Value;
 		$idPemasok = $this->idPemasok->Value;
+		$idTbsOrder = $this->idTbsOrder->Value;
 		$tglTbs = $this->tglTbs->Value;
 		$IdSatuan = BarangSatuanRecord::finder()->find('id_barang = ?  AND urutan = ? ',$idBarang,1)->id_satuan;
 		$totalNettoMasuk = 0;
@@ -250,16 +340,25 @@ class BayarTbsOrder extends MainConf
 		$totalBayar = str_replace(",","",$this->jml_bayar->Text);
 		$sisaBayar = str_replace(",","",$this->sisa_bayar->Text);
 		
-		
+		$TbsOrderRecord = TbsOrderRecord::finder()->findByPk($idTbsOrder);
+		if($totalBayar >= $sisaBayar)
+			$TbsOrderRecord->status = '2';
+		else
+		{
+			if($TbsOrderRecord->status == '0')
+			{
+				$TbsOrderRecord->status = '1';
+				$TbsOrderRecord->tgl_jatuh_tempo = $this->ConvertDate($this->jatuh_tempo->Text,'2');
+			}
+		}
+		$TbsOrderRecord->save();
 		
 		$DetailBayar = $param->CallbackParameter->BayarTbsTable;
 		$BayarTbsOrderRecord = new BayarTbsOrderRecord();
 		$BayarTbsOrderRecord->no_pembayaran = $this->GenerateNoDocument('PAY');
 		$BayarTbsOrderRecord->tgl_pembayaran  = date("Y-m-d");
 		$BayarTbsOrderRecord->wkt_pembayaran = date("G:i:s");
-		$BayarTbsOrderRecord->id_barang = $idBarang;
-		$BayarTbsOrderRecord->id_pemasok = $idPemasok;
-		$BayarTbsOrderRecord->tgl_tbs = $tglTbs;
+		$BayarTbsOrderRecord->id_tbs_order = $idTbsOrder;
 		
 		if($totalBayar >= $sisaBayar)
 			$BayarTbsOrderRecord->jumlah_pembayaran = $sisaBayar;
@@ -280,24 +379,24 @@ class BayarTbsOrder extends MainConf
 		
 		foreach($DetailBayar as $row)
 		{		
-			if($row->idPembayaranDetail == '')
+			if($row->status == '0')
 			{
-				$Record = new BayarTbsOrderDetailRecord();
-				$Record->id_pembayaran = $BayarTbsOrderRecord->id;
-				$Record->id_tbs_order = $row->idTransaksi;
-				$Record->netto_1 = $row->netto_1;
-				$Record->jumlah_bongkar = $row->jumlah_bongkar;
-				$Record->subtotal_spsi = $row->subtotal_spsi;
-				$Record->netto_2 = $row->netto_2;
-				$Record->harga = $row->harga;
-				$Record->subtotal_tbs = $row->subtotal_tbs;
-				$Record->fee = $row->fee;
-				$Record->subtotal_fee = $row->subtotal_fee;
-				$Record->ppn = $row->ppn;
-				$Record->pph = $row->pph;
-				$Record->total_tbs_order = $row->total_tbs_order;
-				$Record->deleted = '0';
-				$Record->save(); 
+				$TbsOrderDetailRecord = TbsOrderDetailRecord::finder()->findByPk($row->idTransaksi);
+				if($TbsOrderDetailRecord)
+				{
+					$TbsOrderDetailRecord->jumlah_bongkar = $row->jumlah_bongkar;
+					$TbsOrderDetailRecord->netto_1 = $row->netto_1;
+					$TbsOrderDetailRecord->subtotal_spsi = $row->subtotal_spsi;
+					$TbsOrderDetailRecord->harga = $row->harga;
+					$TbsOrderDetailRecord->subtotal_tbs = $row->subtotal_tbs;
+					$TbsOrderDetailRecord->fee = $row->fee;
+					$TbsOrderDetailRecord->subtotal_fee = $row->subtotal_fee;
+					$TbsOrderDetailRecord->ppn = $row->ppn;
+					$TbsOrderDetailRecord->pph = $row->pph;
+					$TbsOrderDetailRecord->total_tbs_order = $row->total_tbs_order;
+					$TbsOrderDetailRecord->save();
+				}
+				
 				$totalNettoMasuk += $row->netto_2;
 				$totalTbsMasuk += $row->subtotal_tbs;
 				
@@ -310,13 +409,6 @@ class BayarTbsOrder extends MainConf
 				$BarangHargaRecord->save();
 			}
 			
-			$TbsOrderRecord = TbsOrderRecord::finder()->findByPk($row->idTransaksi);
-			if($totalBayar >= $sisaBayar)	
-				$TbsOrderRecord->status = '2';
-			else
-				$TbsOrderRecord->status = '1';
-					
-			$TbsOrderRecord->save();
 		}
 		
 		if($totalNettoMasuk > 0 && $totalTbsMasuk > 0)
@@ -413,11 +505,15 @@ class BayarTbsOrder extends MainConf
 									$BayarTbsOrderRecord->no_pembayaran);
 						
 	$tblBody = $this->BindGrid();
-			
+		$id = $BayarTbsOrderRecord->id;
+		$url = "index.php?page=Keuangan.cetakKwtPembayaranTbs&id=".$id;
+		
 			$this->getPage()->getClientScript()->registerEndScript
 							('','
 							toastr.info("'.$msg.'");
 							jQuery("#modal-1").modal("hide");
+							jQuery("#cetakFrame").attr("src","'.$url.'");
+							jQuery("#modal-3").modal("show");
 							jQuery("#table-1").dataTable().fnDestroy();
 							jQuery("#table-1 tbody").empty();
 							jQuery("#table-1 tbody").append("'.$tblBody.'");

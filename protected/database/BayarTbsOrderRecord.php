@@ -7,12 +7,10 @@ class BayarTbsOrderRecord extends TActiveRecord
 	const TABLE='tbt_pembayaran_tbs';
 
 	public $id;
+	public $id_tbs_order;
 	public $no_pembayaran;
 	public $tgl_pembayaran;
 	public $wkt_pembayaran;
-	public $id_barang;
-	public $id_pemasok;
-	public $tgl_tbs;
 	public $jumlah_pembayaran;
 	public $id_coa;
 	public $jns_bayar;

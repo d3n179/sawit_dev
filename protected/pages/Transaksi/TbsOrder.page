@@ -1,305 +1,7 @@
 <com:TContent ID="Main">
 	<h2>Tbs Order</h2>
 	<hr>
-	 <com:TActivePanel CssClass="form"><!--form begin-->
-	<div class="modal fade custom-width" id="modal-1">
-		<div class="modal-dialog" style="width: 60%;">
-			<div class="modal-content">
-				
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title"><com:TActiveLabel ID="modalJudul"/></h4>
-				</div>
-				
-				<div class="modal-body">
-					<div class="row">	
-						<div class="col-md-3">
-							<div class="form-group">
-							<label class="control-label" for="DDPemasok">Pemasok</label>	  
-							<com:TActiveHiddenField ID="idTbsOrder"/>
-								<com:TActiveDropDownList 
-									ID="DDPemasok"
-									Width="190px"
-									PromptText="--Pemasok--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="DDPemasok"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-							<label class="control-label" for="DDJenisKendaraan">Jenis Kendaraan</label>
-								<com:TActiveDropDownList 
-									ID="DDJenisKendaraan"
-									Width="190px"
-									PromptText="--Jenis Kendaraan--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="jenis_kendaraan"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="DDJenisKendaraan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>		
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="no_polisi">No Polisi</label>	  
-							<com:TActiveTextBox 
-										ID="no_polisi" 
-										CssClass="form-control upper" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="no_polisi"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-							<label class="control-label" for="DDBarang">Jenis Kelapa Sawit</label>
-								<com:TActiveDropDownList 
-									ID="DDBarang"
-									Width="190px"
-									PromptText="--Kelapa Sawit--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="DDBarang"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-					</div>
-					<div class="row">	
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="bruto">Bruto</label>	  
-							<com:TActiveTextBox 
-										ID="bruto" 
-										Attributes.OnBlur="HsilTimbangan();"
-										CssClass="form-control mask_decimal" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="bruto"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="tarra">Tarra</label>	  
-							<com:TActiveTextBox 
-										ID="tarra" 
-											Attributes.OnBlur="HsilTimbangan();"
-										CssClass="form-control mask_decimal" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="tarra"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="netto_1">Netto I</label>	  
-							<com:TActiveTextBox 
-										ID="netto_1" 
-										Enabled="false"
-										CssClass="form-control mask_decimal" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="netto_1"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="potongan">Potongan</label>	  
-							<com:TActiveTextBox 
-										ID="potongan"
-										Attributes.OnBlur="HsilTimbangan();"
-										Attributes.Placeholder="%"
-										CssClass="form-control mask_decimal" /> 
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="potongan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="hasil_potongan">Hasil Potongan</label>	  
-							<com:TActiveTextBox 
-										ID="hasil_potongan"
-										Enabled="false"
-										CssClass="form-control mask_decimal" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="hasil_potongan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="netto_2">Netto II</label>	  
-							<com:TActiveTextBox 
-										ID="netto_2"
-										Enabled="false"
-										CssClass="form-control mask_decimal" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="netto_2"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">	
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="jml_tandan">Jml Tandan</label>	  
-							<com:TActiveTextBox 
-										ID="jml_tandan" 
-										Attributes.OnBlur="HsilTimbangan();"
-										CssClass="form-control mask_decimal" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="jml_tandan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="komidel">Komidel</label>	  
-							<com:TActiveTextBox 
-										ID="komidel" 
-										Enabled="false"
-										CssClass="form-control mask_decimal" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="komidel"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-						<div class="col-md-2">
-							<div class="form-group">
-							<label class="control-label" for="kategori_tbs">Kategori TBS</label>	 
-							<com:TActiveHiddenField ID="idKomidel"/> 
-							<com:TActiveTextBox 
-										ID="kategori_tbs" 
-										Enabled="false"
-										CssClass="form-control" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="kategori_tbs"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						
-					</div>
-				</div>
-				
-				<div class="modal-footer">
-					<div class="row">
-									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-									<com:TActiveButton
-										ID="submitBtn" 
-										Text="Submit"
-										OnClick="submitBtnClicked"
-										CausesValidation="true"
-										ValidationGroup="val"
-										CssClass="btn btn-info">
-										 <prop:ClientSide 
-											OnLoading="loadContent();"
-											OnComplete="unloadContent();"/>
-									</com:TActiveButton>		
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	
+	 <com:TActivePanel CssClass="form"><!--form begin-->	
 	<div class="modal fade custom-width" id="modal-2">
 		<div class="modal-dialog" style="width: 70%;">
 			<div class="modal-content">
@@ -338,41 +40,389 @@
 		</div>
 	</div>
 	
-	<div class="row">
-		<div class="col-md-3">
-			<div class="form-group">
-				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Data');clearForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
-				<a href="javascript:;" onclick="jQuery('#modal-2').modal('show');jQuery('#<%= $this->modalJudulDetail->getClientID()%>').text('Detail Timbangan Hari Ini');detailClicked();" class="btn btn-primary btn-icon icon-left"><i class="entypo-search" ></i>Detail</a>
-			</div>
-		</div>	
-	</div>	
 	<div class="row">	
 		<div class="col-md-12">
-	<div class="form-group">
-	<table class="table table-bordered table-striped datatable" id="table-1">
-			<thead>
-				<tr>
-					<th>No TBS</th>
-					<th>Tgl Transaksi</th>
-					<th>Pemasok</th>
-					<th>Barang</th>
-					<th>Bruto</th>
-					<th>Tarra</th>
-					<th>Netto I</th>
-					<th>Potongan</th>
-					<th>Netto II</th>
-					<th>Jml Tandan</th>
-					<th>Komidel</th>
-					<th>Kategori TBS</th>
-					<th width="150px">Aksi</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
+			<ul class="nav nav-tabs"><!-- available classes "bordered", "right-aligned" -->
+				<li class="active">
+					<a href="#listTab" data-toggle="tab">
+						<i class="fa fa-list "></i> TBS Order 
+					</a>
+				</li>
+				<li>
+				<a href="#formTab" data-toggle="tab">
+						<i class="fa fa-plus"></i> Tambah Data
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="listTab">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<a href="javascript:;"  Onclick="formTabShow();" class="btn btn-info btn-icon icon-left btn-add"><i class="entypo-plus" ></i>Tambah</a>
+								<a href="javascript:;" onclick="jQuery('#modal-2').modal('show');jQuery('#<%= $this->modalJudulDetail->getClientID()%>').text('Detail Timbangan Hari Ini');detailClicked();" class="btn btn-primary btn-icon icon-left"><i class="entypo-search" ></i>Detail</a>
+							</div>
+						</div>	
+					</div>	
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+							<table class="table table-bordered table-striped datatable" id="table-1">
+									<thead>
+										<tr>
+											<th>No TBS Order</th>
+											<th>Tgl Transaksi</th>
+											<th>Wkt Transaksi</th>
+											<th>Pemasok</th>
+											<th>Barang</th>
+											<th>Jumlah Kendaraan</th>
+											<th>Total Berat</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>	
+				</div>
+				
+				<div class="tab-pane" id="formTab">
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<com:TActiveHiddenField ID="idTbsOrder"/>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										Attributes.OnClick="submitBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>	
+								</div>
+							</div>	
+						</div>
+						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="DDPemasok">Pemasok</label>	  
+									<com:TActiveDropDownList 
+										ID="DDPemasok"
+										Width="190px"
+										PromptText="--Pemasok--"
+										PromptValue="empty"
+										AutoPostBack="false"
+										CausesValidation="false"
+										CssClass="form-control"
+										DataTextField="nama"
+										DataValueField="id">
+										</com:TActiveDropDownList>
+											
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDPemasok"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="DDBarang">Jenis Kelapa Sawit</label>
+									<com:TActiveDropDownList 
+										ID="DDBarang"
+										Width="190px"
+										PromptText="--Kelapa Sawit--"
+										PromptValue="empty"
+										AutoPostBack="false"
+										CausesValidation="false"
+										CssClass="form-control"
+										DataTextField="nama"
+										DataValueField="id">
+										</com:TActiveDropDownList>
+											
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDBarang"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>
+						</div>
+						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="DDJenisKendaraan">Jenis Kendaraan</label>
+									<com:TActiveDropDownList 
+										ID="DDJenisKendaraan"
+										Width="190px"
+										PromptText="--Jenis Kendaraan--"
+										PromptValue="empty"
+										AutoPostBack="false"
+										CausesValidation="false"
+										CssClass="form-control"
+										DataTextField="jenis_kendaraan"
+										DataValueField="id">
+										</com:TActiveDropDownList>
+											
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDJenisKendaraan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" 
+											  InitialValue="empty"/>
+								</div>
+							</div>		
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="no_polisi">No Polisi</label>	  
+								<com:TActiveTextBox 
+											ID="no_polisi" 
+											CssClass="form-control upper" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="no_polisi"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>	
+						</div>
+						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="bruto">Bruto</label>	  
+								<com:TActiveTextBox 
+											ID="bruto" 
+											Attributes.OnBlur="HsilTimbangan();"
+											CssClass="form-control mask_decimal" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="bruto"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="tarra">Tarra</label>	  
+								<com:TActiveTextBox 
+											ID="tarra" 
+												Attributes.OnBlur="HsilTimbangan();"
+											CssClass="form-control mask_decimal" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tarra"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="netto_1">Netto I</label>	  
+								<com:TActiveTextBox 
+											ID="netto_1" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="netto_1"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="potongan">Potongan</label>	  
+								<com:TActiveTextBox 
+											ID="potongan"
+											Attributes.OnBlur="HsilTimbangan();"
+											Attributes.Placeholder="%"
+											CssClass="form-control mask_decimal" /> 
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="potongan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="hasil_potongan">Hasil Potongan</label>	  
+								<com:TActiveTextBox 
+											ID="hasil_potongan"
+											Enabled="false"
+											CssClass="form-control mask_decimal" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="hasil_potongan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="netto_2">Netto II</label>	  
+								<com:TActiveTextBox 
+											ID="netto_2"
+											Enabled="false"
+											CssClass="form-control mask_decimal" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="netto_2"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="jml_tandan">Jml Tandan</label>	  
+								<com:TActiveTextBox 
+											ID="jml_tandan" 
+											Attributes.OnBlur="HsilTimbangan();"
+											CssClass="form-control mask_decimal" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="jml_tandan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="komidel">Komidel</label>	  
+								<com:TActiveTextBox 
+											ID="komidel" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="komidel"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="kategori_tbs">Kategori TBS</label>	 
+								<com:TActiveHiddenField ID="idKomidel"/> 
+								<com:TActiveTextBox 
+											ID="kategori_tbs" 
+											Enabled="false"
+											CssClass="form-control" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="kategori_tbs"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for=""></label>	
+									<com:TActiveButton 
+										ID="tambahBtnBtn" 
+										Text="Tambah"
+										CausesValidation="true"
+										OnClick="tambahBtnClicked"
+										ValidationGroup="valDetail"
+										CssClass="btn btn-success">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton >
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">	
+							<div class="col-md-12">
+								<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-detail">
+									<thead>
+										<tr>
+											<th>Jenis Kendaraan</th>
+											<th>No Polisi</th>
+											<th>Bruto</th>
+											<th>Tarra</th>
+											<th>Netto I</th>
+											<th>Potongan</th>
+											<th>Hasil Potongan</th>
+											<th>Netto II</th>
+											<th>Jml Tandan</th>
+											<th>Komidel</th>
+											<th>Kategori Tbs</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+								</div>
+							</div>
+						</div>	
+					</div>
+				</div>
+				
+			</div>
+		</div>
 	</div>
-	</div>
-	</div>
+	
 	</com:TActivePanel>	<!--form End-->
 	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
@@ -384,15 +434,67 @@
 	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="komidelCallback" OnCallback="komidelCallback" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="detailClickedCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
-	
+	<com:TCallback ID="komidelDetailCallback" OnCallback="komidelDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
 	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
 			{
+				if(localDB.tableExists('TbsOrderTable'))
+				{
+					localDB.dropTable('TbsOrderTable');
+					localDB.commit();
+				}
+				
+				localDB.createTable('TbsOrderTable', ["id_edit",
+														"JnsKendaraan",
+														"JnsKendaraanName",
+														"NoPolisi", 
+														"Brutto",
+														"Tarra",
+														"Netto_I",
+														"Potongan",
+														"HasilPotongan",
+														"Netto_II",
+														"JmlTandan",
+														"Komidel",
+														"KategoriTbs",
+														"KategoriTbsName",
+														"deleted"]);
+				localDB.commit();
+				
+				jQuery('a[href="#formTab"]').hide();
+				jQuery('a[href="#listTab"]').on('shown.bs.tab', function (e) 
+				{
+					Prado.Validation.reset('val');
+					jQuery('.form-body select').val('empty');
+					jQuery('.form-control').val('');
+					jQuery('a[href="#formTab"]').hide();
+					jQuery('#<%= $this->idTbsOrder->getClientID()%>').val('');
+					localDB.truncate('RequestOrderTable');
+					localDB.commit();
+					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
+				});
+				
+				jQuery(".btn-add").on('click',function()
+				{
+					jQuery('a[href="#formTab"]').on('shown.bs.tab', function (e) 
+					{
+						Prado.Validation.reset('val');
+						var target = e.target.attributes.href.value;
+						jQuery(target +' input:first').focus();
+					});
+				});
+				
 				BindGrid();
 				BindGridDetail();
+				BindGridTbsDetail();
 			});
 			
+			function formTabShow()
+			{
+				jQuery("a[href=\"#formTab\"]").tab("show");
+			}
 			
 			function clearForm()
 			{
@@ -448,6 +550,228 @@
 						});
 						request.dispatch();
 						
+			}
+			
+			function RenderTempTable(arr)
+			{
+				localDB.truncate('RequestOrderTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+					localDB.insert('TbsOrderTable', {id_edit: val.id_edit, 
+														JnsKendaraan: val.JnsKendaraan, 
+														JnsKendaraanName: val.JnsKendaraanName, 
+														NoPolisi: val.NoPolisi, 
+														Brutto: val.Brutto, 
+														Tarra: val.Tarra, 
+														Netto_I: val.Netto_I, 
+														Potongan: val.Potongan,
+														HasilPotongan: val.HasilPotongan,  
+														Netto_II: val.Netto_II,  
+														JmlTandan: val.JmlTandan,  
+														Komidel: val.Komidel,  
+														KategoriTbs: val.KategoriTbs,  
+														KategoriTbsName: val.KategoriTbsName,  
+														deleted: "0"});
+																
+					localDB.commit();
+				});	
+				
+				bindTbsOrderGridLine();
+				
+			}
+			
+			function tambahBtnClicked()
+			{							
+				var JnsKendaraan = jQuery('#<%= $this->DDJenisKendaraan->getClientID()%>').val();
+				var JnsKendaraanName = jQuery('#<%= $this->DDJenisKendaraan->getClientID()%> option:selected').text();
+				var NoPolisi = jQuery('#<%= $this->no_polisi->getClientID()%>').val();
+				var Brutto = jQuery('#<%= $this->bruto->getClientID()%>').val();
+				var Tarra = jQuery('#<%= $this->tarra->getClientID()%>').val();
+				var Netto_I = jQuery('#<%= $this->netto_1->getClientID()%>').val();
+				var Potongan = jQuery('#<%= $this->potongan->getClientID()%>').val();
+				var HasilPotongan = jQuery('#<%= $this->hasil_potongan->getClientID()%>').val();
+				var Netto_II = jQuery('#<%= $this->netto_2->getClientID()%>').val();
+				var JmlTandan = jQuery('#<%= $this->jml_tandan->getClientID()%>').val();
+				var Komidel = jQuery('#<%= $this->komidel->getClientID()%>').val();
+				var KategoriTbs = jQuery('#<%= $this->idKomidel->getClientID()%>').val();
+				var KategoriTbsName = jQuery('#<%= $this->kategori_tbs->getClientID()%>').val();
+															
+				localDB.insert('TbsOrderTable', {id_edit: "", 
+														JnsKendaraan: JnsKendaraan, 
+														JnsKendaraanName: JnsKendaraanName, 
+														NoPolisi: NoPolisi, 
+														Brutto: Brutto, 
+														Tarra: Tarra, 
+														Netto_I: Netto_I, 
+														Potongan: Potongan,
+														HasilPotongan: HasilPotongan,  
+														Netto_II: Netto_II,  
+														JmlTandan: JmlTandan,  
+														Komidel: Komidel,  
+														KategoriTbs: KategoriTbs,  
+														KategoriTbsName: KategoriTbsName,  
+														deleted: "0"});
+				localDB.commit();
+				bindTbsOrderGridLine();
+					
+				jQuery('#<%= $this->DDJenisKendaraan->getClientID()%>').val('empty');
+				jQuery('#<%= $this->no_polisi->getClientID()%>').val('');
+				jQuery('#<%= $this->bruto->getClientID()%>').val('');
+				jQuery('#<%= $this->tarra->getClientID()%>').val('');
+				jQuery('#<%= $this->netto_1->getClientID()%>').val('');
+				jQuery('#<%= $this->potongan->getClientID()%>').val('');
+				jQuery('#<%= $this->hasil_potongan->getClientID()%>').val('');
+				jQuery('#<%= $this->netto_2->getClientID()%>').val('');
+				jQuery('#<%= $this->jml_tandan->getClientID()%>').val('');
+				jQuery('#<%= $this->komidel->getClientID()%>').val('');
+				jQuery('#<%= $this->idKomidel->getClientID()%>').val('');
+				jQuery('#<%= $this->kategori_tbs->getClientID()%>').val('');
+					
+					
+				
+			}
+			
+			function bindTbsOrderGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('TbsOrderTable'))
+				{
+					var data = localDB.queryAll('TbsOrderTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					console.log(data);
+					jQuery.each(data,function(i,val)
+					{
+						if(val.deleted=="0")
+						{								
+							tblBody += '<tr>';
+							tblBody += '<td>'+val.JnsKendaraanName+'</td>';
+							tblBody += '<td><input class="form-control input-xsmall input-xs NoPolisi-column-ID-'+val.ID+' NoPolisi" type="text" value="'+val.NoPolisi+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
+							tblBody += '<td><input class="form-control input-xsmall input-xs Brutto-column-ID-'+val.ID+' Brutto Number" type="text" value="'+val.Brutto+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
+							tblBody += '<td><input class="form-control input-xsmall input-xs Tarra-column-ID-'+val.ID+' Tarra Number" type="text" value="'+val.Tarra+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
+							tblBody += '<td>'+val.Netto_I+'</td>';
+							tblBody += '<td><input class="form-control input-xsmall input-xs Potongan-column-ID-'+val.ID+' Potongan Number" type="text" value="'+val.Potongan+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
+							tblBody += '<td>'+val.HasilPotongan+'</td>';
+							tblBody += '<td>'+val.Netto_II+'</td>';
+							tblBody += '<td><input class="form-control input-xsmall input-xs JmlTandan-column-ID-'+val.ID+' JmlTandan Number" type="text" value="'+val.JmlTandan+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
+							tblBody += '<td>'+val.Komidel+'</td>';
+							tblBody += '<td>'+val.KategoriTbsName+'</td>';
+							tblBody += '<td>';
+							tblBody += '<a href="javascript:void(0)" class="btn btn-danger btn-sm btn-icon icon-left" OnClick="deleteBarang('+val.ID+')"><i class="entypo-cancel"></i>Hapus</a>';	
+							tblBody += '</td>';			
+							tblBody += '</tr>';
+						}
+						
+					});	
+				}
+				
+				jQuery("#table-detail").dataTable().fnDestroy();
+				jQuery("#table-detail tbody").empty();
+				jQuery("#table-detail tbody").append(tblBody);
+				BindGridTbsDetail();
+					
+			}
+			
+			function TextDetailChanged(id)
+			{
+				var noPolisi = jQuery('#table-detail .NoPolisi-column-ID-'+id).val();
+				var bruto = parseFloat(jQuery('#table-detail .Brutto-column-ID-'+id).val());
+				var tarra = parseFloat(jQuery('#table-detail .Tarra-column-ID-'+id).val());
+				var netto_1 = bruto - tarra;
+				
+				netto_1 = parseFloat(netto_1);
+				var potonganVal = parseFloat(jQuery('#table-detail .Potongan-column-ID-'+id).val());
+				var potongan = parseFloat(jQuery('#table-detail .Potongan-column-ID-'+id).val()) / 100;
+				var hsilPotongan = potongan * netto_1;
+				hsilPotongan = Math.round(hsilPotongan);
+				var netto_2 = netto_1 - hsilPotongan;
+				netto_2 = parseFloat(netto_2);
+				
+				var jmlTandan =  parseFloat(jQuery('#table-detail .JmlTandan-column-ID-'+id).val());
+				
+				var komidel = netto_1 / jmlTandan;
+				komidel = Math.round(komidel);
+				
+				var request= <%= $this->komidelDetailCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							noPolisi:noPolisi,bruto:bruto,tarra:tarra,netto_1:netto_1,potonganVal:potonganVal,hsilPotongan:hsilPotongan,netto_2:netto_2,jmlTandan:jmlTandan,komidel:komidel,id:id
+						});
+						request.dispatch();
+			}
+			
+			function UpdateBarang(id,noPolisi,bruto,tarra,netto_1,potonganVal,hsilPotongan,netto_2,jmlTandan,komidel,idKomidel,kategoriTbs)
+			{
+				
+				localDB.update('TbsOrderTable', {ID: id}, function(row) {
+											row.NoPolisi = noPolisi;
+											row.Brutto = bruto;
+											row.Tarra = tarra;
+											row.Netto_I = netto_1;
+											row.Potongan = potonganVal;
+											row.HasilPotongan = hsilPotongan;
+											row.Netto_II = netto_2;
+											row.JmlTandan = jmlTandan;
+											row.Komidel = komidel;
+											row.KategoriTbs = idKomidel; 
+											row.KategoriTbsName = kategoriTbs;
+											return row;
+										});
+										
+				bindTbsOrderGridLine();
+				
+			}
+			
+			function deleteBarang(id)
+			{
+				var data = localDB.queryAll('TbsOrderTable', { query: {"ID": id}
+																	});							
+				if(data[0].id_edit != "")
+				{
+					localDB.update('TbsOrderTable', {ID: id}, function(row) {
+						row.deleted = "1";
+						return row;
+					});
+				}
+				else
+				{
+					localDB.deleteRows('TbsOrderTable', {ID: id});
+					localDB.commit(); 
+				}
+								
+				bindTbsOrderGridLine();	
+			}
+			
+			function BindGridTbsDetail()
+			{
+				var tableSatuan = jQuery('#table-detail').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+						jQuery(".Number").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+					 }
+				});
+				
+				
+			}
+			
+			function deleteBarang(ID)
+			{
+				
 			}
 			
 			function detailClicked()
@@ -564,6 +888,35 @@
 				{
 					return false;
 				}
+			}
+			
+			function submitBtnClicked()
+			{
+				if(localDB.tableExists('TbsOrderTable'))
+				{
+					var CHECK = localDB.queryAll('TbsOrderTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
+					if(CHECK.length > 0)
+					{
+						var TbsOrderTable = localDB.queryAll('TbsOrderTable', {sort: [["ID", "ASC"]]});
+						var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							TbsOrderTable:TbsOrderTable
+						});
+						request.dispatch();
+						
+        
+					}
+					else
+					{
+						toastr.error("Transaksi TBS Belum Dimasukkan !");
+					}
+				}
+				else
+				{
+					toastr.error("Transaksi TBS Belum Dimasukkan !");
+				}
+					
+				
 			}
 			
 		</script>

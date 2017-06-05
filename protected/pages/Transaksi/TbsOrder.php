@@ -116,33 +116,110 @@ class TbsOrder extends MainConf
 		$this->kategori_tbs->Text = $kategoriTbs;
 	}
 	
+	public function komidelDetailCallback($sender,$param)
+	{
+		$id = $param->CallBackParameter->id;
+		$komidel = $param->CallBackParameter->komidel;
+		$noPolisi = $param->CallBackParameter->noPolisi;
+		$bruto = $param->CallBackParameter->bruto;
+		$tarra = $param->CallBackParameter->tarra;
+		$netto_1 = $param->CallBackParameter->netto_1;
+		$potonganVal = $param->CallBackParameter->potonganVal;
+		$hsilPotongan = $param->CallBackParameter->hsilPotongan;
+		$netto_2 = $param->CallBackParameter->netto_2;
+		$jmlTandan = $param->CallBackParameter->jmlTandan;
+		
+		$sql = "SELECT
+					tbm_setting_komidel.id,
+					tbm_setting_komidel.operator,
+					tbm_setting_komidel.komidel,
+					tbm_setting_komidel.nama
+				FROM
+					tbm_setting_komidel
+				WHERE
+					tbm_setting_komidel.deleted = '0'
+				ORDER BY
+					tbm_setting_komidel.komidel ASC ";
+					
+		$arrKomidel = $this->queryAction($sql,'S');
+		$kategoriTbs = '';
+		$idKomidel = '';
+		if($arrKomidel)
+		{
+			foreach($arrKomidel as $row)
+			{
+				if($row['operator'] == '<=')
+				{
+					if($komidel <= $row['komidel'])
+					{
+						$kategoriTbs = $row['nama'];
+						$idKomidel = $row['id'];
+						break;
+					}
+				}
+				elseif($row['operator'] == '>=')
+				{
+					if($komidel >= $row['komidel'])
+					{
+						$kategoriTbs = $row['nama'];
+						$idKomidel = $row['id'];
+						break;
+					}
+				}
+				
+			}
+		}
+		var_dump($idKomidel);
+		var_dump($potongan);
+		var_dump($hsilPotongan);
+		
+		/*$this->getPage()->getClientScript()->registerEndScript
+		('','
+			console.log("dfsdfgdfgdf");
+		');*/
+		
+		$this->getPage()->getClientScript()->registerEndScript
+		('','
+			console.log('.$id.');
+			UpdateBarang('.$id.',"'.$noPolisi.'",'.$bruto.','.$tarra.','.$netto_1.','.$potonganVal.','.$hsilPotongan.','.$netto_2.','.$jmlTandan.','.$komidel.','.$idKomidel.',"'.$kategoriTbs.'");
+		');
+		
+	}
+	
+	public function tambahBtnClicked()
+	{
+		$this->getPage()->getClientScript()->registerEndScript
+		('','
+			unloadContent();
+			tambahBtnClicked();
+		');
+	}
+	
 	public function BindGrid()
 	{
 		$sql = "SELECT
 					tbt_tbs_order.id,
 					tbt_tbs_order.no_tbs_order,
 					tbt_tbs_order.tgl_transaksi,
+					tbt_tbs_order.wkt_transaksi,
 					tbm_pemasok.nama AS pemasok,
 					tbm_barang.nama AS barang,
-					tbt_tbs_order.bruto,
-					tbt_tbs_order.tarra,
-					tbt_tbs_order.netto_1,
-					tbt_tbs_order.potongan,
-					tbt_tbs_order.netto_2,
-					tbt_tbs_order.jml_tandan,
-					tbt_tbs_order.komidel,
-					tbt_tbs_order.status,
-					tbm_setting_komidel.nama AS kategori_tbs
+					COUNT(tbt_tbs_order_detail.id) AS jumlah_kendaraan,
+					SUM(tbt_tbs_order_detail.netto_2) AS total_berat,
+					tbt_tbs_order.status
 				FROM
 					tbt_tbs_order
 				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
 				INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
-				INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order.id_komidel
+				INNER JOIN tbt_tbs_order_detail ON tbt_tbs_order_detail.id_tbs_order = tbt_tbs_order.id
 				WHERE
 					tbt_tbs_order.deleted = '0'
 					AND tbt_tbs_order.status = '0'
 					AND tbt_tbs_order.tgl_transaksi = CURDATE()
-				ORDER BY tbt_tbs_order.id ASC ";
+				GROUP BY 
+					tbt_tbs_order.id
+				ORDER BY 
+					tbt_tbs_order.id ASC ";
 		$Record = $this->queryAction($sql,'S');
 		
 		$count = count($Record);
@@ -155,23 +232,18 @@ class TbsOrder extends MainConf
 				
 				if($row['status'] == '0')
 				{
-					$actionBtn .= '<a href=\"#\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
-					$actionBtn .= '<a href=\"#\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';
+					$actionBtn .= '<a href=\"javascript:void(0)\"  class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
+					$actionBtn .= '<a href=\"javascript:void(0)\"  class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';
 				}
 				
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['no_tbs_order'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
+				$tblBody .= '<td>'.$row['wkt_transaksi'].'</td>';
 				$tblBody .= '<td>'.$row['pemasok'].'</td>';
 				$tblBody .= '<td>'.$row['barang'].'</td>';
-				$tblBody .= '<td>'.$row['bruto'].'</td>';
-				$tblBody .= '<td>'.$row['tarra'].'</td>';
-				$tblBody .= '<td>'.$row['netto_1'].'</td>';
-				$tblBody .= '<td>'.$row['potongan'].'</td>';
-				$tblBody .= '<td>'.$row['netto_2'].'</td>';
-				$tblBody .= '<td>'.$row['jml_tandan'].'</td>';
-				$tblBody .= '<td>'.$row['komidel'].'</td>';
-				$tblBody .= '<td>'.$row['kategori_tbs'].'</td>';
+				$tblBody .= '<td>'.$row['jumlah_kendaraan'].'</td>';
+				$tblBody .= '<td>'.$row['total_berat'].'</td>';
 				$tblBody .= '<td>';
 				$tblBody .= $actionBtn;
 				$tblBody .=	'</td>';			
@@ -190,13 +262,14 @@ class TbsOrder extends MainConf
 	{
 		$sql = "SELECT
 					tbm_barang.nama,
-					SUM(tbt_tbs_order.netto_2) AS jml_masuk,
+					SUM(tbt_tbs_order_detail.netto_2) AS jml_masuk,
 					tbm_setting_komidel.nama AS kategori_tbs
 				FROM
 					tbt_tbs_order
+				INNER JOIN tbt_tbs_order_detail ON tbt_tbs_order_detail.id_tbs_order = tbt_tbs_order.id
 				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
 				INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
-				INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order.id_komidel
+				INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order_detail.id_komidel
 				WHERE
 					tbt_tbs_order.deleted = '0'
 				AND tbt_tbs_order.tgl_transaksi = CURDATE()
@@ -242,30 +315,39 @@ class TbsOrder extends MainConf
 		$Record = TbsOrderRecord::finder()->findByPk($id);
 		if($Record)
 		{
-			$this->modalJudul->Text = 'Edit Data';
-			
 			$this->idTbsOrder->Value = $Record->id;
-			
 			$this->DDBarang->SelectedValue = $Record->id_barang;
 			$this->DDPemasok->SelectedValue = $Record->id_pemasok;
-			$this->DDJenisKendaraan->SelectedValue = $Record->id_jenis_kendaraan ;
 			
-			$this->no_polisi->Text = $Record->no_polisi;
-			$this->bruto->Text = $Record->bruto;
-			$this->tarra->Text = $Record->tarra;
-			$this->netto_1->Text = $Record->netto_1;
-			$this->potongan->Text = $Record->potongan ;
-			$this->hasil_potongan->Text = $Record->hasil_potongan;
-			$this->netto_2->Text = $Record->netto_2;
-			$this->jml_tandan->Text = $Record->jml_tandan ;
-			$this->komidel->Text = $Record->komidel ;
-			$this->idKomidel->Value = $Record->id_komidel;
-			$this->kategori_tbs->Text = KomidelRecord::finder()->findByPk($Record->id_komidel)->nama;
-		
+			$sql = "SELECT
+						tbt_tbs_order_detail.id AS id_edit,
+						tbt_tbs_order_detail.id_jenis_kendaraan AS JnsKendaraan,
+						tbm_jenis_kendaraan.jenis_kendaraan AS JnsKendaraanName,
+						tbt_tbs_order_detail.no_polisi AS NoPolisi,
+						tbt_tbs_order_detail.bruto AS Brutto,
+						tbt_tbs_order_detail.tarra AS Tarra,
+						tbt_tbs_order_detail.netto_1 AS Netto_I,
+						tbt_tbs_order_detail.potongan AS Potongan,
+						tbt_tbs_order_detail.hasil_potongan AS HasilPotongan,
+						tbt_tbs_order_detail.netto_2 AS Netto_II,
+						tbt_tbs_order_detail.jml_tandan AS JmlTandan,
+						tbt_tbs_order_detail.komidel AS Komidel,
+						tbt_tbs_order_detail.id_komidel AS KategoriTbs,
+						tbm_setting_komidel.nama AS KategoriTbsName
+					FROM
+						tbt_tbs_order_detail
+					INNER JOIN tbm_jenis_kendaraan ON tbm_jenis_kendaraan.id = tbt_tbs_order_detail.id_jenis_kendaraan
+					INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order_detail.id_komidel
+					WHERE
+						tbt_tbs_order_detail.id_tbs_order = '".$Record->id."'
+					AND tbt_tbs_order_detail.deleted = '0' ";
+			$arr = $this->queryAction($sql,'S');
+			$arrJson = json_encode($arr,true);
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
-					jQuery("#modal-1").modal("show");
+					RenderTempTable('.$arrJson.');
+					jQuery("a[href=\"#formTab\"]").tab("show").empty().append("<i class=\"fa fa-pencil\"></i> Edit");
 					');	
 		}
 		else
@@ -281,11 +363,14 @@ class TbsOrder extends MainConf
 	public function deleteData($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
-		$Record = BongkarSPSIRecord::finder()->findByPk($id);
+		$Record = TbsOrderRecord::finder()->findByPk($id);
 		if($Record)
 		{
 			$Record->deleted = '1';
 			$Record->save();
+			
+			$sqlDelete = "UPDATE tbt_tbs_order_detail SET deleted ='1' WHERE id_tbs_order = '".$id."' ";
+			$this->queryAction($sqlDelete,'C');
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
@@ -310,72 +395,72 @@ class TbsOrder extends MainConf
 	
 	public function submitBtnClicked($sender,$param)
 	{
-		$idTbsOrder = $this->idTbsOrder->Value;
-		$idJenisKendaraan = $this->DDJenisKendaraan->SelectedValue;
-		$idBarang = $this->DDBarang->SelectedValue;
-		$idPemasok = $this->DDPemasok->SelectedValue;
-		
-		$no_polisi = $this->no_polisi->Text;
-		$bruto = $this->bruto->Text;
-		$tarra = $this->tarra->Text;
-		$netto_1 = $this->netto_1->Text;
-		$potongan = $this->potongan->Text;
-		$hasil_potongan = $this->hasil_potongan->Text;
-		$netto_2 = $this->netto_2->Text;
-		$jml_tandan = $this->jml_tandan->Text;
-		$komidel = $this->komidel->Text;
-		$idKomidel = $this->idKomidel->Value;
-		$kategori_tbs = $this->kategori_tbs->Text;
+		//if($this->Page->IsValid)
+		//{
+			$idTbsOrder = $this->idTbsOrder->Value;
+			$idBarang = $this->DDBarang->SelectedValue;
+			$idPemasok = $this->DDPemasok->SelectedValue;
+			
+			$TbsOrderTable = $param->CallBackParameter->TbsOrderTable;
+			
+				if($idTbsOrder != '')
+				{
+					$Record = TbsOrderRecord::finder()->findByPk($idTbsOrder);
+					$msg = "Data Berhasil Diedit";
+					
+					
+				}
+				else
+				{
+					$Record = new TbsOrderRecord();
+					$msg = "Data Berhasil Disimpan";
+					$Record->no_tbs_order = $this->GenerateNoDocument('TBS');
+				}
 				
-		
-			if($idTbsOrder != '')
-			{
-				$Record = TbsOrderRecord::finder()->findByPk($idTbsOrder);
-				$msg = "Data Berhasil Diedit";
+				$Record->id_barang = $idBarang;
+				$Record->id_pemasok = $idPemasok;
+				$Record->tgl_transaksi = date("Y-m-d");
+				$Record->wkt_transaksi = date("G:i:s");
+				$Record->status= '0';
+				$Record->deleted= '0';
+				$Record->save(); 
 				
+				foreach($TbsOrderTable as $row)
+				{
+					if($row->id_edit != '')
+						$TbsOrderDetailRecord = TbsOrderDetailRecord::finder()->findByPk($row->id_edit);
+					else
+						$TbsOrderDetailRecord = new TbsOrderDetailRecord();
+					
+					$TbsOrderDetailRecord->id_tbs_order = $Record->id;
+					$TbsOrderDetailRecord->id_jenis_kendaraan = $row->JnsKendaraan;
+					$TbsOrderDetailRecord->no_polisi = $row->NoPolisi;
+					$TbsOrderDetailRecord->bruto = $row->Brutto;
+					$TbsOrderDetailRecord->tarra = $row->Tarra;
+					$TbsOrderDetailRecord->netto_1 = $row->Netto_I;
+					$TbsOrderDetailRecord->potongan = $row->Potongan;
+					$TbsOrderDetailRecord->hasil_potongan = $row->HasilPotongan;
+					$TbsOrderDetailRecord->netto_2 = $row->Netto_II;
+					$TbsOrderDetailRecord->jml_tandan = $row->JmlTandan;
+					$TbsOrderDetailRecord->komidel = $row->Komidel;
+					$TbsOrderDetailRecord->id_komidel = $row->KategoriTbs;
+					$TbsOrderDetailRecord->deleted = $row->deleted;
+					$TbsOrderDetailRecord->save();
+				}
 				
-			}
-			else
-			{
-				$Record = new TbsOrderRecord();
-				$msg = "Data Berhasil Disimpan";
-				$Record->no_tbs_order = $this->GenerateNoDocument('TBS');
-			}
-			
-			$Record->id_barang = $idBarang;
-			$Record->id_pemasok = $idPemasok;
-			$Record->id_jenis_kendaraan = $idJenisKendaraan;
-			$Record->no_polisi = strtoupper($no_polisi);
-			$Record->tgl_transaksi = date("Y-m-d");
-			$Record->wkt_transaksi = date("G:i:s");
-			$Record->bruto = $bruto;
-			$Record->tarra = $tarra;
-			$Record->netto_1 = $netto_1;
-			$Record->potongan = $potongan;
-			$Record->hasil_potongan = $hasil_potongan;
-			$Record->netto_2 = $netto_2;
-			$Record->jml_tandan = $jml_tandan;
-			$Record->komidel = $komidel;
-			$Record->id_komidel= $idKomidel;
-			$Record->status= '0';
-			$Record->deleted= '0';
-			$Record->save(); 
+					
+				$tblBody = $this->BindGrid();
 				
-			$tblBody = $this->BindGrid();
+				$this->getPage()->getClientScript()->registerEndScript
+								('','
+								toastr.info("'.$msg.'");
+								jQuery("#table-1").dataTable().fnDestroy();
+								jQuery("#table-1 tbody").empty();
+								jQuery("#table-1 tbody").append("'.$tblBody.'");
+								jQuery("a[href=\"#listTab\"]").tab("show");
+								BindGrid();');	
 			
-			$this->getPage()->getClientScript()->registerEndScript
-							('','
-							toastr.info("'.$msg.'");
-							jQuery("#modal-1").modal("hide");
-							jQuery("#table-1").dataTable().fnDestroy();
-							jQuery("#table-1 tbody").empty();
-							jQuery("#table-1 tbody").append("'.$tblBody.'");
-							clearForm();
-							BindGrid();');	
-			
-			
-			
-		
+		//}
 	}
 
 }

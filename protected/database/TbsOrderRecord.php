@@ -8,23 +8,15 @@ class TbsOrderRecord extends TActiveRecord
 
 	public $id;
 	public $no_tbs_order;
-	public $id_barang;
 	public $id_pemasok;
-	public $id_jenis_kendaraan;
-	public $no_polisi;
+	public $id_barang;
 	public $tgl_transaksi;
 	public $wkt_transaksi;
-	public $bruto;
-	public $tarra;
-	public $netto_1;
-	public $potongan;
-	public $hasil_potongan;
-	public $netto_2;
-	public $jml_tandan;
-	public $komidel;
-	public $id_komidel;
+	public $tgl_jatuh_tempo;
 	public $status;
 	public $deleted;
+	
+	
 
 
 	public static function finder($className=__CLASS__)

@@ -34,19 +34,21 @@ class SettingHargaTbsOrder extends MainConf
 					tbt_tbs_order.tgl_transaksi,
 					tbm_pemasok.nama AS pemasok,
 					tbm_kategori_barang.id AS kategori_barang_id,
-					tbm_kategori_barang.nama AS barang,
-					COUNT(tbt_tbs_order.id) AS jml_transaksi,
-					SUM(tbt_tbs_order.netto_2) AS Total_Berat
+					tbm_barang.nama AS barang,
+					COUNT(tbt_tbs_order_detail.id) AS jml_transaksi,
+					SUM(tbt_tbs_order_detail.netto_2) AS Total_Berat
 				FROM
 					tbt_tbs_order
+				INNER JOIN tbt_tbs_order_detail ON tbt_tbs_order_detail.id_tbs_order = tbt_tbs_order.id
 				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
 				INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
 				INNER JOIN tbm_kategori_barang ON tbm_kategori_barang.id = tbm_barang.kategori_id
 				WHERE
 					tbt_tbs_order.deleted = '0'
-				AND tbt_tbs_order. STATUS = '0'
+				AND tbt_tbs_order.`status` = '0'
+				AND tbt_tbs_order_detail.deleted = '0'
 				GROUP BY
-					tbm_kategori_barang.id,
+					tbm_barang.id,
 					tbt_tbs_order.tgl_transaksi
 				ORDER BY
 					tbt_tbs_order.id ASC ";
@@ -88,7 +90,7 @@ class SettingHargaTbsOrder extends MainConf
 			{
 				$actionBtn='';
 				
-				$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['kategori_barang_id'].',\''.$row['tgl_transaksi'].'\')\"><i class=\"entypo-pencil\" ></i>Set Harga</a>&nbsp;&nbsp;';
+				$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id_barang'].',\''.$row['tgl_transaksi'].'\')\"><i class=\"entypo-pencil\" ></i>Set Harga</a>&nbsp;&nbsp;';
 				
 				
 				$idSatuan = BarangSatuanRecord::finder()->find('id_barang = ? AND urutan = ?',$row['id_barang'],'1')->id_satuan;
@@ -118,13 +120,13 @@ class SettingHargaTbsOrder extends MainConf
 	
 	public function editForm($sender,$param)
 	{
-		$kategori_barang_id = $param->CallbackParameter->kategori_barang_id;
+		$idBarang = $param->CallbackParameter->idBarang;
 		$tglTransaksi = $param->CallbackParameter->tglTransaksi;
-		$nmBarang = BarangKategoriRecord::finder()->findByPk($kategori_barang_id)->nama;
+		$nmBarang = BarangRecord::finder()->findByPk($idBarang)->nama;
 		
 		$this->tglTransaksi->Value = $tglTransaksi;
 		$this->nmTgl->Text = $this->ConvertDate($tglTransaksi,'3');
-		$this->idBarang->Value = $kategori_barang_id;
+		$this->idBarang->Value = $idBarang;
 		$this->nmBarang->Text = $nmBarang;
 		$arr = array();
 		$sqlKategHarga = "SELECT
@@ -147,7 +149,7 @@ class SettingHargaTbsOrder extends MainConf
 				FROM
 					tbm_setting_komidel
 				LEFT JOIN tbt_harga_tbs_order ON tbt_harga_tbs_order.id_komidel = tbm_setting_komidel.id
-				AND tbt_harga_tbs_order.id_kategori_harga = '$idKategHarga' AND tbt_harga_tbs_order.tgl_transaksi = '$tglTransaksi'
+				AND tbt_harga_tbs_order.id_kategori_harga = '$idKategHarga' AND tbt_harga_tbs_order.tgl_transaksi = '$tglTransaksi' AND tbt_harga_tbs_order.id_barang = '$idBarang'
 				WHERE
 					tbm_setting_komidel.deleted = '0' 
 				ORDER BY tbm_setting_komidel.komidel ASC ";

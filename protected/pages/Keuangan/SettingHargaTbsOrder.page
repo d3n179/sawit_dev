@@ -262,7 +262,7 @@
 				});
 			}
 			
-			function editClicked(kategori_barang_id,tglTransaksi)
+			function editClicked(idBarang,tglTransaksi)
 			{
 				if(confirm('Proses Data Ini ? '))
 				{
@@ -270,7 +270,7 @@
 					loadContent();
 					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
-							kategori_barang_id:kategori_barang_id,tglTransaksi:tglTransaksi
+							idBarang:idBarang,tglTransaksi:tglTransaksi
 						});
 						request.dispatch();
 					

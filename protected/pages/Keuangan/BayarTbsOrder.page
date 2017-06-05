@@ -16,6 +16,8 @@
 						<div class="col-md-3">
 							<div class="form-group">
 							<label class="control-label" for="Pemasok">Pemasok</label>	  
+							<com:TActiveHiddenField ID="idTbsOrder"/>
+							<com:TActiveHiddenField ID="statusTbsOrder"/>
 							<com:TActiveHiddenField ID="idBarang"/>
 							<com:TActiveHiddenField ID="idPemasok"/>
 							<com:TActiveHiddenField ID="tglTbs"/>
@@ -85,6 +87,7 @@
 							<label class="control-label" for="sisa_bayar">Jumlah Pembayaran</label>
 								<com:TActiveTextBox 
 										ID="jml_bayar" 
+										Attributes.OnChange="cekHutang();"
 										Enabled="true"
 										CssClass="form-control mask_currency" />
 								<com:TRequiredFieldValidator 
@@ -166,6 +169,24 @@
 										  ValidationGroup="val" />
 							</div>
 						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+							<label class="control-label" for="noRef">Jatuh Tempo</label>
+									<com:TActiveTextBox 
+										ID="jatuh_tempo" 
+										Enabled="false"
+										CausesValidation="true"
+										CssClass="form-control date-picker" />
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="jatuh_tempo"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
 					</div>
 					
 					<div class="row">	
@@ -216,13 +237,30 @@
 			</div>
 		</div>
 	</div>
-	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<com:TActiveButton
+										ID="importBtn" 
+										Text="Import"
+										Visible="true"
+										OnClick="importBtnClicked"
+										CausesValidation="false"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>
+			</div>
+		</div>	
+	</div>	
 	<div class="row">	
 		<div class="col-md-12">
 	<div class="form-group">
 	<table class="table table-bordered table-striped datatable" id="table-1">
 			<thead>
 				<tr>
+					<th>No Tbs Order</th>
 					<th>Tgl Transaksi</th>
 					<th>Pemasok</th>
 					<th>Barang</th>
@@ -237,6 +275,28 @@
 	</div>
 	</div>
 	</div>
+	
+	<div class="modal fade custom-width" id="modal-3">
+		<div class="modal-dialog" style="width: 800px; height: 500px; ">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body" style="height: 500px; ">
+					 <iframe id="cetakFrame" height="100%" width="100%"></iframe> 
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	</com:TActivePanel>	<!--form End-->
 	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
@@ -257,8 +317,7 @@
 					localDB.commit();
 				}
 											
-				localDB.createTable('BayarTbsTable', ["idPembayaranDetail",
-														"idTransaksi",
+				localDB.createTable('BayarTbsTable', ["idTransaksi",
 														"jenis_kendaraan",
 														"no_polisi",
 														"netto_2",
@@ -355,6 +414,7 @@
 				
 				jQuery('#<%= $this->jnsKelapaSawit->getClientID()%>').val('');
 				jQuery('#<%= $this->tglTbs->getClientID()%>').val('');
+				jQuery('#<%= $this->idTbsOrder->getClientID()%>').val('');
 				jQuery('#<%= $this->idBarang->getClientID()%>').val('');
 				jQuery('#<%= $this->idPemasok->getClientID()%>').val('');
 				
@@ -362,7 +422,13 @@
 				jQuery('#<%= $this->total_tbs_dibayar->getClientID()%>').val('');
 				jQuery('#<%= $this->jml_bayar->getClientID()%>').val('');
 				jQuery('#<%= $this->sisa_bayar->getClientID()%>').val('');
+				jQuery('#<%= $this->jatuh_tempo->getClientID()%>').val('');
+				jQuery('#<%= $this->total_tbs_dibayar->getClientID()%>').val('');
 				
+				Prado.Validation.reset('val');
+					jQuery('.form-body select').val('empty');
+					jQuery('.form-control').val('');
+					
 				jQuery("#tableBayar").dataTable().fnDestroy();
 				jQuery("#tableBayar tbody").empty();
 				jQuery("#tableBayar tbody").append('');
@@ -374,6 +440,17 @@
 					localDB.commit();
 				}
 				
+			}
+			function cekHutang()
+			{
+				var sisa_bayar = parseFloat(jQuery('#<%= $this->sisa_bayar->getClientID()%>').val().replace(/\,/g,''));
+				var jml_bayar = parseFloat(jQuery('#<%= $this->jml_bayar->getClientID()%>').val().replace(/\,/g,''));
+				var statusTbs = jQuery('#<%= $this->statusTbsOrder->getClientID()%>').val();
+				if(jml_bayar < sisa_bayar && statusTbs == '0' )
+					jQuery('#<%= $this->jatuh_tempo->getClientID()%>').prop('disabled',false);
+				else
+					jQuery('#<%= $this->jatuh_tempo->getClientID()%>').prop('disabled',true);
+					
 			}
 			
 			function RenderTempTable(arr)
@@ -387,8 +464,7 @@
 					{
 					var arr = HasilPembayaran(val.netto_2,val.harga,val.netto_1,val.jenis_bongkar,val.jumlah_bongkar,val.fee,val.ppn,val.pph);
 					console.log(arr);
-					localDB.insert('BayarTbsTable', {idPembayaranDetail:val.idPembayaranDetail,
-														idTransaksi:val.idTransaksi,
+					localDB.insert('BayarTbsTable', {idTransaksi:val.idTransaksi,
 														jenis_kendaraan:val.jenis_kendaraan,
 														no_polisi:val.no_polisi,
 														netto_2:val.netto_2,
@@ -408,8 +484,7 @@
 					}
 					else
 					{
-						localDB.insert('BayarTbsTable', {idPembayaranDetail:val.idPembayaranDetail,
-														idTransaksi:val.idTransaksi,
+						localDB.insert('BayarTbsTable', {idTransaksi:val.idTransaksi,
 														jenis_kendaraan:val.jenis_kendaraan,
 														no_polisi:val.no_polisi,
 														netto_2:val.netto_2,
@@ -468,10 +543,11 @@
 							tblBody += '<td>'+val.kategori_tbs+'</td>';
 							tblBody += '</tr>';
 							
-							totalTbsOrder += parseFloat(val.total_tbs_order);
+							console.log(val.total_tbs_order);
+							totalTbsOrder = totalTbsOrder + parseFloat(val.total_tbs_order);
 					});	
 				}
-				
+				console.log(totalTbsOrder);
 				jQuery('#<%= $this->total_tbs->getClientID()%>').val(totalTbsOrder);
 				var tbsSudahDibayar = parseFloat(jQuery('#<%= $this->total_tbs_dibayar->getClientID()%>').val().replace(/\,/g,''));
 				
@@ -480,12 +556,13 @@
 				else
 					var sisaBayar = totalTbsOrder;
 				
-				console.log(totalTbsOrder);
+				
 				console.log(tbsSudahDibayar);
 				console.log(sisaBayar);
 				
 				jQuery('#<%= $this->sisa_bayar->getClientID()%>').val(sisaBayar);
 				
+				cekHutang();
 				jQuery("#tableBayar").dataTable().fnDestroy();
 				jQuery("#tableBayar tbody").empty();
 				jQuery("#tableBayar tbody").append(tblBody);
@@ -659,14 +736,14 @@
 				});
 			}
 			
-			function editClicked(idPemasok,idBarang,kategoriBarangId,tglTransaksi)
+			function editClicked(id)
 			{
 				if(confirm('Proses Data Ini ? '))
 				{
 					loadContent();
 					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
-							idPemasok:idPemasok,idBarang:idBarang,kategoriBarangId:kategoriBarangId,tglTransaksi:tglTransaksi
+							id:id
 						});
 						request.dispatch();
 					

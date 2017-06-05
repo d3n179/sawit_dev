@@ -1,0 +1,131 @@
+<com:TContent ID="Main">
+	<h2>Laporan Umur Hutang PO</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="DDSupplier" class="control-label">Supplier</label>
+				<com:TActiveDropDownList 
+									ID="DDSupplier"
+									Width="190px"
+									PromptText="--Pilih Supplier--"
+									PromptValue=""
+									AutoPostBack="false"
+									CausesValidation="true"
+									DataTextField="nama"
+									DataValueField="id"
+									CssClass="form-control">
+									</com:TActiveDropDownList>
+			</div>
+		</div>
+	</div>	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<button type="button" class="btn btn-blue btn-icon" OnClick="cariClicked()">
+								Cari
+								<i class="entypo-search"></i>
+							</button>
+				<button type="button" class="btn btn-green btn-icon" OnClick="cetakClicked()">
+								Cetak
+								<i class="entypo-print"></i>
+							</button>
+			</div>
+		</div>	
+					
+	</div>
+	
+
+	
+	<div class="row">	
+		<div class="col-md-12">
+		<div class="form-group">
+			<com:TActiveHiddenField ID="arrKartu"/>
+			<table class="table table-bordered datatable" id="table-1">
+				<thead>
+					<tr>
+						<th width="300px">Nama Supplier</th>
+						<th width="300px">Jumlah Order</th>
+						<th width="300px">Total Order</th>
+						<th width="300px">Total Pembayaran Hutang</th>
+						<th width="300px">Sisa Hutang</th>
+						<th width="300px">30 Hari</th>
+						<th width="300px">60 Hari</th>
+						<th width="300px">90 Hari</th>
+						<th width="300px">120 Hari</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="cariCallback" OnCallback="cariBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+			});
+			
+			function cariClicked()
+			{
+				loadContent();
+				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+				unloadContent();
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function cetakClicked()
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+				unloadContent();
+			}
+		</script>
+		
+</com:TContent>
