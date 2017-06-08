@@ -8,17 +8,6 @@ class ContractSales extends MainConf
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
 			
-			$sql = "SELECT
-							tbm_pelanggan.id,
-							tbm_pelanggan.nama
-						FROM
-							tbm_pelanggan
-						WHERE
-							tbm_pelanggan.deleted = '0' ";
-					
-			$arr = $this->queryAction($sql,'S');
-			$this->id_pembeli->DataSource = $arr;
-			$this->id_pembeli->DataBind();
 		}
 		
 	}
@@ -41,21 +30,21 @@ class ContractSales extends MainConf
 		
 		if($idCommodity != '')
 		{
-			if($idCommodity == '0')
+			/*if($idCommodity == '0')
 				$idBarang = '10';
 			else
-				$idBarang = '11';
+				$idBarang = '11';*/
 				
 			$sqlSatuan = "SELECT
 							tbm_satuan.id,
 							tbm_satuan.nama
 						FROM
 							tbm_satuan
-						INNER JOIN tbm_satuan_barang ON tbm_satuan_barang.id_satuan = tbm_satuan.id
 						WHERE
 							tbm_satuan.deleted = '0'
-						AND tbm_satuan_barang.deleted = '0'
-						AND tbm_satuan_barang.id_barang = '$idBarang' ";
+							AND tbm_satuan.id = '12' ";
+						//AND tbm_satuan_barang.deleted = '0'
+						//AND tbm_satuan_barang.id_barang = '$idBarang' ";
 						
 			$arrSatuan = $this->queryAction($sqlSatuan,'S');
 			$this->DDSatuan->DataSource = $arrSatuan;
@@ -129,16 +118,15 @@ class ContractSales extends MainConf
 		$sql = "SELECT
 					tbt_contract_sales.id,
 					tbt_contract_sales.`status`,
+					tbt_contract_sales.id_pembeli AS pembeli,
 					tbt_contract_sales.sales_no,
 					tbt_contract_sales.tgl_kontrak,
 					tbt_contract_sales.commodity_type,
-					tbm_pelanggan.nama AS pembeli,
 					tbt_contract_sales.quantity AS jumlah,
 					tbm_satuan.nama AS satuan,
 					tbt_contract_sales.pricing AS harga
 				FROM
 					tbt_contract_sales
-				INNER JOIN tbm_pelanggan ON tbm_pelanggan.id = tbt_contract_sales.id_pembeli
 				LEFT JOIN tbm_satuan ON tbm_satuan.id = tbt_contract_sales.satuan_commodity
 				WHERE
 					tbt_contract_sales.deleted = '0'
@@ -166,7 +154,7 @@ class ContractSales extends MainConf
 				{
 					$status = '<div class=\"label label-success\">APPROVED</div>';
 					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Kontrak</a>&nbsp;&nbsp;</br>';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;</br>';
+					//$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;</br>';
 					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-gold btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Surat Kuasa</a>&nbsp;&nbsp;';
 				}
 				elseif($row['status'] == '2')
@@ -174,11 +162,20 @@ class ContractSales extends MainConf
 					$status = '<div class=\"label label-danger\">CANCELLED</div>';
 					$actionBtn .= '';
 				}
+				elseif($row['status'] == '4')
+				{
+					$status = '<div class=\"label label-primary\">DELIVERED</div>';
+					$actionBtn .= '';
+				}
 				
 				if($row['commodity_type'] == '0')
 					$commodity_type = 'CPO - Crude Palm Oil';
-				else
+				elseif($row['commodity_type'] == '1')
 					$commodity_type = 'PK - Palm Kernel';
+				elseif($row['commodity_type'] == '2')
+					$commodity_type = 'FIBRE';
+				elseif($row['commodity_type'] == '3')
+					$commodity_type = 'CANGKANG';
 				
 				$totalHarga = $row['jumlah'] * $row['harga'];
 				
@@ -219,7 +216,9 @@ class ContractSales extends MainConf
 			$this->idKontrak->Value = $id;
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
 			$this->commodityChanged();
-			$this->id_pembeli->SelectedValue = $Record->id_pembeli;
+			$this->id_pembeli->Text = $Record->id_pembeli;
+			$this->alamat_pembeli->text = $Record->alamat_pembeli;
+			$this->npwp->text = $Record->npwp;
 			$this->tgl_kontrak->Text = $this->ConvertDate($Record->tgl_kontrak,'1');
 			$this->quantity->Text = $Record->quantity;
 			$this->DDSatuan->SelectedValue = $Record->satuan_commodity;
@@ -256,7 +255,9 @@ class ContractSales extends MainConf
 			
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
 			$this->commodityChanged();
-			$this->id_pembeli->SelectedValue = $Record->id_pembeli;
+			$this->id_pembeli->Text = $Record->id_pembeli;
+			$this->alamat_pembeli->text = $Record->alamat_pembeli;
+			$this->npwp->text = $Record->npwp;
 			$this->tgl_kontrak->Text = $this->ConvertDate($Record->tgl_kontrak,'1');
 			$this->quantity->Text = $Record->quantity;
 			$this->DDSatuan->SelectedValue = $Record->satuan_commodity;
@@ -291,7 +292,7 @@ class ContractSales extends MainConf
 			$Record->status = '1';
 			$Record->save();
 			
-			$commodityType = $Record->commodity_type;
+			/*$commodityType = $Record->commodity_type;
 			
 			if($commodityType == '0')
 				$idBarang = '10';
@@ -391,9 +392,20 @@ class ContractSales extends MainConf
 					toastr.error("Stok Barang Kosong !");
 					unloadContent();
 					');
-			}
+			}*/
 					
-			
+			$this->getPage()->getClientScript()->registerEndScript
+							('','
+							toastr.info("Data Telah Disetujui");
+							clearForm();
+							enabledForm();
+							jQuery("#modal-1").modal("hide");
+							jQuery("#table-1").dataTable().fnDestroy();
+							jQuery("#table-1 tbody").empty();
+							jQuery("#table-1 tbody").append("'.$tblBody.'");
+							BindGrid();
+							unloadContent();
+							');
 		}
 		else
 		{
@@ -490,7 +502,9 @@ class ContractSales extends MainConf
 		
 		
 		$Record->tgl_kontrak = $this->ConvertDate($this->tgl_kontrak->Text,'2');
-		$Record->id_pembeli = $this->id_pembeli->SelectedValue;
+		$Record->id_pembeli = strtoupper($this->id_pembeli->Text);
+		$Record->alamat_pembeli = $this->alamat_pembeli->text;
+		$Record->npwp = $this->npwp->text;
 		$Record->commodity_type = $this->commodity_type->SelectedValue;
 		$Record->quantity = $this->quantity->text;
 		$Record->satuan_commodity = $this->DDSatuan->SelectedValue;
@@ -547,8 +561,12 @@ class ContractSales extends MainConf
 		
 		if($tipeCommodity == '0')
 			$noDoc = "CPO";
-		else
+		elseif($tipeCommodity == '1')
 			$noDoc = "PK";
+		elseif($tipeCommodity == '2')
+			$noDoc = "FIB";
+		elseif($tipeCommodity == '3')
+			$noDoc = "CK";
 					
 		$noTrans = $tmp.$count."/PT.SH/".$noDoc."/".$blnrmw."/".$thn;
 		

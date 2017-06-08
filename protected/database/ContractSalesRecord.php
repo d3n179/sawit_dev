@@ -11,9 +11,12 @@ class ContractSalesRecord extends TActiveRecord
 	public $sales_no;
 	public $commodity_type;
 	public $id_pembeli;
+	public $alamat_pembeli;
+	public $npwp;
 	public $tgl_kontrak;
 	public $tgl_jatuh_tempo;
 	public $quantity;
+	public $delivered_quantity;
 	public $satuan_commodity;
 	public $quality;
 	public $pricing;

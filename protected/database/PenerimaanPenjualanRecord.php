@@ -7,15 +7,13 @@ class PenerimaanPenjualanRecord extends TActiveRecord
 	const TABLE='tbt_penerimaan_penjualan';
 
 	public $id;
-	public $id_kontrak;
+	public $id_penjualan;
 	public $tgl_penerimaan;
-	public $wkt_penerimaan;
+	public $jumlah_dikirim;
+	public $jumlah_diterima;
+	public $jumlah_susut;
+	public $harga;
 	public $total_penjualan;
-	public $total_penerimaan;
-	public $id_coa;
-	public $jns_bayar;
-	public $id_bank;
-	public $no_ref;
 	public $deleted;
 
 

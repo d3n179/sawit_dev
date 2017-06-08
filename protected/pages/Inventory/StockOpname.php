@@ -123,8 +123,8 @@ class StockOpname extends MainConf
 								'namaSatuan'=>$row['nama_satuan'],
 								'stokAwal'=>$currentStok);
 		}
-		var_dump($arrStok);
-		$arrJson = json_encode($arrStok,JSON_UNESCAPED_UNICODE);
+		//var_dump($arrStok);
+		$arrJson = json_encode($arrStok);
 			$this->getPage()->getClientScript()->registerEndScript
 					('','RenderTempTable('.$arrJson.');');
 		

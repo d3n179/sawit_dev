@@ -282,6 +282,7 @@ class TbsOrder extends MainConf
 		
 		$count = count($Record);
 		$tblBody = '';
+		$JmlBuah = 0;
 		if($count > 0)
 		{
 			foreach($Record as $row)
@@ -293,18 +294,26 @@ class TbsOrder extends MainConf
 				$tblBody .= '<td>'.$row['kategori_tbs'].'</td>';	
 				$tblBody .= '<td>'.$row['jml_masuk'].'</td>';
 				$tblBody .= '</tr>';
+				$JmlBuah += $row['jml_masuk'];
 			}
 		}
 		else
 		{
 			$tblBody = '';
 		}
+		$tblfoot = '';
+		$tblfoot .= '<tr>';
+		$tblfoot .= '<td colspan=\"2\" align=\"center\"><Strong>TOTAL</Strong></td>';
+		$tblfoot .= '<td><Strong>'.$JmlBuah.'</Strong></td>';	
+		$tblfoot .= '</tr>';
 		
 		$this->getPage()->getClientScript()->registerEndScript
 						('','
 						jQuery("#table-2").dataTable().fnDestroy();
 						jQuery("#table-2 tbody").empty();
 						jQuery("#table-2 tbody").append("'.$tblBody.'");
+						jQuery("#table-2 tfoot").empty();
+						jQuery("#table-2 tfoot").append("'.$tblfoot.'");
 						BindGridDetail();');	
 						
 	}

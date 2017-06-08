@@ -7,19 +7,6 @@ class PenerimaanJual extends MainConf
 		parent::onPreRenderComplete($param);
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
-			
-			$sql = "SELECT
-							tbm_pelanggan.id,
-							tbm_pelanggan.nama
-						FROM
-							tbm_pelanggan
-						WHERE
-							tbm_pelanggan.deleted = '0' ";
-					
-			$arr = $this->queryAction($sql,'S');
-			$this->id_pembeli->DataSource = $arr;
-			$this->id_pembeli->DataBind();
-			
 			$sql = "SELECT id,nama AS nama FROM tbm_bank WHERE deleted ='0' ";
 			$arr = $this->queryAction($sql,'S');
 			$this->DDBank->DataSource = $arr;
@@ -57,76 +44,24 @@ class PenerimaanJual extends MainConf
 		}
 	}
 	
-	public function bindROCallback()
-	{
-		$sql ="SELECT
-					tbt_request_order.id,
-					tbt_request_order.no_ro
-				FROM
-					tbt_request_order
-				INNER JOIN tbt_request_order_detail ON tbt_request_order_detail.id_ro = tbt_request_order.id
-				WHERE
-					tbt_request_order.`status` = '1'
-				AND tbt_request_order_detail.`status` = '0'
-				AND tbt_request_order.deleted = '0'
-				AND tbt_request_order_detail.deleted = '0'
-				GROUP BY
-					tbt_request_order.id ";
-		$arr = $this->queryAction($sql,'S');
-		$this->DDRequestOrder->DataSource = $arr;
-		$this->DDRequestOrder->DataBind();
-	}
-	
-	public function roChanged()
-	{
-		$idRo = $this->DDRequestOrder->SelectedValue;
-		$sql = "SELECT
-						tbt_request_order_detail.id,
-						tbt_request_order_detail.id_barang,
-						tbm_barang.nama,
-						tbt_request_order_detail.id_satuan,
-						tbm_satuan.nama AS satuan,
-						tbt_request_order_detail.harga_satuan_besar,
-						tbt_request_order_detail.harga_satuan,
-						tbt_request_order_detail.jumlah,
-						tbt_request_order_detail.subtotal
-					FROM
-						tbt_request_order_detail
-					INNER JOIN tbm_barang ON tbm_barang.id = tbt_request_order_detail.id_barang
-					INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_request_order_detail.id_satuan
-					WHERE
-						tbt_request_order_detail.deleted = '0'
-					AND tbt_request_order_detail.id_ro = '$idRo'
-					ORDER BY
-						tbt_request_order_detail.id ASC ";
-			$arr = $this->queryAction($sql,'S');
-			$arrJson = json_encode($arr,true);
-			var_dump($arrJson);
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					RenderTempTable('.$arrJson.');');
-	}
-	
-	
 	public function BindGrid()
 	{
 		$sql = "SELECT
-					tbt_contract_sales.id,
-					tbt_contract_sales.`status`,
-					tbt_contract_sales.sales_no,
-					tbt_contract_sales.tgl_kontrak,
-					tbt_contract_sales.commodity_type,
-					tbm_pelanggan.nama AS pembeli,
-					tbt_contract_sales.quantity AS jumlah,
-					tbt_contract_sales.pricing AS harga
+					tbt_commodity_transaction.id,
+					tbt_commodity_transaction.`status`,
+					tbt_commodity_transaction.transaction_no,
+					tbt_commodity_transaction.tgl_transaksi,
+					tbt_commodity_transaction.commodity_type,
+					tbt_commodity_transaction.pembeli,
+					tbt_commodity_transaction.jumlah_commodity,
+					tbt_commodity_transaction.harga
 				FROM
-					tbt_contract_sales
-				INNER JOIN tbm_pelanggan ON tbm_pelanggan.id = tbt_contract_sales.id_pembeli
+					tbt_commodity_transaction
 				WHERE
-					tbt_contract_sales.deleted = '0'
-					AND tbt_contract_sales.status = '1'
+					tbt_commodity_transaction.deleted = '0'
+					AND tbt_commodity_transaction.status = '1'
 				ORDER BY 
-					tbt_contract_sales.id ASC ";
+					tbt_commodity_transaction.id ASC ";
 		$arr = $this->queryAction($sql,'S');
 		
 		$count = count($arr);
@@ -142,20 +77,24 @@ class PenerimaanJual extends MainConf
 				
 				if($row['commodity_type'] == '0')
 					$commodity_type = 'CPO - Crude Palm Oil';
-				else
+				elseif($row['commodity_type'] == '1')
 					$commodity_type = 'PK - Palm Kernel';
+				elseif($row['commodity_type'] == '2')
+					$commodity_type = 'FIBRE';
+				elseif($row['commodity_type'] == '3')
+					$commodity_type = 'CANGKANG';
 				
-				$totalHarga = $row['jumlah'] * $row['harga'];
+				$totalHarga = $row['jumlah_commodity'] * $row['harga'];
 				
 				
 				
-				$tglKontrak = $this->ConvertDate($row['tgl_kontrak'],'3');
+				$tglTransaksi = $this->ConvertDate($row['tgl_transaksi'],'3');
 				$tblBody .= '<tr>';
-				$tblBody .= '<td>'.$row['sales_no'].'</td>';
-				$tblBody .= '<td>'.$tglKontrak.'</td>';
+				$tblBody .= '<td>'.$row['transaction_no'].'</td>';
+				$tblBody .= '<td>'.$tglTransaksi.'</td>';
 				$tblBody .= '<td>'.$row['pembeli'].'</td>';
 				$tblBody .= '<td>'.$commodity_type.'</td>';
-				$tblBody .= '<td>'.$row['jumlah'].'</td>';
+				$tblBody .= '<td>'.$row['jumlah_commodity'].'</td>';
 				$tblBody .= '<td>'.number_format($row['harga'],2,'.',',').'</td>';
 				$tblBody .= '<td>'.number_format($totalHarga,2,'.',',').'</td>';
 				$tblBody .= '<td>';
@@ -176,27 +115,58 @@ class PenerimaanJual extends MainConf
 	public function prosesClicked($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
-		$Record = ContractSalesRecord::finder()->findByPk($id);
+		$Record = CommodityTransactionRecord::finder()->findByPk($id);
 		if($Record)
 		{
 			$this->modalJudul->Text = 'Proses Penerimaan Penjualan';
-			$this->idKontrak->Value = $id;
+			$this->idPenjualan->Value = $id;
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
-			$this->id_pembeli->SelectedValue = $Record->id_pembeli;
-			$this->tgl_kontrak->Text = $this->ConvertDate($Record->tgl_kontrak,'1');
-			$this->quantity->Text = $Record->quantity;
-			$this->pricing->Text = $Record->pricing;
-			$totalJual = $Record->pricing * $Record->quantity;
-			$this->total_jual->Text = $totalJual;
+			$this->pembeli->Text = $Record->pembeli;
+			$this->tgl_transaksi->Text = $this->ConvertDate($Record->tgl_transaksi,'1');
+			$this->jumlah_kirim->Text = $Record->jumlah_commodity;
+			$this->jumlah_diterima->Text = $Record->jumlah_commodity;
+			$this->jumlah_susut->Text = 0;
+			$this->harga->Text = $Record->harga;
+			$totalJual = $Record->harga * $Record->jumlah_commodity;
+			$this->total_penjualan->Text = $totalJual;
+			$this->sisa_bayar->Text = $totalJual;
 			
-			$sql = "SELECT SUM(tbt_penerimaan_penjualan.total_penerimaan) AS total_penerimaan FROM tbt_penerimaan_penjualan WHERE id_kontrak = '".$id."' ";
-			$arr = $this->queryAction($sql,'S');
+			$RecordBayar = PenerimaanPenjualanRecord::finder()->find('id_penjualan = ?',$id);
+			if($RecordBayar)
+			{
+				$this->idPenerimaan->Value = $RecordBayar->id;
+				$this->tgl_penerimaan->Text = $this->ConvertDate($RecordBayar->tgl_penerimaan,'1');
+				$this->tgl_penerimaan->Enabled = false;
+				$this->jumlah_diterima->Enabled = false;
+				$this->harga->Enabled = false;
+				$this->jumlah_diterima->Text = $RecordBayar->jumlah_diterima;
+				$this->jumlah_susut->Text = $RecordBayar->jumlah_susut;
+				$this->harga->Text = $RecordBayar->harga;
+				$totalJual = $RecordBayar->total_penjualan;
+				$this->total_penjualan->Text = $totalJual;
 			
-			$this->total_terima->Text = $arr[0]['total_penerimaan'];
-			$this->sisa_terima->Text = $totalJual- $arr[0]['total_penerimaan'];
+				$sql = "SELECT SUM(tbt_penerimaan_penjualan_detail.total_pembayaran) AS total_pembayaran FROM tbt_penerimaan_penjualan_detail WHERE id_parent = '".$RecordBayar->id."' ";
+				$arr = $this->queryAction($sql,'S');
+				
+				$this->total_bayar_sebelumnya->Text = $arr[0]['total_pembayaran'];
+				
+				$this->sisa_bayar->Text = $totalJual- $arr[0]['total_pembayaran'];
+			
+			}
+			
+			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
+					var idPenerimaan = jQuery("#'.$this->tgl_penerimaan->getClientID().'").val();
+					if(idPenerimaan != "")
+					{
+						jQuery("#'.$this->tgl_penerimaan->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->jumlah_diterima->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->harga->getClientID().'").prop("disabled",true);
+					
+					}
+					
 					jQuery("#modal-1").modal("show");
 					');	
 		}
@@ -210,212 +180,96 @@ class PenerimaanJual extends MainConf
 		}
 	}
 	
-	public function editForm($sender,$param)
-	{
-		$id = $param->CallbackParameter->id;
-		$Record = ContractSalesRecord::finder()->findByPk($id);
-		if($Record)
-		{
-			$this->modalJudul->Text = 'Edit Kontrak Penjualan';
-			$this->idKontrak->Value = $id;
-			
-			$this->commodity_type->SelectedValue = $Record->commodity_type;
-			$this->id_pembeli->SelectedValue = $Record->id_pembeli;
-			$this->tgl_kontrak->Text = $this->ConvertDate($Record->tgl_kontrak,'1');
-			$this->quantity->Text = $Record->quantity;
-			$this->quality->Text = $Record->quality;
-			$this->pricing->Text = $Record->pricing;
-			$this->delivery->Text = $Record->delivery;
-			$this->term_of_payment->Text = $Record->term_of_payment;
-			$this->remark->Text = $Record->remark;
-			
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					jQuery("#modal-1").modal("show");
-					');	
-		}
-		else
-		{
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					toastr.error("Data Tidak Ditemukan");
-					');	
-		}
-	}
-	
-	public function approveBtnClicked($sender,$param)
-	{
-		$id = $this->idKontrak->Value;
-		$Record = ContractSalesRecord::finder()->findByPk($id);
-		if($Record)
-		{
-			$Record->status = '1';
-			$Record->save();
-			$tblBody = $this->BindGrid();
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					toastr.info("Data Telah Disetujui");
-					clearForm();
-					enabledForm();
-					jQuery("#modal-1").modal("hide");
-					jQuery("#table-1").dataTable().fnDestroy();
-					jQuery("#table-1 tbody").empty();
-					jQuery("#table-1 tbody").append("'.$tblBody.'");
-					BindGrid();
-					unloadContent();
-					');
-		}
-		else
-		{
-			
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					toastr.error("Data gagal Disetujui");
-					');
-		}
-	}
-	
-	public function cancelBtnClicked($sender,$param)
-	{
-		$id = $this->idKontrak->Value;
-		$Record = ContractSalesRecord::finder()->findByPk($id);
-		if($Record)
-		{
-			$Record->status = '2';
-			$Record->save();
-			$tblBody = $this->BindGrid();
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					toastr.info("Data Telah Ditolak");
-					clearForm();
-					enabledForm();
-					jQuery("#modal-1").modal("hide");
-					jQuery("#table-1").dataTable().fnDestroy();
-					jQuery("#table-1 tbody").empty();
-					jQuery("#table-1 tbody").append("'.$tblBody.'");
-					BindGrid();
-					unloadContent();
-					');
-		}
-		else
-		{
-			
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					toastr.error("Data gagal Ditolak");
-					');
-		}
-	}
-	
-	public function deleteData($sender,$param)
-	{
-		$id = $param->CallbackParameter->id;
-		$Record = ContractSalesRecord::finder()->findByPk($id);
-		if($Record)
-		{
-			$Record->deleted = '1';
-			$Record->save();
-			$tblBody = $this->BindGrid();
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					toastr.info("Data Telah Dihapus");
-					jQuery("#table-1").dataTable().fnDestroy();
-					jQuery("#table-1 tbody").empty();
-					jQuery("#table-1 tbody").append("'.$tblBody.'");
-					BindGrid();
-					unloadContent();
-					');
-		}
-		else
-		{
-			
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					toastr.error("Data gagal Dihapus");
-					');
-		}
-	}
 	
 	public function submitBtnClicked($sender,$param)
 	{
-		$Record = new PenerimaanPenjualanRecord();
-		$msg = "Penerimaan Berhasil Diproses !";
-		
-		$sisa_terima = str_replace(",","",$this->sisa_terima->Text);
-		$totalTerima = str_replace(",","",$this->penerimaan->Text);
-		
-		$Record->id_kontrak = $this->idKontrak->Value;
-		$Record->tgl_penerimaan = date("Y-m-d");
-		$Record->wkt_penerimaan = date("G:i:s");
-		$Record->total_penjualan = $sisa_terima;
-		
-		if($totalTerima >= $sisa_terima)
-			$Record->total_penerimaan = $sisa_terima;
+		if($this->idPenerimaan->Value != '')
+			$Record = PenerimaanPenjualanRecord::finder()->findByPk($this->idPenerimaan->Value);
 		else
-			$Record->total_penerimaan = $totalTerima;
-			
-		$Record->id_coa = $this->DDCoa->text;
-		$Record->jns_bayar = $this->DDJnsBayar->SelectedValue;
-		if($this->DDJnsBayar->SelectedValue == '1')
-			$Record->id_bank = $this->DDBank->SelectedValue;
-		else
-			$Record->id_bank = '8';
-			
-		$Record->no_ref = $this->noRef->text;
-		$Record->save();
-		
-		if($totalTerima >= $sisa_terima)
 		{
-			$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($this->idKontrak->Value);
-			$ContractSalesRecord->status = '3';
-			$ContractSalesRecord->save();
+			$Record = new PenerimaanPenjualanRecord();
+			$Record->id_penjualan = $this->idPenjualan->Value;
+			$Record->tgl_penerimaan = $this->ConvertDate($this->tgl_penerimaan->Text,'2');
+			$Record->jumlah_dikirim = $this->jumlah_kirim->Text;
+			$Record->jumlah_diterima = $this->jumlah_diterima->Text;
+			$Record->jumlah_susut = $this->jumlah_susut->Text;
+			$Record->harga = str_replace(",","",$this->harga->Text);
+			$Record->total_penjualan = str_replace(",","",$this->total_penjualan->Text) ;
+			$Record->save();
 		}
 		
-		$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($this->idKontrak->Value);
-		$customerName = PelangganRecord::finder()->findByPk($ContractSalesRecord->id_pembeli)->nama;
+		$msg = "Penerimaan Berhasil Diproses !";
 		
-		$this->InsertJurnalBukuBesar($Record->id,
+		$sisa_bayar = str_replace(",","",$this->sisa_bayar->Text);
+		$total_pembayaran = str_replace(",","",$this->total_pembayaran->Text);
+		
+		$RecordDetail = new PenerimaanPenjualanDetailRecord();	
+		$RecordDetail->id_parent = $Record->id;
+		$RecordDetail->tgl_pembayaran = date("Y-m-d");
+		$RecordDetail->wkt_pembayaran = date("G:i:s");
+		
+		if($total_pembayaran >= $sisa_bayar)
+			$RecordDetail->total_pembayaran = $sisa_bayar;
+		else
+			$RecordDetail->total_pembayaran = $total_pembayaran;
+			
+		$RecordDetail->id_coa = $this->DDCoa->text;
+		$RecordDetail->jns_bayar = $this->DDJnsBayar->SelectedValue;
+		if($this->DDJnsBayar->SelectedValue == '1')
+			$RecordDetail->id_bank = $this->DDBank->SelectedValue;
+		else
+			$RecordDetail->id_bank = '8';
+			
+		$RecordDetail->no_ref = $this->noRef->text;
+		$RecordDetail->save();
+		
+		if($total_pembayaran >= $sisa_bayar)
+		{
+			$CommodityTransactionRecord = CommodityTransactionRecord::finder()->findByPk($this->idPenjualan->Value);
+			$CommodityTransactionRecord->status = '2';
+			$CommodityTransactionRecord->save();
+		}
+		
+		$CommodityTransactionRecord = CommodityTransactionRecord::finder()->findByPk($this->idPenjualan->Value);
+		$customerName = $CommodityTransactionRecord->pembeli;
+		
+		$this->InsertJurnalBukuBesar($RecordDetail->id,
 									'3',
 									'0',
-									$ContractSalesRecord->sales_no,
-									$Record->tgl_penerimaan,
+									$CommodityTransactionRecord->transaction_no,
+									$RecordDetail->tgl_pembayaran,
 									date("G:i:s"),
-									$Record->id_coa,
-									$Record->id_bank,
-									'Penerimaan Pembayaran Kontrak Penjualan Dari '.$customerName,
-									$Record->total_penerimaan);
+									$RecordDetail->id_coa,
+									$RecordDetail->id_bank,
+									'Penerimaan Pembayaran Penjualan Dari '.$customerName,
+									$RecordDetail->total_pembayaran);
 		
-		$this->InsertLabaRugi($Record->id,
+		$this->InsertLabaRugi($RecordDetail->id,
 								'3',
 								'0',
-								$Record->tgl_penerimaan,
+								$RecordDetail->tgl_pembayaran,
 								date("G:i:s"),
-								'Penerimaan Pembayaran Kontrak Penjualan Dari '.$customerName,
-								$Record->total_penerimaan,
-								$ContractSalesRecord->sales_no);
+								'Penerimaan Pembayaran Penjualan Dari '.$customerName,
+								$RecordDetail->total_pembayaran,
+								$CommodityTransactionRecord->transaction_no);
 		
-		$this->InsertJurnalUmum($Record->id,
+		$this->InsertJurnalUmum($RecordDetail->id,
 								'5',
 								'0',
-								$Record->tgl_penerimaan,
+								$RecordDetail->tgl_pembayaran,
 								date("G:i:s"),
 								'Kas',
-								$Record->total_penerimaan,
-								$ContractSalesRecord->sales_no);
+								$RecordDetail->total_pembayaran,
+								$CommodityTransactionRecord->transaction_no);
 									
-		$this->InsertJurnalUmum($Record->id,
+		$this->InsertJurnalUmum($RecordDetail->id,
 									'5',
 									'1',
-									$Record->tgl_penerimaan,
+									$RecordDetail->tgl_pembayaran,
 									date("G:i:s"),
 									'Piutang',
-									$Record->total_penerimaan,
-									$ContractSalesRecord->sales_no);
+									$RecordDetail->total_pembayaran,
+									$CommodityTransactionRecord->transaction_no);
 															
 		$tblBody = $this->BindGrid();
 			

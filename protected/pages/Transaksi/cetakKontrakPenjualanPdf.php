@@ -25,17 +25,27 @@ class cetakKontrakPenjualanPdf extends MainConf
 		$hrgCommodity = number_format($record->pricing,0,',','.');
 		$totalHarga = $record->quantity * $record->pricing;
 		$totalHarga = number_format($totalHarga,0,',','.');
-		$pelangganRecord = PelangganRecord::finder()->findByPk($record->id_pembeli);
+		//$pelangganRecord = PelangganRecord::finder()->findByPk($record->id_pembeli);
 		
 		if($record->commodity_type == '0')
 		{
 			$contractName = 'CRUDE PALM OIL CONTRACT';
 			$commodityName = 'CRUDE PALM OIL (CPO)';
 		}
-		else
+		elseif($record->commodity_type == '1')
 		{
 			$contractName = 'PALM KERNEL CONTRACT';
 			$commodityName = 'PALM KERNEL (PK)';
+		}
+		elseif($record->commodity_type == '2')
+		{
+			$contractName = 'FIBRE CONTRACT';
+			$commodityName = 'FIBRE';
+		}
+		elseif($record->commodity_type == '3')
+		{
+			$contractName = 'CANGKANG CONTRACT';
+			$commodityName = 'CANGKANG';
 		}
 		
 		$satuanNama = SatuanRecord::finder()->findByPk($record->satuan_commodity)->singkatan;	
@@ -212,7 +222,7 @@ $pdf->Ln(1);
 
 $html = '<table width="100%" cellpadding="0">
 		  <tr>
-			<td align="left" style="font-size:30px">Kepada : '.$pelangganRecord->nama.'</td>
+			<td align="left" style="font-size:30px">Kepada : '.$record->id_pembeli.'</td>
 			<td align="right" style="font-size:30px">Tanggal : '.$this->ConvertDate($record->tgl_kontrak,'3').'</td>
 		  </tr>
 		</table><br />
@@ -237,17 +247,17 @@ $html = '<table width="100%" cellpadding="0">
 		  <tr>
 			<td width="20%" align="left" style="font-size:30px; text-decoration: underline;">PEMBELI</td>
 			<td width="1%" align="center" style="font-size:30px">:</td>
-			<td align="left" width="84%" style="font-size:30px; text-decoration: underline;">'.strtoupper($pelangganRecord->nama).'</td>
+			<td align="left" width="84%" style="font-size:30px; text-decoration: underline;">'.strtoupper($record->id_pembeli).'</td>
 		  </tr>
 		   <tr>
 			<td width="20%" align="left" style="font-size:30px"></td>
 			<td width="1%" align="center" style="font-size:30px"></td>
-			<td align="left" width="84%" style="font-size:30px">'.$pelangganRecord->alamat.'</td>
+			<td align="left" width="84%" style="font-size:30px">'.$record->alamat_pembeli.'</td>
 		  </tr>
 		  <tr>
 			<td width="20%" align="left" style="font-size:30px"></td>
 			<td width="1%" align="center" style="font-size:30px"></td>
-			<td align="left" width="84%" style="font-size:30px">NPWP : '.$pelangganRecord->npwp.'</td>
+			<td align="left" width="84%" style="font-size:30px">NPWP : '.$record->npwp.'</td>
 		  </tr>
 		</table><br />
 		<table width="100%" cellpadding="0">
@@ -281,7 +291,7 @@ $html = '<table width="100%" cellpadding="0">
 			<td width="20%" align="left" style="font-size:30px;"></td>
 			<td width="1%" align="center" style="font-size:30px"></td>
 			<td align="left" width="84%" style="font-size:30px;">
-					Franco to Factory '.$pelangganRecord->nama.'<br /> 
+					Franco to Factory '.$record->id_pembeli.'<br /> 
 					Barang Berasal dari  PMKS '.$profilPerusahaan->nama.'<br />
 					Desa Pasir Jae Kec. Sosa Kab. Padang Lawas Sumatra Utara, 22765 <br />
 					<table width="100%" cellpadding="0">

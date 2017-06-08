@@ -113,7 +113,11 @@ class MainConf extends TPage
 			$tblTrans = 'tbt_stock_opname';
 			$fieldTgl = 'tgl_stock_opname';
 		}
-		
+		elseif($kode == "COM")
+		{
+			$tblTrans = 'tbt_commodity_transaction';
+			$fieldTgl = 'tgl_transaksi';
+		}
 		
 		$month = date("m");
 		$year = date("Y");

@@ -12,273 +12,332 @@
 				</div>
 				
 				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="tgl_kontrak">Tanggal Kontrak</label>
-								<com:TActiveHiddenField ID="idKontrak"/>
-								<com:TActiveTextBox 
-										ID="tgl_kontrak" 
-										CssClass="form-control mask_date date-picker" />
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="tgl_kontrak"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="commodity_type">Commodity Type</label>
-								 <com:TActiveDropDownList 
-									ID="commodity_type"
-									PromptText="--Commodity Type--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="true"
-									CssClass="form-control">
-									<com:TListItem Value = "0" Text="CPO - Crude Palm Oil"/>
-									<com:TListItem Value = "1" Text="PK - Palm Kernel"/>
-									</com:TActiveDropDownList>
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="commodity_type"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-										
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_pembeli">Pembeli</label>
-								 <com:TActiveDropDownList 
-									ID="id_pembeli"
-									PromptText="--Pembeli--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="true"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="id_pembeli"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-										
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="quantity">Jumlah (Kg)</label>
-								 <com:TActiveTextBox 
-										ID="quantity" 
-										CssClass="form-control mask_decimal" 
-										Attributes.PlaceHolder="0"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="quantity"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-										
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="pricing">Harga</label>
-								 <com:TActiveTextBox 
-										ID="pricing" 
-										CssClass="form-control mask_currency" 
-										Attributes.PlaceHolder="0"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="pricing"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-										
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="total_jual">Total Penjualan</label>
-								 <com:TActiveTextBox 
-										ID="total_jual" 
-										CssClass="form-control mask_currency" 
-										Attributes.PlaceHolder="0"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="total_jual"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-										
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="total_jual">Total Penerimaan Sebelumnya</label>
-								 <com:TActiveTextBox 
-										ID="total_terima" 
-										CssClass="form-control mask_currency" 
-										Enabled="False"
-										Attributes.PlaceHolder="0"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="total_terima"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-										
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="total_jual">Sisa Penerimaan</label>
-								 <com:TActiveTextBox 
-										ID="sisa_terima" 
-										CssClass="form-control mask_currency" 
-										Enabled="False"
-										Attributes.PlaceHolder="0"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="sisa_terima"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-										
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="penerimaan">Penerimaan</label>
-								 <com:TActiveTextBox 
-										ID="penerimaan" 
-										CssClass="form-control mask_currency" 
-										Attributes.PlaceHolder="0"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="penerimaan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-										
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-							<label class="control-label" for="DDCoa">Coa</label>
-								<com:TActiveTextBox 
-										ID="DDCoa" 
-										CssClass="form-control" />
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="DDCoa"										 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-							<label class="control-label" for="DDJnsBayar">Jenis Pembayaran</label>
-							 <com:TActiveDropDownList 
-									ID="DDJnsBayar"
-									PromptText="--Jenis Pembayaran--"
-									PromptValue="empty"
-									AutoPostBack="true"
-									CausesValidation="true"
-									CssClass="form-control"
-									OnSelectedIndexChanged="jnsByrChanged">
-									<com:TListItem Text="Cash" Value="0"/>
-									<com:TListItem Text="Transfer" Value="1"/>
-									</com:TActiveDropDownList>
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="DDJnsBayar"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-							<label class="control-label" for="DDBank">Bank</label>
-							 			  
-								 <com:TActiveDropDownList 
-									ID="DDBank"
-									Enabled="false"
-									PromptText="--Pilih Bank--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="true"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="DDBank"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-							<label class="control-label" for="noRef">No Referensi / No Rekening</label>
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="tgl_transaksi">Tanggal Transaksi</label>
+									<com:TActiveHiddenField ID="idPenjualan"/>
+									<com:TActiveHiddenField ID="idPenerimaan"/>
 									<com:TActiveTextBox 
-										ID="noRef" 
+											ID="tgl_transaksi" 
+											Enabled="false"
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_transaksi"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="tgl_penerimaan">Tanggal Penerimaan</label>
+									<com:TActiveTextBox 
+											ID="tgl_penerimaan" 
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_penerimaan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="commodity_type">Commodity Type</label>
+									 <com:TActiveDropDownList 
+										ID="commodity_type"
+										PromptText="--Commodity Type--"
+										PromptValue="empty"
+										AutoPostBack="false"
 										Enabled="false"
 										CausesValidation="true"
-										CssClass="form-control" />
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="noRef"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
+										CssClass="form-control">
+										<com:TListItem Value = "0" Text="CPO - Crude Palm Oil"/>
+										<com:TListItem Value = "1" Text="PK - Palm Kernel"/>
+										<com:TListItem Value = "2" Text="FIBRE"/>
+										<com:TListItem Value = "3" Text="CANGKANG"/>
+										</com:TActiveDropDownList>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="commodity_type"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+											
+								</div>
 							</div>
-						</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="pembeli">Pembeli</label>
+									 <com:TActiveTextBox 
+											ID="pembeli" 
+											CssClass="form-control" 
+											Enabled="false"/>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="pembeli"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+											
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="jumlah_kirim">Jumlah Dikirim (Kg)</label>
+									 <com:TActiveTextBox 
+											ID="jumlah_kirim" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="jumlah_kirim"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="jumlah_diterima">Jumlah Diterima(Kg)</label>
+									 <com:TActiveTextBox 
+											ID="jumlah_diterima" 
+											CssClass="form-control mask_decimal" 
+											Attributes.OnChange="hitungTotal();"
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="jumlah_diterima"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="quantity">Jumlah Susut(Kg)</label>
+									 <com:TActiveTextBox 
+											ID="jumlah_susut" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" 
+											Attributes.OnChange="hitungTotal();"
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="jumlah_susut"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="harga">Harga</label>
+									 <com:TActiveTextBox 
+											ID="harga" 
+											Attributes.OnChange="hitungTotal();"
+											CssClass="form-control mask_currency" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="harga"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="total_penjualan">Total Penjualan</label>
+									 <com:TActiveTextBox 
+											ID="total_penjualan" 
+											Enabled="false"
+											CssClass="form-control mask_currency" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="total_penjualan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="total_bayar_sebelumnya">Total Pembayaran Sebelumnya</label>
+									 <com:TActiveTextBox 
+											ID="total_bayar_sebelumnya" 
+											CssClass="form-control mask_currency" 
+											Enabled="False"
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="total_bayar_sebelumnya"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="sisa_bayar">Sisa Pembayaran</label>
+									 <com:TActiveTextBox 
+											ID="sisa_bayar" 
+											CssClass="form-control mask_currency" 
+											Enabled="False"
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="sisa_bayar"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="total_pembayaran">Pembayaran</label>
+									 <com:TActiveTextBox 
+											ID="total_pembayaran" 
+											CssClass="form-control mask_currency" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="total_pembayaran"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+								<label class="control-label" for="DDCoa">Coa</label>
+									<com:TActiveTextBox 
+											ID="DDCoa" 
+											CssClass="form-control" />
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDCoa"										 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+								<label class="control-label" for="DDJnsBayar">Jenis Pembayaran</label>
+								 <com:TActiveDropDownList 
+										ID="DDJnsBayar"
+										PromptText="--Jenis Pembayaran--"
+										PromptValue="empty"
+										AutoPostBack="true"
+										CausesValidation="true"
+										CssClass="form-control"
+										OnSelectedIndexChanged="jnsByrChanged">
+										<com:TListItem Text="Cash" Value="0"/>
+										<com:TListItem Text="Transfer" Value="1"/>
+										</com:TActiveDropDownList>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDJnsBayar"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+								<label class="control-label" for="DDBank">Bank</label>
+											  
+									 <com:TActiveDropDownList 
+										ID="DDBank"
+										Enabled="false"
+										PromptText="--Pilih Bank--"
+										PromptValue="empty"
+										AutoPostBack="false"
+										CausesValidation="true"
+										CssClass="form-control"
+										DataTextField="nama"
+										DataValueField="id">
+										</com:TActiveDropDownList>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDBank"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>	
+							<div class="col-md-3">
+								<div class="form-group">
+								<label class="control-label" for="noRef">No Referensi / No Rekening</label>
+										<com:TActiveTextBox 
+											ID="noRef" 
+											Enabled="false"
+											CausesValidation="true"
+											CssClass="form-control" />
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="noRef"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>	
+						</div>
 					</div>
 				</div>
 				
@@ -338,11 +397,11 @@
 				<table class="table table-bordered table-striped datatable" id="table-1">
 					<thead>
 						<tr>
-							<th width="150px">No Sales</th>
-							<th width="150px">Tgl Kontrak</th>
+							<th width="150px">No Transaksi</th>
+							<th width="150px">Tgl Transaksi</th>
 							<th width="150px">Pembeli</th>
 							<th width="150px">Commodity Type</th>
-							<th width="100px">Jumlah (Kg)</th>
+							<th width="100px">Jumlah Kirim(Kg)</th>
 							<th width="100px">Harga</th>
 							<th width="100px">Total</th>
 							<th width="50px">Aksi</th>
@@ -446,37 +505,31 @@
 			
 			function clearForm()
 			{
-				jQuery('#<%= $this->idKontrak->getClientID()%>').val('');
-				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').val('');
-				jQuery('#<%= $this->id_pembeli->getClientID()%>').val('empty');
-				jQuery('#<%= $this->commodity_type->getClientID()%>').val('empty');
-				jQuery('#<%= $this->DDJnsBayar->getClientID()%>').val('empty');
-				jQuery('#<%= $this->DDBank->getClientID()%>').val('empty');
-				jQuery('#<%= $this->quantity->getClientID()%>').val('');
-				jQuery('#<%= $this->pricing->getClientID()%>').val('');
-				jQuery('#<%= $this->DDCoa->getClientID()%>').val('');
-				jQuery('#<%= $this->penerimaan->getClientID()%>').val('');
-				jQuery('#<%= $this->noRef->getClientID()%>').val('');
+				jQuery('#<%= $this->idPenjualan->getClientID()%>').val('');
+				jQuery('#<%= $this->idPenerimaan->getClientID()%>').val('');
 				
+				jQuery('#<%= $this->tgl_penerimaan->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->jumlah_diterima->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->harga->getClientID()%>').prop('disabled',false);
 				
-				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',false);
-				jQuery('#<%= $this->id_pembeli->getClientID()%>').prop('disabled',false);
-				jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',false);
-				jQuery('#<%= $this->quantity->getClientID()%>').prop('disabled',false);
-				jQuery('#<%= $this->pricing->getClientID()%>').prop('disabled',false);
+				Prado.Validation.reset('val');
+				jQuery('.form-body select').val('empty');
+				jQuery('.form-control').val('');
+				
 				bindSelect2();
 			}
 			
-			function disabledForm()
+			function hitungTotal()
 			{
-				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',true);
-				jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',true);
-			}
-			
-			function enabledForm()
-			{
-				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',false);
-				jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',false);
+				var jumlah_kirim = parseFloat(jQuery('#<%= $this->jumlah_kirim->getClientID()%>').val());
+				var jumlah_diterima = parseFloat(jQuery('#<%= $this->jumlah_diterima->getClientID()%>').val());
+				var jumlah_susut = jumlah_kirim - jumlah_diterima;
+				jQuery('#<%= $this->jumlah_susut->getClientID()%>').val(jumlah_susut);
+				
+				var harga = parseFloat(jQuery('#<%= $this->harga->getClientID()%>').val().replace(/\,/g,''));
+				var totalPenjualan = harga * jumlah_diterima;
+				jQuery('#<%= $this->total_penjualan->getClientID()%>').val(totalPenjualan);
+				jQuery('#<%= $this->sisa_bayar->getClientID()%>').val(totalPenjualan);
 			}
 			
 			function BindGrid()
@@ -555,6 +608,7 @@
 					return false;
 				}
 			}
+			
 			function prosesClicked(id)
 			{
 				if(confirm('Proses Data Ini ? '))
@@ -562,12 +616,6 @@
 					loadContent();
 					clearForm();
 					
-					jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',true);
-					jQuery('#<%= $this->id_pembeli->getClientID()%>').prop('disabled',true);
-					jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',true);
-					jQuery('#<%= $this->quantity->getClientID()%>').prop('disabled',true);
-					jQuery('#<%= $this->pricing->getClientID()%>').prop('disabled',true);
-					jQuery('#<%= $this->total_jual->getClientID()%>').prop('disabled',true);
 					var request= <%= $this->prosesCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
 							id:id

@@ -73,18 +73,18 @@ class Home extends MainConf
 		{
 			$sql = "SELECT
 						SUM(
-							tbt_penerimaan_penjualan.total_penerimaan
+							tbt_penerimaan_penjualan_detail.total_pembayaran
 						) AS total_penerimaan
 					FROM
-						tbt_penerimaan_penjualan
+						tbt_penerimaan_penjualan_detail
 					WHERE
 						MONTH (
-							tbt_penerimaan_penjualan.tgl_penerimaan
+							tbt_penerimaan_penjualan_detail.tgl_pembayaran
 						) = '$i'
 					AND YEAR (
-						tbt_penerimaan_penjualan.tgl_penerimaan
+						tbt_penerimaan_penjualan_detail.tgl_pembayaran
 					) = '$tahunPendapatan'
-					AND tbt_penerimaan_penjualan.deleted = '0' ";
+					AND tbt_penerimaan_penjualan_detail.deleted = '0' ";
 			$sqlPendapatan = $this->queryAction($sql,'S');
 			
 			$sql = "SELECT

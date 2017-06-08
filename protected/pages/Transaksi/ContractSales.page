@@ -2,8 +2,8 @@
 	<h2>Kontrak Penjualan</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
-	<div class="modal fade-in" id="modal-1" aria-hidden="false">
-		<div class="modal-dialog">
+	<div class="modal fade-in custom-width" id="modal-1" aria-hidden="false">
+		<div class="modal-dialog" style="width: 60%;">
 			<div class="modal-content">
 				
 				<div class="modal-header">
@@ -43,6 +43,8 @@
 									CssClass="form-control">
 									<com:TListItem Value = "0" Text="CPO - Crude Palm Oil"/>
 									<com:TListItem Value = "1" Text="PK - Palm Kernel"/>
+									<com:TListItem Value = "2" Text="FIBRE"/>
+									<com:TListItem Value = "3" Text="CANGKANG"/>
 									</com:TActiveDropDownList>
 									<com:TRequiredFieldValidator 
 										  ControlToValidate="commodity_type"											 
@@ -57,33 +59,6 @@
 							</div>
 						</div>
 						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_pembeli">Pembeli</label>
-								 <com:TActiveDropDownList 
-									ID="id_pembeli"
-									PromptText="--Pembeli--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="true"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-									<com:TRequiredFieldValidator 
-										  ControlToValidate="id_pembeli"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-										
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label" for="quantity">Jumlah</label>
 								<div class="input-group">
@@ -125,7 +100,7 @@
 										
 							</div>
 						</div>	
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<div class="form-group">
 								<label class="control-label" for="pricing">Harga</label>
 								 <com:TActiveTextBox 
@@ -143,6 +118,54 @@
 										
 							</div>
 						</div>	
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="id_pembeli">Pembeli</label>
+								 <com:TActiveTextBox 
+										ID="id_pembeli" 
+										CssClass="form-control upper" />
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="id_pembeli"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val"/>
+										
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="alamat_pembeli">Alamat</label>
+								 <com:TActiveTextBox 
+										ID="alamat_pembeli" 
+										CssClass="form-control" 
+										TextMode="MultiLine"
+										Attributes.PlaceHolder="Alamat"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="alamat_pembeli"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="npwp">NPWP</label>
+								 <com:TActiveTextBox 
+										ID="npwp" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="NPWP"/>
+										
+							</div>
+						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6">
@@ -164,8 +187,6 @@
 										
 							</div>
 						</div>
-					</div>
-					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label" for="delivery">Delivery Status</label>
@@ -185,6 +206,8 @@
 										
 							</div>
 						</div>	
+					</div>
+					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label" for="term_of_payment">Term Of Payment</label>
@@ -204,8 +227,6 @@
 										
 							</div>
 						</div>	
-					</div>	
-					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
 								<label class="control-label" for="remark">REMARKS</label>
@@ -350,7 +371,7 @@
 			{
 				jQuery('#<%= $this->idKontrak->getClientID()%>').val('');
 				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').val('');
-				jQuery('#<%= $this->id_pembeli->getClientID()%>').val('empty');
+				jQuery('#<%= $this->id_pembeli->getClientID()%>').val('');
 				jQuery('#<%= $this->commodity_type->getClientID()%>').val('empty');
 				jQuery('#<%= $this->quantity->getClientID()%>').val('');
 				jQuery('#<%= $this->quality->getClientID()%>').val('');
@@ -359,9 +380,14 @@
 				jQuery('#<%= $this->remark->getClientID()%>').val('');
 				jQuery('#<%= $this->delivery->getClientID()%>').val('');
 				
+				Prado.Validation.reset('val');
+				jQuery('.form-body select').val('empty');
+				jQuery('.form-control').val('');
+					
 				jQuery('#<%= $this->submitBtn->getClientID()%>').show();
 				jQuery('#<%= $this->approveBtn->getClientID()%>').hide();
 				jQuery('#<%= $this->cancelBtn->getClientID()%>').hide();
+				
 				
 				jQuery('#<%= $this->delivery->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',false);
