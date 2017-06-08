@@ -235,7 +235,8 @@
 												Attributes.OnBlur="HsilTimbangan();"
 											CssClass="form-control mask_decimal" />
 											<com:TRequiredFieldValidator 
-											  ControlToValidate="tarra"											 
+											  ControlToValidate="tarra"			
+											  Enabled="false"								 
 											  ErrorMessage=""
 											  Display="Dynamic"
 											  FocusOnError="true" 
@@ -272,7 +273,8 @@
 											Attributes.Placeholder="%"
 											CssClass="form-control mask_decimal" /> 
 											<com:TRequiredFieldValidator 
-											  ControlToValidate="potongan"											 
+											  ControlToValidate="potongan"	
+											  Enabled="false"										 
 											  ErrorMessage=""
 											  Display="Dynamic"
 											  FocusOnError="true" 
@@ -328,6 +330,7 @@
 											Attributes.OnBlur="HsilTimbangan();"
 											CssClass="form-control mask_decimal" />
 											<com:TRequiredFieldValidator 
+											  Enabled="false"
 											  ControlToValidate="jml_tandan"											 
 											  ErrorMessage=""
 											  Display="Dynamic"
@@ -473,8 +476,9 @@
 					jQuery('.form-control').val('');
 					jQuery('a[href="#formTab"]').hide();
 					jQuery('#<%= $this->idTbsOrder->getClientID()%>').val('');
-					localDB.truncate('RequestOrderTable');
+					localDB.truncate('TbsOrderTable');
 					localDB.commit();
+					bindTbsOrderGridLine();
 					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
 				});
 				
@@ -521,14 +525,23 @@
 			function HsilTimbangan()
 			{
 				var bruto = parseFloat(jQuery('#<%= $this->bruto->getClientID()%>').val());
-				var tarra = parseFloat(jQuery('#<%= $this->tarra->getClientID()%>').val());
+				
+				if(jQuery('#<%= $this->tarra->getClientID()%>').val() != '')
+					var tarra = parseFloat(jQuery('#<%= $this->tarra->getClientID()%>').val());
+				else
+					var tarra = 0;
+					
 				var netto_1 = bruto - tarra;
 				
 				netto_1 = parseFloat(netto_1);
 					
 				jQuery('#<%= $this->netto_1->getClientID()%>').val(netto_1);
 					
-				var potongan = parseFloat(jQuery('#<%= $this->potongan->getClientID()%>').val()) / 100;
+				if(jQuery('#<%= $this->potongan->getClientID()%>').val() != '')
+					var potongan = parseFloat(jQuery('#<%= $this->potongan->getClientID()%>').val()) / 100;
+				else
+					var potongan = 0;
+					
 				var hsilPotongan = potongan * netto_1;
 				hsilPotongan = Math.round(hsilPotongan);
 				
@@ -540,8 +553,11 @@
 				
 				jQuery('#<%= $this->netto_2->getClientID()%>').val(netto_2);
 				
-				var jmlTandan =  parseFloat(jQuery('#<%= $this->jml_tandan->getClientID()%>').val());
-				
+				if(jQuery('#<%= $this->jml_tandan->getClientID()%>').val() != '')
+					var jmlTandan =  parseFloat(jQuery('#<%= $this->jml_tandan->getClientID()%>').val());
+				else
+					var jmlTandan = 1;
+					
 				var komidel = netto_1 / jmlTandan;
 				komidel = Math.round(komidel);
 					jQuery('#<%= $this->komidel->getClientID()%>').val(komidel);
@@ -556,7 +572,7 @@
 			
 			function RenderTempTable(arr)
 			{
-				localDB.truncate('RequestOrderTable');
+				localDB.truncate('TbsOrderTable');
 				localDB.commit();
 					
 				jQuery.each(arr,function(i,val)
@@ -590,12 +606,29 @@
 				var JnsKendaraanName = jQuery('#<%= $this->DDJenisKendaraan->getClientID()%> option:selected').text();
 				var NoPolisi = jQuery('#<%= $this->no_polisi->getClientID()%>').val();
 				var Brutto = jQuery('#<%= $this->bruto->getClientID()%>').val();
-				var Tarra = jQuery('#<%= $this->tarra->getClientID()%>').val();
+				
+				if(jQuery('#<%= $this->tarra->getClientID()%>').val() != '')
+					var Tarra = jQuery('#<%= $this->tarra->getClientID()%>').val();
+				else
+					var Tarra = 0;
+					
+				
+				if(jQuery('#<%= $this->potongan->getClientID()%>').val() != '')
+					var Potongan = jQuery('#<%= $this->potongan->getClientID()%>').val();
+				else
+					var Potongan = 0;
+					
 				var Netto_I = jQuery('#<%= $this->netto_1->getClientID()%>').val();
-				var Potongan = jQuery('#<%= $this->potongan->getClientID()%>').val();
+				
 				var HasilPotongan = jQuery('#<%= $this->hasil_potongan->getClientID()%>').val();
 				var Netto_II = jQuery('#<%= $this->netto_2->getClientID()%>').val();
-				var JmlTandan = jQuery('#<%= $this->jml_tandan->getClientID()%>').val();
+				
+				if(jQuery('#<%= $this->jml_tandan->getClientID()%>').val() != '')
+					var JmlTandan = jQuery('#<%= $this->jml_tandan->getClientID()%>').val();
+				else
+					var JmlTandan = 1;
+					
+				
 				var Komidel = jQuery('#<%= $this->komidel->getClientID()%>').val();
 				var KategoriTbs = jQuery('#<%= $this->idKomidel->getClientID()%>').val();
 				var KategoriTbsName = jQuery('#<%= $this->kategori_tbs->getClientID()%>').val();
