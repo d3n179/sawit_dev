@@ -113,6 +113,22 @@
 						<div class="row">	
 							<div class="col-md-2">
 								<div class="form-group">
+								<label class="control-label" for="tgl_transaksi">Tgl Transaksi</label>	  
+									<com:TActiveTextBox 
+											ID="tgl_transaksi" 
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_transaksi"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="valDetail" />
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
 								<label class="control-label" for="DDPemasok">Pemasok</label>	  
 									<com:TActiveDropDownList 
 										ID="DDPemasok"
@@ -486,6 +502,22 @@
 				{
 					jQuery('a[href="#formTab"]').on('shown.bs.tab', function (e) 
 					{
+						var today = new Date();
+						var dd = today.getDate();
+						var mm = today.getMonth()+1; 
+						var yyyy = today.getFullYear();
+
+						if(dd<10) {
+							dd='0'+dd
+						} 
+
+						if(mm<10) {
+							mm='0'+mm
+						} 
+
+						today = dd+'-'+mm+'-'+yyyy;
+						console.log(today);
+						jQuery('#<%= $this->tgl_transaksi->getClientID()%>').val(today);
 						Prado.Validation.reset('val');
 						var target = e.target.attributes.href.value;
 						jQuery(target +' input:first').focus();
@@ -500,6 +532,25 @@
 			function formTabShow()
 			{
 				jQuery("a[href=\"#formTab\"]").tab("show");
+				var today = new Date();
+						var dd = today.getDate();
+						var mm = today.getMonth()+1; 
+						var yyyy = today.getFullYear();
+
+						if(dd<10) {
+							dd='0'+dd
+						} 
+
+						if(mm<10) {
+							mm='0'+mm
+						} 
+
+						today = dd+'-'+mm+'-'+yyyy;
+						console.log(today);
+						jQuery('#<%= $this->tgl_transaksi->getClientID()%>').val(today);
+						Prado.Validation.reset('val');
+						var target = e.target.attributes.href.value;
+						jQuery(target +' input:first').focus();
 			}
 			
 			function clearForm()

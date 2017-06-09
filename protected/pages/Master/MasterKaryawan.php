@@ -321,7 +321,7 @@ class MasterKaryawan extends MainConf
 	
 	public function cetakBtnClicked()
 	{
-		$this->Response->redirect($this->Service->constructUrl('Hrd.cetakSlipGajiNewXls',
+		$this->Response->redirect($this->Service->constructUrl('Hrd.cetakSlipGajiPdf',
 			array(
 				'bulan'=>$this->DDBulan->SelectedValue,
 				'tahun'=>$this->DDTahun->SelectedValue,

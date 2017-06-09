@@ -327,7 +327,7 @@ class TbsOrder extends MainConf
 			$this->idTbsOrder->Value = $Record->id;
 			$this->DDBarang->SelectedValue = $Record->id_barang;
 			$this->DDPemasok->SelectedValue = $Record->id_pemasok;
-			
+			$this->tgl_transaksi->Text = $this->ConvertDate($Record->tgl_transaksi,'1');
 			$sql = "SELECT
 						tbt_tbs_order_detail.id AS id_edit,
 						tbt_tbs_order_detail.id_jenis_kendaraan AS JnsKendaraan,
@@ -409,7 +409,19 @@ class TbsOrder extends MainConf
 			$idTbsOrder = $this->idTbsOrder->Value;
 			$idBarang = $this->DDBarang->SelectedValue;
 			$idPemasok = $this->DDPemasok->SelectedValue;
+			$tglTransaksi = $this->ConvertDate($this->tgl_transaksi->Text,'2');
+			$currentDate = date("Y-m-d");
+			$now = time(); // or your date as well
+			$your_date = strtotime($tglTransaksi);
+			$datediff = $now - $your_date;
+
+			$diff = floor($datediff / (60 * 60 * 24));
+
+
 			
+			if($diff < 2)
+			{
+				
 			$TbsOrderTable = $param->CallBackParameter->TbsOrderTable;
 			
 				if($idTbsOrder != '')
@@ -428,7 +440,7 @@ class TbsOrder extends MainConf
 				
 				$Record->id_barang = $idBarang;
 				$Record->id_pemasok = $idPemasok;
-				$Record->tgl_transaksi = date("Y-m-d");
+				$Record->tgl_transaksi = $this->ConvertDate($this->tgl_transaksi->Text,'2');
 				$Record->wkt_transaksi = date("G:i:s");
 				$Record->status= '0';
 				$Record->deleted= '0';
@@ -468,6 +480,14 @@ class TbsOrder extends MainConf
 								jQuery("#table-1 tbody").append("'.$tblBody.'");
 								jQuery("a[href=\"#listTab\"]").tab("show");
 								BindGrid();');	
+			}
+			else
+			{
+				$this->getPage()->getClientScript()->registerEndScript
+								('','
+								toastr.error("Tanggal Transaksi Melebihi H - 1 !");
+								unloadContent();');	
+			}
 			
 		//}
 	}

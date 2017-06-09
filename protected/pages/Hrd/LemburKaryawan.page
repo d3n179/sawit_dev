@@ -24,7 +24,7 @@
 									PromptValue="empty"
 									AutoPostBack="false"
 									CausesValidation="false"
-									CssClass="form-control"
+									CssClass="form-control select2"
 									DataTextField="nama"
 									DataValueField="id">
 									</com:TActiveDropDownList>
@@ -74,7 +74,8 @@
 									<com:TListItem Value="3" Text="LPPLK"/>
 									</com:TActiveDropDownList>
 										<com:TRequiredFieldValidator 
-										  ControlToValidate="DDJenisLembur"											 
+										  ControlToValidate="DDJenisLembur"		
+										  InitialValue="empty"									 
 										  ErrorMessage=""
 										  Display="Dynamic"
 										  FocusOnError="true" 
@@ -171,13 +172,14 @@
 			
 			function clearForm()
 			{
-				
 				jQuery('#<%= $this->idLemburKaryawan->getClientID()%>').val('');
 				jQuery('#<%= $this->lama_lembur->getClientID()%>').val('');
 				jQuery('#<%= $this->DDJenisLembur->getClientID()%>').val('empty');
 				jQuery('#<%= $this->DDKaryawan->getClientID()%>').val('empty');
+				jQuery('#<%= $this->DDKaryawan->getClientID()%>').select2('val','empty');
 				jQuery('#<%= $this->tgl_lembur->getClientID()%>').val('');
 			}
+			
 			
 			function BindGrid()
 			{
