@@ -12,6 +12,7 @@ class ShiftSettingRecord extends TActiveRecord
 	public $pulang;
 	public $lama;
 	public $waktumakan;
+	public $waktumakanselesai;
 	public $ket;
 	public $deleted;
 	

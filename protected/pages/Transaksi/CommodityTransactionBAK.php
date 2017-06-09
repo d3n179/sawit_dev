@@ -1,5 +1,5 @@
 <?PHP
-class CommodityTransaction extends MainConf
+class CommodityTransactionBAK extends MainConf
 {
 
 	public function onPreRenderComplete($param)
@@ -19,7 +19,7 @@ class CommodityTransaction extends MainConf
 		
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
-			$sql = "SELECT id,sales_no AS nama FROM tbt_contract_sales WHERE deleted !='1' AND (status = '1' OR status = '3') ";
+			$sql = "SELECT id,sales_no AS nama FROM tbt_contract_sales WHERE deleted !='1' AND status = '1' ";
 			$this->DDKontrak->DataSource = $this->queryAction($sql,'S');
 			$this->DDKontrak->DataBind();
 			
@@ -35,6 +35,7 @@ class CommodityTransaction extends MainConf
 		var_dump($this->DDKontrak->SelectedValue);
 		if($idKontrak != '')
 		{
+			
 			$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($idKontrak);
 			if($ContractSalesRecord)
 			{
@@ -52,12 +53,10 @@ class CommodityTransaction extends MainConf
 		$sql = "SELECT
 					tbt_commodity_transaction.id,
 					tbt_commodity_transaction.transaction_no,
-					tbt_commodity_transaction.no_kendaraan,
-					tbt_commodity_transaction.transporter,
 					tbt_commodity_transaction.tgl_transaksi,
 					tbt_commodity_transaction.pembeli,
 					tbt_commodity_transaction.commodity_type,
-					tbt_commodity_transaction.netto_2,
+					tbt_commodity_transaction.jumlah_commodity,
 					tbt_commodity_transaction.id_satuan,
 					tbm_satuan.nama AS satuan,
 					tbt_commodity_transaction.harga,
@@ -91,24 +90,21 @@ class CommodityTransaction extends MainConf
 					
 				if($row['status'] == '0')
 				{
-					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"prosesClicked('.$row['id'].')\"><i class=\"entypo-check\" ></i>Proses</a>&nbsp;&nbsp;';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
+					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"prosesClicked('.$row['id'].')\"><i class=\"entypo-check\" ></i>Proses</a>&nbsp;&nbsp;</br>';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;</br>';
 					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
 				}
 				elseif($row['status'] != '0' )
 				{
 					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;</br>';
-					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakTiketClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Tiket</a>&nbsp;&nbsp;</br>';
 				}
 					
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['transaction_no'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
 				$tblBody .= '<td>'.$row['pembeli'].'</td>';
-				$tblBody .= '<td>'.$row['no_kendaraan'].'</td>';
-				$tblBody .= '<td>'.$row['transporter'].'</td>';
 				$tblBody .= '<td>'.$commodity_type.'</td>';
-				$tblBody .= '<td>'.$row['netto_2'].'</td>';
+				$tblBody .= '<td>'.$row['jumlah_commodity'].'</td>';
 				$tblBody .= '<td>'.$row['satuan'].'</td>';
 				$tblBody .= '<td>'.number_format($row['harga'],2,".",",").'</td>';
 				$tblBody .= '<td>'.number_format($row['total'],2,".",",").'</td>';
@@ -132,60 +128,38 @@ class CommodityTransaction extends MainConf
 		if($Record)
 		{
 			$this->idCommodityTransaction->Value = $id;
-			$this->tgl_masuk->Text = $this->ConvertDate($Record->tgl_masuk,'1');
-			$this->wkt_masuk->Text = $Record->wkt_masuk;
-			$this->tgl_keluar->Text = $this->ConvertDate($Record->tgl_keluar,'1');
-			$this->wkt_keluar->Text = $Record->wkt_keluar;
+			$this->tgl_transaksi->Text = $this->ConvertDate($Record->tgl_transaksi,'1');
 			$this->JnsKontrak->SelectedValue = $Record->jns_kontrak;
 			
 			if($Record->jns_kontrak == '1')	
 				$this->DDKontrak->SelectedValue = $Record->id_kontrak;
 			else
 				$this->DDKontrak->SelectedValue = 'empty';
-			
-			$this->no_kendaraan->Text = $Record->no_kendaraan;
-			$this->transporter->Text = $Record->transporter;	
+				
 			$this->Pembeli->Text = $Record->pembeli;
 			$this->npwp->Text = $Record->npwp;
 			$this->alamat_pembeli->Text = $Record->alamat_pembeli;
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
-			$this->bruto->text = $Record->bruto;
-			$this->tarra->text = $Record->tarra;
-			$this->netto_1->text = $Record->netto_1;
-			$this->potongan->text = $Record->potongan;
-			$this->netto_2->text = $Record->netto_2;
+			$this->berat_kendaraan->text = $Record->berat_kendaraan;
+			$this->berat_kendaraan_isi->text = $Record->berat_kendaraan_isi;
+			$this->jumlah_commodity->text = $Record->jumlah_commodity;
 			$this->harga->text = $Record->harga;
 			$this->total->text = $Record->total;
-			$this->ffa->text = $Record->ffa;
-			$this->moist->text = $Record->moist;
-			$this->dirt->text = $Record->dirt;
-			$this->no_segel->text = $Record->no_segel;
 			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
-					jQuery("#'.$this->tgl_masuk->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->wkt_masuk->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->tgl_keluar->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->wkt_keluar->getClientID().'").prop("disabled",true);
+					jQuery("#'.$this->tgl_transaksi->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->JnsKontrak->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->DDKontrak->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->Pembeli->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->no_kendaraan->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->transporter->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->npwp->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->alamat_pembeli->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->commodity_type->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->bruto->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->tarra->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->netto_1->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->potongan->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->netto_2->getClientID().'").prop("disabled",true);
+					jQuery("#'.$this->berat_kendaraan->getClientID().'").prop("disabled",true);
+					jQuery("#'.$this->berat_kendaraan_isi->getClientID().'").prop("disabled",true);
+					jQuery("#'.$this->jumlah_commodity->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->harga->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->ffa->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->moist->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->dirt->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->no_segel->getClientID().'").prop("disabled",true);
 					jQuery("a[href=\"#formTab\"]").tab("show").empty().append("<i class=\"entypo-check\"></i> Proses");
 					');	
 					
@@ -207,45 +181,44 @@ class CommodityTransaction extends MainConf
 		if($Record)
 		{
 			$this->idCommodityTransaction->Value = $id;
-			$this->tgl_masuk->Text = $this->ConvertDate($Record->tgl_masuk,'1');
-			$this->wkt_masuk->Text = $Record->wkt_masuk;
-			$this->tgl_keluar->Text = $this->ConvertDate($Record->tgl_keluar,'1');
-			$this->wkt_keluar->Text = $Record->wkt_keluar;
+			$this->tgl_transaksi->Text = $this->ConvertDate($Record->tgl_transaksi,'1');
 			$this->JnsKontrak->SelectedValue = $Record->jns_kontrak;
 			
 			if($Record->jns_kontrak == '1')	
 				$this->DDKontrak->SelectedValue = $Record->id_kontrak;
 			else
 				$this->DDKontrak->SelectedValue = 'empty';
-			
-			$this->no_kendaraan->Text = $Record->no_kendaraan;
-			$this->transporter->Text = $Record->transporter;		
+				
 			$this->Pembeli->Text = $Record->pembeli;
 			$this->npwp->Text = $Record->npwp;
 			$this->alamat_pembeli->Text = $Record->alamat_pembeli;
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
-			$this->bruto->text = $Record->bruto;
-			$this->tarra->text = $Record->tarra;
-			$this->netto_1->text = $Record->netto_1;
-			$this->potongan->text = $Record->potongan;
-			$this->netto_2->text = $Record->netto_2;
+			$this->berat_kendaraan->text = $Record->berat_kendaraan;
+			$this->berat_kendaraan_isi->text = $Record->berat_kendaraan_isi;
+			$this->jumlah_commodity->text = $Record->jumlah_commodity;
 			$this->harga->text = $Record->harga;
 			$this->total->text = $Record->total;
-			$this->ffa->text = $Record->ffa;
-			$this->moist->text = $Record->moist;
-			$this->dirt->text = $Record->dirt;
-			$this->no_segel->text = $Record->no_segel;
 			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
 					var jnsKontrak = '.$Record->jns_kontrak.';
-					jQuery("#'.$this->JnsKontrak->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->DDKontrak->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->Pembeli->getClientID().'").prop("disabled",true);
-					jQuery("#'.$this->npwp->getClientID().'").prop("disabled",false);
-					jQuery("#'.$this->alamat_pembeli->getClientID().'").prop("disabled",false);
-					jQuery("#'.$this->commodity_type->getClientID().'").prop("disabled",true);
+					if(jnsKontrak == "1")
+					{
+						jQuery("#'.$this->DDKontrak->getClientID().'").prop("disabled",false);
+						jQuery("#'.$this->Pembeli->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->npwp->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->alamat_pembeli->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->commodity_type->getClientID().'").prop("disabled",true);
+					}
+					else
+					{
+						jQuery("#'.$this->DDKontrak->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->Pembeli->getClientID().'").prop("disabled",false);
+						jQuery("#'.$this->npwp->getClientID().'").prop("disabled",false);
+						jQuery("#'.$this->alamat_pembeli->getClientID().'").prop("disabled",false);
+						jQuery("#'.$this->commodity_type->getClientID().'").prop("disabled",false);
+					}
 					jQuery("a[href=\"#formTab\"]").tab("show").empty().append("<i class=\"fa fa-pencil\"></i> Edit");
 					');	
 					
@@ -298,59 +271,28 @@ class CommodityTransaction extends MainConf
 		{
 			$Record = new CommodityTransactionRecord();
 			$Record->transaction_no = $this->GenerateNoDocument('COM');
-			$Record->tgl_transaksi = date("Y-m-d");
-			$Record->wkt_transaksi = date("G:i:s");
 		}
 		
 		if($this->formStatus->Value != '2')
 		{
-			$Record->tgl_masuk = $this->ConvertDate($this->tgl_masuk->Text,'2');
-			$Record->wkt_masuk = $this->wkt_masuk->Text;
-			$Record->tgl_keluar = $this->ConvertDate($this->tgl_keluar->Text,'2');
-			$Record->wkt_keluar = $this->wkt_keluar->Text;
-			
-			if($this->idCommodityTransaction->Value == '')
-			{
+			$Record->tgl_transaksi = $this->ConvertDate($this->tgl_transaksi->Text,'2');
+			$Record->jns_kontrak = $this->JnsKontrak->SelectedValue;
 				
-				
-				if($this->JnsKontrak->SelectedValue == '1')	
-				{
-					$Record->jns_kontrak = $this->JnsKontrak->SelectedValue;
-					$Record->id_kontrak = $this->DDKontrak->SelectedValue;
-				}
-				else
-				{
-					$Record->jns_kontrak = '1';
-					$arrContractSales = array("tipeCommodity"=>$this->commodity_type->SelectedValue,
-												"tglKontrak"=>date("Y-m-d"),
-												"id_pembeli"=>$this->Pembeli->Text,
-												"alamat_pembeli"=>$this->alamat_pembeli->Text,
-												"npwp"=>$this->npwp->Text,
-												"quantity"=>$this->netto_2->text,
-												"pricing"=>$this->harga->text);
-					$Record->id_kontrak = $this->createNewContract($arrContractSales);
-				}
-			}
-			
-			$Record->no_kendaraan = strtoupper($this->no_kendaraan->Text);
-			$Record->transporter = strtoupper($this->transporter->Text);		
+			if($this->JnsKontrak->SelectedValue == '1')	
+				$Record->id_kontrak = $this->DDKontrak->SelectedValue;
+			else
+				$Record->id_kontrak = '';
+					
 			$Record->pembeli = strtoupper($this->Pembeli->Text);
 			$Record->npwp = $this->npwp->Text;
 			$Record->alamat_pembeli = $this->alamat_pembeli->Text;
 			$Record->commodity_type = $this->commodity_type->SelectedValue;
-			$Record->bruto = $this->bruto->text;
-			$Record->tarra = $this->tarra->text;
-			$Record->netto_1 = $this->netto_1->text;
-			$Record->potongan = $this->potongan->text;
-			$Record->netto_2 = $this->netto_2->text;
+			$Record->berat_kendaraan = $this->berat_kendaraan->text;
+			$Record->berat_kendaraan_isi = $this->berat_kendaraan_isi->text;
+			$Record->jumlah_commodity = $this->jumlah_commodity->text;
 			$Record->id_satuan = '12';
 			$Record->harga = $this->harga->text;
 			$Record->total = $this->total->text;
-			$Record->ffa = $this->ffa->text;
-			$Record->moist = $this->moist->text;
-			$Record->dirt = $this->dirt->text;
-			$Record->no_segel = $this->no_segel->text;
-
 			$Record->save();
 			
 			$tblBody = $this->BindGrid();
@@ -367,9 +309,6 @@ class CommodityTransaction extends MainConf
 		}
 		else
 		{
-			$Record->tgl_do = date("Y-m-d");
-			$Record->no_do = $this->GenerateNoDO(date("m"),date("Y"),$Record->commodity_type);
-			
 			$commodityType = $Record->commodity_type;
 			
 			if($commodityType == '0' || $commodityType == '1')
@@ -379,7 +318,7 @@ class CommodityTransaction extends MainConf
 				elseif($commodityType == '1')
 					$idBarang = '11';
 				
-				$Qty = $this->getTargetUom($idBarang,$Record->netto_2,$Record->id_satuan,'1','0');
+				$Qty = $this->getTargetUom($idBarang,$Record->jumlah_commodity,$Record->id_satuan,'1','0');
 				
 				$urutan = BarangSatuanRecord::finder()->find('id_barang = ? AND id_satuan = ? ',$idBarang,$Record->id_satuan)->urutan;
 				$hrgSatuanBesar = $this->GetPriceUom($idBarang,$urutan,$Record->harga);
@@ -428,7 +367,7 @@ class CommodityTransaction extends MainConf
 							$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($Record->id_kontrak);
 							if($ContractSalesRecord)
 							{
-								$newDeliveredQty = $ContractSalesRecord->delivered_quantity + $Record->netto_2;
+								$newDeliveredQty = $ContractSalesRecord->delivered_quantity + $Record->jumlah_commodity;
 								if($newDeliveredQty > $ContractSalesRecord->quantity)
 								{
 									$ContractSalesRecord->status = '4';
@@ -436,7 +375,7 @@ class CommodityTransaction extends MainConf
 								}
 								else
 								{
-									$ContractSalesRecord->delivered_quantity += $Record->netto_2;	
+									$ContractSalesRecord->delivered_quantity += $Record->jumlah_commodity;	
 								}	
 								
 								$ContractSalesRecord->save();
@@ -566,40 +505,5 @@ class CommodityTransaction extends MainConf
 			
 	}
 	
-	public function createNewContract($arrContractSales)
-	{				
-		$bln = date("m");
-		$thn = date("Y");
-		
-		$ContractSalesRecord = new ContractSalesRecord();
-		$ContractSalesRecord->sales_no = $this->GenerateNoSales($bln,$thn,$arrContractSales['tipeCommodity']);
-		$ContractSalesRecord->tgl_kontrak = $arrContractSales['tglKontrak'];
-		$ContractSalesRecord->id_pembeli = strtoupper($arrContractSales['id_pembeli']);
-		$ContractSalesRecord->alamat_pembeli = $arrContractSales['alamat_pembeli'];
-		$ContractSalesRecord->npwp = $arrContractSales['npwp'];
-		$ContractSalesRecord->commodity_type = $arrContractSales['tipeCommodity'];
-		$ContractSalesRecord->quantity = $arrContractSales['quantity'];
-		$ContractSalesRecord->satuan_commodity = 12;
-		$ContractSalesRecord->quality = '';
-		$ContractSalesRecord->pricing = $arrContractSales['pricing'];
-		$ContractSalesRecord->delivery = '';
-		$ContractSalesRecord->term_of_payment = '';
-		$ContractSalesRecord->remark = '';
-		$ContractSalesRecord->status = '3';
-		$ContractSalesRecord->save();
-		
-		return $ContractSalesRecord->id;
-	}
-	
-	public function cetakTiketClicked($sender,$param)
-	{
-		$id = $param->CallbackParameter->id; 
-		$url = "index.php?page=Transaksi.cetakTimbanganCommodityPdf&id=".$id;
-		$this->getPage()->getClientScript()->registerEndScript
-							('','
-							unloadContent();
-							jQuery("#cetakFrame").attr("src","'.$url.'");
-							jQuery("#modal-3").modal("show");');	
-	}
 }
 ?>

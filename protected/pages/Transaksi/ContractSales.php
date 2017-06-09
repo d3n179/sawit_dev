@@ -532,46 +532,7 @@ class ContractSales extends MainConf
 		
 	}
 	
-	public function GenerateNoSales($bln,$thn,$tipeCommodity)
-	{
-		$query = "SELECT 
-						id 
-					FROM 
-						tbt_contract_sales
-					WHERE
-					MONTH(tbt_contract_sales.tgl_kontrak) = '$bln'
-					AND YEAR(tbt_contract_sales.tgl_kontrak) = '$thn' 
-					AND commodity_type = '$tipeCommodity' ";
-		$arr = $this->queryAction($query,'S');
-		
-		$count = count($arr) + 1;
-		
-		if($count < 10)
-			$tmp = "0000";
-		elseif($count < 100)
-			$tmp = "000";	
-		elseif($count < 1000)
-			$tmp = "00";
-		elseif($count < 10000)
-			$tmp = "0";
-		else
-			$tmp = "";
-		
-		$blnrmw = $this->bulanRomawi($bln);
-		
-		if($tipeCommodity == '0')
-			$noDoc = "CPO";
-		elseif($tipeCommodity == '1')
-			$noDoc = "PK";
-		elseif($tipeCommodity == '2')
-			$noDoc = "FIB";
-		elseif($tipeCommodity == '3')
-			$noDoc = "CK";
-					
-		$noTrans = $tmp.$count."/PT.SH/".$noDoc."/".$blnrmw."/".$thn;
-		
-		return $noTrans;
-	}
+	
 	
 	public function cetakClicked($sender,$param)
 	{

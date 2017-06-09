@@ -1,5 +1,5 @@
 <com:TContent ID="Main">
-	<h2>Timbangan Commodity</h2>
+	<h2>Penjualan Commodity</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
 	<div class="row">
@@ -14,7 +14,7 @@
 			<ul class="nav nav-tabs"><!-- available classes "bordered", "right-aligned" -->
 				<li class="active">
 					<a href="#listTab" data-toggle="tab">
-						<i class="fa fa-list "></i> Timbangan Commodity 
+						<i class="fa fa-list "></i> Penjualan Commodity 
 					</a>
 				</li>
 				<li>
@@ -41,8 +41,6 @@
 											<th width="150px">No Transaksi</th>
 											<th width="150px">Tgl Transaksi</th>
 											<th width="150px">Pembeli</th>
-											<th width="150px">No Kendaraan</th>
-											<th width="150px">Transporter</th>
 											<th width="150px">Tipe Commodity</th>
 											<th width="150px">Jumlah</th>
 											<th width="150px">Satuan</th>
@@ -81,100 +79,14 @@
 							</div>	
 						</div>	
 						<div class="row">
-							<div class="col-md-3">
-								<div class="form-group">
-									<label class="control-label" for="tgl_masuk">Tanggal & Waktu Masuk Timbangan</label>
-									<div class="input-group">
-									<com:TActiveTextBox 
-											ID="tgl_masuk" 
-											Attributes.PlaceHolder="Tanggal Masuk"
-											CssClass="form-control date-picker" />
-											<com:TRequiredFieldValidator 
-											  ControlToValidate="tgl_masuk"											 
-											  ErrorMessage=""
-											  Display="Dynamic"
-											  FocusOnError="true" 
-											  CssClass="valRequired"
-											  ControlCssClass="valctrl"
-											  ValidationGroup="val" />
-										<div class="input-group-btn">					
-												<com:TActiveTextBox 
-													ID="wkt_masuk" 
-													Attributes.PlaceHolder="Waktu Masuk"
-													Width="100px"
-													CssClass="form-control mask_time" />
-													<com:TRequiredFieldValidator 
-													  ControlToValidate="wkt_masuk"											 
-													  ErrorMessage=""
-													  Display="Dynamic"
-													  FocusOnError="true" 
-													  CssClass="valRequired"
-													  ControlCssClass="valctrl"
-													  ValidationGroup="val" />
-										</div>
-									</div>
-											
-								</div>
-							</div>
-							<div class="col-md-3">
-								<div class="form-group">
-									<label class="control-label" for="tgl_keluar">Tanggal & Waktu Keluar Timbangan</label>
-									<div class="input-group">
-									<com:TActiveTextBox 
-											ID="tgl_keluar" 
-											Attributes.PlaceHolder="Tanggal Keluar"
-											CssClass="form-control date-picker" />
-											<com:TRequiredFieldValidator 
-											  ControlToValidate="tgl_keluar"											 
-											  ErrorMessage=""
-											  Display="Dynamic"
-											  FocusOnError="true" 
-											  CssClass="valRequired"
-											  ControlCssClass="valctrl"
-											  ValidationGroup="val" />
-										<div class="input-group-btn">					
-												<com:TActiveTextBox 
-													ID="wkt_keluar" 
-													Attributes.PlaceHolder="Waktu Keluar"
-													Width="100px"
-													CssClass="form-control mask_time" />
-													<com:TRequiredFieldValidator 
-													  ControlToValidate="wkt_keluar"											 
-													  ErrorMessage=""
-													  Display="Dynamic"
-													  FocusOnError="true" 
-													  CssClass="valRequired"
-													  ControlCssClass="valctrl"
-													  ValidationGroup="val" />
-										</div>
-									</div>
-											
-								</div>
-							</div>
 							<div class="col-md-2">
 								<div class="form-group">
-									<label class="control-label" for="transporter">No Kendaraan</label>
+									<label class="control-label" for="tgl_transaksi">Tanggal Transaksi</label>
 									 <com:TActiveTextBox 
-											ID="no_kendaraan" 
-											CssClass="form-control upper" />
+											ID="tgl_transaksi" 
+											CssClass="form-control date-picker" />
 											<com:TRequiredFieldValidator 
-											  ControlToValidate="no_kendaraan"											 
-											  ErrorMessage=""
-											  Display="Dynamic"
-											  FocusOnError="true" 
-											  CssClass="valRequired"
-											  ControlCssClass="valctrl"
-											  ValidationGroup="val" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="form-group">
-									<label class="control-label" for="transporter">Transporter</label>
-									 <com:TActiveTextBox 
-											ID="transporter" 
-											CssClass="form-control upper" />
-											<com:TRequiredFieldValidator 
-											  ControlToValidate="transporter"											 
+											  ControlToValidate="tgl_transaksi"											 
 											  ErrorMessage=""
 											  Display="Dynamic"
 											  FocusOnError="true" 
@@ -196,8 +108,8 @@
 										Attributes.OnChange="jnsKontrakChanged();"
 										CausesValidation="true"
 										CssClass="form-control">
-										<com:TListItem value="0" Text="Kontrak Baru"/>
-										<com:TListItem value="1" Text="Kontrak Lama"/>
+										<com:TListItem value="0" Text="Tanpa Kontrak"/>
+										<com:TListItem value="1" Text="Dengan Kontrak"/>
 										</com:TActiveDropDownList>
 										<com:TRequiredFieldValidator 
 											  ControlToValidate="JnsKontrak"											 
@@ -236,6 +148,8 @@
 											  InitialValue="empty"/>
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="deskripsi">Pembeli</label>
@@ -262,7 +176,9 @@
 											CssClass="form-control" />
 								</div>
 							</div>
-							<div class="col-md-3">
+						</div>
+						<div class="row">
+							<div class="col-md-4">
 								<div class="form-group">
 									<label class="control-label" for="alamat_pembeli">Alamat</label>
 									<com:TActiveTextBox 
@@ -309,16 +225,18 @@
 											
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-2">
 								<div class="form-group">
-									<label class="control-label" for="bruto">Bruto</label>
+									<label class="control-label" for="berat_kendaraan">Berat Kendaraan</label>
 									 <com:TActiveTextBox 
-											ID="bruto" 
+											ID="berat_kendaraan" 
 											Attributes.OnChange="hitungJumlah();"
 											AutoPostBack="false"
 											CssClass="form-control mask_decimal" />
 									<com:TRequiredFieldValidator 
-											  ControlToValidate="bruto"											 
+											  ControlToValidate="berat_kendaraan"											 
 											  ErrorMessage=""
 											  Display="Dynamic"
 											  FocusOnError="true" 
@@ -329,51 +247,14 @@
 							</div>
 							<div class="col-md-2">
 								<div class="form-group">
-									<label class="control-label" for="tarra">Tarra</label>
+									<label class="control-label" for="deskripsi">Berat Kendaraan Setelah Diisi</label>
 									  <com:TActiveTextBox 
-											ID="tarra" 
+											ID="berat_kendaraan_isi" 
 											Attributes.OnChange="hitungJumlah();"
 											AutoPostBack="false"
 											CssClass="form-control mask_decimal" />
 									<com:TRequiredFieldValidator 
-											  ControlToValidate="tarra"											 
-											  ErrorMessage=""
-											  Display="Dynamic"
-											  FocusOnError="true" 
-											  CssClass="valRequired"
-											  ControlCssClass="valctrl"
-											  ValidationGroup="val" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="form-group">
-									<label class="control-label" for="netto_1">Netto I</label>
-									  <com:TActiveTextBox 
-											ID="netto_1" 
-											Attributes.OnChange="hitungJumlah();"
-											AutoPostBack="false"
-											Enabled="false"
-											CssClass="form-control mask_decimal" />
-									<com:TRequiredFieldValidator 
-											  ControlToValidate="netto_1"											 
-											  ErrorMessage=""
-											  Display="Dynamic"
-											  FocusOnError="true" 
-											  CssClass="valRequired"
-											  ControlCssClass="valctrl"
-											  ValidationGroup="val" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="form-group">
-									<label class="control-label" for="potongan">Potongan (%)</label>
-									  <com:TActiveTextBox 
-											ID="potongan" 
-											Attributes.OnChange="hitungJumlah();"
-											AutoPostBack="false"
-											CssClass="form-control mask_decimal" />
-									<com:TRequiredFieldValidator 
-											  ControlToValidate="potongan"											 
+											  ControlToValidate="berat_kendaraan_isi"											 
 											  ErrorMessage=""
 											  Display="Dynamic"
 											  FocusOnError="true" 
@@ -386,15 +267,15 @@
 						<div class="row">
 							<div class="col-md-2">
 								<div class="form-group">
-									<label class="control-label" for="netto_2">Netto II</label>
+									<label class="control-label" for="jumlah_commodity">Berat Commodity</label>
 									 <com:TActiveTextBox 
-											ID="netto_2" 
+											ID="jumlah_commodity" 
 											AutoPostBack="false"
 											Attributes.OnChange="hitungJumlah();"
 											Enabled="false"
 											CssClass="form-control mask_decimal" />
 									<com:TRequiredFieldValidator 
-											  ControlToValidate="netto_2"											 
+											  ControlToValidate="jumlah_commodity"											 
 											  ErrorMessage=""
 											  Display="Dynamic"
 											  FocusOnError="true" 
@@ -421,6 +302,8 @@
 											  ValidationGroup="val" />
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="total">Total</label>
@@ -439,73 +322,12 @@
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-md-2">
-								<div class="form-group">
-									<label class="control-label" for="ffa">FFA (%)</label>
-									 <com:TActiveTextBox 
-											ID="ffa" 
-											AutoPostBack="false"
-											Enabled="true"
-											CssClass="form-control mask_decimal" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="form-group">
-									<label class="control-label" for="moist">Moist (%)</label>
-									 <com:TActiveTextBox 
-											ID="moist" 
-											AutoPostBack="false"
-											CssClass="form-control mask_decimal" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="form-group">
-									<label class="control-label" for="moist">Dirt (%)</label>
-									 <com:TActiveTextBox 
-											ID="dirt" 
-											AutoPostBack="false"
-											CssClass="form-control mask_decimal" />
-								</div>
-							</div>
-							<div class="col-md-2">
-								<div class="form-group">
-									<label class="control-label" for="no_segel">No Segel/Locis</label>
-									 <com:TActiveTextBox 
-											ID="no_segel" 
-											AutoPostBack="false"
-											CssClass="form-control upper" />
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 				
 			</div>
 		</div>
 	</div>
-	
-	<div class="modal fade custom-width" id="modal-3">
-		<div class="modal-dialog" style="width: 800px; height: 500px; ">
-			<div class="modal-content">
-				
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title"></h4>
-				</div>
-				<div class="modal-body" style="height: 500px; ">
-					 <iframe id="cetakFrame" height="100%" width="100%"></iframe> 
-				</div>
-				
-				<div class="modal-footer">
-					<div class="row">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
 	</com:TActivePanel>	<!--form End-->
 	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
@@ -519,8 +341,6 @@
 	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="cetakTiketCallback" OnCallback="cetakTiketClicked" ActiveControl.CausesValidation="false"/>
-	
 	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="kontrakChangedCallback" OnCallback="kontrakChanged" ActiveControl.CausesValidation="false"/>
 	
@@ -538,21 +358,16 @@
 					jQuery('#<%= $this->formStatus->getClientID()%>').val('0');
 					jQuery('#<%= $this->submitBtn->getClientID()%>').val('Simpan');
 					jQuery('#<%= $this->idCommodityTransaction->getClientID()%>').val('');
-					jQuery('#<%= $this->tgl_masuk->getClientID()%>').prop("disabled",false);
-					jQuery('#<%= $this->wkt_masuk->getClientID()%>').prop("disabled",false);
-					jQuery('#<%= $this->tgl_keluar->getClientID()%>').prop("disabled",false);
-					jQuery('#<%= $this->wkt_keluar->getClientID()%>').prop("disabled",false);
+					jQuery('#<%= $this->tgl_transaksi->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->JnsKontrak->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->DDKontrak->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->Pembeli->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->npwp->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->alamat_pembeli->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->commodity_type->getClientID()%>').prop("disabled",false);
-					jQuery('#<%= $this->bruto->getClientID()%>').prop("disabled",false);
-					jQuery('#<%= $this->tarra->getClientID()%>').prop("disabled",false);
-					jQuery('#<%= $this->netto_1->getClientID()%>').prop("disabled",true);
-					jQuery('#<%= $this->potongan->getClientID()%>').prop("disabled",false);
-					jQuery('#<%= $this->netto_2->getClientID()%>').prop("disabled",true);
+					jQuery('#<%= $this->berat_kendaraan->getClientID()%>').prop("disabled",false);
+					jQuery('#<%= $this->berat_kendaraan_isi->getClientID()%>').prop("disabled",false);
+					jQuery('#<%= $this->jumlah_commodity->getClientID()%>').prop("disabled",true);
 					jQuery('#<%= $this->harga->getClientID()%>').prop("disabled",false);
 					
 					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
@@ -582,28 +397,12 @@
 			
 			function hitungJumlah()
 			{
-				var bruto = parseFloat(jQuery('#<%= $this->bruto->getClientID()%>').val());
-				var tarra = parseFloat(jQuery('#<%= $this->tarra->getClientID()%>').val());
-				
-				
+				var berat_kendaraan = parseFloat(jQuery('#<%= $this->berat_kendaraan->getClientID()%>').val());
+				var berat_kendaraan_isi = parseFloat(jQuery('#<%= $this->berat_kendaraan_isi->getClientID()%>').val());
 				var harga = parseFloat(jQuery('#<%= $this->harga->getClientID()%>').val());
-				var netto_1 = bruto - tarra;
-			
-				jQuery('#<%= $this->netto_1->getClientID()%>').val(netto_1);
-				if(jQuery('#<%= $this->potongan->getClientID()%>').val() != '')
-					var potongan = parseFloat(jQuery('#<%= $this->potongan->getClientID()%>').val()) / 100;
-				else
-					var potongan = 0;
-					
-				var hsilPotongan = potongan * netto_1;
-				hsilPotongan = Math.round(hsilPotongan);
-				
-				var netto_2 = netto_1 - hsilPotongan;
-				
-				netto_2 = parseFloat(netto_2);
-				
-				jQuery('#<%= $this->netto_2->getClientID()%>').val(netto_2);
-				var total = netto_2 * harga;
+				var jmlCommodity = berat_kendaraan_isi - berat_kendaraan;
+				jQuery('#<%= $this->jumlah_commodity->getClientID()%>').val(jmlCommodity);
+				var total = jmlCommodity * harga;
 				jQuery('#<%= $this->total->getClientID()%>').val(total);
 			}
 			
@@ -745,16 +544,6 @@
 			{
 				loadContent();
 					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
-						request.setCallbackParameter({
-							id:id
-						});
-						request.dispatch();
-			}
-			
-			function cetakTiketClicked(id)
-			{
-				loadContent();
-					var request= <%= $this->cetakTiketCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
 							id:id
 						});

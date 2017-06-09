@@ -8,19 +8,35 @@ class CommodityTransactionRecord extends TActiveRecord
 
 	public $id;
 	public $transaction_no;
+	public $tgl_do;
+	public $no_do;
+	public $no_kendaraan;
+	public $transporter;
 	public $tgl_transaksi;
+	public $wkt_transaksi;
+	public $tgl_masuk;
+	public $wkt_masuk;
+	public $tgl_keluar;
+	public $wkt_keluar;
 	public $jns_kontrak;
 	public $id_kontrak;
 	public $pembeli;
 	public $alamat_pembeli;
 	public $npwp;
 	public $commodity_type;
-	public $berat_kendaraan;
-	public $berat_kendaraan_isi;
-	public $jumlah_commodity;
+	public $bruto;
+	public $tarra;
+	public $netto_1;
+	public $potongan;
+	public $netto_2;
 	public $id_satuan;
 	public $harga;
 	public $total;
+	public $ffa;
+	public $moist;
+	public $dirt;
+	public $no_segel;
+
 	public $status;
 	public $deleted;
 

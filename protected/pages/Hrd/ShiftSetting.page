@@ -67,24 +67,41 @@
 										  ValidationGroup="val" />
 							</div>
 						</div>
-						
 						<div class="col-md-3">
-							<div class="form-group">
-							<label for ="tglSantunan" class="control-label">Jam Makan</label>
-								<com:TActiveTextBox 
-									ID="waktumakan" 
-									CssClass="form-control mask_time" 
-									Attributes.PlaceHolder="Jam Makan"/>
-								<com:TRequiredFieldValidator 
-										  ControlToValidate="waktumakan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
+								<div class="form-group">
+									<label class="control-label" for="tgl_keluar">Waktu Makan</label>
+									<div class="input-group">
+									<com:TActiveTextBox 
+										ID="waktumakan" 
+										CssClass="form-control mask_time" 
+										Attributes.PlaceHolder="Mulai"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="waktumakan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+										<div class="input-group-btn">					
+												<com:TActiveTextBox 
+													ID="waktumakanselesai" 
+													Width="80px"
+													CssClass="form-control mask_time" 
+													Attributes.PlaceHolder="Selesai"/>
+												<com:TRequiredFieldValidator 
+														  ControlToValidate="waktumakanselesai"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+										</div>
+									</div>
+											
+								</div>
 							</div>
-						</div>
 									
 					</div>
 					
@@ -127,7 +144,7 @@
 					<th width="150px">Jam Datang</th>
 					<th width="150px">Jam Pulang</th>
 					<th width="150px">Lama Kerja</th>
-					<th width="150px">Jam Makan</th>
+					<th width="150px">Waktu Makan</th>
 					<th width="150px">Aksi</th>
 				</tr>
 			</thead>

@@ -53,7 +53,7 @@ class PenerimaanJual extends MainConf
 					tbt_commodity_transaction.tgl_transaksi,
 					tbt_commodity_transaction.commodity_type,
 					tbt_commodity_transaction.pembeli,
-					tbt_commodity_transaction.jumlah_commodity,
+					tbt_commodity_transaction.netto_2 AS jumlah_commodity,
 					tbt_commodity_transaction.harga
 				FROM
 					tbt_commodity_transaction
@@ -123,11 +123,11 @@ class PenerimaanJual extends MainConf
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
 			$this->pembeli->Text = $Record->pembeli;
 			$this->tgl_transaksi->Text = $this->ConvertDate($Record->tgl_transaksi,'1');
-			$this->jumlah_kirim->Text = $Record->jumlah_commodity;
-			$this->jumlah_diterima->Text = $Record->jumlah_commodity;
+			$this->jumlah_kirim->Text = $Record->netto_2;
+			$this->jumlah_diterima->Text = $Record->netto_2;
 			$this->jumlah_susut->Text = 0;
 			$this->harga->Text = $Record->harga;
-			$totalJual = $Record->harga * $Record->jumlah_commodity;
+			$totalJual = $Record->harga * $Record->netto_2;
 			$this->total_penjualan->Text = $totalJual;
 			$this->sisa_bayar->Text = $totalJual;
 			

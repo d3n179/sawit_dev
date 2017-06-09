@@ -34,7 +34,8 @@ class ShiftSetting extends MainConf
 					tbm_shift_setting.datang,
 					tbm_shift_setting.pulang,
 					tbm_shift_setting.lama,
-					tbm_shift_setting.waktumakan
+					tbm_shift_setting.waktumakan,
+					tbm_shift_setting.waktumakanselesai
 				FROM
 					tbm_shift_setting
 				WHERE
@@ -55,7 +56,7 @@ class ShiftSetting extends MainConf
 				$tblBody .= '<td>'.$row['datang'].'</td>';
 				$tblBody .= '<td>'.$row['pulang'].'</td>';
 				$tblBody .= '<td>'.$row['lama'].'</td>';
-				$tblBody .= '<td>'.$row['waktumakan'].'</td>';
+				$tblBody .= '<td>'.$row['waktumakan'].' - '.$row['waktumakanselesai'].'</td>';
 				$tblBody .= '<td>';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
@@ -83,6 +84,7 @@ class ShiftSetting extends MainConf
 			$this->datang->Text = $Record->datang;
 			$this->pulang->Text = $Record->pulang;
 			$this->waktumakan->Text = $Record->waktumakan;
+			$this->waktumakanselesai->Text = $Record->waktumakanselesai;
 			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
@@ -147,7 +149,9 @@ class ShiftSetting extends MainConf
 			$Record->datang = $this->datang->Text;
 			$Record->pulang = $this->pulang->Text;
 			$Record->waktumakan = $this->waktumakan->Text;
-			$Record->lama = $this->get_time_difference($this->datang->Text.":00",$this->pulang->Text.":00");
+			$Record->waktumakanselesai = $this->waktumakanselesai->Text;
+			$lamaMakan = $this->get_time_difference($this->waktumakan->Text.":00",$this->waktumakanselesai->Text.":00");
+			$Record->lama = ($this->get_time_difference($this->datang->Text.":00",$this->pulang->Text.":00")) - $lamaMakan;
 			$Record->save(); 
 			
 			$tblBody = $this->BindGrid();
