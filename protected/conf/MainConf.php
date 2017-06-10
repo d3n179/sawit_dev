@@ -84,17 +84,31 @@ class MainConf extends TPage
 		$blnrmw = $this->bulanRomawi($bln);
 		
 		if($tipeCommodity == '0')
+		{
 			$noDoc = "DO-CPO";
+			$noDocSKP = "SKP-CPO";
+		}
 		elseif($tipeCommodity == '1')
+		{
 			$noDoc = "DO-PK";
+			$noDocSKP = "SKP-PK";
+		}
 		elseif($tipeCommodity == '2')
+		{
 			$noDoc = "DO-FIB";
+			$noDocSKP = "SKP-FIB";
+		}
 		elseif($tipeCommodity == '3')
+		{
 			$noDoc = "DO-CK";
+			$noDocSKP = "SKP-CK";
+		}
 					
-		$noTrans = $tmp.$count."/PT.SH/".$noDoc."/".$blnrmw."/".$thn;
+		$noTransDO = $tmp.$count."/PT.SH/".$noDoc."/".$blnrmw."/".$thn;
+		$noTransSK = $tmp.$count."/PT.SH/".$noDocSKP."/".$blnrmw."/".$thn;
 		
-		return $noTrans;
+		$arrDoc = array("noDO"=>$noTransDO,"noSKP"=>$noTransSK);
+		return $arrDoc;
 	}
 	
 	public function GenerateNoSales($bln,$thn,$tipeCommodity)

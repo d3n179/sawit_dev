@@ -520,6 +520,7 @@
 	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakTiketCallback" OnCallback="cetakTiketClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakSkpCallback" OnCallback="cetakSkpClicked" ActiveControl.CausesValidation="false"/>
 	
 	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="kontrakChangedCallback" OnCallback="kontrakChanged" ActiveControl.CausesValidation="false"/>
@@ -745,6 +746,16 @@
 			{
 				loadContent();
 					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+			function cetakSkpClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakSkpCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
 							id:id
 						});

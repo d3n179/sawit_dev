@@ -97,8 +97,9 @@ class CommodityTransaction extends MainConf
 				}
 				elseif($row['status'] != '0' )
 				{
-					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;</br>';
-					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakTiketClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Tiket</a>&nbsp;&nbsp;</br>';
+					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakSkpClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak SKP</a>&nbsp;&nbsp;';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakTiketClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Tiket</a>&nbsp;&nbsp;';
 				}
 					
 				$tblBody .= '<tr>';
@@ -368,7 +369,8 @@ class CommodityTransaction extends MainConf
 		else
 		{
 			$Record->tgl_do = date("Y-m-d");
-			$Record->no_do = $this->GenerateNoDO(date("m"),date("Y"),$Record->commodity_type);
+			$Record->no_do = $arrDoc['noDO'];
+			$Record->no_surat_kuasa = $arrDoc['noSKP'];
 			
 			$commodityType = $Record->commodity_type;
 			
@@ -589,6 +591,28 @@ class CommodityTransaction extends MainConf
 		$ContractSalesRecord->save();
 		
 		return $ContractSalesRecord->id;
+	}
+	
+	public function cetakClicked($sender,$param)
+	{
+		$id = $param->CallbackParameter->id; 
+		$url = "index.php?page=Transaksi.cetakDeliveryOrderPdf&id=".$id;
+		$this->getPage()->getClientScript()->registerEndScript
+							('','
+							unloadContent();
+							jQuery("#cetakFrame").attr("src","'.$url.'");
+							jQuery("#modal-3").modal("show");');	
+	}
+	
+	public function cetakSkpClicked($sender,$param)
+	{
+		$id = $param->CallbackParameter->id; 
+		$url = "index.php?page=Transaksi.cetakSuratKuasaAngkutPdf&id=".$id;
+		$this->getPage()->getClientScript()->registerEndScript
+							('','
+							unloadContent();
+							jQuery("#cetakFrame").attr("src","'.$url.'");
+							jQuery("#modal-3").modal("show");');	
 	}
 	
 	public function cetakTiketClicked($sender,$param)

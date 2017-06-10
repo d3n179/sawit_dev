@@ -207,6 +207,172 @@ $style = '
 	}
 	
 </style>';
+
+$gajiKotor = $GolonganKaryawanRecord->gaji_pokok;
+$gajiKotor += $KaryawanRecord->tunjangan_natura;
+$gajiKotor += $IncentiveRecord->jml_incentive;
+$gajiKotor += $JabatanRecord->tunjangan_jabatan;
+$gajiKotor += $JabatanRecord->tunjangan_komunikasi;
+$gajiKotor += $JabatanRecord->premi_karyawan;
+
+$totalLembur = 0;
+		$sqlLpp = "SELECT
+						SUM(
+							tbt_lembur_karyawan.lama_lembur
+						) AS lama_lembur
+					FROM
+						tbt_lembur_karyawan
+					WHERE
+						tbt_lembur_karyawan.id_karyawan = '$idK'
+					AND MONTH(tbt_lembur_karyawan.tgl) = '$month'
+					AND YEAR(tbt_lembur_karyawan.tgl) = '$year'
+					AND tbt_lembur_karyawan.jns_lembur = '1'
+					AND tbt_lembur_karyawan.deleted != '1' ";
+		$arrLpp = $this->queryAction($sqlLpp,'S');
+		$tarifLpp = (1/173) * $GolonganKaryawanRecord->gaji_pokok;
+		$jmlLpp = $arrLpp[0]['lama_lembur'] * $tarifLpp;
+		$totalLembur += $jmlLpp;
+
+$sqlLppml = "SELECT
+						SUM(
+							tbt_lembur_karyawan.lama_lembur
+						) AS lama_lembur
+					FROM
+						tbt_lembur_karyawan
+					WHERE
+						tbt_lembur_karyawan.id_karyawan = '$idK'
+					AND MONTH(tbt_lembur_karyawan.tgl) = '$month'
+					AND YEAR(tbt_lembur_karyawan.tgl) = '$year'
+					AND tbt_lembur_karyawan.jns_lembur = '2'
+					AND tbt_lembur_karyawan.deleted != '1' ";
+		$arrLppml = $this->queryAction($sqlLppml,'S');
+		$tarifLppml = ((1/173) * $GolonganKaryawanRecord->gaji_pokok) * 1.5;
+		$jmlLppml = $arrLppml[0]['lama_lembur'] * $tarifLppml;
+		$totalLembur += $jmlLppml;
+
+
+$sqlLpplk = "SELECT
+						SUM(
+							tbt_lembur_karyawan.lama_lembur
+						) AS lama_lembur
+					FROM
+						tbt_lembur_karyawan
+					WHERE
+						tbt_lembur_karyawan.id_karyawan = '$idK'
+					AND MONTH(tbt_lembur_karyawan.tgl) = '$month'
+					AND YEAR(tbt_lembur_karyawan.tgl) = '$year'
+					AND tbt_lembur_karyawan.jns_lembur = '3'
+					AND tbt_lembur_karyawan.deleted != '1' ";
+		$arrLpplk = $this->queryAction($sqlLpplk,'S');
+		$tarifLpplk = ((1/173) * $GolonganKaryawanRecord->gaji_pokok) * 2;
+		$jmlLpplk = $arrLpplk[0]['lama_lembur'] * $tarifLpplk;
+		$totalLembur += $jmlLpplk;
+//$gajiKotor += ;
+
+$totalPotongan = 0;				
+if($KaryawanRecord->st_bpjs_ketenagakerjaan == '1')
+	$bpjsTenagaKerja = $GolonganKaryawanRecord->gaji_pokok * (2/100);
+else
+	$bpjsTenagaKerja = 0;
+
+$totalPotongan += $bpjsTenagaKerja;
+
+if($KaryawanRecord->st_bpjs_kesehatan == '1')
+{
+	if($KaryawanRecord->tambahan_keluarga > 0)
+		$multiplyBpjs = $KaryawanRecord->tambahan_keluarga + 1;
+	else
+		$multiplyBpjs = 1;
+				
+	$bpjsKesehatan = ($GolonganKaryawanRecord->gaji_pokok * (1/100)) * $multiplyBpjs;
+}
+else
+	$bpjsKesehatan = 0;
+
+$totalPotongan += $bpjsKesehatan;
+
+$sqlPinjaman = "SELECT
+							SUM(
+								tbt_expense_karyawan.jml_expense
+							) AS jml_expense
+						FROM
+							tbt_expense_karyawan
+						WHERE
+							tbt_expense_karyawan.id_karyawan = '$idK'
+						AND tbt_expense_karyawan.jns_expense = '1'
+						AND MONTH(tbt_expense_karyawan.tgl) = '$month'
+						AND YEAR(tbt_expense_karyawan.tgl) = '$year'
+						AND tbt_expense_karyawan.deleted != '1' ";
+		$arrPinjaman = $this->queryAction($sqlPinjaman,'S');
+		$jmlPinjaman = $arrPinjaman[0]['jml_expense'];			
+$totalPotongan += $jmlPinjaman;
+$sqlKantin = "SELECT
+							SUM(
+								tbt_expense_karyawan.jml_expense
+							) AS jml_expense
+						FROM
+							tbt_expense_karyawan
+						WHERE
+							tbt_expense_karyawan.id_karyawan = '$idK'
+						AND tbt_expense_karyawan.jns_expense = '2'
+						AND MONTH(tbt_expense_karyawan.tgl) = '$month'
+						AND YEAR(tbt_expense_karyawan.tgl) = '$year'
+						AND tbt_expense_karyawan.deleted != '1' ";
+		$arrKantin = $this->queryAction($sqlKantin,'S');
+		$jmlKantin = $arrKantin[0]['jml_expense'];
+$totalPotongan += $jmlKantin;
+$sqlKoperasi = "SELECT
+							SUM(
+								tbt_expense_karyawan.jml_expense
+							) AS jml_expense
+						FROM
+							tbt_expense_karyawan
+						WHERE
+							tbt_expense_karyawan.id_karyawan = '$idK'
+						AND tbt_expense_karyawan.jns_expense = '3'
+						AND MONTH(tbt_expense_karyawan.tgl) = '$month'
+						AND YEAR(tbt_expense_karyawan.tgl) = '$year'
+						AND tbt_expense_karyawan.deleted != '1' ";
+		$arrKoperasi = $this->queryAction($sqlKoperasi,'S');
+		$jmlKoperasi = $arrKoperasi[0]['jml_expense'];
+$totalPotongan += $jmlKoperasi;
+$sqlMangkir = "SELECT
+							COUNT(
+								tbm_jadwal.id
+							) AS mangkir
+						FROM
+							tbm_jadwal
+						WHERE
+							tbm_jadwal.idkaryawan = '$idK'
+						AND tbm_jadwal.st_hadir = '1'
+						AND MONTH(tbm_jadwal.tanggal) = '$month'
+						AND YEAR(tbm_jadwal.tanggal) = '$year' ";
+		$arrMangkir = $this->queryAction($sqlMangkir,'S');
+		$jmlMangkir = $arrMangkir[0]['mangkir'];
+		$totalMangkir = ($GolonganKaryawanRecord->gaji_pokok / 25 / 7) * $jmlMangkir;
+$totalPotongan += $totalMangkir;
+$sqlTelat = "SELECT
+							COUNT(
+								tbm_jadwal.id
+							) AS telat
+						FROM
+							tbm_jadwal
+						WHERE
+							tbm_jadwal.idkaryawan = '$idK'
+						AND tbm_jadwal.st_hadir = '0'
+						AND tbm_jadwal.st_telat = '1'
+						AND MONTH(tbm_jadwal.tanggal) = '$month'
+						AND YEAR(tbm_jadwal.tanggal) = '$year' ";
+		$arrTelat = $this->queryAction($sqlTelat,'S');
+		$jmlTelat = $arrTelat[0]['telat'];
+		$totalTelat = ($GolonganKaryawanRecord->gaji_pokok / 25 / 7) * $jmlTelat;
+$totalPotongan += $totalTelat;
+		
+if(($gajiKotor + $totalLembur) >= $totalPotongan)
+		$gajiBersih =  ($gajiKotor + $totalLembur) - $totalPotongan;
+	else
+		$gajiBersih = 0 ;
+												
 $html = '</br></br><table width="100%" cellpadding="2">
 		  <tr>
 			<td align="center" style="font-size:35px"><b>PT. SINAR HALOMOAN</b></td>
@@ -224,7 +390,7 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td align="center" style="font-size:25px"><b>SLIP GAJI KARYAWAN</b></td>
 		  </tr>
 		</table></br></br>
-		<table width="100%" border="1" cellpadding="1"  cellspacing="0" style="font-family:Courier;font-size:8pt;">
+		<table width="100%" border="0" cellpadding="1"  cellspacing="0" style="font-family:Courier;font-size:8pt;">
 		  <tr>
 			<th width="15%">NIK</th>
 			<th width="1%">:</th>
@@ -232,7 +398,7 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<th width="3%" rowspan="8"></th>
 			<th width="15%">Gaji Pokok</th>
 			<th width="1%">:</th>
-			<th width="15%">'.number_format($GolonganKaryawanRecord->gaji_pokok.'</th>
+			<th width="15%" align="right">'.number_format($GolonganKaryawanRecord->gaji_pokok,0,".",",").'</th>
 			<th width="3%" colspan="2" rowspan="8"></th>
 			<th width="15%"><Strong>Potongan</Strong></th>
 			<th width="1%"></th>
@@ -244,10 +410,10 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l">'.$KaryawanRecord->nama.'</td>
 			<td class="tg-yw4l">Tunjangan Natura</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l">'.number_format($KaryawanRecord->tunjangan_natura,0,'.',',').'</td>
+			<td class="tg-yw4l" align="right">'.number_format($KaryawanRecord->tunjangan_natura,0,".",",").'</td>
 			<td class="tg-yw4l">Bpjs Ketenagakerjaan</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($bpjsTenagaKerja,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l">Jabatan</td>
@@ -255,10 +421,10 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l">'.$JabatanRecord->nama.'</td>
 			<td class="tg-yw4l">Incentive</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l">'.number_format($IncentiveRecord->jml_incentive,0,'.',',').'</td>
+			<td class="tg-yw4l" align="right">'.number_format($IncentiveRecord->jml_incentive,0,".",",").'</td>
 			<td class="tg-yw4l">Bpjs Kesehatan</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($bpjsKesehatan,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l">Golongan</td>
@@ -266,10 +432,10 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l">'.$GolonganKaryawanRecord->nama.'</td>
 			<td class="tg-yw4l">Tunjangan Jabatan</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l">'.number_format($JabatanRecord->tunjangan_jabatan,0,'.',',').'</td>
+			<td class="tg-yw4l" align="right">'.number_format($JabatanRecord->tunjangan_jabatan,0,".",",").'</td>
 			<td class="tg-yw4l">Pinjaman</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($jmlPinjaman,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l">SNK</td>
@@ -277,10 +443,10 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l">'.$snk.'</td>
 			<td class="tg-yw4l">Tunjangan Komunikasi</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l">'.number_format($JabatanRecord->tunjangan_komunikasi,0,'.',',').'</td>
+			<td class="tg-yw4l" align="right">'.number_format($JabatanRecord->tunjangan_komunikasi,0,".",",").'</td>
 			<td class="tg-yw4l">Kantin</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($jmlKantin,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l">TMK</td>
@@ -288,10 +454,10 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l">'.$tglMasukKerja.'</td>
 			<td class="tg-yw4l">Premi Karyawan</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l">'.number_format($JabatanRecord->premi_karyawan,0,'.',',').'</td>
+			<td class="tg-yw4l" align="right">'.number_format($JabatanRecord->premi_karyawan,0,".",",").'</td>
 			<td class="tg-yw4l">Koperasi</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($jmlKoperasi,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l">Periode</td>
@@ -299,10 +465,10 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l">'.$nmBulan.' '.$year.'</td>
 			<td class="tg-9hbo"><strong>Jumlah</strong></td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l">'.number_format($gajiKotor,0,'.',',').'</td>
+			<td class="tg-yw4l" align="right"><strong>'.number_format($gajiKotor,0,".",",").'</strong></td>
 			<td class="tg-yw4l">Mangkir (M)</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($totalMangkir,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l"></td>
@@ -313,46 +479,46 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l"></td>
 			<td class="tg-yw4l">Terlambat Masuk Kerja</td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($totalTelat,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td colspan="4" rowspan="7"></td>
 			<td colspan="3" rowspan="7">
-				<table border="1" width="100%">
+				<table border="0" width="100%">
 				  <tr>
 					<th width="25%"><strong>Lembur</strong></th>
 					<th width="4%"></th>
 					<th width="20%" align="center"><strong>Jam</strong></th>
 					<th width="25%" align="center"><strong>Tarif</strong></th>
-					<th width="25%" align="center"><strong>Jumlah Bayar</strong></th>
+					<th width="30%" align="center"><strong>Jumlah Bayar</strong></th>
 				  </tr>
 				  <tr>
 					<td class="tg-031e">LPP</td>
 					<td class="tg-031e">:</td>
-					<td class="tg-031e"></td>
-					<td class="tg-031e"></td>
-					<td class="tg-yw4l"></td>
+					<td class="tg-031e" align="center">'.$arrLpp[0]['lama_lembur'].'</td>
+					<td class="tg-031e" align="right">'.number_format($tarifLpp,0,'.',',').'</td>
+					<td class="tg-yw4l" align="right">'.number_format($jmlLpp,0,'.',',').'</td>
 				  </tr>
 				  <tr>
 					<td class="tg-031e">LPPML</td>
 					<td class="tg-031e">:</td>
-					<td class="tg-031e"></td>
-					<td class="tg-031e"></td>
-					<td class="tg-yw4l"></td>
+					<td class="tg-031e" align="center">'.$arrLppml[0]['lama_lembur'].'</td>
+					<td class="tg-031e" align="right">'.number_format($tarifLppml,0,'.',',').'</td>
+					<td class="tg-yw4l" align="right">'.number_format($jmlLppml,0,'.',',').'</td>
 				  </tr>
 				  <tr>
 					<td class="tg-yw4l">LPPLK</td>
 					<td class="tg-yw4l">:</td>
-					<td class="tg-yw4l"></td>
-					<td class="tg-yw4l"></td>
-					<td class="tg-yw4l"></td>
+					<td class="tg-yw4l" align="center">'.$arrLpplk[0]['lama_lembur'].'</td>
+					<td class="tg-yw4l" align="right">'.number_format($tarifLpplk,0,'.',',').'</td>
+					<td class="tg-yw4l" align="right">'.number_format($jmlLpplk,0,'.',',').'</td>
 				  </tr>
 				  <tr>
 					<td class="tg-yw4l"><strong>Total Lembur</strong></td>
 					<td class="tg-yw4l">:</td>
 					<td class="tg-yw4l"></td>
 					<td class="tg-yw4l"></td>
-					<td class="tg-yw4l"></td>
+					<td class="tg-yw4l" align="right">'.number_format($totalLembur,0,'.',',').'</td>
 				  </tr>
 				</table>
 			</td>
@@ -360,7 +526,7 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-9hbo"></td>
 			<td class="tg-9hbo"><Strong>Total Potongan</Strong></td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l">'.number_format($totalPotongan,0,'.',',').'</td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l"></td>
@@ -374,7 +540,7 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l"></td>
 			<td class="tg-yw4l"><Strong>Total Gaji</Strong></td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l"><Strong>'.number_format($gajiKotor + $totalLembur,0,'.',',').'</Strong></td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l"></td>
@@ -388,7 +554,7 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l"></td>
 			<td class="tg-9hbo"><Strong>Sisa Gaji</Strong></td>
 			<td class="tg-yw4l">:</td>
-			<td class="tg-yw4l"></td>
+			<td class="tg-yw4l"><Strong>'.number_format($gajiBersih,0,'.',',').'</Strong></td>
 		  </tr>
 		  <tr>
 			<td class="tg-yw4l"></td>
@@ -404,7 +570,7 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td class="tg-yw4l"></td>
 			<td class="tg-yw4l"></td>
 		  </tr>
-		</table><br /><hr><br />';
+		</table><br />';
 		
 		/*"<table border="1" >
 				  <tr>
@@ -447,9 +613,9 @@ $pdf->writeHTML($html, true, false, true, false, '');
 $pdf->Ln(1);
 $html = '<table width="100%" cellpadding="0" border="0">
 		  <tr>
-			<td width="35%" align="center" style="font-size:30px; text-decoration: underline;"><b>We Confirm<br/>(Buyer)</b></td>
+			<td width="35%" align="center" style="font-size:28px; text-decoration: underline;"><b>PT SINAR HALOMOAN</b></td>
 			<td width="30%"></td>
-			<td width="35%" align="center" style="font-size:30px; text-decoration: underline;"><b>Yours Faitfully<br/>(Seller)</b></td>
+			<td width="35%" align="center" style="font-size:28px; text-decoration: underline;"><b>Diterima Oleh,</b></td>
 		  </tr>
 		   <tr>
 			<td></td>
@@ -457,11 +623,6 @@ $html = '<table width="100%" cellpadding="0" border="0">
 			<td></td>
 		  </tr>
 		  <tr>
-			<td align="left" style="font-size:30px;">Materai</td>
-			<td></td>
-			<td></td>
-		  </tr>
-		  <tr>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -477,9 +638,14 @@ $html = '<table width="100%" cellpadding="0" border="0">
 			<td></td>
 		  </tr>
 		  <tr>
-			<td align="center" style="font-size:30px;"><b style="text-decoration: underline;">..................................................................</b><br/><i><strong>Please Sign and Return Original</strong></i></td>
 			<td></td>
-			<td align="center" style="font-size:30px;"><b style="text-decoration: underline;">H. Rajamin Hasibuan</b><br/><b>Direktur Utama</b></td>
+			<td></td>
+			<td></td>
+		  </tr>
+		  <tr>
+			<td align="center" style="font-size:30px;"><b style="text-decoration: underline;">PUTRA MAHKOTA ALAM HASIBUAN, SE </b><br/><i><strong>DIREKTUR UTAMA</strong></i></td>
+			<td></td>
+			<td align="center" style="font-size:30px;"><b style="text-decoration: underline;">......................................................</b><br/><b>Nama : '.$KaryawanRecord->nama.'</b></td>
 		  </tr>
 		</table>';
 $pdf->writeHTML($html, true, false, true, false, '');
