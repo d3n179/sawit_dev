@@ -2,15 +2,15 @@
 Navicat MySQL Data Transfer
 
 Source Server         : LOCALHOST
-Source Server Version : 50555
+Source Server Version : 50516
 Source Host           : localhost:3306
 Source Database       : sawit_dev
 
 Target Server Type    : MYSQL
-Target Server Version : 50555
+Target Server Version : 50516
 File Encoding         : 65001
 
-Date: 2017-06-10 02:03:47
+Date: 2017-06-10 06:38:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -118,7 +118,7 @@ INSERT INTO `tbd_user` VALUES ('nurmuliana', 'e10adc3949ba59abbe56e057f20f883e',
 INSERT INTO `tbd_user` VALUES ('operator', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'Deni Andriansah', '73', '1', '2015-12-25', '4:04:37', '2015-12-25', '5:46:25', '0', '', '0');
 INSERT INTO `tbd_user` VALUES ('pinta', 'bf5e9c42dce63bc7467cb5a6e1959f1e', 'pinta riski mala hasibuan', '3', '1', '2017-05-22', '6:26:41', '2017-06-02', '8:51:40', '1', '', '0');
 INSERT INTO `tbd_user` VALUES ('test', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'Test', '2', '1', '2015-12-24', '23:08:14', '2017-04-25', '11:18:59', '0', '', '1');
-INSERT INTO `tbd_user` VALUES ('xadmin', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'xadmin', '1', '1', '2011-10-03', '14:16:08', '2017-06-09', '15:54:34', '1', '', '0');
+INSERT INTO `tbd_user` VALUES ('xadmin', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'xadmin', '1', '1', '2011-10-03', '14:16:08', '2017-06-10', '3:01:21', '1', '', '0');
 
 -- ----------------------------
 -- Table structure for tbm_agama
@@ -5104,7 +5104,7 @@ CREATE TABLE `tbm_user_menu_group` (
   `st` char(1) DEFAULT '0',
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=302 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=307 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbm_user_menu_group
@@ -5408,6 +5408,11 @@ INSERT INTO `tbm_user_menu_group` VALUES ('298', '76', '27', '0', '0');
 INSERT INTO `tbm_user_menu_group` VALUES ('299', '74', '60', '1', '0');
 INSERT INTO `tbm_user_menu_group` VALUES ('300', '1', '93', '1', '0');
 INSERT INTO `tbm_user_menu_group` VALUES ('301', '1', '94', '1', '0');
+INSERT INTO `tbm_user_menu_group` VALUES ('302', '1', '86', '1', '0');
+INSERT INTO `tbm_user_menu_group` VALUES ('303', '1', '87', '1', '0');
+INSERT INTO `tbm_user_menu_group` VALUES ('304', '1', '88', '1', '0');
+INSERT INTO `tbm_user_menu_group` VALUES ('305', '1', '89', '1', '0');
+INSERT INTO `tbm_user_menu_group` VALUES ('306', '1', '90', '1', '0');
 
 -- ----------------------------
 -- Table structure for tbt_cetakan
@@ -5522,6 +5527,7 @@ CREATE TABLE `tbt_commodity_transaction` (
   `transaction_no` varchar(60) DEFAULT NULL,
   `tgl_do` date DEFAULT NULL,
   `no_do` varchar(60) DEFAULT NULL,
+  `no_surat_kuasa` varchar(60) DEFAULT NULL,
   `tgl_transaksi` date DEFAULT NULL,
   `wkt_transaksi` time DEFAULT NULL,
   `tgl_masuk` date DEFAULT NULL,
@@ -5557,7 +5563,7 @@ CREATE TABLE `tbt_commodity_transaction` (
 -- ----------------------------
 -- Records of tbt_commodity_transaction
 -- ----------------------------
-INSERT INTO `tbt_commodity_transaction` VALUES ('1', 'COM/2017/06/00001', '2017-06-09', '00001/PT.SH/DO-CPO/VI/2017', '2017-06-09', '14:25:14', '2017-06-09', '12:54:00', '2017-06-09', '14:54:00', 'B 2346 HY', 'CV SINAR JAYA', '1', '6', 'CV SINAR JAYA', 'ghghhsgdfgdf', '354345', '0', '44340.00', '13770.00', '30570.00', '0.00', '30570.00', '12', '3000.00', '91710000.00', '2.74', '0.17', '0.02', '011573-011576', '1', '0');
+INSERT INTO `tbt_commodity_transaction` VALUES ('1', 'COM/2017/06/00001', '2017-06-09', '00001/PT.SH/DO-CPO/VI/2017', null, '2017-06-09', '14:25:14', '2017-06-09', '12:54:00', '2017-06-09', '14:54:00', 'B 2346 HY', 'CV SINAR JAYA', '1', '6', 'CV SINAR JAYA', 'ghghhsgdfgdf', '354345', '0', '44340.00', '13770.00', '30570.00', '0.00', '30570.00', '12', '3000.00', '91710000.00', '2.74', '0.17', '0.02', '011573-011576', '1', '0');
 
 -- ----------------------------
 -- Table structure for tbt_contract_sales
@@ -6121,13 +6127,15 @@ CREATE TABLE `tbt_lembur_karyawan` (
   `jns_lembur` char(1) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of tbt_lembur_karyawan
 -- ----------------------------
 INSERT INTO `tbt_lembur_karyawan` VALUES ('1', '1', '2017-05-21', '5', '1', '0');
 INSERT INTO `tbt_lembur_karyawan` VALUES ('2', '1', '2017-05-20', '4', '3', '0');
+INSERT INTO `tbt_lembur_karyawan` VALUES ('3', '4', '2017-06-10', '4', '1', '0');
+INSERT INTO `tbt_lembur_karyawan` VALUES ('4', '4', '2017-06-10', '5', '3', '0');
 
 -- ----------------------------
 -- Table structure for tbt_modal_transaksi
@@ -7184,7 +7192,7 @@ CREATE TABLE `tbt_tbs_order` (
   `status` char(1) DEFAULT '0',
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_tbs_order
@@ -7293,6 +7301,7 @@ INSERT INTO `tbt_tbs_order` VALUES ('101', 'TBS/2017/06/00020', '2', '1020', '20
 INSERT INTO `tbt_tbs_order` VALUES ('102', 'TBS/2017/06/00021', '2', '1021', '2017-06-08', '12:03:15', null, '0', '0');
 INSERT INTO `tbt_tbs_order` VALUES ('103', 'TBS/2017/06/00022', '5', '1020', '2017-06-08', '12:04:29', null, '0', '0');
 INSERT INTO `tbt_tbs_order` VALUES ('104', 'TBS/2017/06/00023', '8', '1020', '2017-06-08', '12:06:53', null, '0', '0');
+INSERT INTO `tbt_tbs_order` VALUES ('105', 'TBS/2017/06/00024', '2', '1020', '2017-06-09', '02:55:35', null, '0', '0');
 
 -- ----------------------------
 -- Table structure for tbt_tbs_order_detail
@@ -7323,7 +7332,7 @@ CREATE TABLE `tbt_tbs_order_detail` (
   `total_tbs_order` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=456 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=458 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_tbs_order_detail
@@ -7783,6 +7792,8 @@ INSERT INTO `tbt_tbs_order_detail` VALUES ('452', '102', '2', '4567', '13590.00'
 INSERT INTO `tbt_tbs_order_detail` VALUES ('453', '103', '3', '4589 tb', '14896.00', '4500.00', '10396.00', '0.00', '3.50', '364.00', '0.00', '10032.00', '0.00', '0.00', '325.00', '32.00', '4', '0.00', null, null, null, null, '0');
 INSERT INTO `tbt_tbs_order_detail` VALUES ('454', '104', '1', 'dw 12344', '45000.00', '12350.00', '32650.00', '0.00', '3.50', '1143.00', '0.00', '31507.00', '0.00', '0.00', '413.00', '79.00', '4', '0.00', null, null, null, null, '0');
 INSERT INTO `tbt_tbs_order_detail` VALUES ('455', '104', '5', '1389 th', '56000.00', '12350.00', '43650.00', '0.00', '3.00', '1310.00', '0.00', '42340.00', '0.00', '0.00', '354.00', '123.00', '4', '0.00', null, null, null, null, '0');
+INSERT INTO `tbt_tbs_order_detail` VALUES ('456', '105', '1', 'BA 8049 AB', '11680.00', '3240.00', '8440.00', '0.00', '0.00', '0.00', '0.00', '8440.00', '0.00', '0.00', '413.00', '20.00', '4', '0.00', null, null, null, null, '0');
+INSERT INTO `tbt_tbs_order_detail` VALUES ('457', '105', '3', 'BA 9938 SU', '12920.00', '3820.00', '9100.00', '0.00', '3.50', '319.00', '0.00', '8781.00', '0.00', '0.00', '446.00', '20.00', '4', '0.00', null, null, null, null, '0');
 
 -- ----------------------------
 -- Table structure for tbt_transaksi_luar
