@@ -1,0 +1,142 @@
+<com:TContent ID="Main">
+	<h2>Saldo Awal Bank</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<button type="button" class="btn btn-blue btn-icon" OnClick="simpanClicked()">
+								Simpan
+								<i class="entypo-floppy"></i>
+							</button>
+				<button type="button" class="btn btn-blue btn-icon" OnClick="postingClicked()">
+								Posting Modal Awal
+								<i class="entypo-check"></i>
+							</button>
+			</div>
+		</div>				
+	</div>
+	
+
+	
+	<div class="row">	
+		<div class="col-md-12">
+		<div class="form-group">
+			<com:TActiveHiddenField ID="arrPembelian"/>
+			<table class="table table-bordered datatable" id="table-1">
+				<thead>
+					<tr>
+					<th>Nama Bank</th>
+					<th>Nomor Rekening</th>
+					<th>Nama Pemilik Rekening</th>
+					<th>Saldo</th>
+				</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="simpanCallback" OnCallback="simpanBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakLaporanTimbangan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="postingCallback" OnCallback="postingClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hapusCallback" OnCallback="hapusClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="editCallback" OnCallback="simpanClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hapusDetailCallback" OnCallback="hapusDetailClicked" ActiveControl.CausesValidation="false"/>
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				BindGrid();
+			});
+			
+			function simpanClicked()
+			{
+				arr=[];
+				
+				jQuery.each(jQuery(".saldo_column"),function()
+				{
+					tr = jQuery(this).closest("tr");
+					id = jQuery(this).attr("data-id");
+					val = parseFloat(jQuery(this).val());
+					var s={
+						id:id,
+						saldo:val
+					}
+					arr.push(s);
+					console.log(id);
+					console.log(val);
+				});
+				
+				console.log(arr);
+				loadContent();
+				var request= <%= $this->simpanCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							arr:arr
+						});
+						request.dispatch();
+						
+				unloadContent();
+			}
+			
+			function postingClicked()
+			{
+				if(confirm('Posting Modal Awal ? '))
+				{
+					loadContent();
+					
+					var request= <%= $this->postingCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				        jQuery(".saldo_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			
+		</script>
+		
+</com:TContent>

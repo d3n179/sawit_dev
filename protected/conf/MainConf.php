@@ -836,6 +836,20 @@ class MainConf extends TPage
 		$JurnalBukuBesarRecord->saldo_akhir = $saldoAkhir;
 		
 		$JurnalBukuBesarRecord->save();
+		
+		if($sumberTrans != '0')
+		{
+			$BankRecord = BankRecord::finder()->findByPk($idBank);
+			if($BankRecord)
+			{
+				if($jnsTrans == '0')
+					$BankRecord->saldo += $jmlTrans;
+				else
+					$BankRecord->saldo -= $jmlTrans;
+				
+				$BankRecord->save();
+			}
+		}
 	}
 	
 	public function profilPerusahaan()

@@ -10,6 +10,7 @@ class BankRecord extends TActiveRecord
 	public $nama;
 	public $no_rek;
 	public $nama_pemilik;
+	public $saldo;
 	public $deleted;
 	
 	public static function finder($className=__CLASS__)

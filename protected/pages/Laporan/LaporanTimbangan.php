@@ -31,6 +31,8 @@ class LaporanTimbangan extends MainConf
 			}
 			$this->DDTahun->DataSource = $arrThn;
 			$this->DDTahun->DataBind();
+			$this->DDTahun->SelectedValue = date("Y");
+			$this->DDBulan->SelectedValue = date("m");
 			
 		}
 		
@@ -99,25 +101,27 @@ class LaporanTimbangan extends MainConf
 						tbt_tbs_order.no_tbs_order,
 						tbt_tbs_order.tgl_transaksi,
 						tbm_pemasok.no_sp,
-						tbt_tbs_order.no_polisi,
+						tbt_tbs_order_detail.no_polisi,
 						tbm_barang.nama AS barang,
 						tbm_pemasok.nama AS pemasok,
-						tbt_tbs_order.bruto,
-						tbt_tbs_order.tarra,
-						tbt_tbs_order.netto_1,
-						tbt_tbs_order.potongan,
-						tbt_tbs_order.hasil_potongan,
-						tbt_tbs_order.netto_2,
-						tbt_tbs_order.jml_tandan,
-						tbt_tbs_order.komidel,
+						tbt_tbs_order_detail.bruto,
+						tbt_tbs_order_detail.tarra,
+						tbt_tbs_order_detail.netto_1,
+						tbt_tbs_order_detail.potongan,
+						tbt_tbs_order_detail.hasil_potongan,
+						tbt_tbs_order_detail.netto_2,
+						tbt_tbs_order_detail.jml_tandan,
+						tbt_tbs_order_detail.komidel,
 						tbm_setting_komidel.nama AS kategori_tbs
 					FROM
 						tbt_tbs_order
+					INNER JOIN tbt_tbs_order_detail ON tbt_tbs_order_detail.id_tbs_order = tbt_tbs_order.id
 					INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
 					INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
-					INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order.id_komidel
+					INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order_detail.id_komidel
 					WHERE
-						tbt_tbs_order.deleted = '0' ";
+						tbt_tbs_order.deleted = '0' 
+						AND tbt_tbs_order_detail.deleted = '0' ";
 						
 		if($this->noSp->Text != '')
 		{
@@ -136,7 +140,7 @@ class LaporanTimbangan extends MainConf
 		
 		if($this->komidelTbs->Text != '')
 		{
-			$sqlTrans .=" AND tbt_tbs_order.komidel = '".$this->komidelTbs->Text."' ";
+			$sqlTrans .=" AND tbt_tbs_order_detail.komidel = '".$this->komidelTbs->Text."' ";
 		}
 		
 		if($this->DDTbs->SelectedValue != '')

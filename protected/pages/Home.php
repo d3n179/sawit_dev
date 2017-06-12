@@ -29,21 +29,31 @@ class Home extends MainConf
 			$this->DDTahunSupplier->DataBind();
 			$this->DDTahunSupplier->SelectedValue = date('Y');
 			
+			$this->DDTahunSupplierBuah->DataSource = $arrThn;
+			$this->DDTahunSupplierBuah->DataBind();
+			$this->DDTahunSupplierBuah->SelectedValue = date('Y');
+			
 			$sql = "SELECT tbm_pemasok.id,tbm_pemasok.nama FROM tbm_pemasok WHERE tbm_pemasok.deleted ='0' ";
 			$arrPemasok = $this->queryAction($sql,'S');
 			$this->DDSupplier->DataSource = $arrPemasok;
 			$this->DDSupplier->DataBind();
 			$this->DDSupplier->SelectedIndex = 0;
+			
+			$this->DDSupplierBuah->DataSource = $arrPemasok;
+			$this->DDSupplierBuah->DataBind();
+			$this->DDSupplierBuah->SelectedIndex = 0;
+			
 			$arrPendapatan = $this->RenderPendapatanChart();
 			$arrPengeluaran = $this->RenderPengeluaranChart();
-			
 			$arrPembelian = $this->RenderPembelianChart();
-					
+			$arrBuah = $this->RenderBuahChart();	
+			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					renderPendapatan('.$arrPendapatan .');
 					renderPengeluaran('.$arrPengeluaran .');
 					renderPembelian('.$arrPembelian .');
+					renderBuah('.$arrBuah.');
 					');
 			
 			$PerusahaanRecord = PerusahaanRecord::finder()->findByPk(1);
@@ -263,5 +273,68 @@ class Home extends MainConf
 		
 		return $arrJson;
 	}	
+	
+	
+	public function getRenderPieChartBuah()
+	{
+		$arr = $this->RenderBuahChart();
+		$this->getPage()->getClientScript()->registerEndScript
+					('','
+					renderBuah('.$arr .');
+					');
+	}
+	
+	
+	public function RenderBuahChart()
+	{
+		$i = 1;
+		$tahun = $this->DDTahunSupplierBuah->SelectedValue;
+		$idPemasok = $this->DDSupplierBuah->SelectedValue;
+		$dataList = array();
+		
+		
+		$sql = "SELECT
+					tbm_barang.nama,
+					SUM(tbt_tbs_order_detail.netto_2) AS jml_masuk,
+					tbm_setting_komidel.nama AS kategori_tbs
+				FROM
+					tbt_tbs_order
+				INNER JOIN tbt_tbs_order_detail ON tbt_tbs_order_detail.id_tbs_order = tbt_tbs_order.id
+				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
+				INNER JOIN tbm_barang ON tbm_barang.id = tbt_tbs_order.id_barang
+				INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order_detail.id_komidel
+				WHERE
+					tbt_tbs_order.deleted = '0' ";
+					
+		if($idPemasok != '')
+		{
+			$sql .=  " AND tbt_tbs_order.id_pemasok = ".$idPemasok." ";
+		}
+		
+		if($tahun != '')
+		{
+			$sql .=  " AND YEAR(tbt_tbs_order.tgl_transaksi) = ".$tahun." ";
+		}
+		else
+		{
+			$sql .=  " AND tbt_tbs_order.tgl_transaksi = CURDATE() ";
+		}
+		
+		$sql .=  " GROUP BY
+					tbm_barang.id
+				ORDER BY
+					tbt_tbs_order.id ASC ";
+		
+		//var_dump($sql);
+		$Record = $this->queryAction($sql,'S');
+		foreach($Record as $row)
+		{
+			$dataList[] = array("name"=>$row['nama'],"y"=>floatval($row['jml_masuk'])); 
+		}
+		$arr[] = array("name"=>"Buah","colorByPoint"=>true,"data"=>$dataList);
+		$arrJson = json_encode($dataList);
+		
+		return $arrJson;
+	}
 }
 ?>

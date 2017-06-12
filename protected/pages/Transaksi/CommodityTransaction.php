@@ -368,10 +368,28 @@ class CommodityTransaction extends MainConf
 		}
 		else
 		{
+			$arrDoc = $this->GenerateNoDO(date("m"),date("Y"),$Record->commodity_type);
 			$Record->tgl_do = date("Y-m-d");
 			$Record->no_do = $arrDoc['noDO'];
 			$Record->no_surat_kuasa = $arrDoc['noSKP'];
 			
+			$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($Record->id_kontrak);
+			if($ContractSalesRecord)
+			{
+				$newDeliveredQty = $ContractSalesRecord->delivered_quantity + $Record->netto_2;
+				if($newDeliveredQty > $ContractSalesRecord->quantity)
+				{
+					$ContractSalesRecord->status = '4';
+					$ContractSalesRecord->delivered_quantity = $ContractSalesRecord->quantity;
+				}
+				else
+				{
+					$ContractSalesRecord->delivered_quantity += $Record->netto_2;	
+				}	
+								
+				$ContractSalesRecord->save();
+			}
+							
 			$commodityType = $Record->commodity_type;
 			
 			if($commodityType == '0' || $commodityType == '1')
@@ -427,23 +445,6 @@ class CommodityTransaction extends MainConf
 						//$StockInOutRecord->save();
 						if($StockInOutRecord->save())
 						{
-							$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($Record->id_kontrak);
-							if($ContractSalesRecord)
-							{
-								$newDeliveredQty = $ContractSalesRecord->delivered_quantity + $Record->netto_2;
-								if($newDeliveredQty > $ContractSalesRecord->quantity)
-								{
-									$ContractSalesRecord->status = '4';
-									$ContractSalesRecord->delivered_quantity = $ContractSalesRecord->quantity;
-								}
-								else
-								{
-									$ContractSalesRecord->delivered_quantity += $Record->netto_2;	
-								}	
-								
-								$ContractSalesRecord->save();
-							}
-							
 							$this->InsertJurnalUmum($Record->id,
 									'4',
 									'0',

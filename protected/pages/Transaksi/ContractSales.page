@@ -333,6 +333,8 @@
 							<th width="150px">Pembeli</th>
 							<th width="150px">Commodity Type</th>
 							<th width="100px">Jumlah</th>
+							<th width="100px">Jumlah Dikirim</th>
+							<th width="100px">Sisa Pengiriman</th>
 							<th width="100px">Harga</th>
 							<th width="100px">Total</th>
 							<th width="50px">Aksi</th>

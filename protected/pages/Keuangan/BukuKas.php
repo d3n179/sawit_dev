@@ -144,7 +144,9 @@ class BukuKas extends MainConf
 			
 			foreach($arrTrans as $row)
 			{
-				if($row['sumber_transaksi'] == '1')
+				if($row['sumber_transaksi'] == '0')
+					$sumberTrans = "Saldo Awal";
+				elseif($row['sumber_transaksi'] == '1')
 					$sumberTrans = "Pembayaran PO";
 				elseif($row['sumber_transaksi'] == '2')
 					$sumberTrans = "Pembayaran TBS";
@@ -154,7 +156,9 @@ class BukuKas extends MainConf
 					$sumberTrans = "Expense Transaction";
 				elseif($row['sumber_transaksi'] == '5')
 					$sumberTrans = "Revenue Transaction";
-								
+				elseif($row['sumber_transaksi'] == '6')
+					$sumberTrans = "Mutasi Kas";
+									
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['asal_kas'].'</td>';
 				$tblBody .= '<td>'.$sumberTrans.'</td>';

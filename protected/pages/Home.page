@@ -1,6 +1,6 @@
 <com:TContent ID="Main">
 	<com:TActivePanel ID="GrafikAdmin">
-	<div class="grid-item col-md-12">
+<div class="grid-item col-md-12">
 	<div class="grid-item-content" >
 		<div class="portlet-title margin-bottom-0">
             <div class="actions" style="width:100%;">
@@ -107,6 +107,53 @@
         </div>
 	</div>
 </div>	
+
+<div class="grid-item col-md-12">
+	<div class="grid-item-content" >
+		<div class="portlet-title margin-bottom-0">
+            <div class="actions" style="width:100%;">
+				<div class="row">
+					<div class="col-md-2" >
+						<com:TActiveDropDownList 
+									ID="DDSupplierBuah"
+									Width="190px"
+									PromptText="--Pilih Supplier--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="getRenderPieChartBuah"
+									CausesValidation="true"
+									CssClass="form-control input-sm"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+					</div>
+					<div class="col-md-2" >
+						<com:TActiveDropDownList 
+									ID="DDTahunSupplierBuah"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									OnSelectedIndexChanged="getRenderPieChartBuah"
+									CausesValidation="true"
+									CssClass="form-control input-sm"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+					</div>
+				</div>
+            </div>
+        </div>
+        <div class="portlet-body padding-top-0">
+            <div class="row">
+                <div class="col-md-12" align="center">
+                    <div id="buahChart" class="buahChart" style="margin: 0 auto"></div>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>	
+
 </com:TActivePanel>
 <script type="text/javascript">
 	jQuery(document).ready(function(jQuery)
@@ -270,6 +317,42 @@
 				}
 			},
 			series: arrData
+		});
+	}
+	
+	function renderBuah(arrData)
+	{
+		jQuery('#buahChart').highcharts({
+			chart: {
+				plotBackgroundColor: null,
+				plotBorderWidth: null,
+				plotShadow: false,
+				type: 'pie'
+			},
+			title: {
+				text: 'Grafik Masuk Buah/Sawit'
+			},
+			tooltip: {
+				pointFormat: '{series.name}: <b>{point.y:.1f} Kg</b>'
+			},
+			plotOptions: {
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					dataLabels: {
+						enabled: true,
+						format: '<b>{point.name}</b>: {point.y:.1f} Kg',
+						style: {
+							color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+						}
+					}
+				}
+			},
+			series: [{
+				name: 'Buah',
+				colorByPoint: true,
+				data: arrData
+			}]
 		});
 	}
 </script>

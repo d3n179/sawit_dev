@@ -1,5 +1,5 @@
 <?PHP
-class LaporanPembayaranTbs extends MainConf
+class LaporanPenjualanCommodity extends MainConf
 {
 
 	public function onLoadComplete($param)
@@ -21,7 +21,8 @@ class LaporanPembayaranTbs extends MainConf
 			}
 			$this->DDTahun->DataSource = $arrThn;
 			$this->DDTahun->DataBind();
-			
+			$this->DDTahun->SelectedValue = date("Y");
+			$this->DDBulan->SelectedValue = date("m");
 		}
 		
 	}
@@ -86,21 +87,45 @@ class LaporanPembayaranTbs extends MainConf
 		$periode = $this->Periode->SelectedValue;
 		
 		$sqlTrans = "SELECT
-					tbt_pembayaran_tbs.no_pembayaran,
-					tbt_pembayaran_tbs.tgl_pembayaran,
-					tbm_pemasok.nama,
-					tbt_pembayaran_tbs.jns_bayar,
-					tbt_pembayaran_tbs.jumlah_pembayaran
-				FROM
-					tbt_pembayaran_tbs
-				INNER JOIN tbt_tbs_order ON tbt_tbs_order.id = tbt_pembayaran_tbs.id_tbs_order
-				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
-				WHERE
-					tbt_pembayaran_tbs.deleted = '0' ";
+						tbt_contract_sales.sales_no,
+						tbt_contract_sales.tgl_kontrak,
+						tbt_contract_sales.commodity_type,
+						tbt_contract_sales.id_pembeli,
+						tbt_contract_sales.quantity AS jumlah_kontrak,
+						SUM(
+							tbt_commodity_transaction.netto_2
+						) AS jumlah_kirim,
+						SUM(
+							tbt_commodity_transaction.total
+						) AS total_pengiriman,
+						SUM(
+							tbt_penerimaan_penjualan.jumlah_diterima
+						) AS jumlah_diterima,
+						SUM(
+							tbt_penerimaan_penjualan.total_penjualan
+						) AS total_pembayaran
+					FROM
+						tbt_contract_sales
+					INNER JOIN tbt_commodity_transaction ON tbt_commodity_transaction.id_kontrak = tbt_contract_sales.id
+					LEFT JOIN tbt_penerimaan_penjualan ON tbt_penerimaan_penjualan.id_penjualan = tbt_commodity_transaction.id
+					WHERE
+						tbt_contract_sales.deleted = '0'
+					AND tbt_commodity_transaction.deleted = '0'
+					AND tbt_penerimaan_penjualan.deleted = '0' ";
 						
-		if($this->nmPemasok->Text != '')
+		if($this->noKontrak->Text != '')
 		{
-			$sqlTrans .=" AND tbm_pemasok.nama LIKE '%".$this->nmPemasok->Text."%' ";
+			$sqlTrans .=" AND tbt_contract_sales.sales_no = '".$this->noKontrak->Text."' ";
+		}
+		
+		if($this->nmPembeli->Text != '')
+		{
+			$sqlTrans .=" AND tbt_contract_sales.id_pembeli = '".$this->nmPembeli->Text."' ";
+		}
+		
+		if($this->commodity_type->SelectedValue != '')
+		{
+			$sqlTrans .=" AND tbt_contract_sales.commodity_type = '".$this->commodity_type->SelectedValue."' ";
 		}
 		
 		if($periode == '0')
@@ -109,7 +134,7 @@ class LaporanPembayaranTbs extends MainConf
 			$tahun = $this->DDTahun->SelectedValue;
 			if($bulan != '' && $tahun != '')
 			{
-				$sqlTrans .="AND MONTH(tbt_pembayaran_tbs.tgl_pembayaran) = '$bulan' AND YEAR(tbt_pembayaran_tbs.tgl_pembayaran) = '$tahun' ";
+				$sqlTrans .="AND MONTH(tbt_contract_sales.tgl_kontrak) = '$bulan' AND YEAR(tbt_contract_sales.tgl_kontrak) = '$tahun' ";
 			}
 		}
 		elseif($periode == '1')
@@ -117,7 +142,7 @@ class LaporanPembayaranTbs extends MainConf
 			$tahun = $this->DDTahun->SelectedValue;
 			if($tahun != '')
 			{
-				$sqlTrans .="AND YEAR(tbt_pembayaran_tbs.tgl_pembayaran) = '$tahun' ";
+				$sqlTrans .="AND YEAR(tbt_contract_sales.tgl_kontrak) = '$tahun' ";
 			}
 		}				
 		elseif($periode == '2')
@@ -136,7 +161,7 @@ class LaporanPembayaranTbs extends MainConf
 				
 				$tgl1 = $this->ConvertDate($tgl1,'2');
 				$tgl2 = $this->ConvertDate($tgl2,'2');
-				$sqlTrans .="AND tbt_pembayaran_tbs.tgl_pembayaran BETWEEN '$tgl1' AND '$tgl2' ";
+				$sqlTrans .="AND tbt_contract_sales.tgl_kontrak BETWEEN '$tgl1' AND '$tgl2' ";
 			}
 		}	
 		elseif($periode == '3')
@@ -145,33 +170,40 @@ class LaporanPembayaranTbs extends MainConf
 			if($harian != '')
 			{
 				$tgl = $this->ConvertDate($harian,'2');
-				$sqlTrans .="AND tbt_pembayaran_tbs.tgl_pembayaran = '$tgl' ";
+				$sqlTrans .="AND tbt_contract_sales.tgl_kontrak = '$tgl' ";
 			}
-		}	
-		
+		}		
 		$sqlTrans .= " GROUP BY
-					tbt_pembayaran_tbs.id ";
-					
-		$this->setViewState('sql',$sqlTrans);
+						tbt_contract_sales.id ";
 		var_dump($sqlTrans);
-				
+		$this->setViewState('sql',$sqlTrans);
+		
 		$arrTrans = $this->queryAction($sqlTrans,'S');
 		$tblBody = '';
 		if($arrTrans)
 		{
 			foreach($arrTrans as $row)
 			{
-				if($row['jns_bayar'] == '0')
-					$jnsBayar = 'Cash';
-				else
-					$jnsBayar = 'Bank Transfer';
+				
+				if($row['commodity_type'] == '0')
+					$commodity_type = 'CPO - Crude Palm Oil';
+				elseif($row['commodity_type'] == '1')
+					$commodity_type = 'PK - Palm Kernel';
+				elseif($row['commodity_type'] == '2')
+					$commodity_type = 'FIBRE';
+				elseif($row['commodity_type'] == '3')
+					$commodity_type = 'CANGKANG';
 					
 				$tblBody .= '<tr>';
-				$tblBody .= '<td>'.$row['no_pembayaran'].'</td>';
-				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_pembayaran'],'3').'</td>';
-				$tblBody .= '<td>'.$row['nama'].'</td>';
-				$tblBody .= '<td>'.$jnsBayar.'</td>';
-				$tblBody .= '<td>'.number_format($row['jumlah_pembayaran'],2,'.',',').'</td>';		
+				$tblBody .= '<td>'.$row['sales_no'].'</td>';
+				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_kontrak'],'3').'</td>';
+				$tblBody .= '<td>'.$row['id_pembeli'].'</td>';
+				$tblBody .= '<td>'.$commodity_type.'</td>';		
+				$tblBody .= '<td>'.$row['jumlah_kontrak'].'</td>';		
+				$tblBody .= '<td>'.$row['jumlah_kirim'].'</td>';		
+				$tblBody .= '<td>'.number_format($row['total_pengiriman'],2,'.',',').'</td>';	
+				$tblBody .= '<td>'.$row['jumlah_diterima'].'</td>';	
+				$tblBody .= '<td>'.number_format($row['total_pembayaran'],2,'.',',').'</td>';	
 				$tblBody .= '</tr>';
 			}
 		}
@@ -197,60 +229,14 @@ class LaporanPembayaranTbs extends MainConf
 					');
 	}
 	
-	public function generateDetailCallback($sender,$param)
-	{
-		$id = $param->CallbackParameter->id;
-		
-		$sql = "SELECT
-					tbt_purchase_order_detail.id,
-					tbt_purchase_order_detail.id_barang,
-					tbm_barang.nama,
-					tbt_purchase_order_detail.id_satuan,
-					tbm_satuan.nama AS satuan,
-					tbt_purchase_order_detail.harga_satuan_besar,
-					tbt_purchase_order_detail.harga_satuan,
-					tbt_purchase_order_detail.jumlah,
-					tbt_purchase_order_detail.discount,
-					tbt_purchase_order_detail.subtotal
-				FROM
-					tbt_purchase_order_detail
-				INNER JOIN tbm_barang ON tbm_barang.id = tbt_purchase_order_detail.id_barang
-				INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_purchase_order_detail.id_satuan
-				WHERE
-					tbt_purchase_order_detail.deleted = '0'
-				AND tbt_purchase_order_detail.id_po = '$id'
-				ORDER BY
-					tbt_purchase_order_detail.id ASC ";
-					
-		$arr = $this->queryAction($sql,'S');
-		if(count($arr) > 0)
-		{
-			foreach($arr as $row)
-			{
-					$tblBody .= '<tr>';
-					$tblBody .= '<td>'.$row['nama'].'</td>';
-					$tblBody .= '<td>'.$row['satuan'].'</td>';
-					$tblBody .= '<td>'.number_format($row['harga_satuan'],2,'.',',').'</td>';
-					$tblBody .= '<td>'.$row['jumlah'].'</td>';	
-					$tblBody .= '<td>'.$row['discount'].'</td>';	
-					$tblBody .= '<td>'.number_format($row['subtotal'],2,'.',',').'</td>';			
-					$tblBody .= '</tr>';
-			}
-		}
-		$this->getPage()->getClientScript()->registerEndScript
-					('','
-					jQuery("#tableDetail-'.$id.' tbody").empty();
-					jQuery("#tableDetail-'.$id.' tbody").append("'.$tblBody.'");
-					unloadContent();');
-	}
 	
 	public function cetakLaporanTimbangan($sender,$param)
 	{
 		$session=new THttpSession;
 		$session->open();
-		$session['cetakLapPembayaranTbsSql'] = $this->getViewState('sql');
+		$session['cetakLapPenjualanCommoditySql'] = $this->getViewState('sql');
 		
-		$this->Response->redirect($this->Service->constructUrl('Laporan.cetakLaporanPembayaranTbsPdf',
+		$this->Response->redirect($this->Service->constructUrl('Laporan.cetakLaporanPenjualanCommodityPdf',
 			array(
 				'periode'=>$this->Periode->SelectedValue,
 				'bln'=>$this->DDBulan->SelectedValue,

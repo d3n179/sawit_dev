@@ -123,6 +123,8 @@ class ContractSales extends MainConf
 					tbt_contract_sales.tgl_kontrak,
 					tbt_contract_sales.commodity_type,
 					tbt_contract_sales.quantity AS jumlah,
+					tbt_contract_sales.delivered_quantity AS jumlah_dikirim,
+					(tbt_contract_sales.quantity - tbt_contract_sales.delivered_quantity) AS sisa_dikirim,
 					tbm_satuan.nama AS satuan,
 					tbt_contract_sales.pricing AS harga
 				FROM
@@ -189,6 +191,8 @@ class ContractSales extends MainConf
 				$tblBody .= '<td>'.$row['pembeli'].'</td>';
 				$tblBody .= '<td>'.$commodity_type.'</td>';
 				$tblBody .= '<td>'.$row['jumlah'].' '.$row['satuan'].'</td>';
+				$tblBody .= '<td>'.$row['jumlah_dikirim'].' '.$row['satuan'].'</td>';
+				$tblBody .= '<td>'.$row['sisa_dikirim'].' '.$row['satuan'].'</td>';
 				$tblBody .= '<td>'.number_format($row['harga'],2,'.',',').'</td>';
 				$tblBody .= '<td>'.number_format($totalHarga,2,'.',',').'</td>';
 				$tblBody .= '<td>';
