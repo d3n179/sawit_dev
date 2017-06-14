@@ -8,7 +8,7 @@ class PageUser extends TDbUser
 	{
 		$username = strtoupper($username);
 		$userRecord=UserRecord::finder()->find('username = ?',$username);
-		
+		 
 		if($userRecord instanceof UserRecord) // if found
 		{
 			$user=new PageUser($this->Manager);
