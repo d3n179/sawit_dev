@@ -22,9 +22,11 @@ class BayarTbsOrder extends MainConf
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
 			$tblBody = $this->BindGrid();
+			$tblBodyHistory = $this->BindGridHistory();
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
-						jQuery("#table-1 tbody").append("'.$tblBody.'");');	
+						jQuery("#table-1 tbody").append("'.$tblBody.'");
+						jQuery("#table-2 tbody").append("'.$tblBodyHistory.'");');	
 		}
 	}
 	
@@ -42,6 +44,56 @@ class BayarTbsOrder extends MainConf
 			
 			$this->noRef->Enabled = true;
 		}
+	}
+	
+	public function BindGridHistory()
+	{
+		$sql = "SELECT
+					tbt_pembayaran_tbs.id,
+					tbt_pembayaran_tbs.no_pembayaran,
+					tbt_pembayaran_tbs.tgl_pembayaran,
+					tbt_tbs_order.no_tbs_order,
+					tbm_pemasok.nama,
+					tbt_pembayaran_tbs.jns_bayar,
+					tbt_pembayaran_tbs.jumlah_pembayaran AS total_pembayaran
+				FROM
+					tbt_pembayaran_tbs
+				INNER JOIN tbt_tbs_order ON tbt_tbs_order.id = tbt_pembayaran_tbs.id_tbs_order
+				INNER JOIN tbm_pemasok ON tbm_pemasok.id = tbt_tbs_order.id_pemasok
+				WHERE
+					tbt_pembayaran_tbs.deleted = '0' ";
+		$Record = $this->queryAction($sql,'S');
+		
+		$count = count($Record);
+		$tblBody = '';
+		if($count > 0)
+		{
+			foreach($Record as $row)
+			{
+				if($row['jns_bayar'] == '0')
+					$jnsBayar = 'Cash';
+				else
+					$jnsBayar = 'Bank Transfer';
+				
+				$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakKwitansiClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Kwitansi</a>&nbsp;&nbsp;';
+					
+				$tblBody .= '<tr>';
+				$tblBody .= '<td>'.$row['no_pembayaran'].'</td>';
+				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_pembayaran'],'3').'</td>';
+				$tblBody .= '<td>'.$row['no_tbs_order'].'</td>';
+				$tblBody .= '<td>'.$row['nama'].'</td>';
+				$tblBody .= '<td>'.$jnsBayar.'</td>';
+				$tblBody .= '<td>'.number_format($row['total_pembayaran'],2,'.',',').'</td>';	
+				$tblBody .= '<td>'.$actionBtn.'</td>';	
+				$tblBody .= '</tr>';
+			}
+		}
+		else
+		{
+			$tblBody = '';
+		}
+		
+		return 	$tblBody;
 	}
 	
 	public function BindGrid()
@@ -508,22 +560,46 @@ class BayarTbsOrder extends MainConf
 		$id = $BayarTbsOrderRecord->id;
 		$url = "index.php?page=Keuangan.cetakKwtPembayaranTbs&id=".$id;
 		
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
 			$this->getPage()->getClientScript()->registerEndScript
 							('','
 							toastr.info("'.$msg.'");
 							jQuery("#modal-1").modal("hide");
-							jQuery("#cetakFrame").attr("src","'.$url.'");
-							jQuery("#modal-3").modal("show");
 							jQuery("#table-1").dataTable().fnDestroy();
 							jQuery("#table-1 tbody").empty();
 							jQuery("#table-1 tbody").append("'.$tblBody.'");
 							clearForm();
-							BindGrid();');	
+							BindGrid();
+							var url = "'.$urlTemp.'";
+							window.open(url, "_blank");
+							unloadContent();');	
 			
 			
 			
 		
 	}
-
+	
+	public function cetakKwitansiClicked($sender,$param)
+	{
+		$id = $param->CallbackParameter->id;
+		$url = "index.php?page=Keuangan.cetakKwtPembayaranTbs&id=".$id;
+		
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
+		$this->getPage()->getClientScript()->registerEndScript('',"
+					var url = '".$urlTemp."';
+					window.open(url, '_blank');
+					unloadContent();
+		");
+		
+			/*$this->getPage()->getClientScript()->registerEndScript
+							('','
+							jQuery("#cetakFrame").attr("src","'.$url.'");
+							jQuery("#modal-3").modal("show");
+							');	*/
+	}
 }
 ?>

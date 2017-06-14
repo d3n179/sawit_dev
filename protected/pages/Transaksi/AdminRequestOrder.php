@@ -107,6 +107,7 @@ class AdminRequestOrder extends MainConf
 			$this->idRo->Value = $id;
 			$this->nomorRo->Text = $RequestOrderRecord->no_ro;
 			$this->tglRo->Text = $this->ConvertDate($RequestOrderRecord->tgl_ro,'1');
+			$this->catatan->Text = $RequestOrderRecord->catatan;
 			
 			$sql = "SELECT
 						tbt_request_order_detail.id,

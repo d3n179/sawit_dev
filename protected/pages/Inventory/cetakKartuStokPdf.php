@@ -54,38 +54,34 @@ class cetakKartuStokPdf extends MainConf
 		$pdf->AliasNbPages(); 
 		$pdf->AddPage();
 		
-		$pdf->Image('protected/pages/Laporan/logo-01.png',5,8,25);	
+		$pdf->Image('protected/pages/Laporan/logo-01.png',8,4,12);	
 		$pdf->SetFont('Arial','B',12);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,strtoupper($profilPerusahaan->nama),'0',0,'C');
-		
-		$pdf->Ln(8);			
-		$pdf->SetFont('Arial','',9);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,$profilPerusahaan->alamat,'0',0,'C');	
+		if($stLap == '0')
+			$pdf->Cell(0,5,'LAPORAN KARTU STOK','0',0,'C');
+		else
+			$pdf->Cell(0,5,'LAPORAN KARTU STOK TBS','0',0,'C');
 		$pdf->Ln(4);
-		$pdf->Cell(0,10,'           '.$profilPerusahaan->telepon,'0',0,'C');	
-		$pdf->Ln(3);
+		$pdf->Cell(0,5,strtoupper($profilPerusahaan->nama),'0',0,'C');
+		
+		$pdf->Ln(4);			
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(10,5,'','0',0,'C');
+		$pdf->Cell(0,5,''.$profilPerusahaan->alamat.' TELP : ' .$profilPerusahaan->telepon.'','0',0,'C');	
+		$pdf->Ln(1);
 		$pdf->Cell(0,5,'','B',1,'C');
-		$pdf->Ln(3);		
+		$pdf->Ln(1);		
 		$pdf->SetFont('Arial','BU',10);
 		
 		$pdf->SetFont('Arial','B',10);
-		
-		if($stLap == '0')
-			$pdf->Cell(0,5,'KARTU STOK','0',0,'C');
-		else
-			$pdf->Cell(0,5,'KARTU STOK TBS','0',0,'C');
-			
-		$pdf->Ln(5);
-		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'C');
+		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'L');
+	
 		$pdf->Ln(5);
 		$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C'));
-		$pdf->SetWidths(array(30,30,35,35,25,25,30,27,30,30));
+		$pdf->SetWidths(array(30,30,35,75,25,25,30,27,30,30));
 		$pdf->Row(array('Tgl. Transaksi','Wkt. Transaksi','Jenis Transaksi','Nama Barang','Stok Awal','Stok In','Nilai In','Stok Out','Nilai Out','Stok Akhir'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
-		$pdf->SetAligns(array('L','L','L','L','R','R','R','R','R'));
+		$pdf->SetAligns(array('L','L','L','L','R','R','R','R','R','R'));
 		$session=new THttpSession;
 		$session->open();
 		$sql = $session['cetakKartuStokSql'];
@@ -144,12 +140,12 @@ class cetakKartuStokPdf extends MainConf
 							$row['wkt'],
 							$jnsTrans,
 							$row['nama'],
-							$stokAwalList,
-							$stokInList,
+							number_format($stokAwalList,2,'.',','),
+							number_format($stokInList,2,'.',','),
 							number_format($row['nilai_in'],2,'.',','),
-							$stokOutList,
+							number_format($stokOutList,2,'.',','),
 							number_format($row['nilai_out'],2,'.',','),
-							$stokAkhirList));
+							number_format($stokAkhirList,2,'.',',')));
 			$i++;
 		}
 		

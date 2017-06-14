@@ -33,12 +33,12 @@ class cetakLapUmurHutangPdf extends MainConf
 		$pdf->SetFont('Arial','B',10);
 		$pdf->Cell(0,5,'LAPORAN UMUR HUTANG PO','0',0,'C');
 		$pdf->Ln(5);
-		$pdf->SetAligns(array('C','C','C','C','C','C'));
-		$pdf->SetWidths(array(60,30,50,50,50,20,20,20,20));
-		$pdf->Row(array('Nama Supplier','Jumlah PO','Total PO','Total Pembayaran Hutang','Sisa Hutang','30 Hari','60 Hari','90 Hari','120 Hari'));
+		$pdf->SetAligns(array('C','C','C','C','C','C','C'));
+		$pdf->SetWidths(array(10,70,30,50,50,50,20,20,20,20));
+		$pdf->Row(array('No','Nama Supplier','Jumlah PO','Total PO','Total Pembayaran Hutang','Sisa Hutang','30 Hari','60 Hari','90 Hari','120 Hari'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
-		$pdf->SetAligns(array('L','L','R','R','R','C','C','C','C'));
+		$pdf->SetAligns(array('C','L','R','R','R','R','C','C','C','C'));
 		$session=new THttpSession;
 		$session->open();
 		$sql = $session['cetakLapUmurHutangSql'];
@@ -181,7 +181,7 @@ class cetakLapUmurHutangPdf extends MainConf
 				$arrDiff120 = $this->queryAction($sqlDiff120,'S');
 				$diff120 = $arrDiff120[0]['umur'];
 				
-			$pdf->Row(array($row['pemasok'],
+			$pdf->Row(array($i,$row['pemasok'],
 							$row['jml_po'],
 							number_format($ttlPo,2,'.',','),
 							number_format($ttlByrPo,2,'.',','),
@@ -191,8 +191,22 @@ class cetakLapUmurHutangPdf extends MainConf
 							$diff90,
 							$diff120));
 			$i++;
+			$barisPo +=$row['jml_po'];
+			$SubttlPo +=$ttlPo;
+			$SubttlByrPo +=$ttlByrPo;
+			$SubSisa +=$sisaBayar;
+			$H30 +=$diff30;
+			$H60 +=$diff60;
+			$H90 +=$diff90;
+			$H120 +$diff120;
 		}
-		
+		$pdf->SetFont('Arial','B',10);
+		$pdf->SetAligns(array('C','R','R','R','R','R','R'));
+		$pdf->SetWidths(array(80,30,50,50,50,20,20,20,20));
+		$pdf->Row(array('Total',''.number_format($barisPo,2,'.',',').'',''.number_format($SubttlPo,2,'.',',').'',
+		''.number_format($SubttlByrPo,2,'.',',').'',''.number_format($SubSisa,2,'.',',').'',
+		''.number_format($H30,2,'.',',').'',''.number_format($H60,2,'.',',').'',
+		''.number_format($H90,2,'.',',').'',''.number_format($H120,2,'.',',').''));
 		$pdf->Output();	
 	}
 }

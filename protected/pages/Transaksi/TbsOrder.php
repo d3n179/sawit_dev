@@ -422,29 +422,38 @@ class TbsOrder extends MainConf
 			if($diff < 2)
 			{
 				
-			$TbsOrderTable = $param->CallBackParameter->TbsOrderTable;
+				$TbsOrderTable = $param->CallBackParameter->TbsOrderTable;
+				
 			
+				
 				if($idTbsOrder != '')
 				{
 					$Record = TbsOrderRecord::finder()->findByPk($idTbsOrder);
 					$msg = "Data Berhasil Diedit";
 					
-					
 				}
 				else
 				{
-					$Record = new TbsOrderRecord();
-					$msg = "Data Berhasil Disimpan";
-					$Record->no_tbs_order = $this->GenerateNoDocument('TBS');
+					$Record = TbsOrderRecord::finder()->find('id_pemasok = ? AND id_barang = ? AND tgl_transaksi = ? AND status = ? AND deleted = ? ',$idPemasok,$idBarang,$this->ConvertDate($this->tgl_transaksi->Text,'2'),'0','0');
+					
+					if(!$Record)
+					{
+						$Record = new TbsOrderRecord();
+						$msg = "Data Berhasil Disimpan";
+						$Record->no_tbs_order = $this->GenerateNoDocument('TBS');
+						$Record->id_barang = $idBarang;
+						$Record->id_pemasok = $idPemasok;
+						$Record->tgl_transaksi = $this->ConvertDate($this->tgl_transaksi->Text,'2');
+						$Record->wkt_transaksi = date("G:i:s");
+						$Record->status= '0';
+						$Record->deleted= '0';
+						$Record->save(); 
+					}
+					else
+					{
+						$msg = "Data Berhasil Ditambahkan ke transaksi sebelumnya";
+					}
 				}
-				
-				$Record->id_barang = $idBarang;
-				$Record->id_pemasok = $idPemasok;
-				$Record->tgl_transaksi = $this->ConvertDate($this->tgl_transaksi->Text,'2');
-				$Record->wkt_transaksi = date("G:i:s");
-				$Record->status= '0';
-				$Record->deleted= '0';
-				$Record->save(); 
 				
 				foreach($TbsOrderTable as $row)
 				{

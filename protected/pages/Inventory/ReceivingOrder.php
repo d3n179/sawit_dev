@@ -77,11 +77,27 @@ class ReceivingOrder extends MainConf
 						ORDER BY
 							tbt_purchase_order_detail.id ASC ";
 				$arr = $this->queryAction($sql,'S');
+				$arrEncode = array();
+				foreach($arr as $row)
+				{
+							
+					$arrEncode[] = array('id'=>$row['id'],
+										'id_barang'=>$row['id_barang'],
+										'nama'=>utf8_encode($row['nama']),
+										'id_satuan'=>$row['id_satuan'],
+										'satuan'=>$row['satuan'],
+										'harga_satuan_besar'=>$row['harga_satuan_besar'],
+										'harga_satuan'=>$row['harga_satuan'],
+										'jumlah'=>$row['jumlah'],
+										'SisaPenerimaan'=>$row['SisaPenerimaan'],
+										'jumlah_diterima'=>$row['jumlah_diterima'],
+										'discount'=>$row['discount'],
+										'subtotal'=>$row['subtotal']);
+				}
 			}
 			
-			$arrJson = json_encode($arr,true);
-			var_dump($arrJson);
-			var_dump($arrJson);
+			$arrJson = json_encode($arrEncode,true);
+			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					RenderTempTable('.$arrJson.');');
@@ -386,7 +402,7 @@ class ReceivingOrder extends MainConf
 			{
 				$tglExpired = $this->ConvertDate($row['expired_date'],'3');
 					$tblBody .= '<tr>';
-					$tblBody .= '<td>'.$row['nama'].'</td>';
+					$tblBody .= '<td>'.mysql_escape_string($row['nama']).'</td>';
 					$tblBody .= '<td>'.$row['satuan'].'</td>';
 					$tblBody .= '<td>'.$tglExpired.'</td>';
 					$tblBody .= '<td>'.number_format($row['harga_satuan'],2,'.',',').'</td>';

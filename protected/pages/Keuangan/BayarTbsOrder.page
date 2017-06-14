@@ -243,7 +243,7 @@
 				<com:TActiveButton
 										ID="importBtn" 
 										Text="Import"
-										Visible="true"
+										Visible="false"
 										OnClick="importBtnClicked"
 										CausesValidation="false"
 										CssClass="btn btn-info">
@@ -253,29 +253,73 @@
 									</com:TActiveButton>
 			</div>
 		</div>	
-	</div>	
-	<div class="row">	
-		<div class="col-md-12">
-	<div class="form-group">
-	<table class="table table-bordered table-striped datatable" id="table-1">
-			<thead>
-				<tr>
-					<th>No Tbs Order</th>
-					<th>Tgl Transaksi</th>
-					<th>Pemasok</th>
-					<th>Barang</th>
-					<th>Jumlah Kendaraan</th>
-					<th>Total Berat</th>
-					<th width="150px">Aksi</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-	</div>
-	</div>
 	</div>
 	
+	<div class="row">	
+		<div class="col-md-12">
+			<ul class="nav nav-tabs bordered"><!-- available classes "bordered", "right-aligned" -->
+				<li class="active">
+					<a href="#listTab" data-toggle="tab">
+						<i class="fa fa-list "></i> Pembayaran Tbs
+					</a>
+				</li>
+				<li>
+				<a href="#historyTab" data-toggle="tab">
+						<i class="fa fa-list"></i> History Pembayaran
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="listTab">
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-1">
+									<thead>
+										<tr>
+											<th>No Tbs Order</th>
+											<th>Tgl Transaksi</th>
+											<th>Pemasok</th>
+											<th>Barang</th>
+											<th>Jumlah Kendaraan</th>
+											<th>Total Berat</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>	
+				</div>
+				
+				<div class="tab-pane" id="historyTab">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-2">
+									<thead>
+										<tr>
+											<th>No Pembayaran</th>
+											<th>Tgl Pembayaran</th>
+											<th>No Tbs Order</th>
+											<th>Pemasok</th>
+											<th>Jenis Pembayaran</th>
+											<th>Total Pembayaran</th>
+											<th>Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="modal fade custom-width" id="modal-3">
 		<div class="modal-dialog" style="width: 800px; height: 500px; ">
 			<div class="modal-content">
@@ -308,6 +352,8 @@
 	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="komidelCallback" OnCallback="komidelCallback" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakKwtCallback" OnCallback="cetakKwitansiClicked" ActiveControl.CausesValidation="false"/>
+	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
 			{
@@ -337,8 +383,45 @@
 				localDB.commit();
 				bindSelect2();
 				BindGrid();
+				BindGridHistory();
 			});
 			
+			function BindGridHistory()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-2");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
 			
 			function bindSelect2()
 			{
@@ -786,6 +869,14 @@
 				
 			}
 			
+			function cetakKwitansiClicked(id)
+			{
+				var request= <%= $this->cetakKwtCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
 		</script>
 		
 </com:TContent>

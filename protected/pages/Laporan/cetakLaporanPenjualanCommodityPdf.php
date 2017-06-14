@@ -60,29 +60,26 @@ class cetakLaporanPenjualanCommodityPdf extends MainConf
 		$pdf->AliasNbPages(); 
 		$pdf->AddPage();
 		
-		$pdf->Image('protected/pages/Laporan/logo-01.png',5,8,25);	
+		$pdf->Image('protected/pages/Laporan/logo-01.png',8,4,12);	
 		$pdf->SetFont('Arial','B',12);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,strtoupper($profilPerusahaan->nama),'0',0,'C');
-		
-		$pdf->Ln(8);			
-		$pdf->SetFont('Arial','',9);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,$profilPerusahaan->alamat,'0',0,'C');	
+	    $pdf->Cell(0,5,'LAPORAN PENJUALAN COMMODITY','0',0,'C');
 		$pdf->Ln(4);
-		$pdf->Cell(0,10,'           '.$profilPerusahaan->telepon,'0',0,'C');	
-		$pdf->Ln(3);
+		$pdf->Cell(0,5,strtoupper($profilPerusahaan->nama),'0',0,'C');
+		
+		$pdf->Ln(4);			
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(10,5,'','0',0,'C');
+		$pdf->Cell(0,5,''.$profilPerusahaan->alamat.' TELP : ' .$profilPerusahaan->telepon.'','0',0,'C');	
+		$pdf->Ln(1);
 		$pdf->Cell(0,5,'','B',1,'C');
-		$pdf->Ln(3);		
+		$pdf->Ln(1);		
 		$pdf->SetFont('Arial','BU',10);
 		
 		$pdf->SetFont('Arial','B',10);
-		$pdf->Cell(0,5,'LAPORAN PENJUALAN COMMODITY','0',0,'C');
-		$pdf->Ln(5);
-		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'C');
+		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'L');
 		$pdf->Ln(5);
 		$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C'));
-		$pdf->SetWidths(array(10,60,30,50,45,20,20,30,27,30,20,20,20,35));
+		$pdf->SetWidths(array(10,60,30,64,45,20,20,30,27,30,20,20,20,35));
 		$pdf->Row(array('NO','NO. KONTRAK','TGL. KONTRAK','PEMBELI','COMMODITY','JUMLAH KONTRAK','JUMLAH DIKIRIM','TOTAL PENGIRIMAN','JUMLAH DITERIMA','TOTAL PEMBAYARAN'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
@@ -128,7 +125,7 @@ class cetakLaporanPenjualanCommodityPdf extends MainConf
 			$ttlPembayaran = $row['total_pembayaran'];
 		}
 		$pdf->SetAligns(array('C','R','R','R','R','R'));
-		$pdf->SetWidths(array(195,20,20,30,27,30));
+		$pdf->SetWidths(array(209,20,20,30,27,30));
 		$pdf->SetFont('Arial','B',8);
 		$pdf->Row(array("Total",$ttlKontrak,$ttlKirim,number_format($ttlPengiriman,2,'.',','),$ttlTerima,number_format($ttlPembayaran,2,'.',',')));
 			

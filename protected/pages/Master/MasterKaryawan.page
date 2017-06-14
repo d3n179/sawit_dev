@@ -165,7 +165,26 @@
 										  ValidationGroup="val" />
 							</div>
 						</div>
+					
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="nik">NIK</label>
+								<com:TActiveTextBox 
+										ID="nik" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="NIK"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="nik"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>
 					</div>
+					
 					<div class="row">
 						<div class="col-md-3">
 							<div class="form-group">
@@ -677,6 +696,7 @@
 				jQuery('#<%= $this->id_cabang->getClientID()%>').val('empty');
 				jQuery('#<%= $this->id_jabatan->getClientID()%>').val('empty');
 				jQuery('#<%= $this->ktp->getClientID()%>').val('');
+				jQuery('#<%= $this->nik->getClientID()%>').val('');
 				jQuery('#<%= $this->nama->getClientID()%>').val('');
 				jQuery('#<%= $this->jkel->getClientID()%>').val('empty');
 				jQuery('#<%= $this->tmplahir->getClientID()%>').val('');

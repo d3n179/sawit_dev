@@ -1,5 +1,5 @@
 <?PHP
-class cetakLapBarangRusakPdf extends MainConf
+class cetakLaporanPembayaranPurchaseOrderPdf extends MainConf
 {
 	public function onPreInit($param)
 	{
@@ -14,23 +14,23 @@ class cetakLapBarangRusakPdf extends MainConf
 		$mingguan =$this->Request['mingguan'];
 		$harian =$this->Request['harian'];
 		
-		if($bln == '01')
+		if($bln == '1')
 			$nmBulan = "Januari";
-		elseif($bln == '02')
+		elseif($bln == '2')
 			$nmBulan = "Februari";
-		elseif($bln == '03')
+		elseif($bln == '3')
 			$nmBulan = "Maret";
-		elseif($bln == '04')
+		elseif($bln == '4')
 			$nmBulan = "April";
-		elseif($bln == '05')
+		elseif($bln == '5')
 			$nmBulan = "Mei";
-		elseif($bln == '06')
+		elseif($bln == '6')
 			$nmBulan = "Juni";
-		elseif($bln == '07')
+		elseif($bln == '7')
 			$nmBulan = "Juli";
-		elseif($bln == '08')
+		elseif($bln == '8')
 			$nmBulan = "Agustus";
-		elseif($bln == '09')
+		elseif($bln == '9')
 			$nmBulan = "September";
 		elseif($bln == '10')
 			$nmBulan = "Oktober";
@@ -45,8 +45,14 @@ class cetakLapBarangRusakPdf extends MainConf
 			$nmPeriode = $nmBulan." ".$thn;
 		elseif($periode == '1')
 			$nmPeriode = $thn;
-		elseif($periode == '3')
+		elseif($periode == '2')
 			$nmPeriode = $mingguan;
+		elseif($periode == '3')
+			$nmPeriode = $harian;
+				
+		$pdf=new reportKwitansi('L','mm','legal');
+		$pdf->AliasNbPages(); 
+		$pdf->AddPage();
 		
 		$profilPerusahaan = $this->profilPerusahaan();	
 			
@@ -54,49 +60,63 @@ class cetakLapBarangRusakPdf extends MainConf
 		$pdf->AliasNbPages(); 
 		$pdf->AddPage();
 		
+		
 		$pdf->Image('protected/pages/Laporan/logo-01.png',8,4,12);	
 		$pdf->SetFont('Arial','B',12);
-	    $pdf->Cell(0,5,'LAPORAN BARANG RUSAK','0',0,'C');
+		
+		$pdf->Cell(0,5,'LAPORAN PURCHASE ORDER','0',0,'C');
 		$pdf->Ln(4);
 		$pdf->Cell(0,5,strtoupper($profilPerusahaan->nama),'0',0,'C');
 		
 		$pdf->Ln(4);			
 		$pdf->SetFont('Arial','',8);
 		$pdf->Cell(10,5,'','0',0,'C');
-		$pdf->Cell(0,5,''.$profilPerusahaan->alamat.' TELP : ' .$profilPerusahaan->telepon.'','0',0,'C');	
+		$pdf->Cell(0,5,''.$profilPerusahaan->alamat.' TELP :' .$profilPerusahaan->telepon.'','0',0,'C');	
 		$pdf->Ln(1);
-		$pdf->Cell(0,5,'','B',1,'C');
+		$pdf->Cell(0,4,'','B',1,'C');
 		$pdf->Ln(1);		
 		$pdf->SetFont('Arial','BU',10);
 		
 		$pdf->SetFont('Arial','B',10);
+		
 		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'L');
 		$pdf->Ln(5);
-		$pdf->SetAligns(array('C','C','C','C','C'));
-		$pdf->SetWidths(array(25,25,75,40,35));
-		$pdf->Row(array('Tanggal','Jam','Nama Barang','Satuan','Jumlah'));
+		$pdf->SetAligns(array('C','C','C','C','C','C','C'));
+		$pdf->SetWidths(array(10,25,30,35,35,25,35));
+		$pdf->Row(array('No','No. Pembayaran','Tgl. Pembayaran','No. Purchase Order','Pemasok','Jenis Pembayaran','Total Pembayaran'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
-		$pdf->SetAligns(array('L','L','L','R','R'));
+		$pdf->SetAligns(array('C','L','L','L','L','L','R'));
 		$session=new THttpSession;
 		$session->open();
-		$sql = $session['cetakLapBarangRusakSql'];
+		$sql = $session['cetakLapPembayaranPurchaseOrderSql'];
 		$arrData=$this->queryAction($sql,'S');
-		$i = 1;
-		$idPo = '';
+		$no = 0;
+		$ttlBayar = 0;
 		foreach($arrData as $row)
-		{		
-			$pdf->SetAligns(array('L','L','L','R','R'));
-			$pdf->Row(array($this->ConvertDate($row['tgl_transaksi'],'3'),
-							$row['wkt_transaksi'],
+		{
+			if($row['jns_bayar'] == '0')
+				$jnsBayar = 'Cash';
+			else
+				$jnsBayar = 'Bank Transfer';
+					
+			$no++;
+			$pdf->Row(array($no,
+							$row['no_pembayaran'],
+							$this->ConvertDate($row['tgl_pembayaran'],'3'),
+							$row['no_po'],
 							$row['nama'],
-							$row['satuan'],
-							$row['jml']));
-			$i++;
+							$jnsBayar,
+							number_format($row['total_pembayaran'],2,'.',',')));
+			
+			$ttlBayar += $row['total_pembayaran'];
 		}
-		
+		$pdf->SetWidths(array(160,35));
+		$pdf->SetAligns(array('C','R'));
+		$pdf->SetFont('Arial','B',8);
+		$pdf->Row(array("Total",number_format($ttlBayar,2,'.',',')));
+			
 		$pdf->Output();	
 	}
-	
 }
 ?>

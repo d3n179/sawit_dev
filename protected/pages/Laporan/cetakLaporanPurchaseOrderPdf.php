@@ -53,29 +53,27 @@ class cetakLaporanPurchaseOrderPdf extends MainConf
 		$pdf->AliasNbPages(); 
 		$pdf->AddPage();
 		
-		$pdf->Image('protected/pages/Laporan/logo-01.png',5,8,25);	
+		$pdf->Image('protected/pages/Laporan/logo-01.png',8,4,12);	
 		$pdf->SetFont('Arial','B',12);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,strtoupper($profilPerusahaan->nama),'0',0,'C');
-		
-		$pdf->Ln(8);			
-		$pdf->SetFont('Arial','',9);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,$profilPerusahaan->alamat,'0',0,'C');	
+	    $pdf->Cell(0,5,'LAPORAN PURCHASE ORDER','0',0,'C');
 		$pdf->Ln(4);
-		$pdf->Cell(0,10,'           '.$profilPerusahaan->telepon,'0',0,'C');	
-		$pdf->Ln(3);
+		$pdf->Cell(0,5,strtoupper($profilPerusahaan->nama),'0',0,'C');
+		
+		$pdf->Ln(4);			
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(10,5,'','0',0,'C');
+		$pdf->Cell(0,5,''.$profilPerusahaan->alamat.' TELP : ' .$profilPerusahaan->telepon.'','0',0,'C');	
+		$pdf->Ln(1);
 		$pdf->Cell(0,5,'','B',1,'C');
-		$pdf->Ln(3);		
+		$pdf->Ln(1);		
 		$pdf->SetFont('Arial','BU',10);
 		
 		$pdf->SetFont('Arial','B',10);
-		$pdf->Cell(0,5,'LAPORAN PURCHASE ORDER','0',0,'C');
-		$pdf->Ln(5);
-		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'C');
+		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'L');
+		
 		$pdf->Ln(5);
 		$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C'));
-		$pdf->SetWidths(array(10,30,30,35,35,25,25,30,27,30));
+		$pdf->SetWidths(array(10,30,20,65,75,25,25,30,27,30));
 		$pdf->Row(array('NO','NO. PO','Tgl PO','SUPPLIER','N. BARANG','SATUAN','JUMLAH','HARGA','DISCOUNT','SUBTOTAL'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
@@ -110,10 +108,22 @@ class cetakLaporanPurchaseOrderPdf extends MainConf
 				$pdf->Row(array($no,$noPO,$tglPO,$nmSupplier,$rowDetail['nama'],$rowDetail['satuan'],number_format($rowDetail['jumlah'],2,'.',','),number_format($rowDetail['harga_satuan'],2,'.',','),number_format($rowDetail['discount'],2,'.',','),number_format($rowDetail['subtotal'],2,'.',',')));
 				
 				
+				$Jumlah   +=$rowDetail['jumlah'];
+				$Harga    +=$rowDetail['harga_satuan'];
+				$Discount +=$rowDetail['discount'];
+				$Subtotal +=$rowDetail['subtotal'];
 			}
 			$i++;
 		}
 		
+		$pdf->SetFont('Arial','B',9);
+		
+		$pdf->SetAligns(array('C','R','R','R','R'));
+		$pdf->SetWidths(array(225,25,30,27,30));
+		$pdf->Row(array('TOTAL',''.number_format($Jumlah,2,'.',',').'',
+		''.number_format($Harga,2,'.',',').'',
+		''.number_format($Discount,2,'.',',').'',
+		''.number_format($Subtotal,2,'.',',').''));
 		$pdf->Output();	
 	}
 	

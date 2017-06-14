@@ -1,0 +1,86 @@
+<com:TContent ID="Main">
+	<h2>Stok Barang</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	
+	
+	<div class="row">
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<div class="form-group">
+				<table class="table table-bordered table-striped datatable" id="table-1">
+					<thead>
+						<tr>
+							<th width="200px">Nama Barang</th>
+							<th width="200px">Kelompok</th>
+							<th width="200px">Kategori</th>
+							<th width="100px">Stok</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+		
+			jQuery(document).ready(function(jQuery)
+			{
+				BindGrid();
+			});
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+				
+    
+			}
+			
+		</script>
+		
+</com:TContent>

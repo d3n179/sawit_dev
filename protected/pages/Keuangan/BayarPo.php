@@ -254,7 +254,7 @@ class BayarPo extends MainConf
 					WHERE
 						tbt_receiving_order.id_po = '$idPo' ";
 			$arr = $this->queryAction($sql,'S');
-			
+			var_dump($sql);
 			$count = count($arr);
 			$tblBody = '';
 			if($arr > 0)
@@ -264,7 +264,7 @@ class BayarPo extends MainConf
 					$tblBody .= '<tr>';
 					$tblBody .= '<td>'.$row['no_faktur'].'</td>';
 					$tblBody .= '<td>'.$this->ConvertDate($row['tgl_terima'],'3').'</td>';
-					$tblBody .= '<td>'.$row['nama_barang'].'</td>';
+					$tblBody .= '<td>'.mysql_escape_string($row['nama_barang']).'</td>';
 					$tblBody .= '<td>'.$row['jumlah'].'</td>';
 					$tblBody .= '<td>'.$row['satuan'].'</td>';
 					$tblBody .= '<td>'.number_format($row['harga_satuan'],2,'.',',').'</td>';	

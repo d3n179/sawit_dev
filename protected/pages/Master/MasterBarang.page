@@ -228,7 +228,7 @@
 							<th width="200px">Nama Barang</th>
 							<th width="200px">Kelompok</th>
 							<th width="200px">Kategori</th>
-							<th width="100px">Stok</th>
+							<!--<th width="100px">Stok</th>-->
 							<th width="100px">Minimum Stok</th>
 							<th width="100px">Maximum Stok</th>
 							<th width="100px">Maximum Pembelian / Bulan</th>

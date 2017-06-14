@@ -301,14 +301,19 @@ class KartuStokTbs extends MainConf
 			$session=new THttpSession;
 			$session->open();
 			$session['cetakKartuStokSql'] = $this->getViewState('sql');
+	
+				
+				$url = "index.php?page=Inventory.cetakKartuStokPdf&periode=".$this->Periode->SelectedValue."&bln=".$this->DDBulan->SelectedValue."&thn=".$this->DDTahun->SelectedValue."&mingguan=".$this->mingguan->Text;
 		
-			$this->Response->redirect($this->Service->constructUrl('Inventory.cetakKartuStokPdf',
-				array(
-				'stLap'=>'1',
-				'periode'=>$this->Periode->SelectedValue,
-				'bln'=>$this->DDBulan->SelectedValue,
-				'thn'=>$this->DDTahun->SelectedValue,
-				'mingguan'=>$this->mingguan->Text)));
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
+		$this->getPage()->getClientScript()->registerEndScript
+							('','
+							var url = "'.$urlTemp.'";
+							window.open(url, "_blank");
+							unloadContent();');	
+							
 		/*}
 		else
 		{

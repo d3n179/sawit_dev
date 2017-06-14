@@ -401,22 +401,34 @@
 			
 			function submitBtnClicked()
 			{
-				var msg = 'Approve Request Order ?'; 
-				if(confirm(msg))
+				var CHECK = localDB.queryAll('AdminRequestOrderTable', {query: {harga: "NaN"},sort: [["ID", "ASC"]]});
+				if(CHECK.length > 0)
 				{
-					if(localDB.tableExists('AdminRequestOrderTable'))
+					toastr.error("Harga Barang Belum Diset !");
+				}
+				else
+				{
+					var msg = 'Approve Request Order ?'; 
+					if(confirm(msg))
 					{
-						var CHECK = localDB.queryAll('AdminRequestOrderTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
-						if(CHECK.length > 0)
+						if(localDB.tableExists('AdminRequestOrderTable'))
 						{
-							var RequestOrderTable = localDB.queryAll('AdminRequestOrderTable', {sort: [["ID", "ASC"]]});
-							var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
-							request.setCallbackParameter({
-								RequestOrderTable:RequestOrderTable
-							});
-							request.dispatch();
-							
-			
+							var CHECK = localDB.queryAll('AdminRequestOrderTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
+							if(CHECK.length > 0)
+							{
+								var RequestOrderTable = localDB.queryAll('AdminRequestOrderTable', {sort: [["ID", "ASC"]]});
+								var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+								request.setCallbackParameter({
+									RequestOrderTable:RequestOrderTable
+								});
+								request.dispatch();
+								
+				
+							}
+							else
+							{
+								toastr.error("Product Belum Dimasukkan !");
+							}
 						}
 						else
 						{
@@ -425,12 +437,8 @@
 					}
 					else
 					{
-						toastr.error("Product Belum Dimasukkan !");
+						return false;
 					}
-				}
-				else
-				{
-					return false;
 				}
 					
 				

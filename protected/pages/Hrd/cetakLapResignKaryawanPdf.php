@@ -54,26 +54,23 @@ class cetakLapResignKaryawanPdf extends MainConf
 		$pdf->AliasNbPages(); 
 		$pdf->AddPage();
 		
-		$pdf->Image('protected/pages/Laporan/logo-01.png',5,8,25);	
+		$pdf->Image('protected/pages/Laporan/logo-01.png',8,4,12);	
 		$pdf->SetFont('Arial','B',12);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,strtoupper($profilPerusahaan->nama),'0',0,'C');
-		
-		$pdf->Ln(8);			
-		$pdf->SetFont('Arial','',9);
-		$pdf->Cell(10,10,'','0',0,'C');
-		$pdf->Cell(0,10,$profilPerusahaan->alamat,'0',0,'C');	
+	    $pdf->Cell(0,5,'LAPORAN RESIGN KARYAWAN','0',0,'C');
 		$pdf->Ln(4);
-		$pdf->Cell(0,10,'           '.$profilPerusahaan->telepon,'0',0,'C');	
-		$pdf->Ln(3);
+		$pdf->Cell(0,5,strtoupper($profilPerusahaan->nama),'0',0,'C');
+		
+		$pdf->Ln(4);			
+		$pdf->SetFont('Arial','',8);
+		$pdf->Cell(10,5,'','0',0,'C');
+		$pdf->Cell(0,5,''.$profilPerusahaan->alamat.' TELP : ' .$profilPerusahaan->telepon.'','0',0,'C');	
+		$pdf->Ln(1);
 		$pdf->Cell(0,5,'','B',1,'C');
-		$pdf->Ln(3);		
+		$pdf->Ln(1);		
 		$pdf->SetFont('Arial','BU',10);
 		
 		$pdf->SetFont('Arial','B',10);
-		$pdf->Cell(0,5,'LAPORAN RESIGN KARYAWAN','0',0,'C');
-		$pdf->Ln(5);
-		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'C');
+		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'L');
 		$pdf->Ln(5);
 		$pdf->SetAligns(array('C','C','C','C','C','C'));
 		$pdf->SetWidths(array(40,30,20,27,40,40));

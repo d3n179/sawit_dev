@@ -434,10 +434,13 @@ class PurchaseOrder extends MainConf
 	{
 		$idPo = $param->CallbackParameter->id;
 		$url = "index.php?page=Transaksi.cetakPurchaseOrder&idPo=".$idPo;
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
 		$this->getPage()->getClientScript()->registerEndScript('',"
-		jQuery('#cetakPOFrame').attr('src','".$url."')
-		jQuery('#modal-2').modal('show');
-		unloadContent();
+					var url = '".$urlTemp."';
+					window.open(url, '_blank');
+					unloadContent();
 		");
 	}
 }

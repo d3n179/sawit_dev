@@ -296,6 +296,7 @@ class LaporanHutangPO extends MainConf
 			$session['cetakLapUmurHutangSql'] = $this->getViewState('sql');
 		
 			$this->Response->redirect($this->Service->constructUrl('Keuangan.cetakLapUmurHutangPdf'));
+			
 		/*}
 		else
 		{

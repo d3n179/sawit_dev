@@ -222,10 +222,12 @@ class MasterKaryawan extends MainConf
 			
 			$this->id_cabang->SelectedValue = $Record->id_cabang;
 			$this->id_jabatan->SelectedValue = $Record->id_jabatan;
+			
 			$this->golongan_karyawan->SelectedValue = $Record->id_golongan;
 			$this->ptkp->SelectedValue = $Record->id_ptkp;
 			$this->tunjangan_natura->Text = $Record->tunjangan_natura;
 			$this->ktp->Text = $Record->ktp;
+			$this->nik->Text = $Record->nik;
 			$this->nama->Text = $Record->nama;
 			$this->jkel->SelectedValue = $Record->jkel;
 			$this->tmplahir->Text = $Record->tmplahir;
@@ -367,7 +369,7 @@ class MasterKaryawan extends MainConf
 					
 			$nik = $nik.$numUrut.$count;
 				
-			$Record->nik = $nik;
+			
 				
 			$Record->id_cabang = $this->id_cabang->SelectedValue;
 			$Record->id_jabatan = $this->id_jabatan->SelectedValue;
@@ -375,6 +377,7 @@ class MasterKaryawan extends MainConf
 			$Record->id_ptkp = $this->ptkp->SelectedValue;
 			$Record->tunjangan_natura = $this->tunjangan_natura->text;
 			$Record->ktp = $this->ktp->Text;
+			$Record->nik = $this->nik->Text;
 			$Record->nama = $this->nama->Text;
 			$Record->jkel = $this->jkel->SelectedValue;
 			$Record->tmplahir = $this->tmplahir->Text;

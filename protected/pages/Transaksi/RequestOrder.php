@@ -171,7 +171,7 @@ class RequestOrder extends MainConf
 			$this->modalJudul->Text = 'Edit Request Order';
 			$this->idRo->Value = $id;
 			$this->tglRo->Text = $this->ConvertDate($RequestOrderRecord->tgl_ro,'1');
-			
+			$this->catatan->Text = $RequestOrderRecord->catatan;
 			$sql = "SELECT
 						tbt_request_order_detail.id,
 						tbt_request_order_detail.id_barang,
@@ -260,6 +260,7 @@ class RequestOrder extends MainConf
 		}
 			
 			$RequestOrderRecord->tgl_ro = $this->ConvertDate($tglRO,'2');
+			$RequestOrderRecord->catatan = $this->catatan->Text;
 			$RequestOrderRecord->save();
 				
 			foreach($detailRO as $row)

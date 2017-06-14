@@ -97,7 +97,7 @@ class MasterBarang extends MainConf
 				$tblBody .= '<td>'.mysql_escape_string($row['nama']).'</td>';
 				$tblBody .= '<td>'.$kelompokBarang.'</td>';
 				$tblBody .= '<td>'.$row['kategori'].'</td>';
-				$tblBody .= '<td>'.$stokList.'</td>';
+				//$tblBody .= '<td>'.$stokList.'</td>';
 				$tblBody .= '<td>'.$row['min_stock'].' '.$MaxSatuanName.'</td>';
 				$tblBody .= '<td>'.$row['max_stock'].' '.$MaxSatuanName.'</td>';
 				$tblBody .= '<td>'.$row['max_beli_bulanan'].' '.$MaxSatuanName.'</td>';
