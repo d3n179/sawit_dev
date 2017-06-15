@@ -30,6 +30,15 @@
 										  ValidationGroup="val" />
 							</div>
 						</div>	
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="catatan">Catatan</label>
+								<com:TActiveTextBox 
+										ID="catatan" 
+										TextMode="MultiLine"
+										CssClass="form-control" />
+							</div>
+						</div>	
 					</div>	
 					<div class="row">	
 						<div class="col-md-3">
@@ -83,8 +92,8 @@
 										ID="hargaSatuanBesar" />
 								<com:TActiveTextBox 
 										ID="harga" 
-										Text="0"
-										CssClass="form-control mask_currency" />
+										Text=""
+										CssClass="form-control mask_decimal" />
 								<com:TRequiredFieldValidator 
 										  ControlToValidate="harga"											 
 										  ErrorMessage=""
@@ -444,12 +453,17 @@
 				var SatuanName = jQuery('#<%= $this->DDSatuan->getClientID()%> option:selected').text();
 				
 				var hargaSatuanBesar = parseFloat(jQuery('#<%= $this->hargaSatuanBesar->getClientID()%>').val());
-				var harga = parseFloat(jQuery('#<%= $this->harga->getClientID()%>').val().replace(/\,/g,''));
+				var harga = parseFloat(jQuery('#<%= $this->harga->getClientID()%>').val());
 				
 				if(harga > 0)
-					var subtotal = harga * Jumlah;
+				{
+				}
 				else
-					var subtotal = 0 * Jumlah;
+				{
+					var harga = 0;
+				}
+				
+				var subtotal = harga * Jumlah;
 		
 				subtotal = parseFloat(subtotal);
 				console.log(BarangName);
@@ -519,7 +533,7 @@
 			function updateBarang(id)
 			{
 				var qtyUpdate = parseFloat(jQuery('#tableBarang .Jumlah-column-ID-'+id).val());
-				var harga = parseFloat(jQuery('#tableBarang .Harga-column-ID-'+id).val().replace(/\,/g,''));
+				var harga = parseFloat(jQuery('#tableBarang .Harga-column-ID-'+id).val());
 				
 				localDB.update('RequestOrderTable', {ID: id}, function(row) {
 									row.harga = harga;
@@ -617,7 +631,8 @@
 				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 				    },
 				    fnDrawCallback : function (oSettings) {
-						jQuery(".harga_column").inputmask('numeric',{'groupSeparator': '.', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0',radixPoint:".",allowMinus:false,allowPlus:false});
+						//jQuery(".harga_column").inputmask('numeric',{'groupSeparator': '.', 'autoGroup': true, 'digits': 2, 'digitsOptional': false, 'placeholder': '0',radixPoint:".",allowMinus:false,allowPlus:false});
+						jQuery(".harga_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
 						jQuery(".jumlah_column").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
 					 }
 				});

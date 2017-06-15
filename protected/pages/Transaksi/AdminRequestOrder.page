@@ -401,7 +401,7 @@
 			
 			function submitBtnClicked()
 			{
-				var CHECK = localDB.queryAll('AdminRequestOrderTable', {query: {harga: "NaN"},sort: [["ID", "ASC"]]});
+				var CHECK = localDB.queryAll('AdminRequestOrderTable', {query: {harga: 0},sort: [["ID", "ASC"]]});
 				if(CHECK.length > 0)
 				{
 					toastr.error("Harga Barang Belum Diset !");

@@ -1,5 +1,5 @@
 <?PHP
-class BayarTbsOrder extends MainConf
+class SettingTbsOrder extends MainConf
 {
 
 	public function onPreRenderComplete($param)
@@ -7,10 +7,6 @@ class BayarTbsOrder extends MainConf
 		parent::onPreRenderComplete($param);
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
-			$sql = "SELECT id,nama AS nama FROM tbm_bank WHERE deleted ='0' ";
-			$arr = $this->queryAction($sql,'S');
-			$this->DDBank->DataSource = $arr;
-			$this->DDBank->DataBind();
 		}
 		
 	}
@@ -27,22 +23,6 @@ class BayarTbsOrder extends MainConf
 						('','
 						jQuery("#table-1 tbody").append("'.$tblBody.'");
 						jQuery("#table-2 tbody").append("'.$tblBodyHistory.'");');	
-		}
-	}
-	
-	public function jnsByrChanged()
-	{
-		if($this->DDJnsBayar->SelectedValue == '0')
-		{
-			$this->DDBank->Enabled = false;
-			
-			$this->noRef->Enabled = false;
-		}
-		else
-		{
-			$this->DDBank->Enabled = true;
-			
-			$this->noRef->Enabled = true;
 		}
 	}
 	
@@ -119,7 +99,7 @@ class BayarTbsOrder extends MainConf
 				WHERE
 					tbt_tbs_order.deleted = '0'
 				AND tbt_tbs_order_detail.deleted = '0'
-				AND (tbt_tbs_order.`status` = '0' OR tbt_tbs_order.`status` = '1' OR tbt_tbs_order.`status` = '2')
+				AND (tbt_tbs_order.`status` = '0' OR tbt_tbs_order.`status` = '1')
 				GROUP BY
 					tbt_tbs_order.id
 				ORDER BY
@@ -208,16 +188,11 @@ class BayarTbsOrder extends MainConf
 		$this->tglTbs->Value = $tglTransaksi;
 		$this->idBarang->Value = $idBarang;
 		$this->idPemasok->Value = $idPemasok;
-		var_dump($id);
-		if($TbsOrderRecord->status == '1')
-			$this->jatuh_tempo->Text = $this->ConvertDate($TbsOrderRecord->tgl_jatuh_tempo,'1');
-		else
-			$this->jatuh_tempo->Text = '';
 		
 		$this->Pemasok->Text = $nmPemasok;
 		$this->jnsKelapaSawit->Text = $nmbarang;
 		
-			$this->modalJudul->Text = 'Proses Pembayaran';
+			$this->modalJudul->Text = 'Setting Transaksi TBS';
 			
 			if($TbsOrderRecord->status == '0')
 			{
@@ -297,27 +272,7 @@ class BayarTbsOrder extends MainConf
 
 			}
 			$array = $this->queryAction($sql,'S');
-			
-			$query = "SELECT
-					SUM(
-						tbt_pembayaran_tbs.jumlah_pembayaran
-					) AS jumlah_pembayaran
-				FROM
-					tbt_pembayaran_tbs
-				WHERE
-					tbt_pembayaran_tbs.id_tbs_order = '$id'
-					AND tbt_pembayaran_tbs.deleted = '0' ";
-				
-			$arrQuery = $this->queryAction($query,'S');
-			
-			$sudahDibayar = 0;
-			foreach($arrQuery as $rowQuery)
-			{
-				$sudahDibayar += $rowQuery['jumlah_pembayaran'];
-			}
-			
-			$this->total_tbs_dibayar->Text = $sudahDibayar;
-			
+		
 			$arrJson = json_encode($array,true);	
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
@@ -325,58 +280,6 @@ class BayarTbsOrder extends MainConf
 					RenderTempTable('.$arrJson.');
 					jQuery("#modal-1").modal("show");
 					');	
-		
-	}
-	
-	public function importBtnClicked($sender,$param)
-	{
-		$sql = "SELECT
-					*
-				FROM
-					tbm_kategori_pelanggan
-				WHERE
-					deleted = '0'";
-					
-		$arr = $this->queryAction($sql,'S');
-		foreach($arr as $row)
-		{
-			$idLama = $row['id'];
-			$PemasokKategoriRecord = new PemasokKategoriRecord();
-			$PemasokKategoriRecord->jenis_kategori = '1';
-			$PemasokKategoriRecord->nama = $row['nama'];
-			$PemasokKategoriRecord->ppn = 0;
-			$PemasokKategoriRecord->pph = 0;
-			$PemasokKategoriRecord->deleted = 0;
-			$PemasokKategoriRecord->save();
-			
-			$sqlUpdate = "UPDATE tbm_pelanggan SET kategori_id = '".$PemasokKategoriRecord->id."' WHERE kategori_id = '".$idLama."' ";
-			$this->queryAction($sqlUpdate,'C');
-		}
-		
-		$sql = "SELECT
-					*
-				FROM
-					tbm_pelanggan
-				WHERE
-					deleted = '0'";
-					
-		$arr = $this->queryAction($sql,'S');
-		foreach($arr as $row)
-		{
-			$PemasokRecord = new PemasokRecord();
-			$PemasokRecord->kategori_id = $row['kategori_id'];
-			$PemasokRecord->nama = $row['nama'];
-			$PemasokRecord->alamat = $row['alamat'];
-			$PemasokRecord->telepon = $row['telepon'];
-			$PemasokRecord->fax = '';
-			$PemasokRecord->contact_person = '';
-			$PemasokRecord->fee = 0;
-			$PemasokRecord->no_sp = '0';
-			$PemasokRecord->id_kategori_harga = '0';
-			$PemasokRecord->deleted = 0;
-			$PemasokRecord->save();
-			
-		}
 		
 	}
 	
@@ -389,50 +292,17 @@ class BayarTbsOrder extends MainConf
 		$IdSatuan = BarangSatuanRecord::finder()->find('id_barang = ?  AND urutan = ? ',$idBarang,1)->id_satuan;
 		$totalNettoMasuk = 0;
 		$totalTbsMasuk = 0;
-		$totalBayar = str_replace(",","",$this->jml_bayar->Text);
-		$sisaBayar = str_replace(",","",$this->sisa_bayar->Text);
 		
 		$TbsOrderRecord = TbsOrderRecord::finder()->findByPk($idTbsOrder);
-		if($totalBayar >= $sisaBayar)
-			$TbsOrderRecord->status = '3';
-		else
-		{
-			if($TbsOrderRecord->status == '0' || $TbsOrderRecord->status == '1')
-			{
-				$TbsOrderRecord->status = '2';
-				$TbsOrderRecord->tgl_jatuh_tempo = $this->ConvertDate($this->jatuh_tempo->Text,'2');
-			}
-		}
+		$TbsOrderRecord->status = '1';
 		$TbsOrderRecord->save();
 		
 		$DetailBayar = $param->CallbackParameter->BayarTbsTable;
-		$BayarTbsOrderRecord = new BayarTbsOrderRecord();
-		$BayarTbsOrderRecord->no_pembayaran = $this->GenerateNoDocument('PAY');
-		$BayarTbsOrderRecord->tgl_pembayaran  = date("Y-m-d");
-		$BayarTbsOrderRecord->wkt_pembayaran = date("G:i:s");
-		$BayarTbsOrderRecord->id_tbs_order = $idTbsOrder;
-		
-		if($totalBayar >= $sisaBayar)
-			$BayarTbsOrderRecord->jumlah_pembayaran = $sisaBayar;
-		else
-			$BayarTbsOrderRecord->jumlah_pembayaran = $totalBayar;
-		
-		$BayarTbsOrderRecord->id_coa = $this->DDCoa->Text;	
-		$BayarTbsOrderRecord->jns_bayar = $this->DDJnsBayar->SelectedValue;
-		
-		if($this->DDJnsBayar->SelectedValue == '1')
-			$BayarTbsOrderRecord->id_bank =$this->DDBank->SelectedValue; 
-		else
-			$BayarTbsOrderRecord->id_bank = '8';
-				
-		$BayarTbsOrderRecord->no_ref = $this->noRef->Text;
-		$BayarTbsOrderRecord->deleted = '0';
-		$BayarTbsOrderRecord->save();
 		
 		foreach($DetailBayar as $row)
 		{		
-			if($row->status == '0' || $row->status == '1')
-			{
+			//if($row->status == '0')
+			//{
 				$TbsOrderDetailRecord = TbsOrderDetailRecord::finder()->findByPk($row->idTransaksi);
 				if($TbsOrderDetailRecord)
 				{
@@ -452,109 +322,12 @@ class BayarTbsOrder extends MainConf
 				$totalNettoMasuk += $row->netto_2;
 				$totalTbsMasuk += $row->subtotal_tbs;
 				
-				$msg = "Pembayaran TBS Telah Diproses";						
-				$BarangHargaRecord = new BarangHargaRecord();
-				$BarangHargaRecord->id_barang = $idBarang;
-				$BarangHargaRecord->tgl = date("Y-m-d");
-				$BarangHargaRecord->harga = $row->harga;
-				$BarangHargaRecord->deleted = '0';
-				$BarangHargaRecord->save();
-			}
+				$msg = "Setting Transaksi TBS Telah Diproses";	
+			//}
 			
 		}
 		
-		if($totalNettoMasuk > 0 && $totalTbsMasuk > 0)
-		{
-			$expiredDate = '0000-00-00';		
-				$sql = "SELECT 
-								SUM(tbd_stok_barang.stok) AS stok
-							FROM
-								tbd_stok_barang
-							WHERE
-								tbd_stok_barang.deleted = '0' 
-								AND tbd_stok_barang.id_barang = '".$idBarang."' ";
-									
-				$arr = $this->queryAction($sql,'S');
-							
-				if($arr[0]['stok'] > 0)
-					$stokAwal = $arr[0]['stok'];
-				else
-					$stokAwal = 0;
-								
-				$qtyConversion = $this->getTargetUom($idBarang,$totalNettoMasuk,$IdSatuan,'1','0');
-						
-				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND expired_date = ? AND deleted = ?',$idBarang,$expiredDate,'0');
-						
-				if($StockBarangRecord)
-				{
-					$StockBarangRecord->stok += $qtyConversion;	
-				}
-				else
-				{
-					$StockBarangRecord = new StockBarangRecord();
-					$StockBarangRecord->id_barang = $idBarang;
-					$StockBarangRecord->stok = $qtyConversion;
-					$StockBarangRecord->expired_date = $expiredDate;
-					$StockBarangRecord->deleted = '0';
-				}
-						
-				$StockBarangRecord->save();
-						
-				$StockInOutRecord = new StockInOutRecord();
-				$StockInOutRecord->id_barang = $idBarang;
-				$StockInOutRecord->stok_awal = $stokAwal;
-				$StockInOutRecord->stok_in = $qtyConversion;
-				$StockInOutRecord->nilai_in = $totalTbsMasuk;
-				$StockInOutRecord->stok_out = 0;
-				$StockInOutRecord->nilai_out = 0;
-				$StockInOutRecord->stok_akhir = $stokAwal + $qtyConversion;
-				$StockInOutRecord->keterangan = '';
-				$StockInOutRecord->id_transaksi = $BayarTbsOrderRecord->id;
-				$StockInOutRecord->jns_transaksi = "2";
-				$StockInOutRecord->tgl = date("Y-m-d");
-				$StockInOutRecord->wkt= date("G:i:s");
-				$StockInOutRecord->username = $this->User->IsUser;
-				$StockInOutRecord->save();
-		}
-				
-		$supplierName = PemasokRecord::finder()->findByPk($this->idPemasok->Value)->nama;
-		$this->InsertJurnalBukuBesar($BayarTbsOrderRecord->id,
-									'2',
-									'1',
-									$BayarTbsOrderRecord->no_pembayaran,
-									$BayarTbsOrderRecord->tgl_pembayaran,
-									date("G:i:s"),
-									$BayarTbsOrderRecord->id_coa,
-									$BayarTbsOrderRecord->id_bank,
-									'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
-									$BayarTbsOrderRecord->jumlah_pembayaran);
-			
-			$this->InsertLabaRugi($BayarTbsOrderRecord->id,
-								'2',
-								'1',
-								$BayarTbsOrderRecord->tgl_pembayaran,
-								date("G:i:s"),
-								'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
-								$BayarTbsOrderRecord->jumlah_pembayaran,
-								$BayarTbsOrderRecord->no_pembayaran);
-			
-			$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
-								'3',
-								'0',
-								$BayarTbsOrderRecord->tgl_pembayaran,
-								date("G:i:s"),
-								'Perlengkapan',
-								$BayarTbsOrderRecord->jumlah_pembayaran,
-								$BayarTbsOrderRecord->no_pembayaran);
-									
-			$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
-									'3',
-									'1',
-									$BayarTbsOrderRecord->tgl_pembayaran,
-									date("G:i:s"),
-									'Kas',
-									$BayarTbsOrderRecord->jumlah_pembayaran,
-									$BayarTbsOrderRecord->no_pembayaran);
+		
 						
 	$tblBody = $this->BindGrid();
 		$id = $BayarTbsOrderRecord->id;
@@ -572,8 +345,6 @@ class BayarTbsOrder extends MainConf
 							jQuery("#table-1 tbody").append("'.$tblBody.'");
 							clearForm();
 							BindGrid();
-							var url = "'.$urlTemp.'";
-							window.open(url, "_blank");
 							unloadContent();');	
 			
 			
