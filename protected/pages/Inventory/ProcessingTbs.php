@@ -286,7 +286,7 @@ class ProcessingTbs extends MainConf
 	public function submitBtnClicked($sender,$param)
 	{
 		$Persediaan_Today = round($this->tbs_awal->Text + $this->tbs_kebun->Text + $this->tbs_luar->Text + $this->tbs_potongan->Text);
-		$Cap_Rebusan = ($this->tbs_proses_shift_1->Text == 0 && $this->tbs_proses_shift_2->Text == 0 ? 0 : round($Persediaan_Today / ($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text + $this->tbs_rbs_mentah->Text + $this->tbs_rbs_masak->Text + $this->tbs_restan_ramp->Text + $this->tbs_restan_lantai->Text)));
+		$Cap_Rebusan = ($this->tbs_proses_shift_1->Text == 0 && $this->tbs_proses_shift_2->Text == 0 ? 0 : floor($Persediaan_Today / ($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text + $this->tbs_rbs_mentah->Text + $this->tbs_rbs_masak->Text + $this->tbs_restan_ramp->Text + $this->tbs_restan_lantai->Text)));
 		$Olah_Brutto_today = round(($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text) * $Cap_Rebusan);
 		$Olah_Netto_today  = ($Olah_Brutto_today == 0 ? 0 : round($Olah_Brutto_today - $this->tbs_potongan->Text));
 		
@@ -550,12 +550,12 @@ class ProcessingTbs extends MainConf
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
 						toastr.info("'.$msg.'");
-						clearForm();
-						jQuery("#modal-1").modal("hide");
 						jQuery("#table-1").dataTable().fnDestroy();
 						jQuery("#table-1 tbody").empty();
 						jQuery("#table-1 tbody").append("'.$tblBody.'");
-						BindGrid();');	
+						BindGrid();
+						unloadContent();
+						');	
 		}
 		else
 		{
@@ -569,9 +569,18 @@ class ProcessingTbs extends MainConf
 	public function UpdateReporting($idProcessing)
 	{
 		$record = ProcessingTbsRecord::finder()->findByPk($idProcessing);
-		$Oil_Recovered_Total_isi_BST1 = $record->bst1_cpo_isi * $record->etc_bst1_kg_cm * $this->getTempVariable($record->temp_bst1) + $record->etc_bst1_kg * $this->getTempVariable($record->temp_bst1);
-		$Oil_Recovered_Total_isi_BST2 = $record->bst2_cpo_isi * $record->etc_bst2_kg_cm * $this->getTempVariable($record->temp_bst2) + $record->etc_bst2_kg * $this->getTempVariable($record->temp_bst2);
-
+		
+		if($record->bst1_cpo_isi > 0)
+			$Oil_Recovered_Total_isi_BST1 = $record->bst1_cpo_isi * $record->etc_bst1_kg_cm * $this->getTempVariable($record->temp_bst1) + $record->etc_bst1_kg * $this->getTempVariable($record->temp_bst1);
+		else
+			$Oil_Recovered_Total_isi_BST1 = 0;
+		
+		
+		if($record->bst2_cpo_isi > 0)
+			$Oil_Recovered_Total_isi_BST2 = $record->bst2_cpo_isi * $record->etc_bst2_kg_cm * $this->getTempVariable($record->temp_bst2) + $record->etc_bst2_kg * $this->getTempVariable($record->temp_bst2);
+		else
+			$Oil_Recovered_Total_isi_BST2 = 0;
+			
 		$Oil_In_Process_CST1_Kg = $record->cst_1 * $record->etc_cst1_kg_cm * $this->getTempVariable($record->cst_1_temp);
 		$Oil_In_Process_CST2_Kg = $record->cst_2 * $record->etc_cst2_kg_cm * $this->getTempVariable($record->cst_2_temp);
 		$Oil_In_Process_CST3_Kg = $record->cst_3 * $record->etc_cst3_kg_cm * $this->getTempVariable($record->cst_3_temp);
@@ -585,22 +594,22 @@ class ProcessingTbs extends MainConf
 
 		$COT_Kg = $record->cot * $record->etc_cot_kg_cm;
 
-		$NS1_Kg = ($record->nut_silo_no_1 > 0 ? $record->nut_silo_no_1 * $record->etc_ns1_kg_cm + $record->etc_ns1_kg : 0);
-		$NS2_Kg = ($record->nut_silo_no_2 > 0 ? $record->nut_silo_no_2 * $record->etc_ns2_kg_cm + $record->etc_ns2_kg : 0);
-		$NS3_Kg = ($record->nut_silo_no_3 > 0 ? $record->nut_silo_no_3 * $record->etc_ns3_kg_cm + $record->etc_ns3_kg : 0);
-		$NS4_Kg = ($record->nut_silo_no_4 > 0 ? $record->nut_silo_no_4 * $record->etc_ns4_kg_cm + $record->etc_ns4_kg : 0);
+		$NS1_Kg = ($record->nut_silo_no_1 > 0 ? $record->nut_silo_no_1 * $record->etc_ns1_kg_cm + $record->etc_ks3_kg : 0);
+		$NS2_Kg = ($record->nut_silo_no_2 > 0 ? $record->nut_silo_no_2 * $record->etc_ns2_kg_cm + $record->etc_ns1_kg : 0);
+		$NS3_Kg = ($record->nut_silo_no_3 > 0 ? $record->nut_silo_no_3 * $record->etc_ns3_kg_cm + $record->etc_ns2_kg : 0);
+		$NS4_Kg = ($record->nut_silo_no_4 > 0 ? $record->nut_silo_no_4 * $record->etc_ns4_kg_cm + $record->etc_ns3_kg : 0);
 
-		$KS1_Kg = ($record->kernel_silo_no_1 > 0 ? $record->kernel_silo_no_1 * $record->etc_ks1_kg_cm - 0 * 0 + $record->etc_ks1_kg : 0);
-		$KS2_Kg = ($record->kernel_silo_no_2 > 0 ? $record->kernel_silo_no_2 * $record->etc_ks2_kg_cm - 0 * 0 + $record->etc_ks2_kg : 0);
-		$KS3_Kg = ($record->kernel_silo_no_3 > 0 ? $record->kernel_silo_no_3 * $record->etc_ks3_kg_cm - 0 * 0 + $record->etc_ks3_kg : 0);
+		$KS1_Kg = ($record->kernel_silo_no_1 > 0 ? $record->kernel_silo_no_1 * $record->etc_ks1_kg_cm - 0 * 0 + $record->etc_bst2_kg : 0);
+		$KS2_Kg = ($record->kernel_silo_no_2 > 0 ? $record->kernel_silo_no_2 * $record->etc_ks2_kg_cm - 0 * 0 + $record->etc_ks1_kg : 0);
+		$KS3_Kg = ($record->kernel_silo_no_3 > 0 ? $record->kernel_silo_no_3 * $record->etc_ks3_kg_cm - 0 * 0 + $record->etc_ks2_kg : 0);
 
-		$BSK1_Kg = ($record->bsk_no_1 > 0 ? $record->bsk_no_1 * $record->etc_bsk1_kg_cm + $record->etc_bsk1_kg : 0);
-		$BSK2_Kg = ($record->bsk_no_2 > 0 ? $record->bsk_no_2 * $record->etc_bsk2_kg_cm + $record->etc_bsk2_kg : 0);
-		$BSK3_Kg = ($record->bsk_no_3 > 0 ? $record->bsk_no_3 * $record->etc_bsk3_kg_cm + $record->etc_bsk3_kg : 0);
+		$BSK1_Kg = ($record->bsk_no_1 > 0 ? $record->bsk_no_1 * $record->etc_bsk1_kg_cm + $record->etc_ns4_kg : 0);
+		$BSK2_Kg = ($record->bsk_no_2 > 0 ? $record->bsk_no_2 * $record->etc_bsk2_kg_cm + $record->etc_bsk1_kg : 0);
+		$BSK3_Kg = ($record->bsk_no_3 > 0 ? $record->bsk_no_3 * $record->etc_bsk3_kg_cm + $record->etc_bsk2_kg : 0);
 
-		$BSS1_Kg = ($record->bss_no_1 > 0 ? $record->bss_no_1 * $record->etc_bss1_kg_cm + $record->etc_bss1_kg : 0);
-		$BSS2_Kg = ($record->bss_no_2 > 0 ? $record->bss_no_2 * $record->etc_bss2_kg_cm + $record->etc_bss2_kg : 0);
-		$BSS3_Kg = ($record->bss_no_3 > 0 ? $record->bss_no_3 * $record->etc_bss3_kg_cm + $record->etc_bss3_kg : 0);
+		$BSS1_Kg = ($record->bss_no_1 > 0 ? $record->bss_no_1 * $record->etc_bss1_kg_cm + $record->etc_bsk3_kg : 0);
+		$BSS2_Kg = ($record->bss_no_2 > 0 ? $record->bss_no_2 * $record->etc_bss2_kg_cm + $record->etc_bss1_kg : 0);
+		$BSS3_Kg = ($record->bss_no_3 > 0 ? $record->bss_no_3 * $record->etc_bss3_kg_cm + $record->etc_bss2_kg : 0);
 
 		$cpo_bst1 = $Oil_Recovered_Total_isi_BST1 -  $record->etc_bst1_kg;
 		$cpo_cut_bst1 = $record->etc_bst1_kg;

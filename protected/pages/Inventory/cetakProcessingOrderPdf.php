@@ -172,9 +172,16 @@ $pdf->writeHTML($html, true, false, true, false, '');
 $pdf->Ln(2);
 
 
-$Oil_Recovered_Total_isi_BST1 = $record->bst1_cpo_isi * $record->etc_bst1_kg_cm * $this->getTempVariable($record->temp_bst1) + $record->etc_bst1_kg * $this->getTempVariable($record->temp_bst1);
-$Oil_Recovered_Total_isi_BST2 = $record->bst2_cpo_isi * $record->etc_bst2_kg_cm * $this->getTempVariable($record->temp_bst2) + $record->etc_bst2_kg * $this->getTempVariable($record->temp_bst2);
-
+if($record->bst1_cpo_isi > 0)
+	$Oil_Recovered_Total_isi_BST1 = $record->bst1_cpo_isi * $record->etc_bst1_kg_cm * $this->getTempVariable($record->temp_bst1) + $record->etc_bst1_kg * $this->getTempVariable($record->temp_bst1);
+else
+	$Oil_Recovered_Total_isi_BST1 = 0;
+	
+if($Oil_Recovered_Total_isi_BST2 > 0)
+	$Oil_Recovered_Total_isi_BST2 = $record->bst2_cpo_isi * $record->etc_bst2_kg_cm * $this->getTempVariable($record->temp_bst2) + $record->etc_bst2_kg * $this->getTempVariable($record->temp_bst2);
+else
+	$Oil_Recovered_Total_isi_BST2 = 0;
+	
 $Oil_In_Process_CST1_Kg = $record->cst_1 * $record->etc_cst1_kg_cm * $this->getTempVariable($record->cst_1_temp);
 $Oil_In_Process_CST2_Kg = $record->cst_2 * $record->etc_cst2_kg_cm * $this->getTempVariable($record->cst_2_temp);
 $Oil_In_Process_CST3_Kg = $record->cst_3 * $record->etc_cst3_kg_cm * $this->getTempVariable($record->cst_3_temp);
@@ -188,27 +195,27 @@ $Oil_In_Process_RCV3_Kg = $record->rcv_3 * $record->etc_rcv3_kg_cm * $this->getT
 
 $COT_Kg = $record->cot * $record->etc_cot_kg_cm;
 
-$NS1_Kg = ($record->nut_silo_no_1 > 0 ? $record->nut_silo_no_1 * $record->etc_ns1_kg_cm + $record->etc_ns1_kg : 0);
-$NS2_Kg = ($record->nut_silo_no_2 > 0 ? $record->nut_silo_no_2 * $record->etc_ns2_kg_cm + $record->etc_ns2_kg : 0);
-$NS3_Kg = ($record->nut_silo_no_3 > 0 ? $record->nut_silo_no_3 * $record->etc_ns3_kg_cm + $record->etc_ns3_kg : 0);
-$NS4_Kg = ($record->nut_silo_no_4 > 0 ? $record->nut_silo_no_4 * $record->etc_ns4_kg_cm + $record->etc_ns4_kg : 0);
+$NS1_Kg = ($record->nut_silo_no_1 > 0 ? $record->nut_silo_no_1 * $record->etc_ns1_kg_cm + $record->etc_ks3_kg : 0);
+$NS2_Kg = ($record->nut_silo_no_2 > 0 ? $record->nut_silo_no_2 * $record->etc_ns2_kg_cm + $record->etc_ns1_kg : 0);
+$NS3_Kg = ($record->nut_silo_no_3 > 0 ? $record->nut_silo_no_3 * $record->etc_ns3_kg_cm + $record->etc_ns2_kg : 0);
+$NS4_Kg = ($record->nut_silo_no_4 > 0 ? $record->nut_silo_no_4 * $record->etc_ns4_kg_cm + $record->etc_ns3_kg : 0);
 
-$KS1_Kg = ($record->kernel_silo_no_1 > 0 ? $record->kernel_silo_no_1 * $record->etc_ks1_kg_cm - 0 * 0 + $record->etc_ks1_kg : 0);
-$KS2_Kg = ($record->kernel_silo_no_2 > 0 ? $record->kernel_silo_no_2 * $record->etc_ks2_kg_cm - 0 * 0 + $record->etc_ks2_kg : 0);
-$KS3_Kg = ($record->kernel_silo_no_3 > 0 ? $record->kernel_silo_no_3 * $record->etc_ks3_kg_cm - 0 * 0 + $record->etc_ks3_kg : 0);
+$KS1_Kg = ($record->kernel_silo_no_1 > 0 ? $record->kernel_silo_no_1 * $record->etc_ks1_kg_cm - 0 * 0 + $record->etc_bst2_kg : 0);
+$KS2_Kg = ($record->kernel_silo_no_2 > 0 ? $record->kernel_silo_no_2 * $record->etc_ks2_kg_cm - 0 * 0 + $record->etc_ks1_kg : 0);
+$KS3_Kg = ($record->kernel_silo_no_3 > 0 ? $record->kernel_silo_no_3 * $record->etc_ks3_kg_cm - 0 * 0 + $record->etc_ks2_kg : 0);
 
-$BSK1_Kg = ($record->bsk_no_1 > 0 ? $record->bsk_no_1 * $record->etc_bsk1_kg_cm + $record->etc_bsk1_kg : 0);
-$BSK2_Kg = ($record->bsk_no_2 > 0 ? $record->bsk_no_2 * $record->etc_bsk2_kg_cm + $record->etc_bsk2_kg : 0);
-$BSK3_Kg = ($record->bsk_no_3 > 0 ? $record->bsk_no_3 * $record->etc_bsk3_kg_cm + $record->etc_bsk3_kg : 0);
+$BSK1_Kg = ($record->bsk_no_1 > 0 ? $record->bsk_no_1 * $record->etc_bsk1_kg_cm + $record->etc_ns4_kg : 0);
+$BSK2_Kg = ($record->bsk_no_2 > 0 ? $record->bsk_no_2 * $record->etc_bsk2_kg_cm + $record->etc_bsk1_kg : 0);
+$BSK3_Kg = ($record->bsk_no_3 > 0 ? $record->bsk_no_3 * $record->etc_bsk3_kg_cm + $record->etc_bsk2_kg : 0);
 
-$BSS1_Kg = ($record->bss_no_1 > 0 ? $record->bss_no_1 * $record->etc_bss1_kg_cm + $record->etc_bss1_kg : 0);
-$BSS2_Kg = ($record->bss_no_2 > 0 ? $record->bss_no_2 * $record->etc_bss2_kg_cm + $record->etc_bss2_kg : 0);
-$BSS3_Kg = ($record->bss_no_3 > 0 ? $record->bss_no_3 * $record->etc_bss3_kg_cm + $record->etc_bss3_kg : 0);
+$BSS1_Kg = ($record->bss_no_1 > 0 ? $record->bss_no_1 * $record->etc_bss1_kg_cm + $record->etc_bsk3_kg : 0);
+$BSS2_Kg = ($record->bss_no_2 > 0 ? $record->bss_no_2 * $record->etc_bss2_kg_cm + $record->etc_bss1_kg : 0);
+$BSS3_Kg = ($record->bss_no_3 > 0 ? $record->bss_no_3 * $record->etc_bss3_kg_cm + $record->etc_bss2_kg : 0);
 
-$cpo_bst1 = $Oil_Recovered_Total_isi_BST1 -  $record->etc_bst1_kg;
-$cpo_cut_bst1 = $record->etc_bst1_kg;
-$cpo_bst2 = $Oil_Recovered_Total_isi_BST2 ;
-$cpo_cut_bst2 = $record->etc_bst2_kg;
+$cpo_bst1 = $Oil_Recovered_Total_isi_BST1 -  $record->etc_cot_kg;
+$cpo_cut_bst1 = $record->etc_cot_kg;
+$cpo_bst2 = $Oil_Recovered_Total_isi_BST2;
+$cpo_cut_bst2 = $record->etc_bst1_kg;
 $cpo_in_process = $Oil_In_Process_CST1_Kg + $Oil_In_Process_CST2_Kg + $Oil_In_Process_CST2_Kg + $Oil_In_Process_OT1_Kg + $Oil_In_Process_OT2_Kg + $Oil_In_Process_RCV1_Kg + $Oil_In_Process_RCV2_Kg + $Oil_In_Process_RCV3_Kg;
 $cpo_total = $cpo_bst1 + $cpo_cut_bst1 + $cpo_bst2 + $cpo_cut_bst2 + $cpo_in_process;
 
@@ -221,7 +228,7 @@ $shell_bss = $BSS1_Kg + $BSS2_Kg + $BSS3_Kg + $record->bss_lantai;
 
 $Persediaan_Today = round($record->tbs_awal + $record->tbs_kebun + $record->tbs_luar +  $record->tbs_potongan);
 
-$Cap_Rebusan = ($record->tbs_proses_shift_1 == 0 && $record->tbs_proses_shift_2 == 0 ? 0 : round($Persediaan_Today / ($record->tbs_proses_shift_1 + $record->tbs_proses_shift_2 + $record->tbs_rbs_mentah + $record->tbs_rbs_masak + $record->tbs_restan_ramp + $record->tbs_restan_lantai)));
+$Cap_Rebusan = ($record->tbs_proses_shift_1 == 0 && $record->tbs_proses_shift_2 == 0 ? 0 : floor($Persediaan_Today / ($record->tbs_proses_shift_1 + $record->tbs_proses_shift_2 + $record->tbs_rbs_mentah + $record->tbs_rbs_masak + $record->tbs_restan_ramp + $record->tbs_restan_lantai)));
 
 $Olah_Brutto_today = round(($record->tbs_proses_shift_1 + $record->tbs_proses_shift_2) * $Cap_Rebusan);
 
