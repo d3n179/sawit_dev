@@ -196,8 +196,8 @@
 										Attributes.OnChange="jnsKontrakChanged();"
 										CausesValidation="true"
 										CssClass="form-control">
-										<com:TListItem value="0" Text="Kontrak Baru"/>
-										<com:TListItem value="1" Text="Kontrak Lama"/>
+										<com:TListItem value="0" Text="Non Kontrak"/>
+										<com:TListItem value="1" Text="Kontrak"/>
 										</com:TActiveDropDownList>
 										<com:TRequiredFieldValidator 
 											  ControlToValidate="JnsKontrak"											 
@@ -212,10 +212,10 @@
 							</div>
 							<div class="col-md-2">
 								<div class="form-group">
-									<label class="control-label" for="DDKontrak">No Kontrak</label>
+									<label class="control-label" for="DDKontrak">Jenis Kontrak</label>
 									 <com:TActiveDropDownList 
 										ID="DDKontrak"
-										PromptText="--Pilih Kontrak--"
+										PromptText="--Pilih Jenis Kontrak--"
 										PromptValue="empty"
 										AutoPostBack="false"
 										CausesValidation="true"
