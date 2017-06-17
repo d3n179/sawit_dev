@@ -181,6 +181,10 @@ class cetakLapRekapGajiKaryawan extends XlsGen
 		$worksheet1->merge_cells($baris, $kolom, $baris+2, $kolom);$kolom++;
 		$worksheet1->write_string($baris,$kolom,"Tunjangan Komunikasi",$frmtCenterHeader);
 		$worksheet1->merge_cells($baris, $kolom, $baris+2, $kolom);$kolom++;
+		$worksheet1->write_string($baris,$kolom,"Premi Karyawan",$frmtCenterHeader);
+		$worksheet1->merge_cells($baris, $kolom, $baris+2, $kolom);$kolom++;
+		$worksheet1->write_string($baris,$kolom,"Total Gaji",$frmtCenterHeader);
+		$worksheet1->merge_cells($baris, $kolom, $baris+2, $kolom);$kolom++;
 		$worksheet1->write_string($baris,$kolom,"Lembur",$frmtCenterHeader);
 		$worksheet1->merge_cells($baris, $kolom, $baris, $kolom+8);
 		
@@ -304,6 +308,11 @@ class cetakLapRekapGajiKaryawan extends XlsGen
 				
 				$worksheet1->write_string($baris,$kolom,number_format($JabatanRecord->tunjangan_komunikasi,0,'.',','),$frmtRight);$kolom++;
 				$totalGajiKotor += $JabatanRecord->tunjangan_komunikasi;
+				
+				$worksheet1->write_string($baris,$kolom,number_format($JabatanRecord->premi_karyawan,0,'.',','),$frmtRight);$kolom++;
+				$totalGajiKotor += $JabatanRecord->premi_karyawan;
+				
+				$worksheet1->write_string($baris,$kolom,number_format($totalGajiKotor,0,'.',','),$frmtRight);$kolom++;
 				
 				$sqlLpp = "SELECT
 								SUM(

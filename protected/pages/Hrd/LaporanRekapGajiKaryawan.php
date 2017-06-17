@@ -75,6 +75,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 	{
 		$periode = $this->Periode->Text;
 		
+		$arrGaji = array();
 		if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue)
 		{
 		$sqlTrans = "SELECT 
@@ -146,6 +147,8 @@ class LaporanRekapGajiKaryawan extends MainConf
 				
 				$tblBody .= '<td>'.number_format($JabatanRecord->premi_karyawan,0,'.',',').'</td>';	
 				$totalGajiKotor += $JabatanRecord->premi_karyawan;
+				
+				$tblBody .= '<td>'.number_format($totalGajiKotor,0,'.',',').'</td>';	
 				
 				$sqlLpp = "SELECT
 								SUM(
@@ -334,6 +337,8 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$tblBody .= '<td>'.number_format($gajiDibayarkan,0,'.',',').'</td>';
 				
 				$tblBody .= '</tr>';
+				
+				$arrGaji[] = array("idKaryawan"=>$row['id'],"Gaji"=>$gajiDibayarkan);
 			}
 		}
 		else
@@ -341,7 +346,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 			$tblBody = '';
 		}
 		
-		
+		$this->arrGaji->Value = json_encode($arrGaji,true);
 		$this->getPage()->getClientScript()->registerEndScript
 					('','
 					jQuery("#table-1").dataTable().fnDestroy();
@@ -413,6 +418,68 @@ class LaporanRekapGajiKaryawan extends MainConf
 		
 	}
 	
+	public function closingClicked()
+	{
+		$bulan = $this->DDBulan->SelectedValue;
+		$tahun = $this->DDTahun->SelectedValue;
+		$arrGaji = json_decode($this->arrGaji->Value,true);
+		
+		if(count($arrGaji) > 0)
+		{
+			$RekapGajiRecord = RekapGajiRecord::finder()->find('bulan = ? AND tahun = ? AND deleted = ?',$bulan,$tahun,'0');
+			if(!$RekapGajiRecord)
+			{
+				$RekapGajiRecord = new RekapGajiRecord();
+				$RekapGajiRecord->bulan = $bulan;
+				$RekapGajiRecord->tahun = $tahun;
+				$RekapGajiRecord->status = '0';
+				$RekapGajiRecord->deleted = '0';
+				$RekapGajiRecord->save();
+				
+				$totalGaji = 0;
+				foreach($arrGaji as $row)
+				{
+					$RekapGajiDetailRecord = RekapGajiDetailRecord::finder()->find('id_rekap = ? AND id_karyawan = ? AND deleted = ?',$RekapGajiRecord->id,$row['idKaryawan'],'0');
+					
+					if(!$RekapGajiDetailRecord)
+						$RekapGajiDetailRecord = new RekapGajiDetailRecord();
+						
+					$RekapGajiDetailRecord->id_rekap = $RekapGajiRecord->id;
+					$RekapGajiDetailRecord->id_karyawan = $row['idKaryawan'];
+					$RekapGajiDetailRecord->jml_gaji_dibayarkan = $row['Gaji'];
+					$RekapGajiDetailRecord->deleted = '0';
+					$RekapGajiDetailRecord->save();
+					
+					$totalGaji += $row['Gaji'];
+				}
+				
+				$RekapGajiRecord->total_gaji_dibayarkan = $totalGaji;
+				$RekapGajiRecord->save();
+				
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						toastr.info("Rekap Gaji Berhasil Diclosing !");
+						');	
+			}
+			else
+			{
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						toastr.error("Rekap Gaji Bulan Ini Sudah Diclosing Sebelumnya !");
+						');	
+			}
+		}
+		else
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						toastr.error("Rekap Gaji Belum Diproses !");
+						');	
+		}
+	}
 	
 	public function cetakLapKartuStok()
 	{

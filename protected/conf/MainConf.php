@@ -214,6 +214,11 @@ class MainConf extends TPage
 			$tblTrans = 'tbt_commodity_transaction';
 			$fieldTgl = 'tgl_transaksi';
 		}
+		elseif($kode == "RG")
+		{
+			$tblTrans = 'tbt_bayar_rekap_gaji';
+			$fieldTgl = 'tgl_pembayaran';
+		}
 		
 		$month = date("m");
 		$year = date("Y");

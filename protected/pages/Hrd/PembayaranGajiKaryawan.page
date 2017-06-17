@@ -1,0 +1,601 @@
+<com:TContent ID="Main">
+	<h2>Pembayaran Gaji Karyawan</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				
+			</div>
+		</div>	
+	</div>	
+	<div class="row">	
+		<div class="col-md-12">
+			<ul class="nav nav-tabs"><!-- available classes "bordered", "right-aligned" -->
+				<li class="active">
+					<a href="#listTab" data-toggle="tab">
+						<i class="fa fa-list "></i> Bayar Gaji 
+					</a>
+				</li>
+				<li>
+				<a href="#historyTab" data-toggle="tab">
+						<i class="fa fa-list"></i> History Pembayaran
+					</a>
+				</li>
+				<li>
+				<a href="#formTab" data-toggle="tab">
+						<i class="fa fa-plus"></i> Proses Bayar
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="listTab">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-1">
+									<thead>
+										<tr>
+											<th width="150px">Status</th>
+											<th width="150px">Bulan</th>
+											<th width="150px">Tahun</th>
+											<th width="150px">SIsa Gaji Yg Harus Dibayar</th>
+											<th width="50px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>	
+					</div>	
+				</div>
+				<div class="tab-pane" id="historyTab">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-history">
+									<thead>
+										<tr>
+											<th>No Pembayaran</th>
+											<th>Tgl Pembayaran</th>
+											<th>Total Pembayaran</th>
+											<th>User</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>	
+					</div>
+				</div>
+				<div class="tab-pane" id="formTab">
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<com:TActiveHiddenField ID="idRekapGaji"/>
+									<com:TActiveButton
+											ID="submitBtn" 
+											Text="Proses"
+											OnClick="submitBtnClickedValid"
+											CausesValidation="true"
+											ValidationGroup="val"
+											CssClass="btn btn-info">
+											 <prop:ClientSide 
+												OnLoading="loadContent();"
+												OnComplete="unloadContent();"/>
+										</com:TActiveButton>
+								</div>
+							</div>	
+						</div>	
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="tgl_bayar">Tanggal Bayar</label>
+									 <com:TActiveTextBox 
+											ID="tgl_bayar" 
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_bayar"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+							<div class="col-md-3" Style="Display:None;"> 
+								<div class="form-group">
+									<label class="control-label" for="DDBank">Bank</label>
+									 <com:TActiveDropDownList 
+										ID="DDBank"
+										Enabled="false"
+										PromptText="--Bank--"
+										PromptValue="empty"
+										AutoPostBack="false"
+										CausesValidation="true"
+										DataTextField="text"
+										DataValueField="id"
+										CssClass="form-control">
+										</com:TActiveDropDownList>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDBank"											 
+											  ErrorMessage=""
+											  Enabled="false"
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<com:TActiveHiddenField ID="arrBank"></com:TActiveHiddenField>
+								<table class="table table-bordered table-striped datatable" id="table-2">
+									<thead>
+										<tr>
+											<th width="150px">NIK</th>
+											<th width="150px">Nama Karyawan</th>
+											<th width="150px">Total Gaji</th>
+											<th width="150px">Jenis Bayar</th>
+											<th width="150px">Bank</th>
+											<th width="150px">No Rekening</th>
+											<th width="150px"></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>	
+					</div>	
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteSatuanCallback" OnCallback="deleteSatuan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="generateDetailCallback" OnCallback="generateDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				jQuery('a[href="#formTab"]').hide();
+				jQuery('a[href="#listTab"]').on('shown.bs.tab', function (e) 
+				{
+					Prado.Validation.reset('val');
+					jQuery('.form-body select').val('empty');
+					jQuery('.form-control').val('');
+					jQuery('a[href="#formTab"]').hide();
+					jQuery('#<%= $this->idRekapGaji->getClientID()%>').val('');
+					
+					if(localDB.tableExists('GajiTable'))
+					{
+						localDB.dropTable('GajiTable');
+						localDB.commit();
+					}
+					
+					localDB.createTable('GajiTable', ["id_edit",
+																"idKaryawan",
+																"nikKaryawan",
+																"namaKaryawan",
+																"gaji", 
+																"jnsBayar",
+																"idBank", 
+																"norek",
+																"checked",
+																"deleted"]);
+					localDB.commit();
+				
+					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Proses Bayar');
+				});
+				
+				jQuery(".btn-add").on('click',function()
+				{
+					jQuery('a[href="#formTab"]').on('shown.bs.tab', function (e) 
+					{
+						Prado.Validation.reset('val');
+						var target = e.target.attributes.href.value;
+						jQuery(target +' input:first').focus();
+					});
+				});
+				BindGrid();
+				BindGridHistory();
+			});
+			
+			function formTabShow()
+			{
+				jQuery("a[href=\"#formTab\"]").tab("show");
+			}
+			
+			function clearForm()
+			{
+				
+			}
+			
+			function RenderTempTable(arr)
+			{
+				if(localDB.tableExists('GajiTable'))
+				{
+					localDB.truncate('GajiTable');
+					localDB.commit();
+					
+				}
+				else
+				{
+					localDB.createTable('GajiTable', ["id_edit",
+																"idKaryawan",
+																"nikKaryawan",
+																"namaKaryawan",
+																"gaji", 
+																"jnsBayar",
+																"idBank", 
+																"norek",
+																"checked",
+																"deleted"]);
+					localDB.commit();
+				}
+					
+					
+																
+				
+					
+				jQuery.each(arr,function(i,val)
+				{			
+					localDB.insert('GajiTable', {id_edit: val.id, 
+																idKaryawan: val.id_karyawan, 
+																nikKaryawan: val.nik, 
+																namaKaryawan: val.nama, 
+																gaji: val.jml_gaji_dibayarkan, 
+																jnsBayar: val.jns_bayar, 
+																idBank: '',
+																norek: val.norek,
+																checked: "0",
+																deleted: "0"});
+																
+					localDB.commit();
+				});	
+				console.log(arr);
+				bindGajiGridLine();
+				
+			}
+			
+			function bindGajiGridLine()
+			{
+				var tblBody = '';
+				if(localDB.tableExists('GajiTable'))
+				{
+					var data = localDB.queryAll('GajiTable', {
+																			query: {deleted: "0"},
+																			sort: [["ID", "ASC"]]
+					
+																		});
+					console.log(data);
+					jQuery.each(data,function(i,val)
+					{
+						if(val.deleted=="0")
+						{	
+							tblBody += '<tr>';
+							tblBody += '<td>'+val.nikKaryawan+'</td>';
+							tblBody += '<td>'+val.namaKaryawan+'</td>';
+							tblBody += '<td>'+val.gaji.toLocaleString('en-US', {minimumFractionDigits: 2})+'</td>';
+							
+							if(val.jnsBayar == '0' )
+							{
+								var cashSelected = 'selected';
+								var transferSelected = '';
+							}
+							else
+							{
+								var cashSelected = '';
+								var transferSelected = 'selected';
+							}
+								
+							if(val.checked == "0")
+							{
+								var disabled = 'disabled';
+								var checked = '';
+								var bankDisabled = 'disabled';
+								var norekDisabled = 'disabled';
+							}
+							else
+							{
+								var disabled = '';
+								var checked = 'checked';
+								
+								if(val.jnsBayar == '0')
+								{
+									var bankDisabled = 'disabled';
+									var norekDisabled = 'disabled';
+								}
+								else
+								{
+									var bankDisabled = '';
+									var norekDisabled = '';
+								}
+							}
+							
+							tblBody += '<td><select id="jnsBayar-column-ID-'+val.ID+'" class="jnsBayar_column form-control" '+disabled+' OnChange="ValueChanged('+val.ID+');"> '+
+												'<option value="0" '+cashSelected+'>Cash</option>'+
+												'<option value="1" '+transferSelected+'>Transfer</option>'+
+												'</select></td>';
+												
+							tblBody += '<td><input id="bank-column-ID-'+val.ID+'" class="form-control bank_column" type="text" value="'+val.idBank+'" '+bankDisabled+' OnChange="ValueChanged('+val.ID+');"></td>';
+							tblBody += '<td><input id="norek-column-ID-'+val.ID+'" class="form-control norek_column" type="text" value="'+val.norek+'" '+norekDisabled+' OnChange="ValueChanged('+val.ID+');"></td>';
+							tblBody += '<td>';
+							tblBody += '<input type="checkbox" id="checkBox-column-ID-'+val.ID+'" OnChange="rowClicked('+val.ID+')" '+checked+'/>';	
+							tblBody += '</td>';			
+							tblBody += '</tr>';
+						}
+						
+					});	
+				}
+				
+				jQuery("#table-2").dataTable().fnDestroy();
+				jQuery("#table-2 tbody").empty();
+				jQuery("#table-2 tbody").append(tblBody);
+				BindGridDetail();
+					
+			}
+			
+			function ValueChanged(id)
+			{
+				var jnsBayar = jQuery("#jnsBayar-column-ID-"+id).val();
+				
+				if(jnsBayar == '0')
+				{
+					var idBank = '';
+					var norek = '';
+				}
+				else
+				{
+					var idBank = jQuery("#bank-column-ID-"+id).val();
+					var norek = jQuery("#norek-column-ID-"+id).val();
+				}
+				
+				console.log(jnsBayar);
+				console.log(idBank);
+				console.log(norek);
+				
+				localDB.update('GajiTable', {ID: id}, function(row) {
+									row.jnsBayar = jnsBayar;
+									row.idBank = idBank;
+									row.norek = norek;
+									return row;
+								});
+				bindGajiGridLine();
+								
+				
+			}
+			
+			function rowClicked(id)
+			{
+				if(jQuery("#checkBox-column-ID-"+id).is(':checked'))
+				{
+					//jQuery("#bank-column-ID-"+id).prop('disabled',false);
+					//jQuery("#norek-column-ID-"+id).prop('disabled',false);
+					//jQuery("#jnsBayar-column-ID-"+id).prop('disabled',false);
+					
+					localDB.update('GajiTable', {ID: id}, function(row) {
+									row.checked = "1";
+									return row;
+								});
+					
+				
+				}
+				else
+				{
+					//jQuery("#bank-column-ID-"+id).prop('disabled',true);
+					//jQuery("#norek-column-ID-"+id).prop('disabled',true);
+					//jQuery("#jnsBayar-column-ID-"+id).prop('disabled',true);
+					
+					localDB.update('GajiTable', {ID: id}, function(row) {
+									row.checked = "0";
+									row.jnsBayar = "0";
+									row.idBank = "";
+									row.norek = "";
+									return row;
+								});
+				}
+				bindGajiGridLine();	
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function BindGridDetail()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-2");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+						var data = JSON.parse(jQuery('#<%= $this->arrBank->getClientID()%>').val());
+						console.log(data);
+						jQuery(".bank_column").select2({
+						  placeholder: "Pilih Bank",
+						  allowClear: true,
+						  data: data
+						});
+						
+				        responsiveHelper.respond();
+				        
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function BindGridHistory()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-history");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function submitBtnClicked()
+			{
+				if(localDB.tableExists('GajiTable'))
+				{
+					var CHECK = localDB.queryAll('GajiTable', {query: {deleted: "0", checked: "1"},sort: [["ID", "ASC"]]});
+				}
+				
+				if(CHECK.length > 0)
+				{
+					var GajiTable = localDB.queryAll('GajiTable', {query: {deleted: "0", checked: "1"},sort: [["ID", "ASC"]]});
+					console.log('asdfwefwef');
+					var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+								GajiTable:GajiTable
+							});
+						request.dispatch();
+							
+			
+					
+				}
+				else
+				{
+					toastr.error("Data Belum Lengkap!");
+				}
+			}
+			
+			function prosesClicked(id)
+			{
+				if(confirm('Proses Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function cetakClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+			
+		</script>
+		
+</com:TContent>

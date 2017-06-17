@@ -1,11 +1,13 @@
 <com:TContent ID="Main">
-	<h2>Laporan Rekap Gaji Karyawan</h2>
+	<h2>Rekap Gaji Karyawan</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->	
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="Periode" class="control-label">Periode</label>
+				<com:TActiveHiddenField
+									ID="arrGaji"></com:TActiveHiddenField>
 				<com:TActiveDropDownList 
 									ID="Periode"
 									Width="190px"
@@ -89,12 +91,16 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<button type="button" class="btn btn-blue btn-icon" OnClick="cariClicked()">
-								Cari
+								Proses
 								<i class="entypo-search"></i>
 							</button>
 				<button type="button" class="btn btn-green btn-icon" OnClick="cetakClicked()">
 								Cetak
 								<i class="entypo-print"></i>
+							</button>
+				<button type="button" class="btn btn-primary btn-icon" OnClick="closingClicked()">
+								Closing
+								<i class="entypo-check"></i>
 							</button>
 			</div>
 		</div>	
@@ -123,6 +129,7 @@
 						<th width="300px" Rowspan="3">Tunjangan Jabatan</th>
 						<th width="300px" Rowspan="3">Tunjangan Komunikasi</th>
 						<th width="300px" Rowspan="3">Premi Karyawan</th>
+						<th width="300px" Rowspan="3">Total Gaji</th>
 						<th width="300px" colspan="9">Lembur</th>
 						<th width="300px" Rowspan="3">Total Lembur</th>
 						<th width="300px" Rowspan="3">Mangkir</th>
@@ -168,6 +175,8 @@
 	<com:TCallback ID="cariCallback" OnCallback="cariBtnClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="closingCallback" OnCallback="closingClicked" ActiveControl.CausesValidation="false"/>
+	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
 			{
@@ -227,6 +236,24 @@
 					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
 						request.dispatch();
 				unloadContent();
+			}
+			
+			function closingClicked()
+			{
+				if(jQuery('#<%= $this->DDBulan->getClientID()%>').val() != 'empty' && jQuery('#<%= $this->DDTahun->getClientID()%>').val() != 'empty')
+				{
+					if(confirm('Closing Rekap Gaji Untuk Bulan Ini ? '))
+					{
+						loadContent();
+						var request= <%= $this->closingCallback->ActiveControl->Javascript %>;
+							request.dispatch();
+						
+					}
+					else
+					{
+						return false;
+					}
+				}	
 			}
 		</script>
 		

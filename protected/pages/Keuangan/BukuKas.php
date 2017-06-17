@@ -158,6 +158,8 @@ class BukuKas extends MainConf
 					$sumberTrans = "Revenue Transaction";
 				elseif($row['sumber_transaksi'] == '6')
 					$sumberTrans = "Mutasi Kas";
+				elseif($row['sumber_transaksi'] == '7')
+					$sumberTrans = "Bayar Gaji";
 									
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['asal_kas'].'</td>';
