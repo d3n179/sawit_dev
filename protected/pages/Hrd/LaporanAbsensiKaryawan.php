@@ -170,6 +170,7 @@ class LaporanAbsensiKaryawan extends MainConf
 				$tblBody .= '<td>'.$arrDetail['Hadir'].'</td>';	
 				$tblBody .= '<td>'.$arrDetail['Terlambat'].'</td>';
 				$tblBody .= '<td>'.$arrDetail['Mangkir'].'</td>';	
+				$tblBody .= '<td>'.$arrDetail['Cuti'].'</td>';	
 				$tblBody .= '<td>'.$arrDetail['LemburLPP'].'</td>';	
 				$tblBody .= '<td>'.$arrDetail['LemburLPPML'].'</td>';	
 				$tblBody .= '<td>'.$arrDetail['LemburLPPLK'].'</td>';	
@@ -243,6 +244,18 @@ class LaporanAbsensiKaryawan extends MainConf
 		$Mangkir = $arr[0]['mangkir'];
 		
 		$sql = "SELECT
+					COUNT(tbm_jadwal.id) AS cuti
+				FROM
+					tbm_jadwal
+				WHERE
+					MONTH (tbm_jadwal.tanggal) = '$month'
+				AND YEAR (tbm_jadwal.tanggal) = '$year'
+				AND tbm_jadwal.idkaryawan = '$idKaryawan' 
+				AND tbm_jadwal.st_hadir = '2'";
+		$arr = $this->queryAction($sql,'S');
+		$Cuti = $arr[0]['cuti'];
+		
+		$sql = "SELECT
 					SUM(
 						tbt_lembur_karyawan.lama_lembur
 					) AS lama_lembur
@@ -287,7 +300,7 @@ class LaporanAbsensiKaryawan extends MainConf
 		$arr = $this->queryAction($sql,'S');
 		$LemburLPPLK = $arr[0]['lama_lembur'];
 		
-		return array("HariKerja"=>$HariKerja,"Hadir"=>$Hadir,"Terlambat"=>$Terlambat,"Mangkir"=>$Mangkir,"LemburLPP"=>$LemburLPP,"LemburLPPML"=>$LemburLPPML,"LemburLPPLK"=>$LemburLPPLK);
+		return array("HariKerja"=>$HariKerja,"Hadir"=>$Hadir,"Terlambat"=>$Terlambat,"Mangkir"=>$Mangkir,"Cuti"=>$Cuti,"LemburLPP"=>$LemburLPP,"LemburLPPML"=>$LemburLPPML,"LemburLPPLK"=>$LemburLPPLK);
 	}
 	
 	public function cetakLapKartuStok()

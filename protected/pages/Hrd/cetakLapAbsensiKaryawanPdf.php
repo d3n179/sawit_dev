@@ -73,12 +73,12 @@ class cetakLapAbsensiKaryawanPdf extends MainConf
 		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'L');
 
 		$pdf->Ln(5);
-		$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C'));
-		$pdf->SetWidths(array(60,50,50,25,25,25,25,25,25,25));
-		$pdf->Row(array('Nama Karyawan','Jabatan','Golongan','Hari Kerja','Hadir','Terlambat','Mangkir','Lembur LPP (Jam)','Lembur LPPML (Jam)','Lembur LPPLK (Jam)'));
+		$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C','C'));
+		$pdf->SetWidths(array(60,50,20,25,25,25,25,25,25,25,25));
+		$pdf->Row(array('Nama Karyawan','Jabatan','Golongan','Hari Kerja','Hadir','Terlambat','Mangkir','Cuti','Lembur LPP (Jam)','Lembur LPPML (Jam)','Lembur LPPLK (Jam)'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
-		$pdf->SetAligns(array('L','L','L','R','R','R','R','R','R','R'));
+		$pdf->SetAligns(array('L','L','L','R','R','R','R','R','R','R','R'));
 		$session=new THttpSession;
 		$session->open();
 		$sql = $session['cetakLapAbsensiKaryawanSql'];
@@ -95,6 +95,7 @@ class cetakLapAbsensiKaryawanPdf extends MainConf
 							$arrDetail['Hadir'],
 							$arrDetail['Terlambat'],
 							$arrDetail['Mangkir'],
+							$arrDetail['Cuti'],
 							$arrDetail['LemburLPP'],
 							$arrDetail['LemburLPPML'],
 							$arrDetail['LemburLPPLK']));
@@ -155,6 +156,18 @@ class cetakLapAbsensiKaryawanPdf extends MainConf
 		$Mangkir = $arr[0]['mangkir'];
 		
 		$sql = "SELECT
+					COUNT(tbm_jadwal.id) AS cuti
+				FROM
+					tbm_jadwal
+				WHERE
+					MONTH (tbm_jadwal.tanggal) = '$month'
+				AND YEAR (tbm_jadwal.tanggal) = '$year'
+				AND tbm_jadwal.idkaryawan = '$idKaryawan' 
+				AND tbm_jadwal.st_hadir = '2'";
+		$arr = $this->queryAction($sql,'S');
+		$Cuti = $arr[0]['cuti'];
+		
+		$sql = "SELECT
 					SUM(
 						tbt_lembur_karyawan.lama_lembur
 					) AS lama_lembur
@@ -199,7 +212,7 @@ class cetakLapAbsensiKaryawanPdf extends MainConf
 		$arr = $this->queryAction($sql,'S');
 		$LemburLPPLK = $arr[0]['lama_lembur'];
 		
-		return array("HariKerja"=>$HariKerja,"Hadir"=>$Hadir,"Mangkir"=>$Mangkir,"Terlambat"=>$Terlambat,"LemburLPP"=>$LemburLPP,"LemburLPPML"=>$LemburLPPML,"LemburLPPLK"=>$LemburLPPLK);
+		return array("HariKerja"=>$HariKerja,"Hadir"=>$Hadir,"Mangkir"=>$Mangkir,"Cuti"=>$Cuti,"Terlambat"=>$Terlambat,"LemburLPP"=>$LemburLPP,"LemburLPPML"=>$LemburLPPML,"LemburLPPLK"=>$LemburLPPLK);
 	}
 	
 }

@@ -93,6 +93,16 @@
 					request.dispatch();
 			}
 			
+			function RenderMsg(arr)
+			{
+				console.log(arr);
+				jQuery('.msg_column').hide();
+				jQuery.each(arr,function(i,val)
+				{
+					jQuery('#msg-column-'+val.id).show();
+				});
+			}
+			
 			function StatusSelect2()
 			{
 				var jsonParam = jQuery('#<%= $this->arrStatus->getClientID()%>').val();
@@ -114,6 +124,7 @@
 					id = jQuery('#'+this.id).attr('idJadwal');
 					jQuery('#in-ID'+id).prop('disabled',true);
 					jQuery('#out-ID-'+id).prop('disabled',true);
+					jQuery('#msg-column-'+id).hide();
 					
 					if(e.val == "0")
 					{

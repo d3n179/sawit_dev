@@ -46,6 +46,7 @@ class AbsensiKaryawan extends MainConf
 		//$arrAbsen  = $this->queryAction($sqlAbsen,'S');
 		$arr[] = array("id"=>0,"text"=>"Hadir");
 		$arr[] = array("id"=>1,"text"=>"Mangkir");
+		$arr[] = array("id"=>2,"text"=>"Cuti");
 		/*foreach($arrAbsen as $row)
 		{
 			$arr[] = array("id"=>$row['id'],"text"=>$row['text']);
@@ -111,7 +112,7 @@ class AbsensiKaryawan extends MainConf
 					$tblBody .= '<td>'.$row['awal'].'</td>';
 					$tblBody .= '<td>'.$row['ahir'].'</td>';
 					$tblBody .= '<td>'.$row['lama'].'</td>';	
-					$tblBody .= '<td><input id=\"status-ID-'.$row['id'].'\" idJadwal=\"'.$row['id'].'\" class=\"form-control input-xsmall input-xs status_column\" type=\"text\" value=\"'.$row['st_hadir'].'\" '.$disabled.'></td>';
+					$tblBody .= '<td><input id=\"status-ID-'.$row['id'].'\" idJadwal=\"'.$row['id'].'\" class=\"form-control input-xsmall input-xs status_column\" type=\"text\" value=\"'.$row['st_hadir'].'\" '.$disabled.'><label ID=\"msg-column-'.$row['id'].'\" class=\"msg_column\" style=\"color: #B4886B;font-weight: bold; Display:None;\">Jatah Cuti Habis !</label></td>';
 					$tblBody .= '<td><input size=\"5\" id=\"in-ID-'.$row['id'].'\" idJadwal=\"'.$row['id'].'\" class=\"form-control input-xsmall input-xs in_column\" type=\"text\" value=\"'.$row['datang'].'\" '.$disabledIn.'></td>';		
 					$tblBody .= '<td><input size=\"5\" id=\"out-ID-'.$row['id'].'\" idJadwal=\"'.$row['id'].'\" class=\"form-control input-xsmall input-xs out_column\" type=\"text\" value=\"'.$row['pulang'].'\" '.$disabledOut.'></td>';		
 					$tblBody .= '</tr>';
@@ -131,12 +132,39 @@ class AbsensiKaryawan extends MainConf
 			$arrAbsen = $param->CallbackParameter->arrAbsen;
 			foreach($arrAbsen as $row)
 			{
+				$arrCutiHabis = array();
+				
 				if($row->stHadir != '0')
 				{
 					$JadwalRecord = JadwalRecord::finder()->findByPk($row->jadwalId);
-					$JadwalRecord->st = '2';
-					$JadwalRecord->st_hadir = $row->stHadir;
-					$JadwalRecord->save();
+					$tglJadwal = $JadwalRecord->tanggal;
+				
+					if($row->stHadir == '2')
+					{
+						$KaryawanRecord = KaryawanRecord::finder()->findByPk($JadwalRecord->idkaryawan);
+						$JabatanRecord = JabatanRecord::finder()->findByPk($KaryawanRecord->id_jabatan);
+						$jatahCuti = $JabatanRecord->jatah_cuti;
+						$sqlCuti = "SELECT count(id) as jml_cuti FROM tbm_jadwal WHERE idkaryawan = '".$JadwalRecord->idkaryawan."' AND YEAR(tanggal) = YEAR(".$tglJadwal.") ";
+						$arrCuti = $this->queryAction($sqlCuti,'S');
+						$jmlCuti = $arrCuti[0]['jml_cuti'];
+						
+						if($jatahCuti > $jmlCuti)
+						{
+							$JadwalRecord->st = '2';
+							$JadwalRecord->st_hadir = $row->stHadir;
+							$JadwalRecord->save();
+						}
+						else
+						{
+							$arrCutiHabis[] = array("id"=>$JadwalRecord->id);
+						}
+					}
+					else
+					{
+						$JadwalRecord->st = '2';
+						$JadwalRecord->st_hadir = $row->stHadir;
+						$JadwalRecord->save();
+					}
 					
 					/*$JadwalPenaltyRecord = new JadwalPenaltyRecord();
 					$JadwalPenaltyRecord->idjadwal = $JadwalRecord->id;
@@ -196,6 +224,7 @@ class AbsensiKaryawan extends MainConf
 				}
 			}
 			
+			$arrJson = json_encode($arrCutiHabis,true);
 			$tblBody = $this->BindGrid();
 			
 			$this->getPage()->getClientScript()->registerEndScript
@@ -206,6 +235,7 @@ class AbsensiKaryawan extends MainConf
 						jQuery("#table-1 tbody").empty();
 						jQuery("#table-1 tbody").append("'.$tblBody.'");
 						BindGrid();
+						RenderMsg('.$arrJson.');
 						unloadContent();');	
 		
 	}
