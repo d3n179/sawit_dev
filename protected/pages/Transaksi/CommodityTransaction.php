@@ -97,9 +97,9 @@ class CommodityTransaction extends MainConf
 				}
 				elseif($row['status'] != '0' )
 				{
-					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakSkpClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak SKP</a>&nbsp;&nbsp;';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakTiketClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Tiket</a>&nbsp;&nbsp;';
+					//$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;';
+					//$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakSkpClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak SKP</a>&nbsp;&nbsp;';
+					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakTiketClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Tiket</a>&nbsp;&nbsp;';
 				}
 					
 				$tblBody .= '<tr>';

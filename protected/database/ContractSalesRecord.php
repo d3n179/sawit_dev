@@ -23,6 +23,9 @@ class ContractSalesRecord extends TActiveRecord
 	public $delivery;
 	public $term_of_payment;
 	public $remark;
+	public $tgl_do;
+	public $no_do;
+	public $no_surat_kuasa;
 
 
 	public $deleted;

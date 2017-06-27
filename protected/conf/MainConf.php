@@ -61,11 +61,11 @@ class MainConf extends TPage
 		$query = "SELECT 
 						id 
 					FROM 
-						tbt_commodity_transaction
+						tbt_contract_sales
 					WHERE
-					MONTH(tbt_commodity_transaction.tgl_do) = '$bln'
-					AND YEAR(tbt_commodity_transaction.tgl_do) = '$thn' 
-					AND tbt_commodity_transaction.commodity_type = '$tipeCommodity' ";
+					MONTH(tbt_contract_sales.tgl_do) = '$bln'
+					AND YEAR(tbt_contract_sales.tgl_do) = '$thn' 
+					AND tbt_contract_sales.commodity_type = '$tipeCommodity' ";
 		$arr = $this->queryAction($query,'S');
 		
 		$count = count($arr) + 1;

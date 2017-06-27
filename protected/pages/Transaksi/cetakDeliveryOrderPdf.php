@@ -20,11 +20,10 @@ class cetakDeliveryOrderPdf extends MainConf
 	{	
 		$id=$this->Request['id'];	
 		$profilPerusahaan = $this->profilPerusahaan();		
-		$record = CommodityTransactionRecord::finder()->findByPk($id);
-		$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($record->id_kontrak);
-		$jmlCommodity = number_format($record->netto_2,0,',','.');
-		$hrgCommodity = number_format($record->harga,0,',','.');
-		$totalHarga = $record->netto_2 * $record->harga;
+		$record = ContractSalesRecord::finder()->findByPk($id);
+		$jmlCommodity = number_format($record->quantity,0,',','.');
+		$hrgCommodity = number_format($record->pricing,0,',','.');
+		$totalHarga = $record->quantity * $record->pricing;
 		$totalHarga = number_format($totalHarga,0,',','.');
 		//$pelangganRecord = PelangganRecord::finder()->findByPk($record->id_pembeli);
 		
@@ -245,20 +244,20 @@ $html = '</br><table width="100%" cellpadding="2">
 		  <tr>
 			<td align="left"><b>Hal</b></td>
 			<td align="left">:</td>
-			<td align="left"><b>Delivery Order   '.$record->netto_2.' KG '.$commodityName.'</b></td>
+			<td align="left"><b>Delivery Order   '.$record->quantity.' KG '.$commodityName.'</b></td>
 		  </tr>
 		</table>
 		<br>
 		<table width="100%" cellpadding="2" style="font-size:9pt;">
 		   <tr>
-			<td align="left"><b>Sesuai dengan kontrak No. '.$ContractSalesRecord->sales_no.' agar dapat dikirimkan '.$commodityName.' sbb :</b></td>
+			<td align="left"><b>Sesuai dengan kontrak No. '.$record->sales_no.' agar dapat dikirimkan '.$commodityName.' sbb :</b></td>
 		  </tr>
 		</table>
 		<table width="100%" cellpadding="10" style="font-size:9pt;">
 		   <tr>
 			<td align="left" width="15%">Kepada</td>
 			<td align="left" width="5%">:</td>
-			<td align="left" width="60%">'.$record->pembeli.'</td>
+			<td align="left" width="60%">'.$record->id_pembeli.'</td>
 		  </tr>
 		   <tr>
 			<td align="left" width="15%"><b>Alamat</b></td>
@@ -268,22 +267,22 @@ $html = '</br><table width="100%" cellpadding="2">
 		  <tr>
 			<td align="left" width="15%">Banyaknya</td>
 			<td align="left" width="5%">:</td>
-			<td align="left" width="60%"><b>'.$record->netto_2.' Kg</b></td>
+			<td align="left" width="60%"><b>'.$record->quantity.' Kg</b></td>
 		  </tr>
 		  <tr>
 			<td align="left" width="15%">Spesifikasi Mutu</td>
 			<td align="left" width="5%">:</td>
-			<td align="left" width="60%">'.$ContractSalesRecord->quality.'</td>
+			<td align="left" width="60%">'.$record->quality.'</td>
 		  </tr>
 		   <tr>
 			<td align="left" width="15%">Pengiriman</td>
 			<td align="left" width="5%">:</td>
-			<td align="left" width="60%">'.$ContractSalesRecord->delivery.' </td>
+			<td align="left" width="60%">'.$record->delivery.' </td>
 		  </tr>
 		  <tr>
 			<td align="left" width="15%">Pembayaran</td>
 			<td align="left" width="5%">:</td>
-			<td align="left" width="60%">'.$ContractSalesRecord->term_of_payment.' </td>
+			<td align="left" width="60%">'.$record->term_of_payment.' </td>
 		  </tr>
 		 </table>
 		 <br>

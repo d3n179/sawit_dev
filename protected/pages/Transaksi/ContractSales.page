@@ -360,7 +360,8 @@
 	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
-	
+	<com:TCallback ID="cetakDoCallback" OnCallback="cetakDoClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakSkpCallback" OnCallback="cetakSkpClicked" ActiveControl.CausesValidation="false"/>
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
 			{
@@ -531,6 +532,26 @@
 			{
 				loadContent();
 					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+			function cetakDoClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakDoCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+			function cetakSkpClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakSkpCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
 							id:id
 						});
