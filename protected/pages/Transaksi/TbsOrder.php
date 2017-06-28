@@ -215,6 +215,7 @@ class TbsOrder extends MainConf
 				WHERE
 					tbt_tbs_order.deleted = '0'
 					AND tbt_tbs_order.status = '0'
+					AND tbt_tbs_order_detail.deleted = '0'
 					AND tbt_tbs_order.tgl_transaksi = CURDATE()
 				GROUP BY 
 					tbt_tbs_order.id

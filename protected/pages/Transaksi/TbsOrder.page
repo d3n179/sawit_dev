@@ -855,10 +855,6 @@
 				
 			}
 			
-			function deleteBarang(ID)
-			{
-				
-			}
 			
 			function detailClicked()
 			{
