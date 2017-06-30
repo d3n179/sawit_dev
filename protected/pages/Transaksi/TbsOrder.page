@@ -184,6 +184,7 @@
 							<div class="col-md-2">
 								<div class="form-group">
 								<label class="control-label" for="DDJenisKendaraan">Jenis Kendaraan</label>
+								<com:TActiveHiddenField ID="arrJnsKendaraan"></com:TActiveHiddenField>
 									<com:TActiveDropDownList 
 										ID="DDJenisKendaraan"
 										Width="190px"
@@ -549,8 +550,8 @@
 						console.log(today);
 						jQuery('#<%= $this->tgl_transaksi->getClientID()%>').val(today);
 						Prado.Validation.reset('val');
-						var target = e.target.attributes.href.value;
-						jQuery(target +' input:first').focus();
+						//var target = e.target.attributes.href.value;
+						//jQuery(target +' input:first').focus();
 			}
 			
 			function clearForm()
@@ -735,7 +736,7 @@
 						if(val.deleted=="0")
 						{								
 							tblBody += '<tr>';
-							tblBody += '<td>'+val.JnsKendaraanName+'</td>';
+							tblBody += '<td><input id="JnsKendaraan-column-ID-'+val.ID+'" class="form-control input-xsmall input-xs JnsKendaraan-column-ID-'+val.ID+' JnsKendaraanSelect2" type="text" value="'+val.JnsKendaraan+'" idTemp="'+val.ID+'"></td>';
 							tblBody += '<td><input class="form-control input-xsmall input-xs NoPolisi-column-ID-'+val.ID+' NoPolisi" type="text" value="'+val.NoPolisi+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
 							tblBody += '<td><input class="form-control input-xsmall input-xs Brutto-column-ID-'+val.ID+' Brutto Number" type="text" value="'+val.Brutto+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
 							tblBody += '<td><input class="form-control input-xsmall input-xs Tarra-column-ID-'+val.ID+' Tarra Number" type="text" value="'+val.Tarra+'" OnChange="TextDetailChanged('+val.ID+')"></td>';
@@ -762,8 +763,33 @@
 					
 			}
 			
+			function JnsKendaraanSelect2()
+			{
+				var jsonParam = jQuery('#<%= $this->arrJnsKendaraan->getClientID()%>').val();
+				
+				if(jsonParam != '')
+				{
+					var obj = JSON.parse(jsonParam);
+					console.log(obj);	
+				}	
+				
+				jQuery('.JnsKendaraanSelect2').select2({
+					placeholder:"--Jenis Kendaraan--",
+					width:"159px",
+					allowClear:true,
+					minimumResultsForSearch:-1,
+					data: obj
+				}).on("change", function(e) 
+				{
+					id = jQuery('#'+this.id).attr('idTemp');
+					TextDetailChanged(id);
+				});
+			}
+			
 			function TextDetailChanged(id)
 			{
+				var jnsKendaraan = jQuery('#JnsKendaraan-column-ID-'+id).select2('data');
+				console.log(jnsKendaraan);
 				var noPolisi = jQuery('#table-detail .NoPolisi-column-ID-'+id).val();
 				var bruto = parseFloat(jQuery('#table-detail .Brutto-column-ID-'+id).val());
 				var tarra = parseFloat(jQuery('#table-detail .Tarra-column-ID-'+id).val());
@@ -784,15 +810,17 @@
 				
 				var request= <%= $this->komidelDetailCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
-							noPolisi:noPolisi,bruto:bruto,tarra:tarra,netto_1:netto_1,potonganVal:potonganVal,hsilPotongan:hsilPotongan,netto_2:netto_2,jmlTandan:jmlTandan,komidel:komidel,id:id
+							jnsKendaraanId:jnsKendaraan.id,jnsKendaraanName:jnsKendaraan.text,noPolisi:noPolisi,bruto:bruto,tarra:tarra,netto_1:netto_1,potonganVal:potonganVal,hsilPotongan:hsilPotongan,netto_2:netto_2,jmlTandan:jmlTandan,komidel:komidel,id:id
 						});
 						request.dispatch();
 			}
 			
-			function UpdateBarang(id,noPolisi,bruto,tarra,netto_1,potonganVal,hsilPotongan,netto_2,jmlTandan,komidel,idKomidel,kategoriTbs)
+			function UpdateBarang(id,jnsKendaraanId,jnsKendaraanName,noPolisi,bruto,tarra,netto_1,potonganVal,hsilPotongan,netto_2,jmlTandan,komidel,idKomidel,kategoriTbs)
 			{
 				
 				localDB.update('TbsOrderTable', {ID: id}, function(row) {
+											row.JnsKendaraan = jnsKendaraanId;
+											row.JnsKendaraanName = jnsKendaraanName;
 											row.NoPolisi = noPolisi;
 											row.Brutto = bruto;
 											row.Tarra = tarra;
@@ -849,6 +877,7 @@
 				    },
 				    fnDrawCallback : function (oSettings) {
 						jQuery(".Number").inputmask('decimal', {rightAlignNumerics: true,clearMaskOnLostFocus: true});
+						JnsKendaraanSelect2();
 					 }
 				});
 				

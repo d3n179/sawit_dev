@@ -97,6 +97,7 @@ class PurchaseOrder extends MainConf
 					tbt_purchase_order.tgl_po,
 					tbm_pemasok.nama AS supplier,
 					tbt_purchase_order.catatan,
+					tbt_purchase_order.ppn,
 					COUNT(
 						tbt_purchase_order_detail.id
 					) AS jml_item,
@@ -163,7 +164,10 @@ class PurchaseOrder extends MainConf
 						$BiayaLain += $rowBiaya['biaya'];
 					}
 				}
-
+				
+				$ppnPercent = $row['ppn'];
+				$ppn = $row['total_biaya'] * ($ppnPercent / 100);
+		
 				$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak</a>&nbsp;&nbsp;';
 				$tglPo = $this->ConvertDate($row['tgl_po'],'3');
 				$tblBody .= '<tr>';
@@ -173,7 +177,7 @@ class PurchaseOrder extends MainConf
 				$tblBody .= '<td>'.$tglPo.'</td>';
 				$tblBody .= '<td>'.$row['supplier'].'</td>';
 				$tblBody .= '<td>'.$row['jml_item'].'</td>';
-				$tblBody .= '<td>'.number_format($row['total_biaya']+$BiayaLain,2,'.',',').'</td>';
+				$tblBody .= '<td>'.number_format($row['total_biaya']+$ppn+$BiayaLain,2,'.',',').'</td>';
 				$tblBody .= '<td>';
 				$tblBody .= $actionBtn;	
 				$tblBody .=	'</td>';		

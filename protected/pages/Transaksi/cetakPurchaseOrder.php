@@ -309,7 +309,7 @@ if($arrBiaya)
 }
 
 $ppnPercent = PurchaseOrderRecord::finder()->findByPk($idPo)->ppn;
-		$ppn = $total * ($ppnPercent / 100);
+		$ppn = $totalPo * ($ppnPercent / 100);
 		$dp = PurchaseOrderRecord::finder()->findByPk($idPo)->dp;
 		$totalSesudahPpn = ($total + $ppn) - $dp;
 $html .='<tr style="vertical-align:top;" >

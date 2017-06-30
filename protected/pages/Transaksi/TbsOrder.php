@@ -33,7 +33,12 @@ class TbsOrder extends MainConf
 			$arrKendaraan= $this->queryAction($sqlKendaraan,'S');
 			$this->DDJenisKendaraan->DataSource = $arrKendaraan;
 			$this->DDJenisKendaraan->DataBind();
-			
+			$arrJnsKendaraan = array();
+			foreach($this->queryAction($sqlKendaraan,'S') as $row)
+			{
+				$arrJnsKendaraan[] = array("id"=>$row['id'],"text"=>$row['jenis_kendaraan']);
+			}
+			$this->arrJnsKendaraan->Value = json_encode($arrJnsKendaraan,true);
 			
 			$sqlBarang = "SELECT
 							tbm_barang.id,
@@ -120,6 +125,8 @@ class TbsOrder extends MainConf
 	{
 		$id = $param->CallBackParameter->id;
 		$komidel = $param->CallBackParameter->komidel;
+		$jnsKendaraanId = $param->CallBackParameter->jnsKendaraanId;
+		$jnsKendaraanName = $param->CallBackParameter->jnsKendaraanName;
 		$noPolisi = $param->CallBackParameter->noPolisi;
 		$bruto = $param->CallBackParameter->bruto;
 		$tarra = $param->CallBackParameter->tarra;
@@ -181,7 +188,7 @@ class TbsOrder extends MainConf
 		$this->getPage()->getClientScript()->registerEndScript
 		('','
 			console.log('.$id.');
-			UpdateBarang('.$id.',"'.$noPolisi.'",'.$bruto.','.$tarra.','.$netto_1.','.$potonganVal.','.$hsilPotongan.','.$netto_2.','.$jmlTandan.','.$komidel.','.$idKomidel.',"'.$kategoriTbs.'");
+			UpdateBarang('.$id.','.$jnsKendaraanId.',"'.$jnsKendaraanName.'","'.$noPolisi.'",'.$bruto.','.$tarra.','.$netto_1.','.$potonganVal.','.$hsilPotongan.','.$netto_2.','.$jmlTandan.','.$komidel.','.$idKomidel.',"'.$kategoriTbs.'");
 		');
 		
 	}

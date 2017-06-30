@@ -162,12 +162,13 @@ class BayarPo extends MainConf
 				{
 					foreach($arrBiaya as $rowBiaya)
 					{
-							$ttlPo += $rowBiaya['biaya'];
+							$BiayaLain += $rowBiaya['biaya'];
 					}
 				}
 				
 				$ppnCurrency = $ttlPo * ($row['ppn'] / 100);
 				$ttlPo += $ppnCurrency;
+				$ttlPo += $BiayaLain;
 				$ttlPo -= $row['dp'];
 				
 				$ttlByrPo = 0;
@@ -300,13 +301,14 @@ class BayarPo extends MainConf
 							$tblBodyBiaya .= '<td>'.$rowBiaya['nama_biaya'].'</td>';
 							$tblBodyBiaya .= '<td>'.number_format($rowBiaya['biaya'],2,'.',',').'</td>';			
 							$tblBodyBiaya .= '</tr>';
-							$ttlPo += $rowBiaya['biaya'];
+							$BiayaLain += $rowBiaya['biaya'];
 					}
 				}
 				
 			$ppnCurrency = $ttlPo * ($PurchaseOrderRecord->ppn / 100);
 			
 			$ttlPo += $ppnCurrency;
+			$ttlPo += $BiayaLain;
 			$ttlPo -= $PurchaseOrderRecord->dp;
 			
 			$this->total_po->Text = $ttlPo;
