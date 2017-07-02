@@ -118,10 +118,10 @@ class LaporanHutangPO extends MainConf
 									tbt_purchase_order.id";
 									
 					$arrTtlBiaya = $this->queryAction($sqlBiaya,'S');
-					$ttlPo += $arrTtlBiaya[0]['Total_Biaya'];
+					//$ttlPo += $arrTtlBiaya[0]['Total_Biaya'];
 					
 					$ppnCurrency = $ttlPo * ($rowPo['ppn'] / 100);
-					$ttlPo += $ppnCurrency;
+					$ttlPo += $ppnCurrency + $arrTtlBiaya[0]['Total_Biaya'];
 					$ttlPo -= $rowPo['dp'];
 				}
 				

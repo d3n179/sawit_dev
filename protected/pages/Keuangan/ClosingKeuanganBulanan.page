@@ -1,0 +1,114 @@
+<com:TContent ID="Main">
+	<h2>Closing Laporan Keuangan - <com:TActiveLabel ID="Periode"></com:TActiveLabel></h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->	
+	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<button type="button" class="btn btn-blue btn-icon" OnClick="cariClicked()">
+								Proses
+								<i class="entypo-search"></i>
+							</button>
+				<button type="button" class="btn btn-primary btn-icon" OnClick="closingClicked()">
+								Closing
+								<i class="entypo-check"></i>
+							</button>
+			</div>
+		</div>	
+					
+	</div>
+	<div class="row">	
+		<div class="col-md-12">
+		<div class="form-group">
+			<table class="table table-bordered datatable" id="table-1" border="0">
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	</div>
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="cariCallback" OnCallback="cariBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="closingCallback" OnCallback="closingClicked" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+			});
+			
+			function cariClicked()
+			{
+				loadContent();
+				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+				unloadContent();
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					"scrollX": "100%",
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function cetakClicked()
+			{
+				loadContent();
+					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.dispatch();
+				unloadContent();
+			}
+			
+			function closingClicked()
+			{
+					if(confirm('Closing Laporan Keuangan Untuk Bulan Ini ? '))
+					{
+						loadContent();
+						var request= <%= $this->closingCallback->ActiveControl->Javascript %>;
+							request.dispatch();
+						
+					}
+					else
+					{
+						return false;
+					}
+			}
+		</script>
+		
+</com:TContent>

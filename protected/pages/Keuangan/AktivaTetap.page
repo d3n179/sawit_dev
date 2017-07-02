@@ -1,0 +1,485 @@
+<com:TContent ID="Main">
+	<h2>Asset Tetap</h2>
+	<hr>
+	 <com:TActivePanel CssClass="form"><!--form begin-->	
+	
+	<div class="row">	
+		<div class="col-md-12">
+			<ul class="nav nav-tabs"><!-- available classes "bordered", "right-aligned" -->
+				<li class="active">
+					<a href="#listTab" data-toggle="tab">
+						<i class="fa fa-list "></i> Asset Tetap
+					</a>
+				</li>
+				<li>
+				<a href="#formTab" data-toggle="tab">
+						<i class="fa fa-plus"></i> Tambah Data
+					</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="listTab">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<a href="javascript:;"  Onclick="formTabShow();" class="btn btn-info btn-icon icon-left btn-add"><i class="entypo-plus" ></i>Tambah</a>
+							</div>
+						</div>	
+					</div>	
+					<div class="row">	
+						<div class="col-md-12">
+							<div class="form-group">
+							<table class="table table-bordered table-striped datatable" id="table-1">
+									<thead>
+										<tr>
+											<th>Kode Akun</th>
+											<th>Nama Asset</th>
+											<th>Tgl Perolehan</th>
+											<th>Harga Pembelian</th>
+											<th>Nilai Residu</th>
+											<th>Umur Ekonomis</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>	
+				</div>
+				
+				<div class="tab-pane" id="formTab">
+					<div class="form-body">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<com:TActiveHiddenField ID="idAktivaTetap"/>
+									<com:TActiveButton
+										ID="submitBtn" 
+										Text="Submit"
+										OnClick="submitBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>	
+								</div>
+							</div>	
+						</div>
+						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="tgl_perolehan">Tgl Perolehan</label>	  
+									<com:TActiveTextBox 
+											ID="tgl_perolehan" 
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_perolehan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="kode_akun">Kode Akun</label>	  
+									<com:TActiveTextBox 
+											ID="kode_akun" 
+											CssClass="form-control upper" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="kode_akun"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="nama">Nama Asset</label>
+									<com:TActiveTextBox 
+											ID="nama" 
+											CssClass="form-control upper" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="nama"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+						</div>
+						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="harga_perolehan">Harga Pembelian</label>
+									<com:TActiveTextBox 
+											ID="harga_perolehan" 
+											CssClass="form-control mask_currency" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="harga_perolehan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>		
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="nilai_residu">Estimasi Nilai Residu</label>	  
+								<com:TActiveTextBox 
+											ID="nilai_residu" 
+											CssClass="form-control mask_currency" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="nilai_residu"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>	
+							
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="umur_ekonomis">Estimasi Umur Ekonomis</label>	  
+								<com:TActiveTextBox 
+											ID="umur_ekonomis" 
+											CssClass="form-control mask_integer" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="umur_ekonomis"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+							
+						</div>
+						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for=""></label>	
+									<com:TActiveButton 
+										ID="tambahBtnBtn" 
+										Text="Tampilkan Penyusutan"
+										CausesValidation="true"
+										OnClick="tambahBtnClicked"
+										ValidationGroup="val"
+										CssClass="btn btn-success">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton >
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">	
+							<div class="col-md-12">
+								<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="table-detail">
+									<thead>
+										<tr>
+											<th>Tahun Ke</th>
+											<th>Tahun</th>
+											<th>Penyusutan</th>
+											<th>Nilai Asset</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+								</div>
+							</div>
+						</div>	
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	
+	</com:TActivePanel>	<!--form End-->
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="komidelCallback" OnCallback="komidelCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="detailClickedCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="komidelDetailCallback" OnCallback="komidelDetailCallback" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="submitBtnCallback" OnCallback="submitBtnClicked" ActiveControl.CausesValidation="false"/>
+	
+	<script type="text/javascript">
+			jQuery(document).ready(function(jQuery)
+			{
+				jQuery('a[href="#formTab"]').hide();
+				jQuery('a[href="#listTab"]').on('shown.bs.tab', function (e) 
+				{
+					Prado.Validation.reset('val');
+					jQuery('.form-body select').val('empty');
+					jQuery('.form-control').val('');
+					jQuery('a[href="#formTab"]').hide();
+					jQuery('#<%= $this->idAktivaTetap->getClientID()%>').val('');
+					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
+				});
+				
+				jQuery(".btn-add").on('click',function()
+				{
+					jQuery('a[href="#formTab"]').on('shown.bs.tab', function (e) 
+					{
+						var today = new Date();
+						var dd = today.getDate();
+						var mm = today.getMonth()+1; 
+						var yyyy = today.getFullYear();
+
+						if(dd<10) {
+							dd='0'+dd
+						} 
+
+						if(mm<10) {
+							mm='0'+mm
+						} 
+
+						today = dd+'-'+mm+'-'+yyyy;
+						console.log(today);
+						jQuery('#<%= $this->tgl_perolehan->getClientID()%>').val(today);
+						Prado.Validation.reset('val');
+						var target = e.target.attributes.href.value;
+						jQuery(target +' input:first').focus();
+					});
+				});
+				
+				BindGrid();
+				BindGridDetail();
+			});
+			
+			function formTabShow()
+			{
+				jQuery("a[href=\"#formTab\"]").tab("show");
+				var today = new Date();
+						var dd = today.getDate();
+						var mm = today.getMonth()+1; 
+						var yyyy = today.getFullYear();
+
+						if(dd<10) {
+							dd='0'+dd
+						} 
+
+						if(mm<10) {
+							mm='0'+mm
+						} 
+
+						today = dd+'-'+mm+'-'+yyyy;
+						console.log(today);
+						jQuery('#<%= $this->tgl_perolehan->getClientID()%>').val(today);
+						Prado.Validation.reset('val');
+						//var target = e.target.attributes.href.value;
+						//jQuery(target +' input:first').focus();
+			}
+			
+			function clearForm()
+			{
+				
+			}
+			
+			function tambahBtnClicked()
+			{	
+					
+					
+				
+			}
+			
+			
+			function BindGridDetailBAK()
+			{
+				var tableSatuan = jQuery('#table-detail').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+					 }
+				});
+				
+				
+			}
+			
+			
+			function detailClicked()
+			{
+				var request= <%= $this->detailClickedCallback->ActiveControl->Javascript %>;
+						request.dispatch();	
+			}
+			
+			function BindGridDetail()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-detail");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"pageLength": 50,
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function BindGrid()
+			{
+				var responsiveHelper;
+				var breakpointDefinition = {
+					tablet: 1024,
+					phone : 480
+				};
+				var tableContainer;
+				tableContainer = jQuery("#table-1");
+				
+				tableContainer.dataTable({
+					"sPaginationType": "bootstrap",
+					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				        // Initialize the responsive datatables helper once.
+				        if (!responsiveHelper) {
+				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+				        }
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				        responsiveHelper.createExpandIcon(nRow);
+				    },
+				    fnDrawCallback : function (oSettings) {
+				        responsiveHelper.respond();
+				    }
+				});
+				
+				jQuery(".dataTables_wrapper select").select2({
+					minimumResultsForSearch: -1
+				});
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
+			}
+			
+			function submitBtnClicked()
+			{
+				if(localDB.tableExists('TbsOrderTable'))
+				{
+					var CHECK = localDB.queryAll('TbsOrderTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
+					if(CHECK.length > 0)
+					{
+						var TbsOrderTable = localDB.queryAll('TbsOrderTable', {sort: [["ID", "ASC"]]});
+						var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							TbsOrderTable:TbsOrderTable
+						});
+						request.dispatch();
+						
+        
+					}
+					else
+					{
+						toastr.error("Transaksi TBS Belum Dimasukkan !");
+					}
+				}
+				else
+				{
+					toastr.error("Transaksi TBS Belum Dimasukkan !");
+				}
+					
+				
+			}
+			
+		</script>
+		
+</com:TContent>

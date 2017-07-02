@@ -485,7 +485,17 @@ class LaporanRekapGajiKaryawan extends MainConf
 	{
 		//if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '')
 		//{
+		//$this->Response->redirect($this->Service->constructUrl('Hrd.cetakLapRekapGajiKaryawan',
+		/*$url = "index.php?page=Hrd.cetakLaporanRekapGajiKaryawanPdf&bulan=".$this->DDBulan->SelectedValue."&tahun=".$this->DDTahun->SelectedValue;
 		
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
+		$this->getPage()->getClientScript()->registerEndScript
+							('','
+							var url = "'.$urlTemp.'";
+							window.open(url, "_blank");
+							unloadContent();');	*/
 			$this->Response->redirect($this->Service->constructUrl('Hrd.cetakLapRekapGajiKaryawan',
 				array(
 				'bulan'=>$this->DDBulan->SelectedValue,
