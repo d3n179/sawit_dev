@@ -111,7 +111,8 @@ class AktivaTetap extends MainConf
 					tbm_aktiva_tetap.tgl_perolehan,
 					tbm_aktiva_tetap.harga_perolehan,
 					tbm_aktiva_tetap.nilai_residu,
-					tbm_aktiva_tetap.umur_ekonomis
+					tbm_aktiva_tetap.umur_ekonomis,
+					tbm_aktiva_tetap.jumlah_aktiva
 				FROM
 					tbm_aktiva_tetap
 				WHERE
@@ -143,6 +144,7 @@ class AktivaTetap extends MainConf
 				$tblBody .= '<td>'.$row['harga_perolehan'].'</td>';
 				$tblBody .= '<td>'.$row['nilai_residu'].'</td>';
 				$tblBody .= '<td>'.$row['umur_ekonomis'].' Tahun</td>';
+				$tblBody .= '<td>'.$row['jumlah_aktiva'].'</td>';
 				$tblBody .= '<td>';
 				$tblBody .= $actionBtn;
 				$tblBody .=	'</td>';			
@@ -170,6 +172,7 @@ class AktivaTetap extends MainConf
 			$this->harga_perolehan->Text = $Record->harga_perolehan;
 			$this->nilai_residu->Text = $Record->nilai_residu;
 			$this->umur_ekonomis->Text = $Record->umur_ekonomis;
+			$this->jumlah_aktiva->Text = $Record->jumlah_aktiva;
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
@@ -254,6 +257,7 @@ class AktivaTetap extends MainConf
 			$Record->nilai_residu = $nilai_residu;
 			$Record->umur_ekonomis= $umur_ekonomis;
 			$Record->tgl_akhir_peggunaan= date('Y-m-d',strtotime($tgl_perolehan. " + ".$umur_ekonomis." year"));
+			$Record->jumlah_aktiva = $this->jumlah_aktiva->Text;
 			$Record->save(); 	
 			
 			$sqlDelete = "UPDATE tbd_penyusutan_aktiva SET deleted = '1' WHERE id_aktiva = '".$Record->id."' ";

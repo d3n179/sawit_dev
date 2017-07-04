@@ -252,16 +252,19 @@ class ClosingKeuanganBulanan extends MainConf
 		$sqlAktivaTetap = "SELECT
 							tbm_aktiva_tetap.id,
 							tbm_aktiva_tetap.nama,
-							tbm_aktiva_tetap.harga_perolehan
+							tbm_aktiva_tetap.harga_perolehan,
+							tbm_aktiva_tetap.jumlah_aktiva
 						FROM
 							tbm_aktiva_tetap
 						WHERE
 							tbm_aktiva_tetap.deleted = '0'
+						AND tbm_aktiva_tetap.jumlah_aktiva > 0
 						AND CURDATE() > tbm_aktiva_tetap.tgl_perolehan
 						AND CURDATE() < tbm_aktiva_tetap.tgl_akhir_peggunaan ";		
 		$arrAktivaTetap = $this->queryAction($sqlAktivaTetap,'S');
 		foreach($arrAktivaTetap as $rowAktivaTetap)
 		{
+			$jumlah_aktiva = $rowAktivaTetap['jumlah_aktiva'];
 			$akumulasiSusut = 0;
 			$sqlSusut = "SELECT
 							tbd_penyusutan_aktiva.id
@@ -292,14 +295,14 @@ class ClosingKeuanganBulanan extends MainConf
 				$arrSusutDetail = $this->queryAction($sqlSusutDetail,'S');
 				foreach($arrSusutDetail as $rowSusutDetail)
 				{
-					$akumulasiSusut += $rowSusutDetail['nilai_penyusutan_bulanan'];
+					$akumulasiSusut += $rowSusutDetail['nilai_penyusutan_bulanan'] * $jumlah_aktiva;
 					
 					if($rowSusutDetail['tahun'] == $currentYear && $rowSusutDetail['bulan'] == $currentMonth)
 						break;
 				}
 			}
 			
-			$AktivaTetapList[] = array("nama_aktiva"=>$rowAktivaTetap['nama'],"nilai_aktiva"=>$rowAktivaTetap['harga_perolehan'],"akumulasi_penyusutan"=>$akumulasiSusut);
+			$AktivaTetapList[] = array("nama_aktiva"=>$rowAktivaTetap['nama'],"nilai_aktiva"=>$rowAktivaTetap['harga_perolehan'] * $jumlah_aktiva,"akumulasi_penyusutan"=>$akumulasiSusut);
 		}	
 		
 		$tblBody = '';

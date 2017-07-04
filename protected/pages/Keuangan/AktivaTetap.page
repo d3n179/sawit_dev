@@ -38,6 +38,7 @@
 											<th>Harga Pembelian</th>
 											<th>Nilai Residu</th>
 											<th>Umur Ekonomis</th>
+											<th>Jumlah Aktiva</th>
 											<th width="150px">Aksi</th>
 										</tr>
 									</thead>
@@ -120,6 +121,22 @@
 							</div>
 						</div>
 						<div class="row">	
+							<div class="col-md-2">
+								<div class="form-group">
+								<label class="control-label" for="jumlah_aktiva">Jumlah</label>
+									<com:TActiveTextBox 
+											ID="jumlah_aktiva" 
+											CssClass="form-control mask_integer" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="jumlah_aktiva"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>	
 							<div class="col-md-2">
 								<div class="form-group">
 								<label class="control-label" for="harga_perolehan">Harga Pembelian</label>

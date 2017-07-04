@@ -14,7 +14,7 @@ class AktivaTetapRecord extends TActiveRecord
 	public $nilai_residu;
 	public $umur_ekonomis;
 	public $tgl_akhir_peggunaan;
-
+	public $jumlah_aktiva;
 	public $deleted;
 	
 	public static function finder($className=__CLASS__)

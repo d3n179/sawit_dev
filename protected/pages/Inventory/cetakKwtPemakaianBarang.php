@@ -79,14 +79,13 @@ class cetakKwtPemakaianBarang extends MainConf
 		$pdf->SetWidths(array(55,40,50,40));
 		$pdf->SetAligns(array('L','R','C','L'));
 		$sql = "SELECT
-					tbm_barang.nama,
+					tbt_mutasi_barang_detail.id_barang,
 					tbt_mutasi_barang_detail.jml,
-					tbm_satuan.nama AS satuan,
-					tbt_mutasi_barang_detail.jns_keluar
+					tbt_mutasi_barang_detail.id_satuan,
+					tbt_mutasi_barang_detail.jns_keluar,
+					tbt_mutasi_barang_detail.st_asset
 				FROM
 					tbt_mutasi_barang_detail
-				INNER JOIN tbm_barang ON tbm_barang.id = tbt_mutasi_barang_detail.id_barang
-				INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_mutasi_barang_detail.id_satuan
 				WHERE
 					tbt_mutasi_barang_detail.id_transaksi = '$id'
 				AND tbt_mutasi_barang_detail.deleted = '0'";
@@ -99,8 +98,14 @@ class cetakKwtPemakaianBarang extends MainConf
 				$jnsKeluar = "Barang Rusak";
 			elseif($row['jns_keluar'] == '5')
 				$jnsKeluar = "Barang Expired";
+			
+			if($row['st_asset'] == '0')
+				$nmBarang = BarangRecord::finder()->findByPk($row['id_barang'])->nama;	
+			else
+				$nmBarang = AktivaTetapRecord::finder()->findByPk($row['id_barang'])->nama;	
 				
-			$pdf->RowNoBorder(array($row['nama'],$row['jml'],$row['satuan'],$jnsKeluar));	
+			$nmSatuan = SatuanRecord::finder()->findByPk($row['id_satuan'])->nama;	
+			$pdf->RowNoBorder(array($nmBarang,$row['jml'],$nmSatuan,$jnsKeluar));	
 		}
 		
 		$pdf->SetWidths(array(195));

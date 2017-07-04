@@ -299,7 +299,7 @@
 					localDB.commit();
 				}
 				
-				localDB.createTable('MutasiTable', ["IdBarang","BarangName","IdSatuan", "SatuanName","Jumlah","jenisPengeluaran","jenisPengeluaranName"]);
+				localDB.createTable('MutasiTable', ["IdBarang","BarangName","IdSatuan", "SatuanName","Jumlah","jenisPengeluaran","jenisPengeluaranName","stAsset"]);
 				localDB.commit();
 				
 				bindProduct();
@@ -332,6 +332,9 @@
 							jQuery('#<%=$this->stokBarang->getClientID() %>').val(productData.stokText);
 							jQuery('#<%=$this->product_id_stok->getClientID() %>').val(productData.stok);
 							var request= <%= $this->barangChangedCallback->ActiveControl->Javascript %>;
+							request.setCallbackParameter({
+								productData:productData
+							});
 							request.dispatch();
 						});
 			}
@@ -392,7 +395,8 @@
 																SatuanName: SatuanName, 
 																Jumlah: Jumlah,
 																jenisPengeluaran: JnsKeluar,
-																jenisPengeluaranName : JnsKeluarName});
+																jenisPengeluaranName : JnsKeluarName,
+																stAsset : BarangData.asset});
 						localDB.commit();
 						bindMutasiGridLine();
 					

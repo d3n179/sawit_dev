@@ -40,24 +40,35 @@ class MutasiBarangRusak extends MainConf
 		}
 	}
 	
-	public function barangChanged()
+	public function barangChanged($sender,$param)
 	{
 		$idBarang = $this->product_id_select2->Value;
+		$productData = $param->CallbackParameter->productData;
+		//var_dump($productData);
 		if($idBarang != '')
 		{
 			var_dump($idBarang);
-			$sqlSatuan = "SELECT
-							tbm_satuan.id,
-							tbm_satuan.nama
-						FROM
-							tbm_satuan
-						INNER JOIN tbm_satuan_barang ON tbm_satuan_barang.id_satuan = tbm_satuan.id
-						WHERE
-							tbm_satuan.deleted = '0'
-						AND tbm_satuan_barang.deleted = '0'
-						AND tbm_satuan_barang.id_barang = '$idBarang' ";
-						
-			$arrSatuan = $this->queryAction($sqlSatuan,'S');
+			var_dump($productData->asset);
+			if($productData->asset == '0')
+			{
+				$sqlSatuan = "SELECT
+								tbm_satuan.id,
+								tbm_satuan.nama
+							FROM
+								tbm_satuan
+							INNER JOIN tbm_satuan_barang ON tbm_satuan_barang.id_satuan = tbm_satuan.id
+							WHERE
+								tbm_satuan.deleted = '0'
+							AND tbm_satuan_barang.deleted = '0'
+							AND tbm_satuan_barang.id_barang = '$idBarang' ";
+							
+				$arrSatuan = $this->queryAction($sqlSatuan,'S');
+			}
+			else
+			{
+				$arrSatuan[] = array("id"=>"30","nama"=>"UNIT");
+			}
+			
 			$this->DDSatuan->DataSource = $arrSatuan;
 			$this->DDSatuan->DataBind();
 			
@@ -132,7 +143,37 @@ class MutasiBarangRusak extends MainConf
 					$text = "<b><i>(EMPTY STOCK)</i></b>";
 				}
 				
-				$arrJson[] = array("id"=>$row['id'],"text"=>utf8_encode($row['nama'])." ".$text,"stok"=>$stok,"stokText"=>$stoktext,"disabled"=>$disabled);
+				$arrJson[] = array("id"=>$row['id'],"text"=>utf8_encode($row['nama'])." ".$text,"stok"=>$stok,"stokText"=>$stoktext,"asset"=>"0","disabled"=>$disabled);
+			}
+			
+			$sqlAssetTetap = "SELECT
+							tbm_aktiva_tetap.id,
+							tbm_aktiva_tetap.nama,
+							tbm_aktiva_tetap.kode_akun,
+							tbm_aktiva_tetap.jumlah_aktiva
+						FROM
+							tbm_aktiva_tetap
+						WHERE
+							tbm_aktiva_tetap.deleted = '0' ";
+					
+			$arrAssetTetap = $this->queryAction($sqlAssetTetap,'S');
+			foreach($arrAssetTetap as $rowAssetTetap)
+			{
+				
+				if($rowAssetTetap['jumlah_aktiva'] > 0)
+				{
+					$text = '';
+					$stoktext = $rowAssetTetap['jumlah_aktiva']." Unit";
+					$disabled = false;
+				}
+				else
+				{
+					$text = "<b><i>(STOCK 0)</i></b>";
+					$stoktext = $rowAssetTetap['jumlah_aktiva']." Unit";
+					$disabled = true;
+				}
+				
+				$arrJson[] = array("id"=>$rowAssetTetap['id'],"text"=>utf8_encode($rowAssetTetap['nama'])." - ".$rowAssetTetap['kode_akun']." ".$text,"stok"=>$rowAssetTetap['jumlah_aktiva'],"stokText"=>$stoktext,"asset"=>"1","disabled"=>$disabled);
 			}
 			
 		return $arrJson;
@@ -241,15 +282,12 @@ class MutasiBarangRusak extends MainConf
 		
 		$sql = "SELECT
 					tbt_mutasi_barang_detail.id_barang,
-					tbm_barang.nama AS barang,
 					tbt_mutasi_barang_detail.id_satuan,
-					tbm_satuan.nama AS satuan,
 					tbt_mutasi_barang_detail.jml,
-					tbt_mutasi_barang_detail.jns_keluar
+					tbt_mutasi_barang_detail.jns_keluar,
+					tbt_mutasi_barang_detail.st_asset
 				FROM
 					tbt_mutasi_barang_detail
-				INNER JOIN tbm_barang ON tbm_barang.id = tbt_mutasi_barang_detail.id_barang
-				INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_mutasi_barang_detail.id_satuan
 				WHERE
 					tbt_mutasi_barang_detail.id_transaksi = '$idtrans'
 				AND tbt_mutasi_barang_detail.deleted = '0' ";
@@ -260,6 +298,12 @@ class MutasiBarangRusak extends MainConf
 		{
 			foreach($arr as $row)
 			{
+				if($row['st_asset'] == '0')
+					$nmBarang = BarangRecord::finder()->findByPk($row['id_barang'])->nama;	
+				else
+					$nmBarang = AktivaTetapRecord::finder()->findByPk($row['id_barang'])->nama;	
+				$nmSatuan = SatuanRecord::finder()->findByPk($row['id_satuan'])->nama;	
+			
 				if($row['jns_keluar'] == '3')
 					$JnsKeluar = 'Pemakaian Produksi';
 				elseif($row['jns_keluar'] == '4')
@@ -268,8 +312,8 @@ class MutasiBarangRusak extends MainConf
 					$JnsKeluar = 'Expired';
 					
 				$tblBody .= '<tr>';
-				$tblBody .= '<td>'.$row['barang'].'</td>';
-				$tblBody .= '<td>'.$row['satuan'].'</td>';
+				$tblBody .= '<td>'.$nmBarang.'</td>';
+				$tblBody .= '<td>'.$nmSatuan.'</td>';
 				$tblBody .= '<td>'.$row['jml'].'</td>';
 				$tblBody .= '<td>'.$JnsKeluar.'</td>';
 				$tblBody .= '</tr>';
@@ -307,7 +351,11 @@ class MutasiBarangRusak extends MainConf
 			
 			foreach($arr as $row)
 			{
-				$hargaSatuanBesar = $this->GetLastProductPrice($row->IdBarang);
+				if($row->stAsset == '0')
+					$hargaSatuanBesar = $this->GetLastProductPrice($row->IdBarang);
+				else
+					$hargaSatuanBesar = 0;
+				
 		
 				if($hargaSatuanBesar > 0)
 				{
@@ -324,64 +372,78 @@ class MutasiBarangRusak extends MainConf
 				$MutasiBarangDetailRecord->id_satuan = $row->IdSatuan;
 				$MutasiBarangDetailRecord->jml = $row->Jumlah;
 				$MutasiBarangDetailRecord->jns_keluar = $row->jenisPengeluaran;
+				$MutasiBarangDetailRecord->st_asset = $row->stAsset;
 				$MutasiBarangDetailRecord->deleted = '0';
 				$MutasiBarangDetailRecord->save();
 				
-				$sql = "SELECT 
-							SUM(tbd_stok_barang.stok) AS stok 
-						FROM 
-							tbd_stok_barang 
-						WHERE 
-							tbd_stok_barang.id_barang = '".$row->IdBarang."' ";
-				$arrStok = $this->queryAction($sql,'S');
-				$stok = $arrStok[0]['stok'];
-				$currentStok = $stok; //$this->getTargetUom($row->IdBarang,$stok,'0','1',$row->IdSatuan);
-				
-				$minStok = $this->getTargetUom($row->IdBarang,$row->Jumlah,$row->IdSatuan,'1','0');
-				$sqlId = "SELECT 
-								id
-							FROM
-								tbd_stok_barang
-							WHERE
-								tbd_stok_barang.deleted = '0' 
-								AND tbd_stok_barang.id_barang = '".$row->IdBarang."' 
-							ORDER BY tbd_stok_barang.expired_date ASC";
-				$arrId = $this->queryAction($sqlId ,'S');
-				
-				foreach($arrId as $rowId)
+				if($row->stAsset == '0')
 				{
-					$stockId = $rowId['id'];
-					$StockBarangRecord = StockBarangRecord::finder()->findByPk($stockId);
-					if($StockBarangRecord->stok >= $minStok)
+					$sql = "SELECT 
+								SUM(tbd_stok_barang.stok) AS stok 
+							FROM 
+								tbd_stok_barang 
+							WHERE 
+								tbd_stok_barang.id_barang = '".$row->IdBarang."' ";
+					$arrStok = $this->queryAction($sql,'S');
+					$stok = $arrStok[0]['stok'];
+					$currentStok = $stok; //$this->getTargetUom($row->IdBarang,$stok,'0','1',$row->IdSatuan);
+					
+					$minStok = $this->getTargetUom($row->IdBarang,$row->Jumlah,$row->IdSatuan,'1','0');
+					$sqlId = "SELECT 
+									id
+								FROM
+									tbd_stok_barang
+								WHERE
+									tbd_stok_barang.deleted = '0' 
+									AND tbd_stok_barang.id_barang = '".$row->IdBarang."' 
+								ORDER BY tbd_stok_barang.expired_date ASC";
+					$arrId = $this->queryAction($sqlId ,'S');
+					
+					foreach($arrId as $rowId)
 					{
-						$StockBarangRecord->stok -= $minStok;
-						$StockBarangRecord->save(); 
-						break;
+						$stockId = $rowId['id'];
+						$StockBarangRecord = StockBarangRecord::finder()->findByPk($stockId);
+						if($StockBarangRecord->stok >= $minStok)
+						{
+							$StockBarangRecord->stok -= $minStok;
+							$StockBarangRecord->save(); 
+							break;
+						}
+						else
+						{
+							$stockKurang = $minStok - $StockBarangRecord->stok;
+							$StockBarangRecord->stok = 0;
+							$StockBarangRecord->save(); 
+						}
 					}
-					else
-					{
-						$stockKurang = $minStok - $StockBarangRecord->stok;
-						$StockBarangRecord->stok = 0;
-						$StockBarangRecord->save(); 
-					}
+					
+					$StockInOutRecord = new StockInOutRecord();
+					$StockInOutRecord->id_barang = $row->IdBarang;
+					$StockInOutRecord->stok_awal = $currentStok;
+					$StockInOutRecord->stok_in = 0;
+					$StockInOutRecord->nilai_in = 0;
+					$StockInOutRecord->stok_out = $minStok;
+					$StockInOutRecord->nilai_out = $row->Jumlah * $hargaReal;
+					$StockInOutRecord->stok_akhir = $currentStok - $minStok;
+					$StockInOutRecord->keterangan = '';
+					$StockInOutRecord->id_transaksi = $MutasiBarangDetailRecord->id;
+					$StockInOutRecord->jns_transaksi = $row->jenisPengeluaran;
+					$StockInOutRecord->tgl = date("Y-m-d");
+					$StockInOutRecord->wkt= date("G:i:s");
+					$StockInOutRecord->username = $this->User->IsUser;
+					$StockInOutRecord->save();
 				}
-				
-				$StockInOutRecord = new StockInOutRecord();
-				$StockInOutRecord->id_barang = $row->IdBarang;
-				$StockInOutRecord->stok_awal = $currentStok;
-				$StockInOutRecord->stok_in = 0;
-				$StockInOutRecord->nilai_in = 0;
-				$StockInOutRecord->stok_out = $minStok;
-				$StockInOutRecord->nilai_out = $row->Jumlah * $hargaReal;
-				$StockInOutRecord->stok_akhir = $currentStok - $minStok;
-				$StockInOutRecord->keterangan = '';
-				$StockInOutRecord->id_transaksi = $MutasiBarangDetailRecord->id;
-				$StockInOutRecord->jns_transaksi = $row->jenisPengeluaran;
-				$StockInOutRecord->tgl = date("Y-m-d");
-				$StockInOutRecord->wkt= date("G:i:s");
-				$StockInOutRecord->username = $this->User->IsUser;
-				$StockInOutRecord->save();
+				elseif($row->stAsset == '1')
+				{
+					$AktivaTetapRecord = AktivaTetapRecord::finder()->findByPk($row->IdBarang);
+					if($AktivaTetapRecord)
+					{
+						$AktivaTetapRecord->jumlah_aktiva -= $row->Jumlah;
+						$AktivaTetapRecord->save();
+					} 
+				}
 			}
+			
 			$tblBody = $this->BindGrid();
 			
 			$url = 'index.php?page=Inventory.cetakKwtPemakaianBarang&id='.$MutasiBarangRecord->id;

@@ -36,6 +36,7 @@ class LaporanBarangRusak extends MainConf
 				ORDER BY
 					tbm_kategori_barang.id";
 				$arrKateg = $this->queryAction($sql,'S');
+				$arrKateg[] = array("id"=>"0","nama"=>"Asset Tetap");
 				$this->DDKategBarang->DataSource = $arrKateg;
 				$this->DDKategBarang->DataBind();
 				
@@ -103,23 +104,30 @@ class LaporanBarangRusak extends MainConf
 	{
 		$periode = $this->Periode->Text;
 		
-		$sqlTrans = "SELECT 
+		$sqlTrans = "SELECT
 						tbt_mutasi_barang.id,
 						tbt_mutasi_barang_detail.id_barang,
+
+					IF (
+						tbt_mutasi_barang_detail.st_asset = '0',
 						tbm_barang.nama,
-						tbt_mutasi_barang_detail.jml,
-						tbt_mutasi_barang_detail.id_satuan,
-						tbm_satuan.nama AS satuan,
-						tbt_mutasi_barang.tgl_transaksi,
-						tbt_mutasi_barang.wkt_transaksi
-					FROM 
+						tbm_aktiva_tetap.nama
+					) AS nama,
+					 tbt_mutasi_barang_detail.jml,
+					 tbt_mutasi_barang_detail.id_satuan,
+					 tbm_satuan.nama AS satuan,
+					 tbt_mutasi_barang_detail.st_asset,
+					 tbt_mutasi_barang.tgl_transaksi,
+					 tbt_mutasi_barang.wkt_transaksi
+					FROM
 						tbt_mutasi_barang_detail
-					INNER JOIN tbm_barang ON tbm_barang.id = tbt_mutasi_barang_detail.id_barang
-					INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_mutasi_barang_detail.id_satuan
 					INNER JOIN tbt_mutasi_barang ON tbt_mutasi_barang.id = tbt_mutasi_barang_detail.id_transaksi
+					LEFT JOIN tbm_barang ON tbm_barang.id = tbt_mutasi_barang_detail.id_barang
+					LEFT JOIN tbm_aktiva_tetap ON tbm_aktiva_tetap.id = tbt_mutasi_barang_detail.id_barang
+					INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_mutasi_barang_detail.id_satuan
 					WHERE
-						tbt_mutasi_barang_detail.deleted ='0' 
-						AND tbt_mutasi_barang.deleted ='0' ";
+						tbt_mutasi_barang_detail.deleted = '0'
+					AND tbt_mutasi_barang.deleted = '0' ";
 		
 		if($periode == '0')
 		{
@@ -168,11 +176,20 @@ class LaporanBarangRusak extends MainConf
 		}
 		
 		if($this->DDKategBarang->SelectedValue != '')
-			$sqlTrans .= " AND tbm_barang.kategori_id = '".$this->DDKategBarang->SelectedValue."' ";
+		{
+			if($this->DDKategBarang->SelectedValue != '0')
+				$sqlTrans .= " AND tbm_barang.kategori_id = '".$this->DDKategBarang->SelectedValue."' ";
+			else
+				$sqlTrans .= " AND tbt_mutasi_barang_detail.st_asset = '1' ";
+		}
 			
 		if($this->nmBarang->Text != '')
 		{
-			$sqlTrans .= "AND tbm_barang.nama LIKE '".$this->nmBarang->Text."%' ";
+			$sqlTrans .= "AND IF (
+									tbt_mutasi_barang_detail.st_asset = '0',
+									tbm_barang.nama,
+									tbm_aktiva_tetap.nama
+								) LIKE '".$this->nmBarang->Text."%' ";
 		}
 		//$sqlTrans .="ORDER BY 
 							//tbt_stok_in_out.id_barang,tbt_stok_in_out.tgl,tbt_stok_in_out.wkt ASC ";

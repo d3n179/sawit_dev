@@ -12,6 +12,7 @@ class MutasiBarangDetailRecord extends TActiveRecord
 	public $id_satuan;
 	public $jml;
 	public $jns_keluar;
+	public $st_asset;
 	public $deleted;
 	
 	public static function finder($className=__CLASS__)
