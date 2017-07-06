@@ -24,6 +24,7 @@
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/localStorageDB/localstoragedb.min.js'%>" type="text/javascript"></script>
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/highcharts/highcharts.js'%>" type="text/javascript"></script>
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/highcharts/modules/exporting.js'%>" type="text/javascript"></script>
+	
 	<script>var localDB = new localStorageDB("localDB", localStorage);</script>
 	<script>
 		jQuery.noConflict();
