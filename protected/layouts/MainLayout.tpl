@@ -18,12 +18,15 @@
 	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/css/neon-forms.css'%>">
 	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/css/custom.css'%>">
 	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/js/bootstrap-datepicker-1.6.4/css/bootstrap-datepicker3.min.css'%>">
-	
+	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/css/ztree/zTreeStyle/zTreeStyle.css'%>">
 	
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/jquery-1.11.0.min.js'%>" type="text/javascript"></script>
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/localStorageDB/localstoragedb.min.js'%>" type="text/javascript"></script>
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/highcharts/highcharts.js'%>" type="text/javascript"></script>
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/highcharts/modules/exporting.js'%>" type="text/javascript"></script>
+	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/ztree/jquery.ztree.core.js'%>" type="text/javascript" ></script>
+	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/ztree/jquery.ztree.excheck.js'%>" type="text/javascript" ></script>
+	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/ztree/jquery.ztree.exedit.js'%>" type="text/javascript" ></script>
 	
 	<script>var localDB = new localStorageDB("localDB", localStorage);</script>
 	<script>

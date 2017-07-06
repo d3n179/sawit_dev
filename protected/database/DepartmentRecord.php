@@ -10,6 +10,7 @@ class DepartmentRecord extends TActiveRecord
 	public $id_parent;
 	public $nama;
 	public $kode;
+	public $id_coa;
 	
 	public $deleted;
 	

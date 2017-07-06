@@ -2,8 +2,8 @@
 	<h2>Master Department</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
-	<div class="modal fade" id="modal-1">
-		<div class="modal-dialog">
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 60%;">
 			<div class="modal-content">
 				
 				<div class="modal-header">
@@ -48,6 +48,24 @@
 										  ValidationGroup="val" />
 							</div>
 						</div>	
+						
+						<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label" for="DDCoa">COA</label>
+									 <com:TActiveTextBox 
+										ID="DDCoa" 
+										CssClass="form-control" />
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDCoa"										 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+								</div>
+							</div>
+							
 					</div>	
 					<div class="row">
 						<div class="col-md-3">
@@ -157,6 +175,7 @@
 				<tr>
 					<th width="150px">Kode Department</th>
 					<th width="300px">Nama Department</th>
+					<th width="300px">Nama Akun COA</th>
 					<th width="150px">Aksi</th>
 				</tr>
 			</thead>
@@ -183,8 +202,76 @@
 				clearTempTable();
 				BindGrid();
 				BindGridSub();
+				bindSelect2();
 			});
 			
+			function bindSelect2()
+			{
+				jQuery('#<%= $this->DDCoa->getClientID()%>').select2({
+					placeholder: 'Pilih Coa',
+					allowClear: true,
+					minimumInputLength: 0,
+					ajax: {
+							url: 'index.php?page=GenerateConf&data=coa',
+							dataType: 'json',
+							delay: 250,
+							data: function (term, page) { // page is the one-based page number tracked by Select2
+								return {
+									q: term, //search term
+									page_limit:10,
+									table_name:"tbm_coa",
+									field_name:"CONCAT(kode_coa,' - ',nama)",
+									field_sortby:"nama",
+									page_number: page // page number
+								};
+							},
+							results: function (data, page) {
+								var more = (page * 10) < data.TotalRows; // whether or not there are more results available
+					 
+								// notice we return the value of more so Select2 knows if more results can be loaded
+								return {results: data.Rows, more: more};
+							},
+							cache: true
+						},
+					initSelection: function (element, callback) {
+                        var id = jQuery(element).val();
+                        if (id !== "") {
+                            jQuery.ajax({ // ajax call starts
+                                delay: 250,
+                                url:'index.php?page=GenerateConf&data=coa', // JQuery loads serverside.php
+                                data:{
+                                    id:id,
+                                    table_name:"tbm_coa",
+                                    multiple:'false',
+                                    field_name:"CONCAT(kode_coa,' - ',nama)",
+									field_sortby:"nama"
+                                },
+                                cache: true,
+                                dataType:'json', // Choosing a JSON datatype
+                                success: function(data) // Variable data contains the data we get from serverside
+                                {
+                                    if(data.Rows.length>0)
+                                    {
+										
+                                        callback(data.Rows[0]);
+                                    }
+                                    else
+                                    {
+                                        callback();
+									}
+                                },
+                                error: function(data)
+                                {
+                                    //console.log(data);
+                                }
+                            });
+                        }
+                    },
+                    formatSelection: function(data) { 
+					   return data.text; 
+					}   
+                    }).off("change");
+			}
 			
 			function clearForm()
 			{

@@ -9,6 +9,7 @@ class CoaRecord extends TActiveRecord
 	public $id;
 	public $id_group_coa;
 	public $kode_coa;
+	public $group_type;
 	public $nama;
 	
 	public $deleted;

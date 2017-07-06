@@ -1,7 +1,7 @@
 <com:TContent ID="Main">
-	<h2>Master Coa</h2>
+	<h2>Master COA</h2>
 	<hr>
-	 <com:TActivePanel CssClass="form"><!--form begin-->
+	 <com:TActivePanel CssClass="form"><!--form begin-->	
 	<div class="modal fade" id="modal-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -13,22 +13,32 @@
 				
 				<div class="modal-body">
 					<div class="row">
-						<div class="col-sm-5">
+						<div class="col-md-6">
 							<div class="form-group">
 							<label for="DDKategori" class="control-label">Group Coa</label>
 								<com:TActiveHiddenField ID="idCoa"/>
+								<com:TActiveHiddenField ID="treeNode"/>
+								<com:TActiveHiddenField ID="treeId"/>
 								<com:TActiveDropDownList 
 									ID="DDGroup"
-									Width="190px"
-									PromptText="--Pilih Group--"
+									Width="300px"
+									PromptText="--Pilih--"
 									PromptValue="empty"
+									Enabled="false"
 									AutoPostBack="false"
-									CausesValidation="false"
 									CssClass="form-control"
 									DataTextField="nama"
 									DataValueField="id">
 									</com:TActiveDropDownList>
-										
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="DDGroup"	
+										  InitialValue="empty"										 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />		
 							</div>
 						</div>			
 					</div>
@@ -52,9 +62,9 @@
 							</div>
 						</div>	
 						
-						<div class="col-md-3">
+						<div class="col-md-6">
 							<div class="form-group">
-							<label for ="nama" class="control-label">Name</label>
+							<label for ="nama" class="control-label">Nama</label>
 								<com:TActiveTextBox 
 										ID="nama" 
 										CssClass="form-control" 
@@ -93,130 +103,196 @@
 		</div>
 	</div>
 	
-	<div class="row">
-		<div class="col-md-3">
-			<div class="form-group">
-				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Kategori');clearForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
-			</div>
-		</div>	
-	</div>	
 	<div class="row">	
 		<div class="col-md-12">
-	<div class="form-group">
-	<table class="table table-bordered table-striped datatable" id="table-1">
-			<thead>
-				<tr>
-					<th width="150px">Group</th>
-					<th width="150px">Kode Coa</th>
-					<th width="150px">Name</th>
-					<th width="150px">Aksi</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-	</div>
-	</div>
+			<div class="form-group">
+				<com:TActiveHiddenField ID="menuList"></com:TActiveHiddenField>
+				<ul id="treeDemo" class="ztree" style="width:1000px; height:auto;"></ul>
+			</div>
+		</div>
 	</div>
 	</com:TActivePanel>	<!--form End-->
-	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="deleteCallback" OnCallback="deleteData" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="hargaCallback" OnCallback="deleteHarga" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="sethargaCallback" OnCallback="setHarga" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="deleteBahanCallback" OnCallback="deleteBahan" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="clearCallback" OnCallback="clearForm" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="hargaPotongCallback" OnCallback="deleteHargaPotong" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cariCallback" OnCallback="cariBtnClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="closingCallback" OnCallback="closingClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="GroupCallback" OnCallback="bindGroupCoa" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="SelectGroupCallback" OnCallback="selectGroupCoa" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="DeleteCallback" OnCallback="DeleteData" ActiveControl.CausesValidation="false"/>
 	
 	<script type="text/javascript">
-			jQuery(document).ready(function(jQuery)
-			{
-				BindGrid();
-			});
-			
-			
-			function clearForm()
-			{
-				jQuery('#<%= $this->nama->getClientID()%>').val('');
-				jQuery('#<%= $this->kodeCoa->getClientID()%>').val('');
-				jQuery('#<%= $this->DDGroup->getClientID()%>').val('empty');
-				var request= <%= $this->clearCallback->ActiveControl->Javascript %>;
-						request.dispatch();
+		<!--
+		var setting = {
+			view: {expandSpeed:"2",
+				addHoverDom: addHoverDom,
+				removeHoverDom: removeHoverDom,
+				selectedMulti: false
+			},
+			edit: {
+				enable: true,
+				showRemoveBtn: showRemoveBtn,
+				showRenameBtn: showRenameBtn
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeRemove: beforeRemove,
+				beforeEditName: beforeEditName,
+				beforeRename: beforeRename
 			}
-			
-			function BindGrid()
-			{
-				var responsiveHelper;
-				var breakpointDefinition = {
-					tablet: 1024,
-					phone : 480
-				};
-				var tableContainer;
-				tableContainer = jQuery("#table-1");
-				
-				tableContainer.dataTable({
-					"sPaginationType": "bootstrap",
-					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-					"bStateSave": true,
-					
+		};
 		
-				    // Responsive Settings
-				    bAutoWidth     : false,
-				    fnPreDrawCallback: function () {
-				        // Initialize the responsive datatables helper once.
-				        if (!responsiveHelper) {
-				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
-				        }
-				    },
-				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-				        responsiveHelper.createExpandIcon(nRow);
-				    },
-				    fnDrawCallback : function (oSettings) {
-				        responsiveHelper.respond();
-				    }
-				});
+		
+		function clearForm()
+		{
+			var request= <%= $this->GroupCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+						
+			jQuery('#<%= $this->nama->getClientID()%>').val('');
+			jQuery('#<%= $this->kodeCoa->getClientID()%>').val('');
+			jQuery('#<%= $this->idCoa->getClientID()%>').val('');
+			jQuery('#<%= $this->DDGroup->getClientID()%>').val('empty');
+			
+		}
+			
+		function filter(treeId, parentNode, childNodes) {
+			if (!childNodes) return null;
+			for (var i=0, l=childNodes.length; i<l; i++) {
+				childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+			}
+			return childNodes;
+		}
+		
+		function beforeRemove(treeId, treeNode) {
+			var zTree = jQuery.fn.zTree.getZTreeObj("treeDemo");
+			zTree.selectNode(treeNode);
+			msg = confirm("Hapus Data '" + treeNode.id + "' Ini ?");
+			if(msg)
+			{
+				var request= <%= $this->DeleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:treeNode.id_table
+						});
+						request.dispatch();
+			}
+			//return confirm("Hapus Data '" + treeNode.id + "' Ini ?");
+		}	
+			
+		function beforeEditName(treeId, treeNode)
+		{
+			var zTree = jQuery.fn.zTree.getZTreeObj("treeDemo");
+			zTree.selectNode(treeNode);
+			
+			clearForm();
+			jQuery('#modal-1').modal('show');
+			jQuery('#<%= $this->modalJudul->getClientID()%>').text('Edit COA');
+			jQuery('#<%= $this->DDGroup->getClientID()%> > [value=' + treeNode.id_parent_table + ']').attr("selected", "true");
+			jQuery('#<%= $this->idCoa->getClientID()%>').val(treeNode.id_table);
+			jQuery('#<%= $this->kodeCoa->getClientID()%>').val(treeNode.id);
+			jQuery('#<%= $this->nama->getClientID()%>').val(treeNode.nama);
+			jQuery('#<%= $this->treeNode->getClientID()%>').data(treeNode);
+			jQuery('#<%= $this->treeId->getClientID()%>').data(treeId);
+			var request= <%= $this->SelectGroupCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:treeNode.id_parent_table
+						});
+						request.dispatch();
+						
+			return false;
+		}
+		
+		function refreshRename(st,id,id_table,pId,id_parent_table,newName)
+		{
+			var treeId = jQuery('#<%= $this->treeId->getClientID()%>').data();
+			var treeNode = jQuery('#<%= $this->treeNode->getClientID()%>').data();
+			if(st == '0')
+			{
+				var zTree = jQuery.fn.zTree.getZTreeObj("treeDemo");
+				zTree.addNodes(treeNode, {id_table:id_table, id:id, id_parent_table:id_parent_table,pId:pId, name:id + " - " + newName, nama:newName});
+			}
+			else
+			{
+				beforeRename(treeId, treeNode, newName);
+			}
+		}
+		
+		function beforeRename(treeId, treeNode, newName) {
+			if (newName.length == 0) {
+				setTimeout(function() {
+					var zTree = jQuery.fn.zTree.getZTreeObj("treeDemo");
+					zTree.cancelEditName();
+					alert("Nama Tidak Boleh Kosong !");
+				}, 0);
+				return false;
+			}
+			return true;
+		}
+
+		var newCount = 1;
+		function addHoverDom(treeId, treeNode) {
+			var sObj = jQuery("#" + treeNode.tId + "_span");
+			if (treeNode.editNameFlag || jQuery("#addBtn_"+treeNode.tId).length>0) return;
+			var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+				+ "' title='add node' onfocus='this.blur();'></span>";
+			sObj.after(addStr);
+			var btn = jQuery("#addBtn_"+treeNode.tId);
+			if (btn) btn.bind("click", function(){
+				var zTree = jQuery.fn.zTree.getZTreeObj("treeDemo");
+				jQuery('#modal-1').modal('show');
+				jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah COA');
+				clearForm();
 				
-				jQuery(".dataTables_wrapper select").select2({
-					minimumResultsForSearch: -1
-				});
-			}
-			
-			function editClicked(id)
-			{
-				if(confirm('Edit Data Ini ? '))
-				{
-					loadContent();
-					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+				jQuery('#<%= $this->DDGroup->getClientID()%> > [value=' + treeNode.id_parent_table + ']').attr("selected", "true");
+				jQuery('#<%= $this->treeNode->getClientID()%>').data(treeNode);
+				console.log(treeNode);
+				console.log(jQuery('#<%= $this->treeNode->getClientID()%>').data());
+				var request= <%= $this->SelectGroupCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
-							id:id
+							id:treeNode.id_table
 						});
 						request.dispatch();
-					
-				}
-				else
-				{
-					return false;
-				}
-			}
-			
-			function deleteClicked(id)
-			{
-				if(confirm('Hapus Data Ini ? '))
-				{
-					loadContent();
-					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
-						request.setCallbackParameter({
-							id:id
-						});
-						request.dispatch();
-					
-				}
-				else
-				{
-					return false;
-				}
-			}
-			
+						
+				//zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, name:"new node" + (newCount++)});
+				return false;
+			});
+		};
+		function removeHoverDom(treeId, treeNode) {
+			jQuery("#addBtn_"+treeNode.tId).unbind().remove();
+		};
+		
+		function showRemoveBtn(treeId, treeNode) {
+			if(treeNode.tId == "treeDemo_1")
+				return false;
+			else
+				return true;
+		}
+		function showRenameBtn(treeId, treeNode) {
+			if(treeNode.tId == "treeDemo_1")
+				return false;
+			else
+				return true;
+		}
+		
+		function BindTreeView()
+		{
+			var menuArr = JSON.parse(jQuery('#<%= $this->menuList->getClientID()%>').val());
+				
+			jQuery.fn.zTree.init(jQuery("#treeDemo"), setting, menuArr);
+		}
+		
+		jQuery(document).ready(function(){
+			BindTreeView();
+		});
+		//-->
 		</script>
+		<style type="text/css">
+.ztree li span.button.add {margin-left:2px; margin-right: -1px; background-position:-144px 0; vertical-align:top; *vertical-align:middle}
+.ztree li span.button.switch.level0 {visibility:hidden; width:1px;}
+.ztree li ul.level0 {padding:0; background:none;}
+	</style>
+	
 		
 </com:TContent>

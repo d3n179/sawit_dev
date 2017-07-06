@@ -1,5 +1,5 @@
 <?PHP
-class MasterDepartment extends MainConf
+class MasterCoa extends MainConf
 {
 
 	public function onPreRenderComplete($param)
@@ -7,7 +7,10 @@ class MasterDepartment extends MainConf
 		parent::onPreRenderComplete($param);
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
-			
+			$sqlGroup = "SELECT id,CONCAT(kode_group,' - ',nama) AS nama FROM tbm_coa_kodrek_group WHERE deleted ='0' ";
+			$arrGroup = $this->queryAction($sqlGroup,'S');
+			$this->DDGroup->DataSource = $arrGroup;
+			$this->DDGroup->DataBind();
 		}
 		
 	}
@@ -29,18 +32,16 @@ class MasterDepartment extends MainConf
 	public function BindGrid()
 	{
 		$sql = "SELECT 
-					tbm_department.id,
-					tbm_department.nama,
-					tbm_department.kode,
-					tbm_coa.nama AS nama_coa
+					tbm_coa.id,
+					tbm_coa.nama,
+					tbm_coa.kode_coa,
+					tbm_coa.id_group_coa
 				FROM 
-					tbm_department
-					LEFT JOIN tbm_coa ON tbm_coa.id = tbm_department.id_coa
+					tbm_coa
 				WHERE 
-					tbm_department.deleted = '0' 
-					AND tbm_department.id_parent = '0'
+					tbm_coa.deleted = '0' 
 				ORDER BY 
-					tbm_department.id ASC ";
+					tbm_coa.id ASC ";
 		$Record = $this->queryAction($sql,'S');
 		
 		$count = count($Record);
@@ -49,11 +50,15 @@ class MasterDepartment extends MainConf
 		{
 			foreach($Record as $row)
 			{
-			
+				if($row['id_group_coa'] != '')
+					$GrouCoaName =  GroupCoaRecord::finder()->findByPk($row['id_group_coa'])->nama;
+				else
+					$GrouCoaName =  'Lain-lain';
+					
 				$tblBody .= '<tr>';
-				$tblBody .= '<td>'.$row['kode'].'</td>';
+				$tblBody .= '<td>'.$GrouCoaName.'</td>';
+				$tblBody .= '<td>'.$row['kode_coa'].'</td>';
 				$tblBody .= '<td>'.$row['nama'].'</td>';
-				$tblBody .= '<td>'.$row['nama_coa'].'</td>';
 				$tblBody .= '<td>';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
@@ -72,34 +77,19 @@ class MasterDepartment extends MainConf
 	public function editForm($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
-		$Record = DepartmentRecord::finder()->findByPk($id);
+		$Record = CoaRecord::finder()->findByPk($id);
 		if($Record)
 		{
-			$this->modalJudul->Text = 'Edit Department';
-			$this->idDepartment->Value = $id;
+			$this->modalJudul->Text = 'Edit Coa';
+			$this->idCoa->Value = $id;
 			$this->nama->Text = $Record->nama;
-			$this->kode->Text = $Record->kode;
-			$this->DDCoa->Text = $Record->id_coa;
+			$this->kodeCoa->Text = $Record->kode_coa;
+			$this->DDGroup->SelectedValue = $Record->id_group_coa;
+			$show = '.hide()';
 			
-			$sqlDetail = "SELECT 
-							tbm_department.id,
-							tbm_department.nama,
-							tbm_department.kode
-						FROM 
-							tbm_department
-						WHERE 
-							tbm_department.deleted = '0' 
-							AND tbm_department.id_parent = '$id'
-						ORDER BY 
-							tbm_department.id ASC ";
-			$arrDetail = $this->queryAction($sqlDetail,'S');
-			
-			$arrSub = json_encode($arrDetail,true);		
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
-					renderTempTable('.$arrSub.');
 					unloadContent();
-					bindSelect2();
 					jQuery("#modal-1").modal("show");
 					');	
 		}
@@ -116,13 +106,11 @@ class MasterDepartment extends MainConf
 	public function deleteData($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
-		$Record = DepartmentRecord::finder()->findByPk($id);
+		$Record = CoaRecord::finder()->findByPk($id);
 		if($Record)
 		{
 			$Record->deleted = '1';
 			$Record->save();
-			$sql = "UPDATE tbm_department SET deleted ='1' WHERE id_parent = '".$id."' ";
-			$this->queryAction($sql,'C');
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
@@ -148,53 +136,32 @@ class MasterDepartment extends MainConf
 	public function submitBtnClicked($sender,$param)
 	{
 		$nama = trim($this->nama->Text);
-		$kode = trim($this->kode->Text);
-		$SubdepartmentTable = $param->CallbackParameter->SubdepartmentTable;
-		
-			if($this->idDepartment->Value != '')
+		$kodeCoa = trim($this->kodeCoa->Text);
+		$groupCoa = $this->DDGroup->SelectedValue;
+			if($this->idCoa->Value != '')
 			{
-				$Record = DepartmentRecord::finder()->findByPk($this->idDepartment->Value);
+				$Record = CoaRecord::finder()->findByPk($this->idCoa->Value);
 				$msg = "Data Berhasil Diedit";
 			}
 			else
 			{
-				$Record = new DepartmentRecord();
+				$Record = new CoaRecord();
 				$msg = "Data Berhasil Disimpan";
 			}
 			
 			$Record->nama = $nama;
-			$Record->kode = $kode;
-			$Record->id_coa = $this->DDCoa->Text;
+			$Record->kode_coa = $kodeCoa;
+			$Record->id_group_coa = $groupCoa;
 			$Record->save(); 
 			
-			if(count($SubdepartmentTable) > 0)
-			{
-				foreach($SubdepartmentTable as $row)
-				{
-					if($row->id_edit != '')
-					{
-						$SubRecord = DepartmentRecord::finder()->findByPk($row->id_edit);
-					}
-					else
-					{
-						$SubRecord = new DepartmentRecord();
-					}
-					
-					$SubRecord->id_parent = $Record->id;
-					$SubRecord->nama = $row->namaSub;
-					$SubRecord->kode = $row->kodeSub;
-					
-					$SubRecord->deleted = $row->deleted;
-					$SubRecord->save(); 
-				}
-			}
-			
+			$this->nama->Text = '';
+			$this->kodeCoa->Text = '';
+			$this->DDGroup->SelectedValue = 'empty';
 			$tblBody = $this->BindGrid();
 			
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
 						toastr.info("'.$msg.'");
-						clearForm();
 						jQuery("#modal-1").modal("hide");
 						jQuery("#table-1").dataTable().fnDestroy();
 						jQuery("#table-1 tbody").empty();
@@ -203,6 +170,9 @@ class MasterDepartment extends MainConf
 		
 	}
 	
+	public function clearForm()
+	{
+	}
 	
 }
 ?>
