@@ -2,13 +2,205 @@
 	<h2>Closing Laporan Keuangan - <com:TActiveLabel ID="Periode"></com:TActiveLabel></h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->	
+	<div class="modal fade custom-width" id="modal-1">
+		<div class="modal-dialog" style="width: 70%;">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Penyesuaian Keuangan</h4>
+				</div>
+				
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="nama">Kelompok Penyesuaian</label>
+								<com:TActiveHiddenField ID="idPenyesuaian"></com:TActiveHiddenField>
+								<com:TActiveDropDownList 
+									ID="DDKelompokPenyesuaian"
+									PromptText="--Pilih--"
+									PromptValue="empty"
+									AutoPostBack="true"
+									CausesValidation="false"
+									OnSelectedIndexChanged="kelompokChanged"
+									CssClass="form-control">
+									<com:TListItem Value="0" Text="Penyesuaian Saldo Kas"/>
+									<com:TListItem Value="1" Text="Pemakaian Perlengkapan"/>
+									<com:TListItem Value="2" Text="Piutang Yang Masih Harus Diterima"/>
+									<com:TListItem Value="3" Text="Hutang Yang Masih Harus Dibayar"/>
+									<com:TListItem Value="4" Text="Pendapatan Diterima Dimuka"/>
+									<com:TListItem Value="5" Text="Beban Dibayar Dimuka"/>
+									</com:TActiveDropDownList>
+										
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDKelompokPenyesuaian"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>
+						<com:TActivePanel ID="saldoKasPanel">
+						<div class="col-md-3 saldoPanel1" style="Display:None;">
+							<div class="form-group">
+								<label class="control-label" for="DDJnsSaldo">Jenis Saldo</label>
+								<com:TActiveDropDownList 
+									ID="DDJnsSaldo"
+									Enabled="false"
+									PromptText="--Pilih--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									CssClass="form-control">
+									<com:TListItem Value="0" Text="Pendapatan"/>
+									<com:TListItem Value="1" Text="Pengeluaran"/>
+									</com:TActiveDropDownList>
+										
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDJnsSaldo"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>
+						<div class="col-md-3 saldoPanel2" style="Display:None;">
+							<div class="form-group">
+								<label class="control-label" for="DDAsalSaldo">Asal Saldo</label>
+								<com:TActiveDropDownList 
+									ID="DDAsalSaldo"
+									Enabled="false"
+									PromptText="--Pilih--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									DataTextField="nama"
+									DataValueField="id"
+									CssClass="form-control">
+									</com:TActiveDropDownList>
+										
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="DDAsalSaldo"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" 
+										  InitialValue="empty"/>
+							</div>
+						</div>
+						</com:TActivePanel>
+					</div>
+					<div class="row">	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="nama_akun">Nama Akun</label>
+								<com:TActiveTextBox 
+										ID="nama_akun" 
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Nama Akun"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="nama_akun"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="nilai_akun">Nilai Akun</label>
+								<com:TActiveTextBox 
+										ID="nilai_akun" 
+										CssClass="form-control mask_currency" 
+										Attributes.PlaceHolder="Nilai Akun"/>
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="nilai_akun"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+							</div>
+						</div>	
+						<div class="col-md-6">
+							<div class="form-group">
+								<label class="control-label" for="keterangan">Keterangan</label>
+								<com:TActiveTextBox 
+										ID="keterangan" 
+										TextMode="MultiLine"
+										CssClass="form-control" 
+										Attributes.PlaceHolder="Keterangan"/>
+							</div>
+						</div>			
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<com:TActiveButton
+										ID="tambahBtn" 
+										Text="Tambah"
+										OnClick="tambahBtnClicked"
+										CausesValidation="true"
+										ValidationGroup="val"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>
+							</div>
+						</div>
+					</div>	
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<table class="table table-bordered table-striped datatable" id="tablePenyesuaian">
+									<thead>
+										<tr>
+											<th width="300px">Kelompok Akun</th>
+											<th width="300px">Nama Akun</th>
+											<th width="300px">Nilai Akun</th>
+											<th width="150px">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>	
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 	<div class="row">
-		<div class="col-md-3">
+		<div class="col-md-6">
 			<div class="form-group">
 				<button type="button" class="btn btn-blue btn-icon" OnClick="cariClicked()">
 								Proses
 								<i class="entypo-search"></i>
+							</button>
+				<button type="button" class="btn btn-default btn-icon" OnClick="jQuery('#modal-1').modal('show');clearModal();">
+								Adjustment
+								<i class="entypo-book-open"></i>
 							</button>
 				<button type="button" class="btn btn-primary btn-icon" OnClick="closingClicked()">
 								Closing
@@ -39,6 +231,7 @@
 			{
 				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
 				request.dispatch();
+				BindGridPenyesuaian();
 			});
 			
 			function cariClicked()
@@ -47,6 +240,37 @@
 				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
 				request.dispatch();
 				unloadContent();
+			}
+			
+			function clearModal()
+			{
+				jQuery('#<%= $this->nama_akun->getClientID()%>').val('');
+				jQuery('#<%= $this->nilai_akun->getClientID()%>').val('');
+				jQuery('#<%= $this->DDKelompokPenyesuaian->getClientID()%>').val('empty');
+				jQuery('#<%= $this->idPenyesuaian->getClientID()%>').val('');
+				
+			}
+			
+			function BindGridPenyesuaian()
+			{
+				var tablePenyesuaian = jQuery('#tablePenyesuaian').DataTable({
+					"sPaginationType": "bootstrap",
+					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
+					"pageLength": 5,
+					"aLengthMenu": [[5,10, 25, 50, -1], [5,10, 25, 50, "All"]],
+					"bStateSave": true,
+					
+		
+				    // Responsive Settings
+				    bAutoWidth     : false,
+				    fnPreDrawCallback: function () {
+				    },
+				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+				    },
+				    fnDrawCallback : function (oSettings) {
+				    }
+				});
+				
 			}
 			
 			function BindGrid()
@@ -90,24 +314,24 @@
 			function cetakClicked()
 			{
 				loadContent();
-					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
-						request.dispatch();
+				var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+					request.dispatch();
 				unloadContent();
 			}
 			
 			function closingClicked()
 			{
-					if(confirm('Closing Laporan Keuangan Untuk Bulan Ini ? '))
-					{
-						loadContent();
-						var request= <%= $this->closingCallback->ActiveControl->Javascript %>;
-							request.dispatch();
+				if(confirm('Closing Laporan Keuangan Untuk Bulan Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->closingCallback->ActiveControl->Javascript %>;
+						request.dispatch();
 						
-					}
-					else
-					{
-						return false;
-					}
+				}
+				else
+				{
+					return false;
+				}
 			}
 		</script>
 		

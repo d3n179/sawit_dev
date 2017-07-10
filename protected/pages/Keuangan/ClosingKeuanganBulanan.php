@@ -16,6 +16,10 @@ class ClosingKeuanganBulanan extends MainConf
 				
 				$this->Periode->Text = $bulan." ".$tahun;
 				
+				$sql = "SELECT id,nama AS nama FROM tbm_bank WHERE deleted !='1' ";
+				$arr = $this->queryAction($sql,'S');
+				$this->DDAsalSaldo->DataSource = $arr;
+				$this->DDAsalSaldo->DataBind();
 				
 			}
 		}
@@ -449,6 +453,220 @@ class ClosingKeuanganBulanan extends MainConf
 					unloadContent();
 					');
 		
+	}
+	
+	public function kelompokChanged()
+	{
+		if($this->DDKelompokPenyesuaian->SelectedValue == '0')
+		{
+			$this->DDJnsSaldo->Enabled = true;
+			$this->DDAsalSaldo->Enabled = true;
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery(".saldoPanel1").show();
+						jQuery(".saldoPanel2").show();
+						');	
+		}
+		else
+		{
+			$this->DDJnsSaldo->Enabled = false;
+			
+			if($this->DDKelompokPenyesuaian->SelectedValue == '4' || $this->DDKelompokPenyesuaian->SelectedValue == '5')
+			{
+				$this->DDAsalSaldo->Enabled = true;
+				$this->getPage()->getClientScript()->registerEndScript
+							('','
+							jQuery(".saldoPanel1").hide();
+							jQuery(".saldoPanel2").show();
+							');	
+			}
+			else
+			{
+				$this->DDAsalSaldo->Enabled = false;
+				$this->getPage()->getClientScript()->registerEndScript
+							('','
+							jQuery(".saldoPanel1").hide();
+							jQuery(".saldoPanel2").hide();
+							');	
+			}
+		}
+		
+	}
+	
+	public function BindGridPenyesuaian()
+	{
+		$bulan = date("m");
+		$tahun = date("Y");
+		
+		$sql = "SELECT 
+					tbt_penyesuaian_detail.id,
+					tbt_penyesuaian_detail.kelompok_akun,
+					tbt_penyesuaian_detail.nama_akun,
+					tbt_penyesuaian_detail.nilai_akun
+				FROM 
+					tbt_penyesuaian_detail
+					INNER JOIN tbt_penyesuaian ON tbt_penyesuaian.id = tbt_penyesuaian_detail.id_penyesuaian
+				WHERE 
+					tbt_penyesuaian.deleted = '0' 
+					AND tbt_penyesuaian_detail.deleted = '0'
+					AND tbt_penyesuaian.bulan = '".$bulan."'
+					AND tbt_penyesuaian.tahun = '".$tahun."'
+				ORDER BY 
+					tbt_penyesuaian_detail.id ASC ";
+		$Record = $this->queryAction($sql,'S');
+		
+		$count = count($Record);
+		$tblBody = '';
+		if($count > 0)
+		{
+			foreach($Record as $row)
+			{
+				if($row['kelompok_akun'] == '0')
+					$kelompokAkun = "Penyesuaian Saldo Kas";
+				elseif($row['kelompok_akun'] == '1')
+					$kelompokAkun = "Pemakaian Perlengkapan";
+				elseif($row['kelompok_akun'] == '2')
+					$kelompokAkun = "Piutang Yang Masih Harus Diterima";
+				elseif($row['kelompok_akun'] == '3')
+					$kelompokAkun = "Hutang Yang Masih Harus Dibayar";
+				elseif($row['kelompok_akun'] == '4')
+					$kelompokAkun = "Pendapatan Diterima Dimuka";
+				elseif($row['kelompok_akun'] == '5')
+					$kelompokAkun = "Beban Dibayar Dimuka";
+					
+				$tblBody .= '<tr>';
+				$tblBody .= '<td>'.$kelompokAkun.'</td>';
+				$tblBody .= '<td>'.$row['nama_akun'].'</td>';
+				$tblBody .= '<td>'.number_format($row['nilai_akun'],2,".",",").'</td>';
+				$tblBody .= '<td>';
+				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
+				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
+				$tblBody .=	'</td>';			
+				$tblBody .= '</tr>';
+			}
+		}
+		else
+		{
+			$tblBody = '';
+		}
+		
+		return 	$tblBody;
+	}
+	
+	public function tambahBtnClicked()
+	{
+		$bulan = date("m");
+		$tahun = date("Y");
+		$PenyesuaianRecord = PenyesuaianRecord::finder()->find('bulan = ? AND tahun = ? AND deleted = ?',$bulan,$tahun,'0');
+		if(!$PenyesuaianRecord)
+		{
+			$PenyesuaianRecord  = new PenyesuaianRecord(); 
+			$PenyesuaianRecord->bulan = $bulan ;
+			$PenyesuaianRecord->tahun = $tahun;
+			$PenyesuaianRecord->status = '0';
+			$PenyesuaianRecord->save();
+		}
+			
+		if($this->idPenyesuaian->Value != '')
+			$PenyesuaianDetailRecord = PenyesuaianDetailRecord::finder()->findByPk($this->idPenyesuaian->Value);
+		else
+		{
+			$PenyesuaianDetailRecord = new PenyesuaianDetailRecord();
+			$PenyesuaianDetailRecord->id_penyesuaian = $PenyesuaianRecord->id;
+		}
+			
+		$PenyesuaianDetailRecord->kelompok_akun = $this->DDKelompokPenyesuaian->SelectedValue;
+		if($this->DDKelompokPenyesuaian->SelectedValue == '0')
+		{
+			$PenyesuaianDetailRecord->jenis_saldo = $this->DDJnsSaldo->SelectedValue;
+			$PenyesuaianDetailRecord->asal_saldo = $this->DDAsalSaldo->SelectedValue;
+		}
+		
+		$PenyesuaianDetailRecord->nama_akun = ucwords($this->nama_akun->Text);
+		$PenyesuaianDetailRecord->nilai_akun = str_replace(",","",$this->nilai_akun->Text);
+		$PenyesuaianDetailRecord->keterangan = $this->keterangan->Text;
+		$PenyesuaianDetailRecord->save();
+		
+		if($this->DDKelompokPenyesuaian->SelectedValue == '0')
+		{
+			$BankRecord = BankRecord::finder()->findByPk($PenyesuaianDetailRecord->asal_saldo);
+			if($this->DDJnsSaldo->SelectedValue == '0')
+			{
+				$debet = "Kas";
+				$kredit = $PenyesuaianDetailRecord->nama_akun;
+				$BankRecord->saldo += $PenyesuaianDetailRecord->nilai_akun;
+			}
+			else
+			{
+				$debet = $PenyesuaianDetailRecord->nama_akun;
+				$kredit = "Kas";
+				$BankRecord->saldo -= $PenyesuaianDetailRecord->nilai_akun;
+			}
+			$BankRecord->save();
+		}
+		elseif($this->DDKelompokPenyesuaian->SelectedValue == '1')
+		{
+			$debet = "Beban Perlengkapan";
+			$kredit = "Perlengkapan";
+		}	
+		elseif($this->DDKelompokPenyesuaian->SelectedValue == '2')
+		{
+			$debet = "Piutang ".$PenyesuaianDetailRecord->nama_akun;
+			$kredit = "Pendapatan ".$PenyesuaianDetailRecord->nama_akun;
+		}	
+		elseif($this->DDKelompokPenyesuaian->SelectedValue == '3')
+		{
+			$debet = "Beban ".$PenyesuaianDetailRecord->nama_akun;
+			$kredit = "Hutang ".$PenyesuaianDetailRecord->nama_akun;
+		}	
+		elseif($this->DDKelompokPenyesuaian->SelectedValue == '4')
+		{
+			$debet = $PenyesuaianDetailRecord->nama_akun." Diterima Dimuka";
+			$kredit = "Pendapatan ".$PenyesuaianDetailRecord->nama_akun;
+		}	
+		elseif($this->DDKelompokPenyesuaian->SelectedValue == '5')
+		{
+			$debet = "Beban ".$PenyesuaianDetailRecord->nama_akun;
+			$kredit = $PenyesuaianDetailRecord->nama_akun." Dibayar Dimuka";
+		}	
+		
+		$JurnalPenyesuaianRecord = JurnalPenyesuaianRecord::finder()->find('id_penyesuaian = ? AND jns_transaksi = ? AND deleted = ?',$PenyesuaianDetailRecord->id,'0','0');	
+		if(!$JurnalPenyesuaianRecord)
+		{
+			$JurnalPenyesuaianRecord = new JurnalPenyesuaianRecord();
+			$JurnalPenyesuaianRecord->id_penyesuaian = $PenyesuaianDetailRecord->id;
+		}
+		
+		$JurnalPenyesuaianRecord->jns_transaksi = '0';
+		$JurnalPenyesuaianRecord->tgl_transaksi = date("Y-m-d");
+		$JurnalPenyesuaianRecord->wkt_transaksi = date("G:i:s");
+		$JurnalPenyesuaianRecord->keterangan = $debet;
+		$JurnalPenyesuaianRecord->jumlah_saldo = $PenyesuaianDetailRecord->nilai_akun;
+		$JurnalPenyesuaianRecord->deleted = '0';
+		$JurnalPenyesuaianRecord->save();
+		
+		$JurnalPenyesuaianRecord = JurnalPenyesuaianRecord::finder()->find('id_penyesuaian = ? AND jns_transaksi = ? AND deleted = ?',$PenyesuaianDetailRecord->id,'1','0');	
+		if(!$JurnalPenyesuaianRecord)
+		{
+			$JurnalPenyesuaianRecord = new JurnalPenyesuaianRecord();
+			$JurnalPenyesuaianRecord->id_penyesuaian = $PenyesuaianDetailRecord->id;
+		}
+		
+		$JurnalPenyesuaianRecord->jns_transaksi = '1';
+		$JurnalPenyesuaianRecord->tgl_transaksi = date("Y-m-d");
+		$JurnalPenyesuaianRecord->wkt_transaksi = date("G:i:s");
+		$JurnalPenyesuaianRecord->keterangan = $kredit;
+		$JurnalPenyesuaianRecord->jumlah_saldo = $PenyesuaianDetailRecord->nilai_akun;
+		$JurnalPenyesuaianRecord->deleted = '0';
+		$JurnalPenyesuaianRecord->save();
+		
+		$tblBody = $this->BindGridPenyesuaian();
+		$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery("#tablePenyesuaian").dataTable().fnDestroy();
+						jQuery("#tablePenyesuaian tbody").empty();
+						jQuery("#tablePenyesuaian tbody").append("'.$tblBody.'");
+						BindGridPenyesuaian();');	
 	}
 	
 	public function closingClicked()
