@@ -21,6 +21,11 @@ class ClosingKeuanganBulanan extends MainConf
 				$this->DDAsalSaldo->DataSource = $arr;
 				$this->DDAsalSaldo->DataBind();
 				
+				$tblBody = $this->BindGridPenyesuaian();
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery("#tablePenyesuaian tbody").append("'.$tblBody.'");');	
+				
 			}
 		}
 		
@@ -309,6 +314,23 @@ class ClosingKeuanganBulanan extends MainConf
 			$AktivaTetapList[] = array("nama_aktiva"=>$rowAktivaTetap['nama'],"nilai_aktiva"=>$rowAktivaTetap['harga_perolehan'] * $jumlah_aktiva,"akumulasi_penyusutan"=>$akumulasiSusut);
 		}	
 		
+		$sqlPenyesuaian = "SELECT 
+					tbt_penyesuaian_detail.id,
+					tbt_penyesuaian_detail.kelompok_akun,
+					tbt_penyesuaian_detail.nama_akun,
+					tbt_penyesuaian_detail.nilai_akun
+				FROM 
+					tbt_penyesuaian_detail
+					INNER JOIN tbt_penyesuaian ON tbt_penyesuaian.id = tbt_penyesuaian_detail.id_penyesuaian
+				WHERE 
+					tbt_penyesuaian.deleted = '0' 
+					AND tbt_penyesuaian_detail.deleted = '0'
+					AND tbt_penyesuaian.bulan = '".$bulan."'
+					AND tbt_penyesuaian.tahun = '".$tahun."'
+				ORDER BY 
+					tbt_penyesuaian_detail.id ASC ";
+		$arrPenyesuaian = $this->queryAction($sqlPenyesuaian,'S');
+		
 		$tblBody = '';
 		$tblBody .= '<tr>';
 		$tblBody .= '<td colspan=\"5\"><strong>Aktiva</strong></td>';
@@ -332,6 +354,7 @@ class ClosingKeuanganBulanan extends MainConf
 		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 		$tblBody .= '</tr>';
 		$arrRekapNeraca[] = array("kelompok_neraca"=>"1","nama_akun"=>"Kas di Bank","nilai_akun"=>$kasBank);
+		
 		$tblBody .= '<tr>';
 		$tblBody .= '<td width=\"5%\"></td>';
 		$tblBody .= '<td width=\"40%\">Piutang Dagang </td>';
@@ -340,6 +363,54 @@ class ClosingKeuanganBulanan extends MainConf
 		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 		$tblBody .= '</tr>';	
 		$arrRekapNeraca[] = array("kelompok_neraca"=>"1","nama_akun"=>"Piutang Dagang","nilai_akun"=>$piutang);
+		
+		if($arrPenyesuaian)
+		{
+			$nilaiAkun = 0;
+			foreach($arrPenyesuaian as $rowPenyesuaian)
+			{
+				if($rowPenyesuaian['kelompok_akun'] == '1')
+				{
+					$nilaiAkun += $rowPenyesuaian['nilai_akun'];
+				}
+			}
+			
+			if($nilaiAkun > 0)
+			{
+				$tblBody .= '<tr>';
+				$tblBody .= '<td width=\"5%\"></td>';
+				$tblBody .= '<td width=\"40%\">Perlengkapan </td>';
+				$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($nilaiAkun,2,".",",").'</td>';
+				$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+				$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+				$tblBody .= '</tr>';	
+				$arrRekapNeraca[] = array("kelompok_neraca"=>"1","nama_akun"=>"Perlengkapan","nilai_akun"=>$nilaiAkun);
+				$jmlAktivaLancar += $nilaiAkun;
+				$jmlAktiva += $nilaiAkun;
+			}
+		}
+		
+		if($arrPenyesuaian)
+		{
+			foreach($arrPenyesuaian as $rowPenyesuaian)
+			{
+				if($rowPenyesuaian['kelompok_akun'] == '2' && $rowPenyesuaian['nilai_akun'] > 0)
+				{
+					$tblBody .= '<tr>';
+					$tblBody .= '<td width=\"5%\"></td>';
+					$tblBody .= '<td width=\"40%\">Piutang '.$rowPenyesuaian['nama_akun'].' </td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($rowPenyesuaian['nilai_akun'],2,".",",").'</td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+					$tblBody .= '</tr>';	
+					$arrRekapNeraca[] = array("kelompok_neraca"=>"1","nama_akun"=>"Piutang ".$rowPenyesuaian['nama_akun'],"nilai_akun"=>$rowPenyesuaian['nilai_akun']);
+					$jmlAktivaLancar += $rowPenyesuaian['nilai_akun'];
+					$jmlAktiva += $rowPenyesuaian['nilai_akun'];
+				}
+			}
+			
+		}
+		
 		$tblBody .= '<tr>';
 		$tblBody .= '<td width=\"5%\"></td>';
 		$tblBody .= '<td width=\"40%\">Persediaan Barang Dagangan </td>';
@@ -348,6 +419,28 @@ class ClosingKeuanganBulanan extends MainConf
 		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 		$tblBody .= '</tr>';	
 		$arrRekapNeraca[] = array("kelompok_neraca"=>"1","nama_akun"=>"Persediaan Barang Dagangan","nilai_akun"=>$barangDagangan);
+		
+		if($arrPenyesuaian)
+		{
+			foreach($arrPenyesuaian as $rowPenyesuaian)
+			{
+				if($rowPenyesuaian['kelompok_akun'] == '5' && $rowPenyesuaian['nilai_akun'] > 0)
+				{
+					$tblBody .= '<tr>';
+					$tblBody .= '<td width=\"5%\"></td>';
+					$tblBody .= '<td width=\"40%\">'.$rowPenyesuaian['nama_akun'].' Dibayar Dimuka</td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($rowPenyesuaian['nilai_akun'],2,".",",").'</td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+					$tblBody .= '</tr>';	
+					$arrRekapNeraca[] = array("kelompok_neraca"=>"1","nama_akun"=>$rowPenyesuaian['nama_akun']." Dibayar Dimuka","nilai_akun"=>$rowPenyesuaian['nilai_akun']);
+					$jmlAktivaLancar += $rowPenyesuaian['nilai_akun'];
+					$jmlAktiva += $rowPenyesuaian['nilai_akun'];
+				}
+			}
+			
+		}
+		
 		$tblBody .= '<tr>';
 		$tblBody .= '<td width=\"5%\"></td>';
 		$tblBody .= '<td width=\"40%\" align=\"right\">Jumlah Aktiva Lancar</td>';
@@ -376,7 +469,7 @@ class ClosingKeuanganBulanan extends MainConf
 			$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 			$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 			$tblBody .= '</tr>';
-			$arrRekapNeraca[] = array("kelompok_neraca"=>"2","nama_akun"=>"Akumulasi Penyusutan ".ucwords($rowAktivaTetap['nama_aktiva']),"nilai_akun"=>$rowAktivaTetap['akumulasi_penyusutan']);
+			$arrRekapNeraca[] = array("kelompok_neraca"=>"3","nama_akun"=>"Akumulasi Penyusutan ".ucwords($rowAktivaTetap['nama_aktiva']),"nilai_akun"=>$rowAktivaTetap['akumulasi_penyusutan']);
 			$tblBody .= '<tr>';
 			$tblBody .= '<td width=\"5%\"></td>';
 			$tblBody .= '<td width=\"40%\"></td>';
@@ -419,7 +512,7 @@ class ClosingKeuanganBulanan extends MainConf
 		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 		$tblBody .= '</tr>';
-		$arrRekapNeraca[] = array("kelompok_neraca"=>"3","nama_akun"=>"Utang Dagang","nilai_akun"=>$jmlUtangDagang);
+		$arrRekapNeraca[] = array("kelompok_neraca"=>"4","nama_akun"=>"Utang Dagang","nilai_akun"=>$jmlUtangDagang);
 		$tblBody .= '<tr>';
 		$tblBody .= '<td width=\"5%\"></td>';
 		$tblBody .= '<td width=\"40%\">Utang Gaji</td>';
@@ -427,7 +520,28 @@ class ClosingKeuanganBulanan extends MainConf
 		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
 		$tblBody .= '</tr>';
-		$arrRekapNeraca[] = array("kelompok_neraca"=>"3","nama_akun"=>"Utang Gaji","nilai_akun"=>$jmlUtangGaji);
+		$arrRekapNeraca[] = array("kelompok_neraca"=>"4","nama_akun"=>"Utang Gaji","nilai_akun"=>$jmlUtangGaji);
+		
+		if($arrPenyesuaian)
+		{
+			foreach($arrPenyesuaian as $rowPenyesuaian)
+			{
+				if($rowPenyesuaian['kelompok_akun'] == '3' && $rowPenyesuaian['nilai_akun'] > 0)
+				{
+					$tblBody .= '<tr>';
+					$tblBody .= '<td width=\"5%\"></td>';
+					$tblBody .= '<td width=\"40%\">Utang '.$rowPenyesuaian['nama_akun'].'</td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($rowPenyesuaian['nilai_akun'],2,".",",").'</td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+					$tblBody .= '</tr>';
+					$arrRekapNeraca[] = array("kelompok_neraca"=>"4","nama_akun"=>"Utang ".$rowPenyesuaian['nama_akun'],"nilai_akun"=>$rowPenyesuaian['nilai_akun']);
+					$jmlUtang += $rowPenyesuaian['nilai_akun'];
+				}
+			}
+			
+		}
+		
 		$tblBody .= '<tr>';
 		$tblBody .= '<td width=\"5%\"></td>';
 		$tblBody .= '<td width=\"40%\" align=\"right\">Jumlah Utang</td>';
@@ -470,8 +584,7 @@ class ClosingKeuanganBulanan extends MainConf
 		else
 		{
 			$this->DDJnsSaldo->Enabled = false;
-			
-			if($this->DDKelompokPenyesuaian->SelectedValue == '4' || $this->DDKelompokPenyesuaian->SelectedValue == '5')
+			if($this->DDKelompokPenyesuaian->SelectedValue == '4')
 			{
 				$this->DDAsalSaldo->Enabled = true;
 				$this->getPage()->getClientScript()->registerEndScript
@@ -553,6 +666,104 @@ class ClosingKeuanganBulanan extends MainConf
 		return 	$tblBody;
 	}
 	
+	public function editClicked($sender,$param)
+	{
+		$id = $param->CallbackParameter->id;
+		$this->idPenyesuaian->Value = $id;
+		$PenyesuaianDetailRecord = PenyesuaianDetailRecord::finder()->findByPk($id);
+		$this->DDKelompokPenyesuaian->SelectedValue = $PenyesuaianDetailRecord->kelompok_akun;
+		if($PenyesuaianDetailRecord->kelompok_akun == '0')
+		{
+			$this->DDJnsSaldo->SelectedValue = $PenyesuaianDetailRecord->jenis_saldo;
+			$this->DDAsalSaldo->SelectedValue = $PenyesuaianDetailRecord->asal_saldo;
+			$this->DDJnsSaldo->Enabled = true;
+			$this->DDAsalSaldo->Enabled = true;
+		}
+		elseif($PenyesuaianDetailRecord->kelompok_akun == '4')
+		{
+			$this->DDJnsSaldo->SelectedValue = 'empty';
+			$this->DDAsalSaldo->SelectedValue = $PenyesuaianDetailRecord->asal_saldo;
+			$this->DDJnsSaldo->Enabled = false;
+			$this->DDAsalSaldo->Enabled = true;
+		}
+		else
+		{
+			$this->DDJnsSaldo->SelectedValue = 'empty';
+			$this->DDAsalSaldo->SelectedValue = 'empty';
+			$this->DDJnsSaldo->Enabled = false;
+			$this->DDAsalSaldo->Enabled = false;
+		}
+		
+		$this->nama_akun->Text = $PenyesuaianDetailRecord->nama_akun;
+		$this->nilai_akun->Text = $PenyesuaianDetailRecord->nilai_akun;
+		$this->keterangan->Text = $PenyesuaianDetailRecord->keterangan;
+		
+		if($PenyesuaianDetailRecord->kelompok_akun == '0')
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery(".saldoPanel1").show();
+						jQuery(".saldoPanel2").show();
+						');	
+		}
+		elseif($PenyesuaianDetailRecord->kelompok_akun == '4')
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery(".saldoPanel1").hide();
+						jQuery(".saldoPanel2").show();
+						');	
+		}
+		else
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery(".saldoPanel1").hide();
+						jQuery(".saldoPanel2").hide();
+						');	
+		}
+	}
+	
+	public function deleteClicked($sender,$param)
+	{
+		$id = $param->CallbackParameter->id;
+		$PenyesuaianDetailRecord = PenyesuaianDetailRecord::finder()->findByPk($id);
+		$PenyesuaianDetailRecord->deleted = '1';
+		$PenyesuaianDetailRecord->save();
+		if($PenyesuaianDetailRecord->kelompok_akun == '0')
+		{
+			$BankRecord = BankRecord::finder()->findByPk($PenyesuaianDetailRecord->asal_saldo);
+			
+			if($PenyesuaianDetailRecord->jenis_saldo == '0')
+			{
+				$BankRecord->saldo -= $PenyesuaianDetailRecord->nilai_akun;
+			}
+			else
+			{
+				$BankRecord->saldo += $PenyesuaianDetailRecord->nilai_akun;
+			}
+			
+			$BankRecord->save();
+		}
+		elseif($PenyesuaianDetailRecord->kelompok_akun == '4')
+		{
+			$BankRecord = BankRecord::finder()->findByPk($PenyesuaianDetailRecord->asal_saldo);
+			$BankRecord->saldo -= $PenyesuaianDetailRecord->nilai_akun;
+			$BankRecord->save();
+		}
+		
+		$sql = "UPDATE tbt_jurnal_penyesuaian SET deleted = '1' WHERE tbt_jurnal_penyesuaian.id_penyesuaian = '".$id."' ";
+		$this->queryAction($sql,'C');
+		
+		$tblBody = $this->BindGridPenyesuaian();
+		$this->getPage()->getClientScript()->registerEndScript
+						('','
+						jQuery("#tablePenyesuaian").dataTable().fnDestroy();
+						jQuery("#tablePenyesuaian tbody").empty();
+						jQuery("#tablePenyesuaian tbody").append("'.$tblBody.'");
+						BindGridPenyesuaian();');	
+	}
+	
 	public function tambahBtnClicked()
 	{
 		$bulan = date("m");
@@ -568,17 +779,25 @@ class ClosingKeuanganBulanan extends MainConf
 		}
 			
 		if($this->idPenyesuaian->Value != '')
+		{
 			$PenyesuaianDetailRecord = PenyesuaianDetailRecord::finder()->findByPk($this->idPenyesuaian->Value);
+			$prevNilaiAkun = $PenyesuaianDetailRecord->nilai_akun;
+		}
 		else
 		{
 			$PenyesuaianDetailRecord = new PenyesuaianDetailRecord();
 			$PenyesuaianDetailRecord->id_penyesuaian = $PenyesuaianRecord->id;
+			$prevNilaiAkun = 0;
 		}
 			
 		$PenyesuaianDetailRecord->kelompok_akun = $this->DDKelompokPenyesuaian->SelectedValue;
 		if($this->DDKelompokPenyesuaian->SelectedValue == '0')
 		{
 			$PenyesuaianDetailRecord->jenis_saldo = $this->DDJnsSaldo->SelectedValue;
+			$PenyesuaianDetailRecord->asal_saldo = $this->DDAsalSaldo->SelectedValue;
+		}
+		elseif($this->DDKelompokPenyesuaian->SelectedValue == '4')
+		{
 			$PenyesuaianDetailRecord->asal_saldo = $this->DDAsalSaldo->SelectedValue;
 		}
 		
@@ -594,13 +813,21 @@ class ClosingKeuanganBulanan extends MainConf
 			{
 				$debet = "Kas";
 				$kredit = $PenyesuaianDetailRecord->nama_akun;
-				$BankRecord->saldo += $PenyesuaianDetailRecord->nilai_akun;
+				
+				if($this->idPenyesuaian->Value != '')
+					$BankRecord->saldo = ($BankRecord->saldo - $prevNilaiAkun) + $PenyesuaianDetailRecord->nilai_akun;
+				else
+					$BankRecord->saldo += $PenyesuaianDetailRecord->nilai_akun;
 			}
 			else
 			{
 				$debet = $PenyesuaianDetailRecord->nama_akun;
 				$kredit = "Kas";
-				$BankRecord->saldo -= $PenyesuaianDetailRecord->nilai_akun;
+				
+				if($this->idPenyesuaian->Value != '')
+					$BankRecord->saldo = ($BankRecord->saldo + $prevNilaiAkun) - $PenyesuaianDetailRecord->nilai_akun;
+				else
+					$BankRecord->saldo -= $PenyesuaianDetailRecord->nilai_akun;
 			}
 			$BankRecord->save();
 		}
@@ -623,6 +850,16 @@ class ClosingKeuanganBulanan extends MainConf
 		{
 			$debet = $PenyesuaianDetailRecord->nama_akun." Diterima Dimuka";
 			$kredit = "Pendapatan ".$PenyesuaianDetailRecord->nama_akun;
+			
+			$BankRecord = BankRecord::finder()->findByPk($PenyesuaianDetailRecord->asal_saldo);
+			
+			if($this->idPenyesuaian->Value != '')
+				$BankRecord->saldo = ($BankRecord->saldo - $prevNilaiAkun) + $PenyesuaianDetailRecord->nilai_akun;
+			else
+				$BankRecord->saldo += $PenyesuaianDetailRecord->nilai_akun;
+					
+			$BankRecord->save();
+			
 		}	
 		elseif($this->DDKelompokPenyesuaian->SelectedValue == '5')
 		{
@@ -660,9 +897,21 @@ class ClosingKeuanganBulanan extends MainConf
 		$JurnalPenyesuaianRecord->deleted = '0';
 		$JurnalPenyesuaianRecord->save();
 		
+		$this->idPenyesuaian->Value = '';
+		$this->DDKelompokPenyesuaian->SelectedValue = 'empty';
+		$this->DDJnsSaldo->SelectedValue = 'empty';
+		$this->DDAsalSaldo->SelectedValue = 'empty';
+		$this->DDJnsSaldo->Enabled = false;
+		$this->DDAsalSaldo->Enabled = false;
+		$this->nama_akun->Text = '';
+		$this->nilai_akun->Text = '';
+		$this->keterangan->Text = '';
+		
 		$tblBody = $this->BindGridPenyesuaian();
 		$this->getPage()->getClientScript()->registerEndScript
 						('','
+						jQuery(".saldoPanel1").hide();
+						jQuery(".saldoPanel2").hide();
 						jQuery("#tablePenyesuaian").dataTable().fnDestroy();
 						jQuery("#tablePenyesuaian tbody").empty();
 						jQuery("#tablePenyesuaian tbody").append("'.$tblBody.'");
@@ -724,5 +973,24 @@ class ClosingKeuanganBulanan extends MainConf
 		}
 	}
 	
+	public function cekClosingClicked()
+	{
+		$bulan = date("m");
+		$tahun = date("Y");
+		$RekapNeracaRecord = RekapNeracaRecord::finder()->find('bulan = ? AND tahun = ? AND deleted = ?',$bulan,$tahun,'0');
+		if($RekapNeracaRecord)
+		{
+			$this->tambahBtn->Enabled = false;	
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						toastr.error("Penyesuaian/Adjustment Tidak Bisa Diinput Lagi, Karena Laporan Keungan Sudah Diclosing!");
+						');	
+		}
+		else
+		{
+			$this->tambahBtn->Enabled = true;	
+		}
+	} 
 }
 ?>

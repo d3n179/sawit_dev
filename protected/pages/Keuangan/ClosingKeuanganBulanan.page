@@ -150,7 +150,7 @@
 							<div class="form-group">
 								<com:TActiveButton
 										ID="tambahBtn" 
-										Text="Tambah"
+										Text="Simpan"
 										OnClick="tambahBtnClicked"
 										CausesValidation="true"
 										ValidationGroup="val"
@@ -198,7 +198,7 @@
 								Proses
 								<i class="entypo-search"></i>
 							</button>
-				<button type="button" class="btn btn-default btn-icon" OnClick="jQuery('#modal-1').modal('show');clearModal();">
+				<button type="button" class="btn btn-default btn-icon" OnClick="jQuery('#modal-1').modal('show');clearModal();cekClosing();">
 								Adjustment
 								<i class="entypo-book-open"></i>
 							</button>
@@ -225,6 +225,9 @@
 	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="closingCallback" OnCallback="closingClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="editCallback" OnCallback="editClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="deleteCallback" OnCallback="deleteClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cekClosingCallback" OnCallback="cekClosingClicked" ActiveControl.CausesValidation="false"/>
 	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
@@ -249,6 +252,14 @@
 				jQuery('#<%= $this->DDKelompokPenyesuaian->getClientID()%>').val('empty');
 				jQuery('#<%= $this->idPenyesuaian->getClientID()%>').val('');
 				
+			}
+			
+			function cekClosing()
+			{
+				loadContent();
+				var request= <%= $this->cekClosingCallback->ActiveControl->Javascript %>;
+				request.dispatch();
+				unloadContent();
 			}
 			
 			function BindGridPenyesuaian()
@@ -309,6 +320,35 @@
 				jQuery(".dataTables_wrapper select").select2({
 					minimumResultsForSearch: -1
 				});
+			}
+			
+			function editClicked(id)
+			{
+				loadContent();
+				var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+					request.setCallbackParameter({
+							id:id
+						});
+					request.dispatch();
+				unloadContent();
+			}
+			
+			function deleteClicked(id)
+			{
+				if(confirm('Hapus Data Penyesuaian Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->deleteCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+								id:id
+							});
+						request.dispatch();
+					unloadContent();
+				}
+				else
+				{
+					return false;
+				}
 			}
 			
 			function cetakClicked()
