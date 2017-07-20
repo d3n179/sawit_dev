@@ -260,7 +260,8 @@ class PenerimaanJual extends MainConf
 								date("G:i:s"),
 								'Kas',
 								$RecordDetail->total_pembayaran,
-								$CommodityTransactionRecord->transaction_no);
+								$CommodityTransactionRecord->transaction_no,
+								$RecordDetail->id_bank);
 									
 		$this->InsertJurnalUmum($RecordDetail->id,
 									'5',

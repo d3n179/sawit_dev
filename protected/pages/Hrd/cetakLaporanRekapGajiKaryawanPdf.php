@@ -345,7 +345,7 @@ class cetakLaporanRekapGajiKaryawanPdf extends MainConf
 									AND YEAR(tbm_jadwal.tanggal) = '$year' ";
 					$arrMangkir = $this->queryAction($sqlMangkir,'S');
 					$jmlMangkir = $arrMangkir[0]['mangkir'];
-					$totalMangkir = ($GolonganKaryawanRecord->gaji_pokok / 25 / 7) * $jmlMangkir;
+					$totalMangkir = ($GolonganKaryawanRecord->gaji_pokok / 25) * $jmlMangkir;
 					$totalTelatMangkir += $totalMangkir;
 					
 					$sqlTelat = "SELECT

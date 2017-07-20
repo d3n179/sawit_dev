@@ -110,6 +110,25 @@ class SaldoAwalBank extends MainConf
 												$row['id'],
 												'Saldo Awal',
 												$row['saldo']);
+												
+						$this->InsertJurnalUmum($row['id'],
+													'0',
+													'0',
+													date("Y-m-d"),
+													date("G:i:s"),
+													'Kas',
+													$row['saldo'],
+													$ModalTransaksiRecord->id,
+													$row['id']);
+											
+						$this->InsertJurnalUmum($row['id'],
+													'0',
+													'1',
+													date("Y-m-d"),
+													date("G:i:s"),
+													'Modal Awal',
+													$row['saldo'],
+													$ModalTransaksiRecord->id);
 					}
 				
 				$this->InsertLabaRugi($ModalTransaksiRecord->id,
@@ -121,7 +140,7 @@ class SaldoAwalBank extends MainConf
 										$ModalTransaksiRecord->modal,
 										$ModalTransaksiRecord->id);
 				
-				$this->InsertJurnalUmum($ModalTransaksiRecord->id,
+				/*$this->InsertJurnalUmum($ModalTransaksiRecord->id,
 										'0',
 										'0',
 										date("Y-m-d"),
@@ -137,7 +156,7 @@ class SaldoAwalBank extends MainConf
 											date("G:i:s"),
 											'Modal Awal',
 											$ModalTransaksiRecord->modal,
-											$ModalTransaksiRecord->id);
+											$ModalTransaksiRecord->id);*/
 											
 					$this->getPage()->getClientScript()->registerEndScript
 							('','

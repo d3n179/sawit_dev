@@ -226,7 +226,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 								AND YEAR(tbm_jadwal.tanggal) = '$year' ";
 				$arrMangkir = $this->queryAction($sqlMangkir,'S');
 				$jmlMangkir = $arrMangkir[0]['mangkir'];
-				$totalMangkir = ($GolonganKaryawanRecord->gaji_pokok / 25 / 7) * $jmlMangkir;
+				$totalMangkir = ($GolonganKaryawanRecord->gaji_pokok / 25) * $jmlMangkir;
 				$baris++;
 				$kolom = 11;
 				$tblBody .= '<td>'.number_format($totalMangkir,0,'.',',').'</td>';	

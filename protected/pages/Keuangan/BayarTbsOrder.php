@@ -554,7 +554,8 @@ class BayarTbsOrder extends MainConf
 									date("G:i:s"),
 									'Kas',
 									$BayarTbsOrderRecord->jumlah_pembayaran,
-									$BayarTbsOrderRecord->no_pembayaran);
+									$BayarTbsOrderRecord->no_pembayaran,
+									$BayarTbsOrderRecord->id_bank);
 						
 	$tblBody = $this->BindGrid();
 		$id = $BayarTbsOrderRecord->id;

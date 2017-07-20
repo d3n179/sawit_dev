@@ -362,6 +362,7 @@ class MasterBarang extends MainConf
 		}
 	}
 	
+	
 	public function deleteSatuan($sender,$param)
 	{
 		$urutan = $param->CallbackParameter->urutan;
@@ -375,6 +376,14 @@ class MasterBarang extends MainConf
 					unset($arr[$subKey]);	
 				else
 					$arr[$subKey]['deleted'] = '1';
+			}
+		}
+		
+		foreach($arr as $subKey => $subArray)
+		{
+			if($subArray['urutan'] > $urutan && $subArray['deleted'] != '1')
+			{
+				$arr[$subKey]['urutan'] = $subArray['urutan'] - 1;
 			}
 		}
 		

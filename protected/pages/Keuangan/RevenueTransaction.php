@@ -212,7 +212,8 @@ class RevenueTransaction extends MainConf
 								date("G:i:s"),
 								'Kas',
 								$Record->total_revenue,
-								$Record->transaction_no);
+								$Record->transaction_no,
+								$Record->bank_id);
 									
 		$this->InsertJurnalUmum($Record->id,
 									'6',

@@ -221,7 +221,8 @@ class ExpenseTransaction extends MainConf
 									date("G:i:s"),
 									'Kas',
 									$Record->total_expense,
-									$Record->transaction_no);
+									$Record->transaction_no,
+									$Record->bank_id);
 									
 		$tblBody = $this->BindGrid();
 		$this->idExpenseTransaction->Value = "";	

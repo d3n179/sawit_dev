@@ -366,6 +366,8 @@ class BayarPo extends MainConf
 		$BayarPoOrderRecord->id_coa = $idCoa;	
 		$BayarPoOrderRecord->jns_bayar = $this->DDJnsBayar->SelectedValue;	
 		
+		
+		
 		if($this->DDJnsBayar->SelectedValue == '1')
 				$BayarPoOrderRecord->id_bank =$this->DDBank->SelectedValue; 
 			else
@@ -404,6 +406,7 @@ class BayarPo extends MainConf
 								$BayarPoOrderRecord->total_pembayaran,
 								$BayarPoOrderRecord->no_pembayaran);
 		
+		
 		$this->InsertJurnalUmum($BayarPoOrderRecord->id,
 								'2',
 								'0',
@@ -420,7 +423,8 @@ class BayarPo extends MainConf
 								date("G:i:s"),
 								'Kas',
 								$BayarPoOrderRecord->total_pembayaran,
-								$BayarPoOrderRecord->no_pembayaran);
+								$BayarPoOrderRecord->no_pembayaran,
+								$BayarPoOrderRecord->id_bank);
 																
 		$msg = "Pembayaran Po Telah Diproses ";
 		$tblBody = $this->BindGrid();

@@ -30,6 +30,7 @@
 									DataValueField="id">
 									</com:TActiveDropDownList>
 								<com:TActiveHiddenField ID="product_id_arr" />	
+								<com:TActiveHiddenField ID="id_mutasi" />	
 								<com:TActiveHiddenField ID="product_id_stok" />		
 								<com:TActiveHiddenField
 										ID="product_id_select2" />		
@@ -288,6 +289,7 @@
 	<com:TCallback ID="barangChangedCallback" OnCallback="barangChanged" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="getProductArrayCallback" OnCallback="getProductArray" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="editCallback" OnCallback="editForm" ActiveControl.CausesValidation="false"/>
 	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
@@ -299,7 +301,7 @@
 					localDB.commit();
 				}
 				
-				localDB.createTable('MutasiTable', ["IdBarang","BarangName","IdSatuan", "SatuanName","Jumlah","jenisPengeluaran","jenisPengeluaranName","stAsset"]);
+				localDB.createTable('MutasiTable', ["id_edit","IdBarang","BarangName","IdSatuan", "SatuanName","Jumlah","jenisPengeluaran","jenisPengeluaranName","stAsset"]);
 				localDB.commit();
 				
 				bindProduct();
@@ -365,6 +367,7 @@
 				jQuery('#<%= $this->DDKeluar->getClientID()%>').val('empty');
 				jQuery('#<%= $this->jml->getClientID()%>').val('');
 				jQuery('#<%=$this->stokBarang->getClientID() %>').val('');
+				jQuery('#<%=$this->id_mutasi->getClientID() %>').val('');
 				
 				localDB.truncate('MutasiTable');
 				localDB.commit();
@@ -373,6 +376,32 @@
 				jQuery("#tableBrngRusak tbody").empty();
 				jQuery("#tableBrngRusak tbody").append("");
 				BindGridBrgRusak();
+			}
+			
+			function RenderTempTable(arr)
+			{
+				
+				localDB.truncate('MutasiTable');
+				localDB.commit();
+					
+				jQuery.each(arr,function(i,val)
+				{
+					localDB.insert('MutasiTable', {id_edit: val.id, 
+																IdBarang: val.id_barang, 
+																BarangName: val.nama_barang, 
+																IdSatuan: val.id_satuan, 
+																SatuanName: val.nama_satuan, 
+																Jumlah: val.jml,
+																jenisPengeluaran: val.jns_keluar,
+																jenisPengeluaranName : val.jns_keluar_name,
+																stAsset : val.st_asset});
+																
+					localDB.commit();
+					
+				});	
+				
+				bindMutasiGridLine();
+				
 			}
 			
 			function tambahBtnClicked()
@@ -389,7 +418,8 @@
 				
 				if(IdBarang != 'empty' && IdSatuan != 'empty' && Jumlah != '' && JnsKeluar != 'empty')
 				{
-					localDB.insert('MutasiTable', {IdBarang: IdBarang, 
+					localDB.insert('MutasiTable', {id_edit:'0',
+																IdBarang: IdBarang, 
 																BarangName: BarangName, 
 																IdSatuan: IdSatuan, 
 																SatuanName: SatuanName, 
@@ -432,7 +462,12 @@
 							tblBody += '<td>'+val.Jumlah+'</td>';
 							tblBody += '<td>'+val.jenisPengeluaranName+'</td>';
 							tblBody += '<td>';
-							tblBody += '<a href="javascript:void(0)" class="btn btn-danger btn-sm btn-icon icon-left" OnClick="deleteBarang('+val.ID+')"><i class="entypo-cancel"></i>Hapus</a>';	
+							
+							if(val.id_edit == '0')
+							{
+								tblBody += '<a href="javascript:void(0)" class="btn btn-danger btn-sm btn-icon icon-left" OnClick="deleteBarang('+val.ID+')"><i class="entypo-cancel"></i>Hapus</a>';	
+							}
+							
 							tblBody += '</td>';			
 							tblBody += '</tr>';
 						
@@ -456,10 +491,10 @@
 			{
 				if(localDB.tableExists('MutasiTable'))
 				{
-					var CHECK = localDB.queryAll('MutasiTable',{sort: [["ID", "ASC"]]});
+					var CHECK = localDB.queryAll('MutasiTable',{query: {id_edit: "0"},sort: [["ID", "ASC"]]});
 					if(CHECK.length > 0)
 					{
-						var MutasiTable = localDB.queryAll('MutasiTable', {sort: [["ID", "ASC"]]});
+						var MutasiTable = localDB.queryAll('MutasiTable', {query: {id_edit: "0"},sort: [["ID", "ASC"]]});
 						var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
 							MutasiTable:MutasiTable
@@ -610,6 +645,24 @@
 							id:id
 						});
 						request.dispatch();
+			}
+			
+			function editClicked(id)
+			{
+				if(confirm('Edit Data Ini ? '))
+				{
+					loadContent();
+					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+					
+				}
+				else
+				{
+					return false;
+				}
 			}
 			
 			function detailClicked(id)

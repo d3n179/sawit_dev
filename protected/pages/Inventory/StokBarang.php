@@ -71,7 +71,7 @@ class StokBarang extends MainConf
 					$stok = 0;
 				
 				$realQty = $this->getTargetUom($row['id'],$stok); 
-				
+				$stokList = '';
 				foreach($realQty as $rowQty)
 				{
 					$stokList .= $rowQty['qty']." ".$rowQty['name']."<br>";

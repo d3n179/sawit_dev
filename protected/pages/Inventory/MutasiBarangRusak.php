@@ -126,7 +126,7 @@ class MutasiBarangRusak extends MainConf
 					}
 					else
 					{
-						$currentStok = $this->getTargetUom($row['id'],$stok,'0','0','0');
+						$currentStok = $this->getTargetUom($row['id'],$stok);
 						$text = '';
 						$stoktext = '';
 						foreach($currentStok as $rowStok)
@@ -194,6 +194,7 @@ class MutasiBarangRusak extends MainConf
 				$tblBody .= '<td>'.$row->wkt_transaksi.'</td>';
 				$tblBody .= '<td>'.$row->jumlah_barang.'</td>';
 				$tblBody .= '<td>';
+				$tblBody .= '<a href=\"#\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row->id.')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
 				$tblBody .= '<a href=\"#\" class=\"btn btn-gold btn-sm btn-icon icon-left\" OnClick=\"detailClicked('.$row->id.')\"><i class=\"entypo-doc-text-inv\"></i>Detail</a>&nbsp;&nbsp;';	
 				$tblBody .= '<a href=\"#\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row->id.')\"><i class=\"entypo-print\"></i>Cetak</a>';
 				$tblBody .=	'</td>';			
@@ -208,13 +209,69 @@ class MutasiBarangRusak extends MainConf
 		return 	$tblBody;
 	}
 	
+	public function editForm($sender,$param)
+	{
+		$id = $param->CallbackParameter->id;
+		$sql = "SELECT
+					tbt_mutasi_barang_detail.id,
+					tbt_mutasi_barang_detail.id_transaksi,
+					tbt_mutasi_barang_detail.id_barang,
+					tbm_barang.nama AS nama_barang,
+					tbt_mutasi_barang_detail.jml,
+					tbt_mutasi_barang_detail.id_satuan,
+					tbm_satuan.nama AS nama_satuan,
+					tbt_mutasi_barang_detail.jns_keluar,
+					IF (
+						tbt_mutasi_barang_detail.jns_keluar = '3',
+						'Pemakaian Produksi',
+
+					IF (
+						tbt_mutasi_barang_detail.jns_keluar = '4',
+						'Barang Rusak',
+						'Barang Expired'
+					)
+					) AS jns_keluar_name,
+					tbt_mutasi_barang_detail.st_asset
+				FROM
+					tbt_mutasi_barang_detail
+					INNER JOIN tbm_barang ON tbm_barang.id = tbt_mutasi_barang_detail.id_barang
+					INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_mutasi_barang_detail.id_satuan
+				WHERE
+					tbt_mutasi_barang_detail.deleted = '0'
+					AND tbt_mutasi_barang_detail.id_transaksi = '".$id."' ";
+					
+		$arr = $this->queryAction($sql,'S');
+		if($arr)
+		{
+			$this->id_mutasi->Value = $id;
+			$arrJson = json_encode($arr,true);
+			
+			$this->getPage()->getClientScript()->registerEndScript
+					('','
+					RenderTempTable('.$arrJson.');
+					unloadContent();
+					jQuery("#modal-1").modal("show");
+					refreshProduct();');
+					
+		}
+		else
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+					('','
+					unloadContent();
+					toastr.error("Data Tidak Ditemukan");
+					');	
+		}
+	}
+	
 	public function tambahBtnClicked($sender,$param)
 	{
 		$idBarang = $this->product_id_select2->Value;
 		$stokBarang = $this->product_id_stok->Value;
 		$idSatuan = $this->DDSatuan->SelectedValue;
 		$stokOut = $this->getTargetUom($idBarang,$this->jml->Text,$idSatuan,'1','0');
-		
+		var_dump($stokBarang);
+		var_dump($stokOut);
 		if($stokBarang >= $stokOut)
 		{
 			$this->getPage()->getClientScript()->registerEndScript
@@ -343,10 +400,19 @@ class MutasiBarangRusak extends MainConf
 		{
 			$tglTrans = date("Y-m-d");
 			$wktTrans = date("G:i:s"); 
-			$MutasiBarangRecord = new MutasiBarangRecord();
-			$MutasiBarangRecord->tgl_transaksi = $tglTrans;
-			$MutasiBarangRecord->wkt_transaksi = $wktTrans;
-			$MutasiBarangRecord->jumlah_barang = count($arr);
+			if($this->id_mutasi->Value != '')
+			{
+				$MutasiBarangRecord = MutasiBarangRecord::finder()->findByPk($this->id_mutasi->Value);
+				$MutasiBarangRecord->jumlah_barang += count($arr);
+			}
+			else
+			{
+				$MutasiBarangRecord = new MutasiBarangRecord();
+				$MutasiBarangRecord->tgl_transaksi = $tglTrans;
+				$MutasiBarangRecord->wkt_transaksi = $wktTrans;
+				$MutasiBarangRecord->jumlah_barang = count($arr);
+			}
+			
 			$MutasiBarangRecord->save(); 
 			
 			foreach($arr as $row)

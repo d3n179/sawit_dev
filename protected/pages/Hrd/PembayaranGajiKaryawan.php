@@ -266,6 +266,25 @@ class PembayaranGajiKaryawan extends MainConf
 											$RekapGajiDetailRecord->id_bank,
 											"Pembayaran Gaji Kepada ".$row->namaKaryawan,
 											$RekapGajiDetailRecord->jml_gaji_dibayarkan);
+				
+				$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
+											'8',
+											'0',
+											$BayarRekapGajiRecord->tgl_pembayaran,
+											date("G:i:s"),
+											"Beban Gaji Karyawan",
+											$RekapGajiDetailRecord->jml_gaji_dibayarkan,
+											$BayarRekapGajiRecord->no_pembayaran);
+											
+				$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
+											'8',
+											'1',
+											$BayarRekapGajiRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Kas',
+											$RekapGajiDetailRecord->jml_gaji_dibayarkan,
+											$BayarRekapGajiRecord->no_pembayaran,
+											$RekapGajiDetailRecord->id_bank);
 											
 			}
 			
@@ -294,7 +313,7 @@ class PembayaranGajiKaryawan extends MainConf
 									$totalGajiDibayar,
 									$BayarRekapGajiRecord->no_pembayaran);
 			
-			$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
+			/*$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
 									'8',
 									'0',
 									$BayarRekapGajiRecord->tgl_pembayaran,
@@ -310,7 +329,7 @@ class PembayaranGajiKaryawan extends MainConf
 										date("G:i:s"),
 										'Kas',
 										$totalGajiDibayar,
-										$BayarRekapGajiRecord->no_pembayaran);
+										$BayarRekapGajiRecord->no_pembayaran);*/
 										
 			$tblBody = $this->BindGrid();
 			$tblBodyHistory = $this->BindGridHistory();

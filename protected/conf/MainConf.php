@@ -358,7 +358,7 @@ class MainConf extends TPage
 		
 		if($stTarget == '0')
 		{
-			$UomOrder = BarangSatuanRecord::finder()->find('id_barang = ? AND id_satuan = ? ',$productId,$uomInitial)->urutan;
+			$UomOrder = BarangSatuanRecord::finder()->find('id_barang = ? AND id_satuan = ? AND deleted = ?',$productId,$uomInitial,'0')->urutan;
 			$sqlMaxOrder = "SELECT urutan,jumlah FROM tbm_satuan_barang WHERE deleted ='0' AND id_barang = '$productId' ORDER BY urutan DESC LIMIT 1";
 			$arrMax = $this->queryAction($sqlMaxOrder,'S');
 			foreach($arrMax as $row)
@@ -389,7 +389,6 @@ class MainConf extends TPage
 					$conversionQty = $conversionQty * $rowConvert['jumlah'];
 				}
 			}
-		
 			$sqlOrderUom = "SELECT 
 								tbm_satuan_barang.id,
 								tbm_satuan_barang.id_barang,
@@ -409,21 +408,25 @@ class MainConf extends TPage
 			$sqlOrderUom .= "ORDER BY urutan DESC ";
 			$arrOrderUom = $this->queryAction($sqlOrderUom,'S');
 			$realQty = $conversionQty;
+			$arrQty = array();
 			foreach($arrOrderUom as $rowOrder)
 			{
 				if($rowOrder['urutan'] == '1')
 				{
+					
 					$arrQty[] = array("qty"=>intval($realQty),"name"=>$rowOrder['nama'],"id"=>$rowOrder['id_satuan']);
 				}
 				else
 				{
 					if($realQty % $rowOrder['jumlah'] != 0)
+					{
+						
 						$arrQty[] = array("qty"=>$realQty % $rowOrder['jumlah'],"name"=>$rowOrder['nama'],"id"=>$rowOrder['id_satuan']);
+					}
 				}
-				
 				$realQty = $realQty / $rowOrder['jumlah'];
 			}
-					
+				
 			usort($arrQty, function($a, $b) {
 								return $a['order'] - $b['order'];
 							});
@@ -777,8 +780,13 @@ class MainConf extends TPage
 		$LabaRugiRecord->save();
 	}
 	
-	public function InsertJurnalUmum($id_transaksi,$sumber_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$jumlah_saldo,$no_transaksi)
+	public function InsertJurnalUmum($id_transaksi,$sumber_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$jumlah_saldo,$no_transaksi,$id_bank = '0')
 	{
+		if($id_bank != '0')
+			$namaBank = BankRecord::finder()->fincByPk($id_bank)->nama;
+		else
+			$namaBank = '';
+			
 		//$JurnalUmumRecord = JurnalUmumRecord::finder()->find('jns_transaksi = ? AND tgl_transaksi = ? AND keterangan = ? AND deleted = ?',$jns_transaksi,$tgl_transaksi,$keterangan,'0');
 		
 		//if(!$JurnalUmumRecord)
@@ -794,7 +802,7 @@ class MainConf extends TPage
 		$JurnalUmumRecord->jns_transaksi = $jns_transaksi;
 		$JurnalUmumRecord->tgl_transaksi = $tgl_transaksi;
 		$JurnalUmumRecord->wkt_transaksi = $wkt_transaksi;
-		$JurnalUmumRecord->keterangan = $keterangan;
+		$JurnalUmumRecord->keterangan = $keterangan.' '.$namaBank;
 		$JurnalUmumRecord->jumlah_saldo = $jumlah_saldo;
 		$JurnalUmumRecord->no_transaksi = $no_transaksi;
 		$JurnalUmumRecord->deleted = '0';
