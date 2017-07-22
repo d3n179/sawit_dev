@@ -223,7 +223,21 @@ class RevenueTransaction extends MainConf
 									$Record->deskripsi,
 									$Record->total_revenue,
 									$Record->transaction_no);
-															
+		
+		$keterangan = RevenueRecord::finder()->findByPk($Record->revenue_id)->nama;
+		$nama_akun = RevenueCategoryRecord::finder()->findByPk($Record->revenue_category_id)->nama;
+		
+		$this->InsertJurnalPenerimaanKas($Record->id,
+										$Record->transaction_no,
+										'3',
+										$Record->tgl_transaksi,
+										date("G:i:s"),
+										$keterangan,
+										$nama_akun,
+										$Record->no_referensi,
+										$Record->total_revenue,
+										0);
+														
 		$tblBody = $this->BindGrid();
 		$this->idRevenueTransaction->Value = "";	
 		$this->getPage()->getClientScript()->registerEndScript

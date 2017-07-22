@@ -330,7 +330,21 @@ class ReceivingOrder extends MainConf
 									'Hutang',
 									$jmlSaldo,
 									$ReceivingOrderRecord->no_document);
-						
+									
+			$PurchaseOrderRecord = PurchaseOrderRecord::finder()->findByPk($ReceivingOrderRecord->id_po);
+			
+			$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;		
+							
+			$this->InsertJurnalPembelian($ReceivingOrderRecord->id,
+										$ReceivingOrderRecord->no_document,
+										'1',
+										date("Y-m-d"),
+										date("G:i:s"),
+										$supplierName,
+										'',
+										'',
+										$jmlSaldo);
+				
 			$sql = "SELECT 
 						tbt_purchase_order_detail.id
 					FROM

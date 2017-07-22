@@ -291,6 +291,17 @@ class PembayaranGajiKaryawan extends MainConf
 			$BayarRekapGajiRecord->total_gaji_dibayarkan = $totalGajiDibayar;
 			$BayarRekapGajiRecord->save();
 			
+			$this->InsertJurnalPengeluaranKas($BayarRekapGajiRecord->id,
+												$BayarRekapGajiRecord->no_pembayaran,
+												'3',
+												$BayarRekapGajiRecord->tgl_pembayaran,
+												date("G:i:s"),
+												'Gaji Karyawan',
+												'Beban Gaji',
+												'',
+												$totalGajiDibayar,
+												0);
+	
 			
 			$sql = "SELECT id FROM tbt_rekap_gaji_detail WHERE id_rekap = '".$this->idRekapGaji->Value."' AND status = '0' AND deleted ='0' ";
 			$arrCek = $this->queryAction($sql,'S');

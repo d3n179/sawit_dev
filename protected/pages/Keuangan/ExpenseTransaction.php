@@ -223,7 +223,21 @@ class ExpenseTransaction extends MainConf
 									$Record->total_expense,
 									$Record->transaction_no,
 									$Record->bank_id);
-									
+		
+		$keterangan = ExpenseRecord::finder()->findByPk($Record->expense_id)->nama;
+		$nama_akun = ExpenseCategoryRecord::finder()->findByPk($Record->expense_category_id)->nama;
+		
+		$this->InsertJurnalPengeluaranKas($Record->id,
+											$Record->transaction_no,
+											'3',
+											$Record->tgl_transaksi,
+											date("G:i:s"),
+											$keterangan,
+											$nama_akun,
+											$Record->no_referensi,
+											$Record->total_expense,
+											0);
+								
 		$tblBody = $this->BindGrid();
 		$this->idExpenseTransaction->Value = "";	
 		$this->getPage()->getClientScript()->registerEndScript

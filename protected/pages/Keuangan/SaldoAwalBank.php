@@ -140,6 +140,17 @@ class SaldoAwalBank extends MainConf
 										$ModalTransaksiRecord->modal,
 										$ModalTransaksiRecord->id);
 				
+				$this->InsertJurnalPenerimaanKas($ModalTransaksiRecord->id,
+												$ModalTransaksiRecord->id,
+												'3',
+												date("Y-m-d"),
+												date("G:i:s"),
+												'Investasi Awal',
+												'Modal Awal Perusahaan',
+												'',
+												$ModalTransaksiRecord->modal,
+												0);
+	
 				/*$this->InsertJurnalUmum($ModalTransaksiRecord->id,
 										'0',
 										'0',

@@ -462,6 +462,17 @@ class CommodityTransaction extends MainConf
 														'Pendapatan',
 														$Record->total,
 														$Record->transaction_no);
+														
+							$this->InsertJurnalPenjualan($Record->id,
+														$Record->transaction_no,
+														'1',
+														date("Y-m-d"),
+														date("G:i:s"),
+														$Record->pembeli,
+														'',
+														'',
+														$Record->total);
+	
 							$Record->status = '1';
 							$Record->save();
 							$tblBody = $this->BindGrid();
@@ -513,6 +524,17 @@ class CommodityTransaction extends MainConf
 											'Pendapatan',
 											$Record->total,
 											$Record->transaction_no);
+											
+				$this->InsertJurnalPenjualan($Record->id,
+											$Record->transaction_no,
+											'1',
+											date("Y-m-d"),
+											date("G:i:s"),
+											$Record->pembeli,
+											'',
+											'',
+											$Record->total);
+														
 				$Record->status = '1';
 				$Record->save();
 				$tblBody = $this->BindGrid();

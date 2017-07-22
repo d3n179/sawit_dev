@@ -809,6 +809,88 @@ class MainConf extends TPage
 		$JurnalUmumRecord->save();
 	}
 	
+	public function InsertJurnalPembelian($id_transaksi,$no_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$nama_akun='',$ref='',$jumlah)
+	{
+		/*
+		 * JnsTransaksi = 1 -> Pembelian
+		 * JnsTransaksi = 2 -> Serba-serbi
+		 * */
+		$JurnalPembelianRecord = new JurnalPembelianRecord();
+		$JurnalPembelianRecord->id_transaksi = $id_transaksi;
+		$JurnalPembelianRecord->no_transaksi = $no_transaksi;
+		$JurnalPembelianRecord->jns_transaksi = $jns_transaksi;
+		$JurnalPembelianRecord->tgl_transaksi = $tgl_transaksi;
+		$JurnalPembelianRecord->wkt_transaksi = $wkt_transaksi;
+		$JurnalPembelianRecord->keterangan = $keterangan;
+		$JurnalPembelianRecord->nama_akun = $nama_akun;
+		$JurnalPembelianRecord->ref = $ref;
+		$JurnalPembelianRecord->jumlah = $jumlah;
+		$JurnalPembelianRecord->deleted = '0';
+		$JurnalPembelianRecord->save();
+	}
+	
+	public function InsertJurnalPengeluaranKas($id_transaksi,$no_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$nama_akun='',$ref='',$jumlah,$potongan=0)
+	{
+		/*
+		 * JnsTransaksi = 1 -> Bayar Hutang / Utang Dagang
+		 * JnsTransaksi = 2 -> Pembelian Tunai
+		 * JnsTransaksi = 3 -> Serba-serbi
+		 * */
+		 
+		$JurnalPengeluaranKasRecord = new JurnalPengeluaranKasRecord();
+		$JurnalPengeluaranKasRecord->id_transaksi = $id_transaksi;
+		$JurnalPengeluaranKasRecord->no_transaksi = $no_transaksi;
+		$JurnalPengeluaranKasRecord->jns_transaksi = $jns_transaksi;
+		$JurnalPengeluaranKasRecord->tgl_transaksi = $tgl_transaksi;
+		$JurnalPengeluaranKasRecord->wkt_transaksi = $wkt_transaksi;
+		$JurnalPengeluaranKasRecord->keterangan = $keterangan;
+		$JurnalPengeluaranKasRecord->nama_akun = $nama_akun;
+		$JurnalPengeluaranKasRecord->ref = $ref;
+		$JurnalPengeluaranKasRecord->jumlah = $jumlah;
+		$JurnalPengeluaranKasRecord->potongan = $potongan;
+		$JurnalPengeluaranKasRecord->deleted = '0';
+		$JurnalPengeluaranKasRecord->save();
+	}
+	
+	public function InsertJurnalPenjualan($id_transaksi,$no_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$syarat='',$ref='',$jumlah)
+	{
+		$JurnalPenjualanRecord = new JurnalPenjualanRecord();
+		$JurnalPenjualanRecord->id_transaksi = $id_transaksi;
+		$JurnalPenjualanRecord->no_transaksi = $no_transaksi;
+		$JurnalPenjualanRecord->jns_transaksi = $jns_transaksi;
+		$JurnalPenjualanRecord->tgl_transaksi = $tgl_transaksi;
+		$JurnalPenjualanRecord->wkt_transaksi = $wkt_transaksi;
+		$JurnalPenjualanRecord->keterangan = $keterangan;
+		$JurnalPenjualanRecord->syarat = $syarat;
+		$JurnalPenjualanRecord->ref = $ref;
+		$JurnalPenjualanRecord->jumlah = $jumlah;
+		$JurnalPenjualanRecord->deleted = '0';
+		$JurnalPenjualanRecord->save();
+	}
+	
+	public function InsertJurnalPenerimaanKas($id_transaksi,$no_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$nama_akun='',$ref='',$jumlah,$potongan=0)
+	{
+		/*
+		 * JnsTransaksi = 1 -> Bayar Piutang / Piutang Dagang
+		 * JnsTransaksi = 2 -> Jual Tunai
+		 * JnsTransaksi = 3 -> Serba-serbi
+		 * */
+		 
+		$JurnalPenerimaanKasRecord = new JurnalPenerimaanKasRecord();
+		$JurnalPenerimaanKasRecord->id_transaksi = $id_transaksi;
+		$JurnalPenerimaanKasRecord->no_transaksi = $no_transaksi;
+		$JurnalPenerimaanKasRecord->jns_transaksi = $jns_transaksi;
+		$JurnalPenerimaanKasRecord->tgl_transaksi = $tgl_transaksi;
+		$JurnalPenerimaanKasRecord->wkt_transaksi = $wkt_transaksi;
+		$JurnalPenerimaanKasRecord->keterangan = $keterangan;
+		$JurnalPenerimaanKasRecord->nama_akun = $nama_akun;
+		$JurnalPenerimaanKasRecord->ref = $ref;
+		$JurnalPenerimaanKasRecord->jumlah = $jumlah;
+		$JurnalPenerimaanKasRecord->potongan = $potongan;
+		$JurnalPenerimaanKasRecord->deleted = '0';
+		$JurnalPenerimaanKasRecord->save();
+	}
+	
 	public function InsertJurnalBukuBesar($idTrans,$sumberTrans,$jnsTrans,$noTrans,$tglTrans,$wktTrans,$idCoa,$idBank,$keterangan,$jmlTrans)
 	{
 		$sql = "SELECT

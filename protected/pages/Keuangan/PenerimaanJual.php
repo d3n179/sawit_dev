@@ -271,7 +271,18 @@ class PenerimaanJual extends MainConf
 									'Piutang',
 									$RecordDetail->total_pembayaran,
 									$CommodityTransactionRecord->transaction_no);
-															
+		
+		$this->InsertJurnalPenerimaanKas($RecordDetail->id,
+										$CommodityTransactionRecord->transaction_no,
+										'1',
+										$RecordDetail->tgl_pembayaran,
+										date("G:i:s"),
+										$customerName,
+										'',
+										'',
+										$RecordDetail->total_pembayaran,
+										0);
+														
 		$tblBody = $this->BindGrid();
 			
 		$this->getPage()->getClientScript()->registerEndScript

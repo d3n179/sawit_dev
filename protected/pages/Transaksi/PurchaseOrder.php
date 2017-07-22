@@ -341,6 +341,22 @@ class PurchaseOrder extends MainConf
 										'Kas',
 										$PurchaseOrderRecord->dp,
 										$PurchaseOrderRecord->no_po);
+				
+				$namaPemasok = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;
+				
+				$this->InsertJurnalPengeluaranKas($PurchaseOrderRecord->id,
+													$PurchaseOrderRecord->no_po,
+													'3',
+													$PurchaseOrderRecord->tgl_po,
+													date("G:i:s"),
+													$namaPemasok,
+													'Bayar Uang Muka',
+													'',
+													$PurchaseOrderRecord->dp,
+													0);
+	
+	
+	
 			}
 									
 			$tblBody = $this->BindGrid();

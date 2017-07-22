@@ -425,7 +425,18 @@ class BayarPo extends MainConf
 								$BayarPoOrderRecord->total_pembayaran,
 								$BayarPoOrderRecord->no_pembayaran,
 								$BayarPoOrderRecord->id_bank);
-																
+		
+		$this->InsertJurnalPengeluaranKas($BayarPoOrderRecord->id,
+											$BayarPoOrderRecord->no_pembayaran,
+											'1',
+											$BayarPoOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											$supplierName,
+											'',
+											'',
+											$BayarPoOrderRecord->total_pembayaran,
+											0);
+															
 		$msg = "Pembayaran Po Telah Diproses ";
 		$tblBody = $this->BindGrid();
 		$tblBodyHistory = $this->BindGridHistory();
