@@ -135,6 +135,7 @@ class LaporanJurnalUmum extends MainConf
 			foreach($arrTrans as $row)
 			{
 				$tblBody .= '<tr>';
+				$tblBody .= '<td>'.$row['id'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
 				$tblBody .= '<td>'.$row['no_transaksi'].'</td>';
 				$tblBody .= '<td>'.$row['keterangan'].'</td>';

@@ -295,56 +295,6 @@ class ReceivingOrder extends MainConf
 				$StockInOutRecord->save();
 			}
 			
-			$sqlBiaya = "SELECT
-							tbt_purchase_order_biaya_lain.nama_biaya,
-							tbt_purchase_order_biaya_lain.biaya
-						FROM
-							tbt_purchase_order_biaya_lain
-						WHERE
-							tbt_purchase_order_biaya_lain.deleted = '0'
-						AND tbt_purchase_order_biaya_lain.id_po = '".$idPo."' ";
-
-			$arrBiaya = $this->queryAction($sqlBiaya,'S');
-			if($arrBiaya)
-			{
-				foreach($arrBiaya as $rowBiaya)
-				{
-					$jmlSaldo += $rowBiaya['biaya'];
-				}
-			}
-			
-			$this->InsertJurnalUmum($ReceivingOrderRecord->id,
-									'1',
-									'0',
-									date("Y-m-d"),
-									date("G:i:s"),
-									'Perlengkapan',
-									$jmlSaldo,
-									$ReceivingOrderRecord->no_document);
-									
-			$this->InsertJurnalUmum($ReceivingOrderRecord->id,
-									'1',
-									'1',
-									date("Y-m-d"),
-									date("G:i:s"),
-									'Hutang',
-									$jmlSaldo,
-									$ReceivingOrderRecord->no_document);
-									
-			$PurchaseOrderRecord = PurchaseOrderRecord::finder()->findByPk($ReceivingOrderRecord->id_po);
-			
-			$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;		
-							
-			$this->InsertJurnalPembelian($ReceivingOrderRecord->id,
-										$ReceivingOrderRecord->no_document,
-										'1',
-										date("Y-m-d"),
-										date("G:i:s"),
-										$supplierName,
-										'',
-										'',
-										$jmlSaldo);
-				
 			$sql = "SELECT 
 						tbt_purchase_order_detail.id
 					FROM
@@ -366,6 +316,87 @@ class ReceivingOrder extends MainConf
 				$PurchaseOrderRecord->status = '2';
 				$PurchaseOrderRecord->tgl_jatuh_tempo = $this->ConvertDate($this->tgl_jatuh_tempo->Text,'2');
 				$PurchaseOrderRecord->save();
+				
+				$sqlReceiving = "SELECT
+									tbt_receiving_order.id,
+									tbt_receiving_order.id_po,
+									SUM(
+										tbt_receiving_order_detail.subtotal
+									) AS total_receiving
+								FROM
+									tbt_receiving_order
+								INNER JOIN tbt_receiving_order_detail ON tbt_receiving_order_detail.id_parent = tbt_receiving_order.id
+								WHERE
+									tbt_receiving_order.deleted != '1'
+								AND tbt_receiving_order_detail.deleted != '1'
+								AND tbt_receiving_order.id_po = '".$PurchaseOrderRecord->id."'
+								GROUP BY
+									tbt_receiving_order.id_po ";
+				$arrReceiving = $this->queryAction($sqlReceiving,'S');
+				$jmlSaldo = $arrReceiving[0]['total_receiving'];	
+							
+				$ppnPo = $PurchaseOrderRecord->ppn;
+				$dpPo = $PurchaseOrderRecord->dp;
+				if($ppnPo > 0)
+				{
+					$ppnSaldo = $jmlSaldo * ($ppnPo / 100);
+					$jmlSaldo += $ppnSaldo;
+				}
+				
+				$sqlBiaya = "SELECT
+								tbt_purchase_order_biaya_lain.nama_biaya,
+								tbt_purchase_order_biaya_lain.biaya
+							FROM
+								tbt_purchase_order_biaya_lain
+							WHERE
+								tbt_purchase_order_biaya_lain.deleted = '0'
+							AND tbt_purchase_order_biaya_lain.id_po = '".$idPo."' ";
+
+				$arrBiaya = $this->queryAction($sqlBiaya,'S');
+				if($arrBiaya)
+				{
+					foreach($arrBiaya as $rowBiaya)
+					{
+						$jmlSaldo += $rowBiaya['biaya'];
+					}
+				}
+				var_dump($jmlSaldo);
+				if($dpPo > 0)
+				{
+					$jmlSaldo -= $dpPo;
+				}
+				var_dump($jmlSaldo);
+				$this->InsertJurnalUmum($ReceivingOrderRecord->id,
+										'1',
+										'0',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Perlengkapan',
+										$jmlSaldo - $dpPo,
+										$ReceivingOrderRecord->no_document);
+										
+				$this->InsertJurnalUmum($ReceivingOrderRecord->id,
+										'1',
+										'1',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Hutang',
+										$jmlSaldo,
+										$ReceivingOrderRecord->no_document);
+										
+				
+				
+				$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;		
+								
+				$this->InsertJurnalPembelian($ReceivingOrderRecord->id,
+											$ReceivingOrderRecord->no_document,
+											'1',
+											date("Y-m-d"),
+											date("G:i:s"),
+											$supplierName,
+											'',
+											'',
+											$jmlSaldo);
 			}
 			$tblBody = $this->BindGrid();
 				

@@ -15,6 +15,7 @@ class JurnalUmumRecord extends TActiveRecord
 	public $keterangan;
 	public $jumlah_saldo;
 	public $no_transaksi;
+	public $id_bank;
 	public $deleted;
 	
 	public static function finder($className=__CLASS__)

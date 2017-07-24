@@ -16,6 +16,8 @@ class PurchaseOrderRecord extends TActiveRecord
 	public $id_supplier;
 	public $ppn;
 	public $dp;
+	public $id_bank;
+	public $id_coa;
 	
 	public $deleted;
 	

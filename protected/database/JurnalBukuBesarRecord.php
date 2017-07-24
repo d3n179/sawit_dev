@@ -14,11 +14,12 @@ class JurnalBukuBesarRecord extends TActiveRecord
 	public $wkt_transaksi;
 	public $keterangan;
 	public $id_bank;
-	public $saldo_awal;
-	public $saldo_transaksi;
-	public $saldo_akhir;
 	public $no_transaksi;
+	public $nama_akun;
 	public $id_coa;
+	public $saldo;
+	public $saldo_akhir;
+	public $posisi_saldo_akhir;
 	public $deleted;
 	
 	public static function finder($className=__CLASS__)

@@ -100,6 +100,23 @@ class SaldoAwalBank extends MainConf
 					$arr = $this->queryAction($sql,'S');
 					foreach($arr as $row)
 					{
+						if($row['id'] == '8')
+							$namaAkun = 'Kas';
+						else
+							$namaAkun = 'Kas Bank';
+							
+						$this->InsertJurnalBukuBesar($row['id'],
+														'0',
+														'0',
+														$row['id'],
+														date("Y-m-d"),
+														date("G:i:s"),
+														'2',
+														$row['id'],
+														$namaAkun,
+														'Setor Modal Awal',
+														$row['saldo']);
+						
 						$this->InsertJurnalBukuBesar($row['id'],
 												'0',
 												'0',
@@ -108,7 +125,8 @@ class SaldoAwalBank extends MainConf
 												date("G:i:s"),
 												'2',
 												$row['id'],
-												'Saldo Awal',
+												'Modal',
+												'Setor Modal Awal',
 												$row['saldo']);
 												
 						$this->InsertJurnalUmum($row['id'],
@@ -116,7 +134,7 @@ class SaldoAwalBank extends MainConf
 													'0',
 													date("Y-m-d"),
 													date("G:i:s"),
-													'Kas',
+													$namaAkun,
 													$row['saldo'],
 													$ModalTransaksiRecord->id,
 													$row['id']);
@@ -126,7 +144,7 @@ class SaldoAwalBank extends MainConf
 													'1',
 													date("Y-m-d"),
 													date("G:i:s"),
-													'Modal Awal',
+													'Modal',
 													$row['saldo'],
 													$ModalTransaksiRecord->id);
 					}

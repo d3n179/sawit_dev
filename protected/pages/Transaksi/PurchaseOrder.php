@@ -21,6 +21,12 @@ class PurchaseOrder extends MainConf
 			$arr = $this->queryAction($sql,'S');
 			$this->DDSupplier->DataSource = $arr;
 			$this->DDSupplier->DataBind();
+			
+			$sql = "SELECT id,nama AS nama FROM tbm_bank WHERE deleted ='0' ";
+			$arr = $this->queryAction($sql,'S');
+			$this->DDBank->DataSource = $arr;
+			$this->DDBank->DataBind();
+			
 		}
 		
 	}
@@ -34,6 +40,34 @@ class PurchaseOrder extends MainConf
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 						('','jQuery("#table-1 tbody").append("'.$tblBody.'");');	
+		}
+	}
+	
+	public function jnsByrChanged()
+	{
+		if($this->DDJnsBayar->SelectedValue == '0')
+		{
+			$this->DDBank->Enabled = false;
+		}
+		else
+		{
+			$this->DDBank->Enabled = true;
+		}
+	}
+	
+	public function dpChanged()
+	{
+		$dp = str_replace(",","",$this->dp->Text);
+		if($dp > 0 )
+		{
+			$this->DDCoa->Enabled = true;
+			$this->DDJnsBayar->Enabled = true;
+		}
+		else
+		{
+			$this->DDCoa->Enabled = false;
+			$this->DDJnsBayar->Enabled = false;
+			$this->DDBank->Enabled = false;
 		}
 	}
 	
@@ -288,7 +322,7 @@ class PurchaseOrder extends MainConf
 			$PurchaseOrderRecord->ppn = $this->ppn->text;
 			$PurchaseOrderRecord->dp = str_replace(",","",$this->dp->text);
 			$PurchaseOrderRecord->status = '0';
-			
+			$PurchaseOrderRecord->deleted = '0';
 			$PurchaseOrderRecord->save();
 			foreach($detailRO as $row)
 			{
@@ -324,12 +358,46 @@ class PurchaseOrder extends MainConf
 			
 			if($PurchaseOrderRecord->dp > 0)
 			{
+				if($this->DDBank->SelectedValue != '')
+				{
+					$idBank = $this->DDBank->SelectedValue;
+				}
+				else
+				{
+					$idBank = '8';
+				}
+				
+				$PurchaseOrderRecord->id_bank = $idBank;
+				$PurchaseOrderRecord->id_coa = $this->DDCoa->Text;
+				$PurchaseOrderRecord->save();
+				
+				$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;
+				$this->InsertJurnalBukuBesar($PurchaseOrderRecord->id,
+									'1',
+									'1',
+									$PurchaseOrderRecord->no_po,
+									$PurchaseOrderRecord->tgl_po,
+									date("G:i:s"),
+									$PurchaseOrderRecord->id_coa,
+									$PurchaseOrderRecord->id_bank,
+									'Pembayaran DP PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
+									$PurchaseOrderRecord->dp);
+									
+				/*$this->InsertLabaRugi($PurchaseOrderRecord->id,
+									'6',
+									'1',
+									$PurchaseOrderRecord->tgl_po,
+									date("G:i:s"),
+									"Uang Muka Pembelian",
+									$PurchaseOrderRecord->dp,
+									$PurchaseOrderRecord->no_po);*/
+									
 				$this->InsertJurnalUmum($PurchaseOrderRecord->id,
 									'8',
 									'0',
 									$PurchaseOrderRecord->tgl_po,
 									date("G:i:s"),
-									'Uang Muka Pembelian',
+									'Perlengkapan',
 									$PurchaseOrderRecord->dp,
 									$PurchaseOrderRecord->no_po);
 										

@@ -1,7 +1,7 @@
 <com:TContent ID="Main">
-	<h2>Laporan Jurnal Umum</h2>
+	<h2>Buku Kas</h2>
 	<hr>
-	 <com:TActivePanel CssClass="form"><!--form begin-->	
+	 <com:TActivePanel CssClass="form"><!--form begin-->			
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
@@ -10,7 +10,7 @@
 									ID="Periode"
 									Width="190px"
 									AutoPostBack="true"
-									Enabled="true"
+									Enabled="false"
 									CausesValidation="false"
 									SelectedValue = "0"
 									OnSelectedIndexChanged = "periodeChanged"
@@ -21,7 +21,22 @@
 									</com:TActiveDropDownList>	
 			</div>	
 						
-		</div>		
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="nmBarang" class="control-label">Nama Akun</label>
+					<com:TActiveDropDownList 
+									ID="DDAkun"
+									Width="190px"
+									AutoPostBack="false"
+									CausesValidation="false"
+									DataValueField="id"
+									DataTextField="nama"
+									CssClass="form-control">
+									</com:TActiveDropDownList>	
+			</div>	
+						
+		</div>			
 	</div>
 	
 	<div class="row">
@@ -110,9 +125,9 @@
 			<table class="table table-bordered datatable" id="table-1">
 				<thead>
 					<tr>
-						<th width="300px">No</th>
-						<th width="300px">Tgl Transaksi</th>
-						<th width="300px">No. Bukti Transaksi</th>
+						<th width="300px">Tanggal Transaksi</th>
+						<th width="300px">Waktu Transaksi</th>
+						<th width="300px">Nama Akun</th>
 						<th width="300px">Keterangan</th>
 						<th width="300px">Debet</th>
 						<th width="300px">Kredit</th>
@@ -127,7 +142,7 @@
 	</com:TActivePanel>	<!--form End-->
 	<com:TCallback ID="cariCallback" OnCallback="cariBtnClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakLapBukuKas" ActiveControl.CausesValidation="false"/>
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
 			{

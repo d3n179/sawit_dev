@@ -767,6 +767,17 @@ class MainConf extends TPage
 	
 	public function InsertLabaRugi($id_transaksi,$sumber_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$jumlah_transaksi,$no_transaksi)
 	{
+		/*
+		 * Sumber Transaksi -> 0 = Setor Modal Awal
+		 * Sumber Transaksi -> 1 = Beban Bayar PO
+		 * Sumber Transaksi -> 2 = Beban Bayar Tbs Order
+		 * Sumber Transaksi -> 3 = Penerimaan Penjualan Commodity
+		 * Sumber Transaksi -> 4 = Pengeluaran Lain-lain / Expense Transaction
+		 * Sumber Transaksi -> 5 = Pendapatan Lain-lain / Revenue Transaction
+		 * Sumber Transaksi -> 6 = Uang Muka Pembelian
+		 * Sumber Transaksi -> 7 = Beban Bayar Gaji Karyawan
+		 */
+		 
 		$LabaRugiRecord = new LabaRugiRecord();
 		$LabaRugiRecord->id_transaksi = $id_transaksi;
 		$LabaRugiRecord->sumber_transaksi = $sumber_transaksi;
@@ -782,29 +793,20 @@ class MainConf extends TPage
 	
 	public function InsertJurnalUmum($id_transaksi,$sumber_transaksi,$jns_transaksi,$tgl_transaksi,$wkt_transaksi,$keterangan,$jumlah_saldo,$no_transaksi,$id_bank = '0')
 	{
-		if($id_bank != '0')
-			$namaBank = BankRecord::finder()->fincByPk($id_bank)->nama;
-		else
-			$namaBank = '';
-			
-		//$JurnalUmumRecord = JurnalUmumRecord::finder()->find('jns_transaksi = ? AND tgl_transaksi = ? AND keterangan = ? AND deleted = ?',$jns_transaksi,$tgl_transaksi,$keterangan,'0');
-		
-		//if(!$JurnalUmumRecord)
-		//{
-			$JurnalUmumRecord = new JurnalUmumRecord();
-			
-		//}
-		//else
-			//$JurnalUmumRecord->jumlah_saldo += $jumlah_saldo;
-		
+		/*
+		 * $sumber_transaksi = 0 -> Saldo Awal
+		 * $sumber_transaksi = 8 -> DP Purchase Order
+		 * */
+		$JurnalUmumRecord = new JurnalUmumRecord();
 		$JurnalUmumRecord->id_transaksi = $id_transaksi;
 		$JurnalUmumRecord->sumber_transaksi = $sumber_transaksi;
 		$JurnalUmumRecord->jns_transaksi = $jns_transaksi;
 		$JurnalUmumRecord->tgl_transaksi = $tgl_transaksi;
 		$JurnalUmumRecord->wkt_transaksi = $wkt_transaksi;
-		$JurnalUmumRecord->keterangan = $keterangan.' '.$namaBank;
+		$JurnalUmumRecord->keterangan = $keterangan;
 		$JurnalUmumRecord->jumlah_saldo = $jumlah_saldo;
 		$JurnalUmumRecord->no_transaksi = $no_transaksi;
+		$JurnalUmumRecord->id_bank = $id_bank;
 		$JurnalUmumRecord->deleted = '0';
 		$JurnalUmumRecord->save();
 	}
@@ -891,15 +893,24 @@ class MainConf extends TPage
 		$JurnalPenerimaanKasRecord->save();
 	}
 	
-	public function InsertJurnalBukuBesar($idTrans,$sumberTrans,$jnsTrans,$noTrans,$tglTrans,$wktTrans,$idCoa,$idBank,$keterangan,$jmlTrans)
+	public function InsertJurnalBukuBesar($idTrans,$sumberTrans,$jnsTrans,$noTrans,$tglTrans,$wktTrans,$idCoa,$idBank,$namaAkun,$keterangan,$saldo)
 	{
+		/*
+		 * jnsAkun = 0 -> Harta 
+		 * jnsAkun = 1 -> Hutang 
+		 * jnsAkun = 1 -> Hutang
+		*/
+		
+		/*
+		 * $sumberTrans = 0 -> Setor Saldo Awal
+		 * $sumberTrans = 1 -> Bayar PO/Bayar DP PO
+		 */
 		$sql = "SELECT
-					tbt_jurnal_buku_besar.id,
-					tbt_jurnal_buku_besar.saldo_akhir
+					*
 				FROM
 					tbt_jurnal_buku_besar
 				WHERE
-					tbt_jurnal_buku_besar.id_bank = '$idBank'
+					tbt_jurnal_buku_besar.nama_akun = '$namaAkun'
 				ORDER BY
 					tbt_jurnal_buku_besar.id DESC
 				LIMIT 1 ";
@@ -907,14 +918,15 @@ class MainConf extends TPage
 		$arrSaldo = $this->queryAction($sql,'S');
 		
 		if(count($arrSaldo) > 0)
-			$saldoAwal = $arrSaldo[0]['saldo_akhir'];
+		{
+			$saldoAkhir = $arrSaldo[0]['saldo_akhir'];
+		}
 		else
-			$saldoAwal = 0;
+		{
+			$saldoAkhir = 0;
+		}
 		
-		if($jnsTrans == '0')
-			$saldoAkhir = $saldoAwal + $jmlTrans;
-		else
-			$saldoAkhir = $saldoAwal - $jmlTrans;
+		if($namaAkun)
 			
 		$JurnalBukuBesarRecord = new JurnalBukuBesarRecord();
 		$JurnalBukuBesarRecord->id_transaksi = $idTrans;
@@ -924,11 +936,12 @@ class MainConf extends TPage
 		$JurnalBukuBesarRecord->id_coa = $idCoa;
 		$JurnalBukuBesarRecord->tgl_transaksi = $tglTrans;
 		$JurnalBukuBesarRecord->wkt_transaksi = $wktTrans;
+		$JurnalBukuBesarRecord->nama_akun = $namaAkun;
 		$JurnalBukuBesarRecord->keterangan = $keterangan;
 		$JurnalBukuBesarRecord->id_bank = $idBank;
-		$JurnalBukuBesarRecord->saldo_awal = $saldoAwal;
-		$JurnalBukuBesarRecord->saldo_transaksi = $jmlTrans;
-		$JurnalBukuBesarRecord->saldo_akhir = $saldoAkhir;
+		$JurnalBukuBesarRecord->debet = $debet;
+		$JurnalBukuBesarRecord->kredit = $kredit;
+		//$JurnalBukuBesarRecord->saldo_akhir = $saldoAkhir;
 		
 		$JurnalBukuBesarRecord->save();
 		
