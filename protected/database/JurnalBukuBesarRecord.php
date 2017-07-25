@@ -20,6 +20,7 @@ class JurnalBukuBesarRecord extends TActiveRecord
 	public $saldo;
 	public $saldo_akhir;
 	public $posisi_saldo_akhir;
+	public $status;
 	public $deleted;
 	
 	public static function finder($className=__CLASS__)

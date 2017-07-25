@@ -245,46 +245,66 @@ class PembayaranGajiKaryawan extends MainConf
 				$RekapGajiDetailRecord->jns_bayar =$row->jnsBayar;
 				
 				if($row->jnsBayar == '0')
+				{
 					$RekapGajiDetailRecord->id_bank = '8';
+					$namaAkun = 'Kas';
+				}
 				else
 				{
 					$RekapGajiDetailRecord->id_bank = $row->idBank;
 					$RekapGajiDetailRecord->no_ref = $row->norek;	
+					$namaAkun = 'Kas Bank';
 				}
 				
 				$RekapGajiDetailRecord->id_coa = '835';	
 				$RekapGajiDetailRecord->save();	
 				$totalGajiDibayar += $RekapGajiDetailRecord->jml_gaji_dibayarkan;
 				
-				$this->InsertJurnalBukuBesar($RekapGajiDetailRecord->id,
+				$this->UbahSaldoKas('1',$RekapGajiDetailRecord->id_bank,$RekapGajiDetailRecord->jml_gaji_dibayarkan);
+				
+				$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
+								'8',
+								'0',
+								$BayarRekapGajiRecord->tgl_pembayaran,
+								date("G:i:s"),
+								'Hutang Gaji',
+								$RekapGajiDetailRecord->jml_gaji_dibayarkan,
+								$BayarRekapGajiRecord->no_pembayaran,
+								$RekapGajiDetailRecord->id_bank);
+				
+				$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
+								'8',
+								'1',
+								$BayarRekapGajiRecord->tgl_pembayaran,
+								date("G:i:s"),
+								$namaAkun,
+								$RekapGajiDetailRecord->jml_gaji_dibayarkan,
+								$BayarRekapGajiRecord->no_pembayaran,
+								$RekapGajiDetailRecord->id_bank);
+				
+				$this->InsertJurnalBukuBesar($BayarRekapGajiRecord->id,
 											'7',
 											'1',
 											$BayarRekapGajiRecord->no_pembayaran,
 											$BayarRekapGajiRecord->tgl_pembayaran,
 											date("G:i:s"),
-											'835',
-											$RekapGajiDetailRecord->id_bank,
-											"Pembayaran Gaji Kepada ".$row->namaKaryawan,
+											'',
+											'',
+											'Hutang Gaji',
+											'Pembayaran Gaji Karyawan Kepada '.$row->namaKaryawan,
 											$RekapGajiDetailRecord->jml_gaji_dibayarkan);
 				
-				$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
-											'8',
-											'0',
-											$BayarRekapGajiRecord->tgl_pembayaran,
-											date("G:i:s"),
-											"Beban Gaji Karyawan",
-											$RekapGajiDetailRecord->jml_gaji_dibayarkan,
-											$BayarRekapGajiRecord->no_pembayaran);
-											
-				$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
-											'8',
+				$this->InsertJurnalBukuBesar($BayarRekapGajiRecord->id,
+											'7',
 											'1',
+											$BayarRekapGajiRecord->no_pembayaran,
 											$BayarRekapGajiRecord->tgl_pembayaran,
 											date("G:i:s"),
-											'Kas',
-											$RekapGajiDetailRecord->jml_gaji_dibayarkan,
-											$BayarRekapGajiRecord->no_pembayaran,
-											$RekapGajiDetailRecord->id_bank);
+											'',
+											'',
+											$namaAkun,
+											'Pembayaran Gaji Karyawan Kepada '.$row->namaKaryawan,
+											$RekapGajiDetailRecord->jml_gaji_dibayarkan);
 											
 			}
 			

@@ -893,18 +893,27 @@ class MainConf extends TPage
 		$JurnalPenerimaanKasRecord->save();
 	}
 	
+	public function UbahSaldoKas($jnsTrans,$idBank,$saldo)
+	{
+		$BankRecord = BankRecord::finder()->findByPk($idBank);
+		if($BankRecord)
+		{
+			if($jnsTrans == '0')
+				$BankRecord->saldo += $saldo;
+			else
+				$BankRecord->saldo -= $saldo;
+				
+			$BankRecord->save();
+		}
+	}
+	
 	public function InsertJurnalBukuBesar($idTrans,$sumberTrans,$jnsTrans,$noTrans,$tglTrans,$wktTrans,$idCoa,$idBank,$namaAkun,$keterangan,$saldo)
 	{
-		/*
-		 * jnsAkun = 0 -> Harta 
-		 * jnsAkun = 1 -> Hutang 
-		 * jnsAkun = 1 -> Hutang
-		*/
-		
 		/*
 		 * $sumberTrans = 0 -> Setor Saldo Awal
 		 * $sumberTrans = 1 -> Bayar PO/Bayar DP PO
 		 */
+		 
 		$sql = "SELECT
 					*
 				FROM
@@ -919,15 +928,118 @@ class MainConf extends TPage
 		
 		if(count($arrSaldo) > 0)
 		{
-			$saldoAkhir = $arrSaldo[0]['saldo_akhir'];
+			if(($namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain') && $arrSaldo[0]['status'] != '0')
+			{
+				$saldoAkhir = 0;
+				$posisiSaldoAkhir = '0';
+			}
+			elseif(($namaAkun == 'Pendapatan' || $namaAkun == 'Pendapatan Lain-lain') && $arrSaldo[0]['status'] != '0')
+			{
+				$saldoAkhir = 0;
+				$posisiSaldoAkhir = '1';
+			}
+			else
+			{
+				$saldoAkhir = $arrSaldo[0]['saldo_akhir'];
+				$posisiSaldoAkhir = $arrSaldo[0]['posisi_saldo_akhir'];
+			}
 		}
 		else
 		{
 			$saldoAkhir = 0;
+			if($namaAkun=='Kas' || $namaAkun=='Kas Bank' || $namaAkun=='Perlengkapan' || $namaAkun == 'Persediaan Bahan Baku' || $namaAkun == 'Persediaan Barang Dagangan' || $namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain')
+				$posisiSaldoAkhir = '0';
+			elseif($namaAkun == 'Modal' || $namaAkun == 'Hutang' || $namaAkun == 'Hutang Gaji' || $namaAkun == 'Pendapatan' || $namaAkun == 'Pendapatan Lain-lain')
+				$posisiSaldoAkhir = '1';
 		}
 		
-		if($namaAkun)
-			
+		if($namaAkun=='Kas' || $namaAkun=='Kas Bank' || $namaAkun=='Perlengkapan' || $namaAkun == 'Persediaan Bahan Baku' || $namaAkun == 'Persediaan Barang Dagangan' || $namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain')
+		{
+			if($jnsTrans == '0')
+			{
+				if($posisiSaldoAkhir == '0')
+				{
+					$saldoAkhir += $saldo;
+				}
+				else
+				{
+					if($saldo > $saldoAkhir)
+					{
+						//$saldoAkhir = $saldo - $saldoAkhir;
+						$saldoAkhir = 0;
+						$posisiSaldoAkhir = '0';
+					}
+					else
+					{
+						$saldoAkhir -= $saldo;
+					}
+				}
+			}
+			elseif($jnsTrans == '1')
+			{
+				if($posisiSaldoAkhir == '0')
+				{
+					if($saldo > $saldoAkhir)
+					{
+						//$saldoAkhir = $saldo - $saldoAkhir;
+						$saldoAkhir = 0;
+						$posisiSaldoAkhir  = '1';
+					}
+					else
+					{
+						$saldoAkhir -= $saldo;
+					}
+				}
+				else
+				{
+						$saldoAkhir += $saldo;
+				}
+			}
+		}
+		elseif($namaAkun == 'Modal' || $namaAkun == 'Hutang' || $namaAkun == 'Hutang Gaji' || $namaAkun == 'Pendapatan' || $namaAkun == 'Pendapatan Lain-lain')
+		{
+			if($jnsTrans == '0')
+			{
+				if($posisiSaldoAkhir == '1')
+				{
+					$saldoAkhir += $saldo;
+				}
+				else
+				{
+					if($saldo > $saldoAkhir)
+					{
+						//$saldoAkhir = $saldo - $saldoAkhir;
+						$saldoAkhir = 0;
+						$posisiSaldoAkhir = '1';
+					}
+					else
+					{
+						$saldoAkhir -= $saldo;
+					}
+				}
+			}
+			elseif($jnsTrans == '1')
+			{
+				if($posisiSaldoAkhir == '1')
+				{
+					if($saldo > $saldoAkhir)
+					{
+						//$saldoAkhir = $saldo - $saldoAkhir;
+						$saldoAkhir = 0;
+						$posisiSaldoAkhir  = '0';
+					}
+					else
+					{
+						$saldoAkhir -= $saldo;
+					}
+				}
+				else
+				{
+						$saldoAkhir += $saldo;
+				}
+			}
+		}	
+		
 		$JurnalBukuBesarRecord = new JurnalBukuBesarRecord();
 		$JurnalBukuBesarRecord->id_transaksi = $idTrans;
 		$JurnalBukuBesarRecord->sumber_transaksi = $sumberTrans;
@@ -939,25 +1051,12 @@ class MainConf extends TPage
 		$JurnalBukuBesarRecord->nama_akun = $namaAkun;
 		$JurnalBukuBesarRecord->keterangan = $keterangan;
 		$JurnalBukuBesarRecord->id_bank = $idBank;
-		$JurnalBukuBesarRecord->debet = $debet;
-		$JurnalBukuBesarRecord->kredit = $kredit;
-		//$JurnalBukuBesarRecord->saldo_akhir = $saldoAkhir;
+		$JurnalBukuBesarRecord->saldo = $saldo;
+		$JurnalBukuBesarRecord->saldo_akhir = $saldoAkhir;
+		$JurnalBukuBesarRecord->posisi_saldo_akhir = $posisiSaldoAkhir;
 		
 		$JurnalBukuBesarRecord->save();
 		
-		if($sumberTrans != '0')
-		{
-			$BankRecord = BankRecord::finder()->findByPk($idBank);
-			if($BankRecord)
-			{
-				if($jnsTrans == '0')
-					$BankRecord->saldo += $jmlTrans;
-				else
-					$BankRecord->saldo -= $jmlTrans;
-				
-				$BankRecord->save();
-			}
-		}
 	}
 	
 	public function profilPerusahaan()

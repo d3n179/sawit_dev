@@ -839,30 +839,40 @@
 			
 			function submitBtnClicked()
 			{
+				var statusTbs = jQuery('#<%= $this->statusTbsOrder->getClientID()%>').val();
+				var jml_bayar = parseFloat(jQuery('#<%= $this->jml_bayar->getClientID()%>').val().replace(/\,/g,''));
+				
 				if(jQuery('#<%= $this->DDCoa->getClientID()%>').val() != '')
 				{
-					if(localDB.tableExists('BayarTbsTable'))
+					if((statusTbs == '2' && jml_bayar > 0) || statusTbs != '2' )
 					{
-						var CHECK = localDB.queryAll('BayarTbsTable', {sort: [["ID", "ASC"]]});
-						if(CHECK.length > 0)
+						if(localDB.tableExists('BayarTbsTable'))
 						{
-							var BayarTbsTable = localDB.queryAll('BayarTbsTable', {sort: [["ID", "ASC"]]});
-							var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
-							request.setCallbackParameter({
-								BayarTbsTable:BayarTbsTable
-							});
-							request.dispatch();
-							
-			
+							var CHECK = localDB.queryAll('BayarTbsTable', {sort: [["ID", "ASC"]]});
+							if(CHECK.length > 0)
+							{
+								var BayarTbsTable = localDB.queryAll('BayarTbsTable', {sort: [["ID", "ASC"]]});
+								var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
+								request.setCallbackParameter({
+									BayarTbsTable:BayarTbsTable
+								});
+								request.dispatch();
+								
+				
+							}
+							else
+							{
+								toastr.error("Transaksi Belum Dimasukkan !");
+							}
 						}
 						else
 						{
-							toastr.error("Transaksi Belum Dimasukkan !");
+							toastr.error("Transaksi Belum Dimasukkan!");
 						}
 					}
 					else
 					{
-						toastr.error("Transaksi Belum Dimasukkan!");
+						toastr.error("Jumlah Pembayaran Belum Dimasukkan!");
 					}
 				}
 					

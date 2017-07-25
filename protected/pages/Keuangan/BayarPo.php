@@ -369,9 +369,15 @@ class BayarPo extends MainConf
 		
 		
 		if($this->DDJnsBayar->SelectedValue == '1')
-				$BayarPoOrderRecord->id_bank =$this->DDBank->SelectedValue; 
-			else
-				$BayarPoOrderRecord->id_bank = '8';
+		{
+			$BayarPoOrderRecord->id_bank =$this->DDBank->SelectedValue; 
+			$namaAkun = 'Kas Bank';
+		}
+		else
+		{
+			$BayarPoOrderRecord->id_bank = '8';
+			$namaAkun = 'Kas';
+		}
 				
 		$BayarPoOrderRecord->no_ref = $this->noRef->Text;		
 		$BayarPoOrderRecord->save();
@@ -386,25 +392,41 @@ class BayarPo extends MainConf
 		$PurchaseOrderRecord = PurchaseOrderRecord::finder()->findByPk($idPo);
 			
 		$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;
+		
+		$this->UbahSaldoKas('1',$BayarPoOrderRecord->id_bank,$BayarPoOrderRecord->total_pembayaran);
+		
 		$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
-									'1',
+									'3',
 									'1',
 									$BayarPoOrderRecord->no_pembayaran,
 									$BayarPoOrderRecord->tgl_pembayaran,
 									date("G:i:s"),
 									$BayarPoOrderRecord->id_coa,
 									$BayarPoOrderRecord->id_bank,
+									$namaAkun,
 									'Pembayaran PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
 									$BayarPoOrderRecord->total_pembayaran);
-									
-		$this->InsertLabaRugi($BayarPoOrderRecord->id,
+														
+		$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+									'3',
+									'1',
+									$BayarPoOrderRecord->no_pembayaran,
+									$BayarPoOrderRecord->tgl_pembayaran,
+									date("G:i:s"),
+									$BayarPoOrderRecord->id_coa,
+									$BayarPoOrderRecord->id_bank,
+									"Hutang",
+									'Pembayaran PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
+									$BayarPoOrderRecord->total_pembayaran);
+																					
+		/*$this->InsertLabaRugi($BayarPoOrderRecord->id,
 								'1',
 								'1',
 								$BayarPoOrderRecord->tgl_pembayaran,
 								date("G:i:s"),
 								'Pembayaran PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
 								$BayarPoOrderRecord->total_pembayaran,
-								$BayarPoOrderRecord->no_pembayaran);
+								$BayarPoOrderRecord->no_pembayaran);*/
 		
 		
 		$this->InsertJurnalUmum($BayarPoOrderRecord->id,

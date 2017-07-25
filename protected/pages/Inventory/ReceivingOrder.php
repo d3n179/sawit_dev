@@ -366,6 +366,7 @@ class ReceivingOrder extends MainConf
 					$jmlSaldo -= $dpPo;
 				}
 				var_dump($jmlSaldo);
+				
 				$this->InsertJurnalUmum($ReceivingOrderRecord->id,
 										'1',
 										'0',
@@ -381,9 +382,33 @@ class ReceivingOrder extends MainConf
 										date("Y-m-d"),
 										date("G:i:s"),
 										'Hutang',
-										$jmlSaldo,
+										$jmlSaldo - $dpPo,
 										$ReceivingOrderRecord->no_document);
-										
+				
+				$this->InsertJurnalBukuBesar($ReceivingOrderRecord->id,
+														'2',
+														'0',
+														$ReceivingOrderRecord->no_document,
+														date("Y-m-d"),
+														date("G:i:s"),
+														'',
+														'',
+														'Perlengkapan',
+														'Penerimaan Perlengkapan Dari PO No '.$PurchaseOrderRecord->no_po,
+														$jmlSaldo - $dpPo);
+														
+				$this->InsertJurnalBukuBesar($ReceivingOrderRecord->id,
+														'2',
+														'0',
+														$ReceivingOrderRecord->no_document,
+														date("Y-m-d"),
+														date("G:i:s"),
+														'',
+														'',
+														"Hutang",
+														'Penerimaan Perlengkapan Dari PO No '.$PurchaseOrderRecord->no_po,
+														$jmlSaldo - $dpPo);
+																				
 				
 				
 				$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;		
@@ -396,7 +421,7 @@ class ReceivingOrder extends MainConf
 											$supplierName,
 											'',
 											'',
-											$jmlSaldo);
+											$jmlSaldo - $dpPo);
 			}
 			$tblBody = $this->BindGrid();
 				

@@ -361,10 +361,12 @@ class PurchaseOrder extends MainConf
 				if($this->DDBank->SelectedValue != '')
 				{
 					$idBank = $this->DDBank->SelectedValue;
+					$namaAkun = "Kas Bank";
 				}
 				else
 				{
 					$idBank = '8';
+					$namaAkun = "Kas";
 				}
 				
 				$PurchaseOrderRecord->id_bank = $idBank;
@@ -372,17 +374,33 @@ class PurchaseOrder extends MainConf
 				$PurchaseOrderRecord->save();
 				
 				$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;
+				
+				$this->UbahSaldoKas('1',$PurchaseOrderRecord->id_bank,$PurchaseOrderRecord->dp);
+				
 				$this->InsertJurnalBukuBesar($PurchaseOrderRecord->id,
-									'1',
-									'1',
-									$PurchaseOrderRecord->no_po,
-									$PurchaseOrderRecord->tgl_po,
-									date("G:i:s"),
-									$PurchaseOrderRecord->id_coa,
-									$PurchaseOrderRecord->id_bank,
-									'Pembayaran DP PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
-									$PurchaseOrderRecord->dp);
-									
+														'1',
+														'1',
+														$PurchaseOrderRecord->no_po,
+														date("Y-m-d"),
+														date("G:i:s"),
+														$PurchaseOrderRecord->id_coa,
+														$PurchaseOrderRecord->id_bank,
+														$namaAkun,
+														'Pembayaran DP PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
+														$PurchaseOrderRecord->dp);
+														
+				$this->InsertJurnalBukuBesar($PurchaseOrderRecord->id,
+														'1',
+														'0',
+														$PurchaseOrderRecord->no_po,
+														date("Y-m-d"),
+														date("G:i:s"),
+														$PurchaseOrderRecord->id_coa,
+														$PurchaseOrderRecord->id_bank,
+														"Perlengkapan",
+														'Pembayaran DP PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
+														$PurchaseOrderRecord->dp);
+																	
 				/*$this->InsertLabaRugi($PurchaseOrderRecord->id,
 									'6',
 									'1',

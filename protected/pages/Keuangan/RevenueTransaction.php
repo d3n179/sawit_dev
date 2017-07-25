@@ -185,6 +185,32 @@ class RevenueTransaction extends MainConf
 		$Record->coa_id = $this->DDCoa->text;
 		$Record->save();
 		
+		if($Record->bank_id == '8')
+			$namaAkun = 'Kas';
+		else
+			$namaAkun = 'Kas Bank';
+		
+		$this->UbahSaldoKas('0',$Record->bank_id,$Record->total_revenue);
+			
+		$this->InsertJurnalUmum($Record->id,
+							'6',
+							'0',
+							$Record->tgl_transaksi,
+							date("G:i:s"),
+							$namaAkun,
+							$Record->total_revenue,
+							$Record->transaction_no,
+							$Record->bank_id);
+		
+		$this->InsertJurnalUmum($Record->id,
+							'6',
+							'1',
+							$Record->tgl_transaksi,
+							date("G:i:s"),
+							'Pendapatan Lain-lain',
+							$Record->total_revenue,
+							$Record->transaction_no);
+		
 		$this->InsertJurnalBukuBesar($Record->id,
 										'5',
 										'0',
@@ -193,9 +219,22 @@ class RevenueTransaction extends MainConf
 										date("G:i:s"),
 										$Record->coa_id,
 										$Record->bank_id,
+										$namaAkun,
 										$Record->deskripsi,
 										$Record->total_revenue);
 		
+		$this->InsertJurnalBukuBesar($Record->id,
+										'5',
+										'0',
+										$Record->transaction_no,
+										$Record->tgl_transaksi,
+										date("G:i:s"),
+										$Record->coa_id,
+										$Record->bank_id,
+										'Pendapatan Lain-lain',
+										$Record->deskripsi,
+										$Record->total_revenue);
+										
 		$this->InsertLabaRugi($Record->id,
 								'5',
 								'0',
@@ -205,24 +244,7 @@ class RevenueTransaction extends MainConf
 								$Record->total_revenue,
 								$Record->transaction_no);
 		
-		$this->InsertJurnalUmum($Record->id,
-								'6',
-								'0',
-								$Record->tgl_transaksi,
-								date("G:i:s"),
-								'Kas',
-								$Record->total_revenue,
-								$Record->transaction_no,
-								$Record->bank_id);
-									
-		$this->InsertJurnalUmum($Record->id,
-									'6',
-									'1',
-									$Record->tgl_transaksi,
-									date("G:i:s"),
-									$Record->deskripsi,
-									$Record->total_revenue,
-									$Record->transaction_no);
+		
 		
 		$keterangan = RevenueRecord::finder()->findByPk($Record->revenue_id)->nama;
 		$nama_akun = RevenueCategoryRecord::finder()->findByPk($Record->revenue_category_id)->nama;

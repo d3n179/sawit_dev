@@ -85,7 +85,8 @@ class LaporanJurnalUmum extends MainConf
 					FROM 
 						tbt_jurnal_umum
 					WHERE
-						tbt_jurnal_umum.deleted ='0' ";
+						tbt_jurnal_umum.deleted ='0' 
+						AND tbt_jurnal_umum.jumlah_saldo > 0 ";
 		
 		if($periode == '0')
 		{
@@ -125,7 +126,7 @@ class LaporanJurnalUmum extends MainConf
 		}	
 		
 		$sqlTrans .=" ORDER BY
-							tbt_jurnal_umum.tgl_transaksi ASC ";
+							tbt_jurnal_umum.id ASC ";
 		
 		$this->setViewState('sql',$sqlTrans);
 		$arrTrans = $this->queryAction($sqlTrans,'S');

@@ -1,5 +1,5 @@
 <com:TContent ID="Main">
-	<h2>Rekap Gaji Karyawan</h2>
+	<h2>Laporan Rekap Gaji Karyawan</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->	
 	<div class="row">
@@ -28,6 +28,23 @@
 	
 	<div class="row">
 		
+		<div class="col-md-3" id="panelTahunan">
+			<div class="form-group">
+				<label for="DDTahun" class="control-label">Tahun</label>
+				<com:TActiveDropDownList 
+									ID="DDTahun"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="true"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+			</div>	
+							
+		</div>
 		
 		<div class="col-md-3" id="panelBulanan">
 			<div class="form-group">
@@ -57,23 +74,7 @@
 							
 		</div>
 		
-		<div class="col-md-3" id="panelTahunan">
-			<div class="form-group">
-				<label for="DDTahun" class="control-label">Tahun</label>
-				<com:TActiveDropDownList 
-									ID="DDTahun"
-									Width="190px"
-									PromptText="--Pilih Tahun--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="true"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-			</div>	
-							
-		</div>
+		
 		
 		<div class="col-md-3" id="panelMingguan" Style="Display:None;">
 			<div class="form-group">
@@ -97,10 +98,6 @@
 				<button type="button" class="btn btn-green btn-icon" OnClick="cetakClicked()">
 								Cetak
 								<i class="entypo-print"></i>
-							</button>
-				<button type="button" class="btn btn-primary btn-icon" OnClick="closingClicked()">
-								Closing
-								<i class="entypo-check"></i>
 							</button>
 			</div>
 		</div>	

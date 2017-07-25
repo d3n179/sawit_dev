@@ -24,8 +24,10 @@ class BukuBesar extends MainConf
 				$this->DDTahun->DataSource = $arrThn;
 				$this->DDTahun->DataBind();
 				
-				$sqlAkun = "SELECT id,nama_akun FROM tbt_jurnal_buku_besar WHERE deleted != '1' GROUP BY nama_akun";
+				
+				$sqlAkun = "SELECT id,nama_akun AS nama FROM tbt_jurnal_buku_besar WHERE deleted != '1' GROUP BY nama_akun";
 				$arrAkun = $this->queryAction($sqlAkun,'S');
+				$arrAkun[] = array("id"=>0,"nama"=>"Semua");
 				$this->DDAkun->DataSource = $arrAkun;
 				$this->DDAkun->DataBind();
 			}
@@ -77,13 +79,20 @@ class BukuBesar extends MainConf
 	public function cariBtnClicked($sender,$param)
 	{
 		$periode = $this->Periode->Text;
-		$idBank = $this->DDBank->SelectedValue;
+		$namaAkun = $param->CallbackParameter->namaAkun;
+		
 		$sqlTrans = "SELECT
 						*
 					FROM
 						tbt_jurnal_buku_besar
 					WHERE
-						tbt_jurnal_buku_besar.id_bank = '$idBank' ";
+						tbt_jurnal_buku_besar.deleted != '1' 
+						AND tbt_jurnal_buku_besar.saldo > 0 ";
+		
+		if($namaAkun != 'Semua')
+		{
+			$sqlTrans .= "AND tbt_jurnal_buku_besar.nama_akun = '$namaAkun' ";
+		}
 		
 		if($periode == '0')
 		{
@@ -123,36 +132,59 @@ class BukuBesar extends MainConf
 		}	
 		
 		$sqlTrans .="ORDER BY
-						tbt_jurnal_buku_besar.id ASC";
+						tbt_jurnal_buku_besar.nama_akun ";
 		$arrTrans = $this->queryAction($sqlTrans,'S');
+		
 		$tblBody = '';
 		$this->setViewState('sql',$sqlTrans);
-		if($arrTrans && $this->DDBank->SelectedValue != '' && $this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '')
+		if($arrTrans && $this->DDAkun->SelectedValue != '' && $this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '')
 		{
 			
 			foreach($arrTrans as $row)
 			{
-									
+				var_dump($sqlTrans);					
 				$tblBody .= '<tr>';
-				$tblBody .= '<td>'.$row['asal_kas'].'</td>';
-				$tblBody .= '<td>'.$sumberTrans.'</td>';
-				$tblBody .= '<td>'.$row['no_transaksi'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
-				$tblBody .= '<td>'.$row['wkt_transaksi'].'</td>';
-				$tblBody .= '<td>'.$row['kode_coa'].'</td>';
+				$tblBody .= '<td>'.$row['nama_akun'].'</td>';
 				$tblBody .= '<td>'.$row['keterangan'].'</td>';
 				
-				if($row['jns_transaksi'] == '0')//DEBET
+				if($row['nama_akun'] == 'Kas' || $row['nama_akun'] == 'Kas Bank' || $row['nama_akun'] == 'Perlengkapan' || $row['nama_akun'] == 'Persediaan Bahan Baku' || $row['nama_akun'] == 'Persediaan Barang Dagangan' || $row['nama_akun'] == 'Beban Gaji' || $row['nama_akun'] == 'Beban Lain-lain')
 				{
-					$tblBody .= '<td>'.number_format($row['saldo_transaksi'],2,'.',',').'</td>';
-					$tblBody .= '<td>'.number_format(0,2,'.',',').'</td>';
+					if($row['jns_transaksi'] == '0')
+					{
+						$tblBody .= '<td align=\"right\">'.number_format($row['saldo'],2,'.',',').'</td>';
+						$tblBody .= '<td align=\"right\">-</td>';
+					}
+					elseif($row['jns_transaksi'] == '1')
+					{
+						$tblBody .= '<td align=\"right\">-</td>';
+						$tblBody .= '<td align=\"right\">'.number_format($row['saldo'],2,'.',',').'</td>';
+					}
 				}
-				elseif($row['jns_transaksi'] == '1')//KREDIT
+				elseif($row['nama_akun'] == 'Modal' || $row['nama_akun'] == 'Hutang' || $row['nama_akun'] == 'Hutang Gaji' || $row['nama_akun'] == 'Pendapatan Lain-lain' || $row['nama_akun'] == 'Pendapatan')
 				{
-					$tblBody .= '<td>'.number_format(0,2,'.',',').'</td>';
-					$tblBody .= '<td>'.number_format($row['saldo_transaksi'],2,'.',',').'</td>';
+					if($row['jns_transaksi'] == '0')
+					{
+						$tblBody .= '<td align=\"right\">-</td>';
+						$tblBody .= '<td align=\"right\">'.number_format($row['saldo'],2,'.',',').'</td>';
+					}
+					elseif($row['jns_transaksi'] == '1')
+					{
+						$tblBody .= '<td align=\"right\">'.number_format($row['saldo'],2,'.',',').'</td>';
+						$tblBody .= '<td align=\"right\">-</td>';
+					}
 				}
-				$tblBody .= '<td>'.number_format($row['saldo_akhir'],2,'.',',').'</td>';	
+				
+				if($row['posisi_saldo_akhir'] == '0')
+				{
+					$tblBody .= '<td align=\"right\">'.number_format($row['saldo_akhir'],2,'.',',').'</td>';
+					$tblBody .= '<td align=\"right\">-</td>';
+				}
+				elseif($row['posisi_saldo_akhir'] == '1')
+				{
+					$tblBody .= '<td align=\"right\">-</td>';
+					$tblBody .= '<td align=\"right\">'.number_format($row['saldo_akhir'],2,'.',',').'</td>';
+				}
 					
 				$tblBody .= '</tr>';
 			}
@@ -224,7 +256,7 @@ class BukuBesar extends MainConf
 	
 	public function cetakLapBukuKas()
 	{
-		if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '' && $this->DDBank->SelectedValue != '')
+		if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '' && $this->DDAkun->SelectedValue != '')
 		{
 			$session=new THttpSession;
 			$session->open();
@@ -236,7 +268,7 @@ class BukuBesar extends MainConf
 					'bln'=>$this->DDBulan->SelectedValue,
 					'thn'=>$this->DDTahun->SelectedValue,
 					'mingguan'=>$this->mingguan->Text,
-					'idBank'=>$this->DDBank->SelectedValue)));
+					'namaAkun'=>$this->DDAkun->SelectedValue)));
 		}
 		else
 		{

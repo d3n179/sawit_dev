@@ -1,11 +1,13 @@
 <com:TContent ID="Main">
-	<h2>Buku Besar</h2>
+	<h2>Rekap Gaji Karyawan</h2>
 	<hr>
-	 <com:TActivePanel CssClass="form"><!--form begin-->			
+	 <com:TActivePanel CssClass="form"><!--form begin-->	
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
 				<label for="Periode" class="control-label">Periode</label>
+				<com:TActiveHiddenField
+									ID="arrGaji"></com:TActiveHiddenField>
 				<com:TActiveDropDownList 
 									ID="Periode"
 									Width="190px"
@@ -21,22 +23,7 @@
 									</com:TActiveDropDownList>	
 			</div>	
 						
-		</div>
-		<div class="col-md-3">
-			<div class="form-group">
-				<label for="nmBarang" class="control-label">Nama Akun</label>
-					<com:TActiveDropDownList 
-									ID="DDAkun"
-									Width="190px"
-									AutoPostBack="false"
-									CausesValidation="false"
-									DataValueField="id"
-									DataTextField="nama"
-									CssClass="form-control">
-									</com:TActiveDropDownList>	
-			</div>	
-						
-		</div>			
+		</div>		
 	</div>
 	
 	<div class="row">
@@ -50,18 +37,19 @@
 									Width="190px"
 									PromptText="--Pilih Bulan--"
 									PromptValue="empty"
+									Enabled="false"
 									AutoPostBack="false"
 									CausesValidation="true"
 									CssClass="form-control">
-									<com:TListItem Text="Januari" Value="1"/>
-									<com:TListItem Text="Februari" Value="2"/>
-									<com:TListItem Text="Maret" Value="3"/>
-									<com:TListItem Text="April" Value="4"/>
-									<com:TListItem Text="Mei" Value="5"/>
-									<com:TListItem Text="Juni" Value="6"/>
-									<com:TListItem Text="Juli" Value="7"/>
-									<com:TListItem Text="Agustus" Value="8"/>
-									<com:TListItem Text="September" Value="9"/>
+									<com:TListItem Text="Januari" Value="01"/>
+									<com:TListItem Text="Februari" Value="02"/>
+									<com:TListItem Text="Maret" Value="03"/>
+									<com:TListItem Text="April" Value="04"/>
+									<com:TListItem Text="Mei" Value="05"/>
+									<com:TListItem Text="Juni" Value="06"/>
+									<com:TListItem Text="Juli" Value="07"/>
+									<com:TListItem Text="Agustus" Value="08"/>
+									<com:TListItem Text="September" Value="09"/>
 									<com:TListItem Text="Oktober" Value="10"/>
 									<com:TListItem Text="November" Value="11"/>
 									<com:TListItem Text="Desember" Value="12"/>
@@ -76,6 +64,7 @@
 				<com:TActiveDropDownList 
 									ID="DDTahun"
 									Width="190px"
+									Enabled="false"
 									PromptText="--Pilih Tahun--"
 									PromptValue="empty"
 									AutoPostBack="false"
@@ -103,13 +92,9 @@
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
-				<button type="button" class="btn btn-blue btn-icon" OnClick="cariClicked()">
-								Cari
-								<i class="entypo-search"></i>
-							</button>
-				<button type="button" class="btn btn-green btn-icon" OnClick="cetakClicked()">
-								Cetak
-								<i class="entypo-print"></i>
+				<button type="button" class="btn btn-primary btn-icon" OnClick="closingClicked()">
+								Closing
+								<i class="entypo-check"></i>
 							</button>
 			</div>
 		</div>	
@@ -125,16 +110,53 @@
 			<table class="table table-bordered datatable" id="table-1">
 				<thead>
 					<tr>
-						<th width="300px" Rowspan="2">Tanggal Transaksi</th>
-						<th width="300px" Rowspan="2">Nama Akun</th>
-						<th width="300px" Rowspan="2">Keterangan</th>
-						<th width="300px" Rowspan="2">Debet</th>
-						<th width="300px" Rowspan="2">Kredit</th>
-						<th width="300px" Colspan="2">Saldo</th>
+						<th width="300px" Rowspan="3">Department</th>
+						<th width="300px" Rowspan="3">Employee ID</th>
+						<th width="300px" Rowspan="3">Nama</th>
+						<th width="300px" Rowspan="3">Posisi</th>
+						<th width="300px" Rowspan="3">Gol</th>
+						<th width="300px" Rowspan="3">PTKP</th>
+						<th width="300px" Rowspan="3">TMK</th>
+						<th width="300px" Rowspan="3">Gaji Pokok</th>
+						<th width="300px" Rowspan="3">Tunjangan Natura</th>
+						<th width="300px" Rowspan="3">Incentive</th>
+						<th width="300px" Rowspan="3">Tunjangan Jabatan</th>
+						<th width="300px" Rowspan="3">Tunjangan Komunikasi</th>
+						<th width="300px" Rowspan="3">Premi Karyawan</th>
+						<th width="300px" Rowspan="3">Total Gaji</th>
+						<th width="300px" colspan="9">Lembur</th>
+						<th width="300px" Rowspan="3">Total Lembur</th>
+						<th width="300px" Rowspan="3">Mangkir</th>
+						<th width="300px" Rowspan="3">Terlambat Masuk Kerja</th>
+						<th width="300px" Rowspan="3">Total Mangkir & Terlambat</th>
+						<th width="300px" Rowspan="3">Total Gaji Kotor</th>
+						<th width="300px" colspan="5">Potongan</th>
+						<th width="300px" Rowspan="3">Total Potongan</th>
+						<th width="300px" Rowspan="3">Gaji Dibayarkan</th>
 					</tr>
 					<tr>
-						<th width="300px">Debet</th>
-						<th width="300px">Kredit</th>
+						<th width="300px" colspan="3">Tarif LPP</th>
+						<th width="300px" colspan="3">Tarif LPPML</th>
+						<th width="300px" colspan="3">Tarif LPPLK</th>
+						
+						<th width="300px" Rowspan="2">BPJS Kesehatan</th>
+						<th width="300px" Rowspan="2">BPJS Ketenagakerjaan</th>
+						<th width="300px" Rowspan="2">Pinjaman</th>
+						<th width="300px" Rowspan="2">Kantin</th>
+						<th width="300px" Rowspan="2">Koperasi</th>
+					</tr>
+					<tr>
+						<th width="300px">Jam</th>
+						<th width="300px">Rp/Tarif</th>
+						<th width="300px">Total</th>
+						
+						<th width="300px">Jam</th>
+						<th width="300px">Rp/Tarif</th>
+						<th width="300px">Total</th>
+						
+						<th width="300px">Jam</th>
+						<th width="300px">Rp/Tarif</th>
+						<th width="300px">Total</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -146,28 +168,20 @@
 	</com:TActivePanel>	<!--form End-->
 	<com:TCallback ID="cariCallback" OnCallback="cariBtnClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="detailCallback" OnCallback="detailClicked" ActiveControl.CausesValidation="false"/>
-	<com:TCallback ID="cetakCallback" OnCallback="cetakLapBukuKas" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakCallback" OnCallback="cetakLapKartuStok" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="closingCallback" OnCallback="closingClicked" ActiveControl.CausesValidation="false"/>
+	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
 			{
-				var namaAkun = jQuery('#<%= $this->DDAkun->getClientID()%> option:selected').text();
-				console.log(namaAkun);
 				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
-				request.setCallbackParameter({
-							namaAkun:namaAkun
-						});
 				request.dispatch();
 			});
 			
 			function cariClicked()
 			{
 				loadContent();
-				var namaAkun = jQuery('#<%= $this->DDAkun->getClientID()%> option:selected').text();
-				console.log(namaAkun);
 				var request= <%= $this->cariCallback->ActiveControl->Javascript %>;
-				request.setCallbackParameter({
-							namaAkun:namaAkun
-						});
 				request.dispatch();
 				unloadContent();
 			}
@@ -187,7 +201,7 @@
 					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
 					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 					"bStateSave": true,
-					"aaSorting":[[1,"asc"]],
+					"scrollX": "100%",
 		
 				    // Responsive Settings
 				    bAutoWidth     : false,
@@ -216,6 +230,24 @@
 					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
 						request.dispatch();
 				unloadContent();
+			}
+			
+			function closingClicked()
+			{
+				if(jQuery('#<%= $this->DDBulan->getClientID()%>').val() != 'empty' && jQuery('#<%= $this->DDTahun->getClientID()%>').val() != 'empty')
+				{
+					if(confirm('Closing Rekap Gaji Untuk Bulan Ini ? '))
+					{
+						loadContent();
+						var request= <%= $this->closingCallback->ActiveControl->Javascript %>;
+							request.dispatch();
+						
+					}
+					else
+					{
+						return false;
+					}
+				}	
 			}
 		</script>
 		

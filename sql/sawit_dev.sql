@@ -2,15 +2,15 @@
 Navicat MySQL Data Transfer
 
 Source Server         : LOCALHOST
-Source Server Version : 50516
+Source Server Version : 50555
 Source Host           : localhost:3306
 Source Database       : sawit_dev
 
 Target Server Type    : MYSQL
-Target Server Version : 50516
+Target Server Version : 50555
 File Encoding         : 65001
 
-Date: 2017-07-24 08:08:10
+Date: 2017-07-25 16:51:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -102,11 +102,14 @@ CREATE TABLE `tbd_stok_barang` (
   `expired_date` date DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbd_stok_barang
 -- ----------------------------
+INSERT INTO `tbd_stok_barang` VALUES ('1', '1020', '60370000.00', '0000-00-00', '0');
+INSERT INTO `tbd_stok_barang` VALUES ('2', '783', '100.00', '0000-00-00', '0');
+INSERT INTO `tbd_stok_barang` VALUES ('3', '1011', '250.00', '0000-00-00', '0');
 
 -- ----------------------------
 -- Table structure for tbd_user
@@ -148,7 +151,7 @@ INSERT INTO `tbd_user` VALUES ('nurmuliana', 'e10adc3949ba59abbe56e057f20f883e',
 INSERT INTO `tbd_user` VALUES ('operator', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'Deni Andriansah', '73', '1', '2015-12-25', '4:04:37', '2015-12-25', '5:46:25', '0', '', '0');
 INSERT INTO `tbd_user` VALUES ('pinta', 'bf5e9c42dce63bc7467cb5a6e1959f1e', 'pinta riski mala hasibuan', '3', '1', '2017-05-22', '6:26:41', '2017-07-10', '9:03:20', '1', '', '0');
 INSERT INTO `tbd_user` VALUES ('test', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'Test', '2', '1', '2015-12-24', '23:08:14', '2017-04-25', '11:18:59', '0', '', '1');
-INSERT INTO `tbd_user` VALUES ('xadmin', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'xadmin', '1', '1', '2011-10-03', '14:16:08', '2017-07-23', '18:50:27', '1', '', '0');
+INSERT INTO `tbd_user` VALUES ('xadmin', 'd8578edf8458ce06fbc5bb76a58c5ca4', 'xadmin', '1', '1', '2011-10-03', '14:16:08', '2017-07-25', '15:23:48', '1', '', '0');
 
 -- ----------------------------
 -- Table structure for tbm_agama
@@ -217,16 +220,16 @@ INSERT INTO `tbm_bank` VALUES ('4', 'BANK BNI', '5476565645', 'Deni Andriansah',
 INSERT INTO `tbm_bank` VALUES ('5', 'BANK JB', '958384738', 'Ani', '0.00', '1');
 INSERT INTO `tbm_bank` VALUES ('6', 'BI', null, null, '0.00', '1');
 INSERT INTO `tbm_bank` VALUES ('7', 'BIAYA 1', null, null, '0.00', '1');
-INSERT INTO `tbm_bank` VALUES ('8', 'PETTY CASH', null, null, '50000000.00', '');
-INSERT INTO `tbm_bank` VALUES ('9', 'ANZ INDONESIA', '4113220100001', 'PT. Sibuah Raya', '25000000.00', '0');
-INSERT INTO `tbm_bank` VALUES ('10', 'BRI', '36701001119303', 'PT. Mujur Usaha Mandiri', '80000000.00', '0');
-INSERT INTO `tbm_bank` VALUES ('11', 'BNI', '600760141', 'Pt. Sinar Halomoan', '70000000.00', '0');
-INSERT INTO `tbm_bank` VALUES ('12', 'BNI', '2021956558', 'Mandurana Tbs', '0.00', '0');
-INSERT INTO `tbm_bank` VALUES ('13', 'BNI', '436696841', 'Ud. Zio', '0.00', '0');
-INSERT INTO `tbm_bank` VALUES ('14', 'BNI', '1980061005', 'Shs', '0.00', '0');
-INSERT INTO `tbm_bank` VALUES ('15', 'BNI', '534531025', 'Ud.rizki', '0.00', '0');
-INSERT INTO `tbm_bank` VALUES ('16', 'BNI', '377354972', 'Ud. Mitra Pribadi', '0.00', '0');
-INSERT INTO `tbm_bank` VALUES ('17', 'BNI', '458054499', 'Ud. Pinarik Jaya', '0.00', '0');
+INSERT INTO `tbm_bank` VALUES ('8', 'PETTY CASH', null, null, '103467310.00', '');
+INSERT INTO `tbm_bank` VALUES ('9', 'ANZ INDONESIA', '4113220100001', 'PT. Sibuah Raya', '45488647.50', '0');
+INSERT INTO `tbm_bank` VALUES ('10', 'BRI', '36701001119303', 'PT. Mujur Usaha Mandiri', '52500000.00', '0');
+INSERT INTO `tbm_bank` VALUES ('11', 'BNI', '600760141', 'Pt. Sinar Halomoan', '80000000.00', '0');
+INSERT INTO `tbm_bank` VALUES ('12', 'BNI', '2021956558', 'Mandurana Tbs', null, '0');
+INSERT INTO `tbm_bank` VALUES ('13', 'BNI', '436696841', 'Ud. Zio', null, '0');
+INSERT INTO `tbm_bank` VALUES ('14', 'BNI', '1980061005', 'Shs', null, '0');
+INSERT INTO `tbm_bank` VALUES ('15', 'BNI', '534531025', 'Ud.rizki', '30000000.00', '0');
+INSERT INTO `tbm_bank` VALUES ('16', 'BNI', '377354972', 'Ud. Mitra Pribadi', '65000000.00', '0');
+INSERT INTO `tbm_bank` VALUES ('17', 'BNI', '458054499', 'Ud. Pinarik Jaya', null, '0');
 
 -- ----------------------------
 -- Table structure for tbm_barang
@@ -1295,7 +1298,7 @@ CREATE TABLE `tbm_barang_harga` (
   `harga` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbm_barang_harga
@@ -1432,6 +1435,23 @@ INSERT INTO `tbm_barang_harga` VALUES ('129', '324', '2017-07-23', '35000.00', '
 INSERT INTO `tbm_barang_harga` VALUES ('130', '1011', '2017-07-23', '15000.00', '0');
 INSERT INTO `tbm_barang_harga` VALUES ('131', '41', '2017-07-23', '1000.00', '0');
 INSERT INTO `tbm_barang_harga` VALUES ('132', '324', '2017-07-23', '35000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('133', '1011', '2017-07-24', '15000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('134', '315', '2017-07-24', '25000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('135', '1020', '2017-07-24', '3500.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('136', '1020', '2017-07-24', '3500.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('137', '1020', '2017-07-24', '3500.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('138', '1020', '2017-07-24', '3500.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('139', '783', '2017-07-24', '30000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('140', '303', '2017-07-24', '25000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('141', '783', '2017-07-24', '30000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('142', '303', '2017-07-24', '25000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('143', '1020', '2017-07-25', '4250.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('144', '1020', '2017-07-25', '3250.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('145', '1020', '2017-07-25', '3250.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('146', '1020', '2017-07-25', '3250.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('147', '1020', '2017-07-25', '3250.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('148', '783', '2017-07-25', '30000.00', '0');
+INSERT INTO `tbm_barang_harga` VALUES ('149', '1011', '2017-07-25', '15000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbm_barang_harga_potongan
@@ -1554,7 +1574,7 @@ CREATE TABLE `tbm_coa` (
 -- Records of tbm_coa
 -- ----------------------------
 INSERT INTO `tbm_coa` VALUES ('2', '0', '1000', 'A', 'AKUN AKTIVA', '0');
-INSERT INTO `tbm_coa` VALUES ('3', '1000', '1100', 'A', 'AKUN AKTIVA LANCAR EUY', '0');
+INSERT INTO `tbm_coa` VALUES ('3', '1000', '1100', 'A', 'AKUN AKTIVA LANCAR', '0');
 INSERT INTO `tbm_coa` VALUES ('4', '1100', '1100.1', 'A', 'KAS', '0');
 INSERT INTO `tbm_coa` VALUES ('5', '1100.1', '1100.1.1', 'A', 'Kas Operasional', '0');
 INSERT INTO `tbm_coa` VALUES ('6', '1100.1', '1100.1.2', 'A', 'Kas Kecil', '0');
@@ -2403,11 +2423,11 @@ INSERT INTO `tbm_coa` VALUES ('848', '7200.13', '7200.13.1', 'H', 'Biaya Lain-la
 INSERT INTO `tbm_coa` VALUES ('849', '7200.13', '7200.13.2', 'H', 'Biaya Operasional Direksi', '0');
 INSERT INTO `tbm_coa` VALUES ('850', '7200.13', '7200.13.3', 'H', 'Biaya Obat-obatan', '0');
 INSERT INTO `tbm_coa` VALUES ('961', '0', '45874958693', null, 'Test Euy', '1');
-INSERT INTO `tbm_coa` VALUES ('962', '0', '878978978', null, 'TEST 2', '0');
-INSERT INTO `tbm_coa` VALUES ('963', '878978978', '4645645', null, 'ANAK TEST 2', '0');
-INSERT INTO `tbm_coa` VALUES ('964', '4645645', '898989767', null, 'ANAKNYA ANAK TEST 2', '0');
-INSERT INTO `tbm_coa` VALUES ('965', '0', '12312323423', null, 'NODE 2', '0');
-INSERT INTO `tbm_coa` VALUES ('966', '12312323423', '4534534534', null, 'sdgerwefe', '0');
+INSERT INTO `tbm_coa` VALUES ('962', '0', '878978978', null, 'TEST 2', '1');
+INSERT INTO `tbm_coa` VALUES ('963', '878978978', '4645645', null, 'ANAK TEST 2', '1');
+INSERT INTO `tbm_coa` VALUES ('964', '4645645', '898989767', null, 'ANAKNYA ANAK TEST 2', '1');
+INSERT INTO `tbm_coa` VALUES ('965', '0', '12312323423', null, 'NODE 2', '1');
+INSERT INTO `tbm_coa` VALUES ('966', '12312323423', '4534534534', null, 'sdgerwefe', '1');
 
 -- ----------------------------
 -- Table structure for tbm_coa_kodrek_group
@@ -6082,11 +6102,13 @@ CREATE TABLE `tbt_bayar_rekap_gaji` (
   `user` varchar(60) DEFAULT '0',
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_bayar_rekap_gaji
 -- ----------------------------
+INSERT INTO `tbt_bayar_rekap_gaji` VALUES ('1', 'RG/2017/07/00001', '2017-07-25', '1', '4043337.50', 'XADMIN', null);
+INSERT INTO `tbt_bayar_rekap_gaji` VALUES ('2', 'RG/2017/07/00002', '2017-07-25', '1', '4382705.00', 'XADMIN', null);
 
 -- ----------------------------
 -- Table structure for tbt_cetakan
@@ -6326,11 +6348,23 @@ CREATE TABLE `tbt_harga_tbs_order` (
   `harga` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_harga_tbs_order
 -- ----------------------------
+INSERT INTO `tbt_harga_tbs_order` VALUES ('1', '2017-07-25', '1020', '1', '1', '1500.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('2', '2017-07-25', '1020', '2', '1', '1750.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('3', '2017-07-25', '1020', '3', '1', '2000.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('4', '2017-07-25', '1020', '4', '1', '2250.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('5', '2017-07-25', '1020', '1', '2', '2500.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('6', '2017-07-25', '1020', '2', '2', '2750.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('7', '2017-07-25', '1020', '3', '2', '3000.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('8', '2017-07-25', '1020', '4', '2', '3250.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('9', '2017-07-25', '1020', '1', '3', '3500.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('10', '2017-07-25', '1020', '2', '3', '3750.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('11', '2017-07-25', '1020', '3', '3', '4000.00', '0');
+INSERT INTO `tbt_harga_tbs_order` VALUES ('12', '2017-07-25', '1020', '4', '3', '4250.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_incentive
@@ -6366,16 +6400,60 @@ CREATE TABLE `tbt_jurnal_buku_besar` (
   `id_coa` int(11) DEFAULT NULL,
   `nama_akun` varchar(255) DEFAULT NULL,
   `keterangan` varchar(80) DEFAULT NULL,
-  `saldo` float(11,2) DEFAULT NULL,
-  `saldo_akhir` float(11,2) DEFAULT NULL,
+  `saldo` decimal(36,2) DEFAULT NULL,
+  `saldo_akhir` decimal(36,2) DEFAULT NULL,
   `posisi_saldo_akhir` char(1) DEFAULT '0',
+  `status` char(1) DEFAULT '0',
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_jurnal_buku_besar
 -- ----------------------------
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('1', '8', '8', '0', '0', '2017-07-25', '16:15:23', '8', '2', 'Kas', 'Setor Modal Awal', '100000000.00', '100000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('2', '8', '8', '0', '0', '2017-07-25', '16:15:23', '8', '2', 'Modal', 'Setor Modal Awal', '100000000.00', '100000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('3', '9', '9', '0', '0', '2017-07-25', '16:15:23', '9', '2', 'Kas Bank', 'Setor Modal Awal', '50000000.00', '50000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('4', '9', '9', '0', '0', '2017-07-25', '16:15:23', '9', '2', 'Modal', 'Setor Modal Awal', '50000000.00', '150000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('5', '10', '10', '0', '0', '2017-07-25', '16:15:24', '10', '2', 'Kas Bank', 'Setor Modal Awal', '80000000.00', '130000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('6', '10', '10', '0', '0', '2017-07-25', '16:15:24', '10', '2', 'Modal', 'Setor Modal Awal', '80000000.00', '230000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('7', '11', '11', '0', '0', '2017-07-25', '16:15:24', '11', '2', 'Kas Bank', 'Setor Modal Awal', '80000000.00', '210000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('8', '11', '11', '0', '0', '2017-07-25', '16:15:24', '11', '2', 'Modal', 'Setor Modal Awal', '80000000.00', '310000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('9', '12', '12', '0', '0', '2017-07-25', '16:15:24', '12', '2', 'Kas Bank', 'Setor Modal Awal', null, '210000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('10', '12', '12', '0', '0', '2017-07-25', '16:15:24', '12', '2', 'Modal', 'Setor Modal Awal', null, '310000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('11', '13', '13', '0', '0', '2017-07-25', '16:15:24', '13', '2', 'Kas Bank', 'Setor Modal Awal', null, '210000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('12', '13', '13', '0', '0', '2017-07-25', '16:15:24', '13', '2', 'Modal', 'Setor Modal Awal', null, '310000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('13', '14', '14', '0', '0', '2017-07-25', '16:15:24', '14', '2', 'Kas Bank', 'Setor Modal Awal', null, '210000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('14', '14', '14', '0', '0', '2017-07-25', '16:15:24', '14', '2', 'Modal', 'Setor Modal Awal', null, '310000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('15', '15', '15', '0', '0', '2017-07-25', '16:15:25', '15', '2', 'Kas Bank', 'Setor Modal Awal', '30000000.00', '240000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('16', '15', '15', '0', '0', '2017-07-25', '16:15:25', '15', '2', 'Modal', 'Setor Modal Awal', '30000000.00', '340000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('17', '16', '16', '0', '0', '2017-07-25', '16:15:25', '16', '2', 'Kas Bank', 'Setor Modal Awal', '65000000.00', '305000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('18', '16', '16', '0', '0', '2017-07-25', '16:15:25', '16', '2', 'Modal', 'Setor Modal Awal', '65000000.00', '405000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('19', '17', '17', '0', '0', '2017-07-25', '16:15:25', '17', '2', 'Kas Bank', 'Setor Modal Awal', null, '305000000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('20', '17', '17', '0', '0', '2017-07-25', '16:15:25', '17', '2', 'Modal', 'Setor Modal Awal', null, '405000000.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('21', '1', '8', '4', '1', '2017-07-25', '16:17:55', 'PAY/2017/07/00001', '229', 'Kas', 'Pembelian Secara Kredit & Tunai Kelapa Sawit No TBS/2017/07/00001 Kepada CV. Ber', '18000.00', '99982000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('22', null, '8', '4', '0', '2017-07-25', '16:17:55', 'PAY/2017/07/00001', '229', 'Persediaan Bahan Baku', 'Pembelian Secara Kredit & Tunai Kelapa Sawit No TBS/2017/07/00001 Kepada CV. Ber', '195451780.00', '195451780.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('23', null, '8', '4', '0', '2017-07-25', '16:17:55', 'PAY/2017/07/00001', '229', 'Hutang', 'Pembelian Secara Kredit & Tunai Kelapa Sawit No TBS/2017/07/00001 Kepada CV. Ber', '195433780.00', '195433780.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('24', '2', '10', '4', '1', '2017-07-25', '16:19:24', 'PAY/2017/07/00002', '229', 'Kas Bank', 'Pembayaran Pembelian Kelapa Sawit No TBS/2017/07/00001 Kepada CV. Berkah Mandiri', '27500000.00', '277500000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('25', null, '10', '4', '1', '2017-07-25', '16:19:24', 'PAY/2017/07/00002', '229', 'Hutang', 'Pembayaran Pembelian Kelapa Sawit No TBS/2017/07/00001 Kepada CV. Berkah Mandiri', '27500000.00', '167933780.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('26', '1', '0', '9', '0', '2017-07-25', '16:20:18', '1', '0', 'Beban Gaji', 'Rekap Gaji Bulan 07 Tahun 2017', '114013560.00', '114013560.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('27', '1', '0', '9', '0', '2017-07-25', '16:20:18', '1', '0', 'Hutang Gaji', 'Rekap Gaji Bulan 07 Tahun 2017', '114013560.00', '114013560.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('28', '1', '0', '7', '1', '2017-07-25', '16:24:42', 'RG/2017/07/00001', '0', 'Hutang Gaji', 'Pembayaran Gaji Karyawan Kepada Nurmuliana Daulay', '2011352.50', '112002207.50', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('29', '1', '0', '7', '1', '2017-07-25', '16:24:42', 'RG/2017/07/00001', '0', 'Kas Bank', 'Pembayaran Gaji Karyawan Kepada Nurmuliana Daulay', '2011352.50', '275488647.50', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('30', '1', '0', '7', '1', '2017-07-25', '16:24:43', 'RG/2017/07/00001', '0', 'Hutang Gaji', 'Pembayaran Gaji Karyawan Kepada Gita Kharisma Octavia Hrp', '2031985.00', '109970222.50', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('31', '1', '0', '7', '1', '2017-07-25', '16:24:43', 'RG/2017/07/00001', '0', 'Kas', 'Pembayaran Gaji Karyawan Kepada Gita Kharisma Octavia Hrp', '2031985.00', '97950015.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('32', '2', '0', '7', '1', '2017-07-25', '16:25:31', 'RG/2017/07/00002', '0', 'Hutang Gaji', 'Pembayaran Gaji Karyawan Kepada Pimpin Haholongan Hasibuan', '2191352.50', '107778870.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('33', '2', '0', '7', '1', '2017-07-25', '16:25:31', 'RG/2017/07/00002', '0', 'Kas', 'Pembayaran Gaji Karyawan Kepada Pimpin Haholongan Hasibuan', '2191352.50', '95758662.50', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('34', '2', '0', '7', '1', '2017-07-25', '16:25:31', 'RG/2017/07/00002', '0', 'Hutang Gaji', 'Pembayaran Gaji Karyawan Kepada Darmendra Hasibuan', '2191352.50', '105587517.50', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('35', '2', '0', '7', '1', '2017-07-25', '16:25:31', 'RG/2017/07/00002', '0', 'Kas', 'Pembayaran Gaji Karyawan Kepada Darmendra Hasibuan', '2191352.50', '93567310.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('36', '1', '8', '1', '1', '2017-07-25', '16:27:28', 'PO/2017/07/00001', '24', 'Kas', 'Pembayaran DP PO No PO/2017/07/00001 Kepada PT. TRAGLOPINDO UTAMA', '100000.00', '93467310.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('37', '1', '8', '1', '0', '2017-07-25', '16:27:28', 'PO/2017/07/00001', '24', 'Perlengkapan', 'Pembayaran DP PO No PO/2017/07/00001 Kepada PT. TRAGLOPINDO UTAMA', '100000.00', '100000.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('38', '1', '0', '2', '0', '2017-07-25', '16:28:39', 'RC/2017/07/00001', '0', 'Perlengkapan', 'Penerimaan Perlengkapan Dari PO No PO/2017/07/00001', '6912500.00', '7012500.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('39', '1', '0', '2', '0', '2017-07-25', '16:28:39', 'RC/2017/07/00001', '0', 'Hutang', 'Penerimaan Perlengkapan Dari PO No PO/2017/07/00001', '6912500.00', '174846280.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('40', '1', '9', '3', '1', '2017-07-25', '16:30:02', 'PO-PAY/2017/07/00001', '229', 'Kas Bank', 'Pembayaran PO No PO/2017/07/00001 Kepada PT. TRAGLOPINDO UTAMA', '2500000.00', '272988647.50', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('41', '1', '9', '3', '1', '2017-07-25', '16:30:02', 'PO-PAY/2017/07/00001', '229', 'Hutang', 'Pembayaran PO No PO/2017/07/00001 Kepada PT. TRAGLOPINDO UTAMA', '2500000.00', '172346280.00', '1', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('42', '1', '8', '5', '0', '2017-07-25', '16:42:50', 'REV/2017/07/00001', '5', 'Kas', 'Testting', '10000000.00', '103467310.00', '0', '0', '0');
+INSERT INTO `tbt_jurnal_buku_besar` VALUES ('43', '1', '8', '5', '0', '2017-07-25', '16:42:50', 'REV/2017/07/00001', '5', 'Pendapatan Lain-lain', 'Testting', '10000000.00', '10000000.00', '1', '0', '0');
 
 -- ----------------------------
 -- Table structure for tbt_jurnal_pembelian
@@ -6394,11 +6472,13 @@ CREATE TABLE `tbt_jurnal_pembelian` (
   `jumlah` float(36,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_jurnal_pembelian
 -- ----------------------------
+INSERT INTO `tbt_jurnal_pembelian` VALUES ('1', '1', 'TBS/2017/07/00001', '1', '2017-07-25', '16:17:55', 'CV. Berkah Mandiri', '', '', '195433776.00', '0');
+INSERT INTO `tbt_jurnal_pembelian` VALUES ('2', '1', 'RC/2017/07/00001', '1', '2017-07-25', '16:28:39', 'PT. TRAGLOPINDO UTAMA', '', '', '6912500.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_jurnal_penerimaan_kas
@@ -6418,11 +6498,13 @@ CREATE TABLE `tbt_jurnal_penerimaan_kas` (
   `potongan` float(36,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_jurnal_penerimaan_kas
 -- ----------------------------
+INSERT INTO `tbt_jurnal_penerimaan_kas` VALUES ('1', '1', '1', '3', '2017-07-25', '16:15:25', 'Investasi Awal', 'Modal Awal Perusahaan', '', '405000000.00', '0.00', '0');
+INSERT INTO `tbt_jurnal_penerimaan_kas` VALUES ('2', '1', 'REV/2017/07/00001', '3', '2017-07-25', '16:42:51', 'PENDAPATAN TAMBAHAN', 'PENDAPATAN 12', '214254', '10000000.00', '0.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_jurnal_pengeluaran_kas
@@ -6442,11 +6524,17 @@ CREATE TABLE `tbt_jurnal_pengeluaran_kas` (
   `potongan` float(36,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_jurnal_pengeluaran_kas
 -- ----------------------------
+INSERT INTO `tbt_jurnal_pengeluaran_kas` VALUES ('1', '1', 'PAY/2017/07/00001', '1', '2017-07-25', '16:17:55', 'CV. Berkah Mandiri', '', '', '18000.00', '0.00', '0');
+INSERT INTO `tbt_jurnal_pengeluaran_kas` VALUES ('2', '2', 'PAY/2017/07/00002', '1', '2017-07-25', '16:19:25', 'CV. Berkah Mandiri', '', '', '27500000.00', '0.00', '0');
+INSERT INTO `tbt_jurnal_pengeluaran_kas` VALUES ('3', '1', 'RG/2017/07/00001', '3', '2017-07-25', '16:24:43', 'Gaji Karyawan', 'Beban Gaji', '', '4043337.50', '0.00', '0');
+INSERT INTO `tbt_jurnal_pengeluaran_kas` VALUES ('4', '2', 'RG/2017/07/00002', '3', '2017-07-25', '16:25:31', 'Gaji Karyawan', 'Beban Gaji', '', '4382705.00', '0.00', '0');
+INSERT INTO `tbt_jurnal_pengeluaran_kas` VALUES ('5', '1', 'PO/2017/07/00001', '3', '2017-07-25', '16:27:28', 'PT. TRAGLOPINDO UTAMA', 'Bayar Uang Muka', '', '100000.00', '0.00', '0');
+INSERT INTO `tbt_jurnal_pengeluaran_kas` VALUES ('6', '1', 'PO-PAY/2017/07/00001', '1', '2017-07-25', '16:30:02', 'PT. TRAGLOPINDO UTAMA', '', '', '2500000.00', '0.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_jurnal_penjualan
@@ -6508,11 +6596,54 @@ CREATE TABLE `tbt_jurnal_umum` (
   `jumlah_saldo` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_jurnal_umum
 -- ----------------------------
+INSERT INTO `tbt_jurnal_umum` VALUES ('1', '8', '0', '0', '8', '2017-07-25', '16:15:23', '1', 'Kas', '100000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('2', '8', '0', '1', '0', '2017-07-25', '16:15:23', '1', 'Modal', '100000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('3', '9', '0', '0', '9', '2017-07-25', '16:15:23', '1', 'Kas Bank', '50000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('4', '9', '0', '1', '0', '2017-07-25', '16:15:24', '1', 'Modal', '50000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('5', '10', '0', '0', '10', '2017-07-25', '16:15:24', '1', 'Kas Bank', '80000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('6', '10', '0', '1', '0', '2017-07-25', '16:15:24', '1', 'Modal', '80000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('7', '11', '0', '0', '11', '2017-07-25', '16:15:24', '1', 'Kas Bank', '80000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('8', '11', '0', '1', '0', '2017-07-25', '16:15:24', '1', 'Modal', '80000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('9', '12', '0', '0', '12', '2017-07-25', '16:15:24', '1', 'Kas Bank', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('10', '12', '0', '1', '0', '2017-07-25', '16:15:24', '1', 'Modal', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('11', '13', '0', '0', '13', '2017-07-25', '16:15:24', '1', 'Kas Bank', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('12', '13', '0', '1', '0', '2017-07-25', '16:15:24', '1', 'Modal', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('13', '14', '0', '0', '14', '2017-07-25', '16:15:25', '1', 'Kas Bank', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('14', '14', '0', '1', '0', '2017-07-25', '16:15:25', '1', 'Modal', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('15', '15', '0', '0', '15', '2017-07-25', '16:15:25', '1', 'Kas Bank', '30000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('16', '15', '0', '1', '0', '2017-07-25', '16:15:25', '1', 'Modal', '30000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('17', '16', '0', '0', '16', '2017-07-25', '16:15:25', '1', 'Kas Bank', '65000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('18', '16', '0', '1', '0', '2017-07-25', '16:15:25', '1', 'Modal', '65000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('19', '17', '0', '0', '17', '2017-07-25', '16:15:25', '1', 'Kas Bank', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('20', '17', '0', '1', '0', '2017-07-25', '16:15:25', '1', 'Modal', null, '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('21', '1', '3', '0', '0', '2017-07-25', '16:17:54', 'PAY/2017/07/00001', 'Persediaan Bahan Baku', '195451776.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('22', '1', '3', '1', '0', '2017-07-25', '16:17:54', 'PAY/2017/07/00001', 'Hutang', '195433776.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('23', '1', '3', '1', '8', '2017-07-25', '16:17:55', 'PAY/2017/07/00001', 'Kas', '18000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('24', '2', '3', '0', '0', '2017-07-25', '16:19:24', 'PAY/2017/07/00002', 'Hutang', '27500000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('25', '2', '3', '1', '10', '2017-07-25', '16:19:24', 'PAY/2017/07/00002', 'Kas', '27500000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('26', '1', '9', '0', '0', '2017-07-25', '16:20:18', '1', 'Beban Gaji', '114013560.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('27', '1', '9', '1', '0', '2017-07-25', '16:20:18', '1', 'Hutang Gaji', '114013560.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('28', '1', '8', '0', '9', '2017-07-25', '16:24:42', 'RG/2017/07/00001', 'Hutang Gaji', '2011352.50', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('29', '1', '8', '1', '9', '2017-07-25', '16:24:42', 'RG/2017/07/00001', 'Kas Bank', '2011352.50', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('30', '1', '8', '0', '8', '2017-07-25', '16:24:42', 'RG/2017/07/00001', 'Hutang Gaji', '2031985.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('31', '1', '8', '1', '8', '2017-07-25', '16:24:42', 'RG/2017/07/00001', 'Kas', '2031985.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('32', '2', '8', '0', '8', '2017-07-25', '16:25:31', 'RG/2017/07/00002', 'Hutang Gaji', '2191352.50', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('33', '2', '8', '1', '8', '2017-07-25', '16:25:31', 'RG/2017/07/00002', 'Kas', '2191352.50', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('34', '2', '8', '0', '8', '2017-07-25', '16:25:31', 'RG/2017/07/00002', 'Hutang Gaji', '2191352.50', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('35', '2', '8', '1', '8', '2017-07-25', '16:25:31', 'RG/2017/07/00002', 'Kas', '2191352.50', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('36', '1', '8', '0', '0', '2017-07-25', '16:27:28', 'PO/2017/07/00001', 'Perlengkapan', '100000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('37', '1', '8', '1', '0', '2017-07-25', '16:27:28', 'PO/2017/07/00001', 'Kas', '100000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('38', '1', '1', '0', '0', '2017-07-25', '16:28:39', 'RC/2017/07/00001', 'Perlengkapan', '6912500.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('39', '1', '1', '1', '0', '2017-07-25', '16:28:39', 'RC/2017/07/00001', 'Hutang', '6912500.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('40', '1', '2', '0', '0', '2017-07-25', '16:30:02', 'PO-PAY/2017/07/00001', 'Hutang', '2500000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('41', '1', '2', '1', '9', '2017-07-25', '16:30:02', 'PO-PAY/2017/07/00001', 'Kas', '2500000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('42', '1', '6', '0', '8', '2017-07-25', '16:42:50', 'REV/2017/07/00001', 'Kas', '10000000.00', '0');
+INSERT INTO `tbt_jurnal_umum` VALUES ('43', '1', '6', '1', '0', '2017-07-25', '16:42:50', 'REV/2017/07/00001', 'Pendapatan Lain-lain', '10000000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_laba_rugi
@@ -6530,11 +6661,15 @@ CREATE TABLE `tbt_laba_rugi` (
   `jumlah_transaksi` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_laba_rugi
 -- ----------------------------
+INSERT INTO `tbt_laba_rugi` VALUES ('1', '1', '0', '0', '2017-07-25', '16:15:25', '1', 'Saldo Awal', '405000000.00', '0');
+INSERT INTO `tbt_laba_rugi` VALUES ('2', '1', '7', '1', '2017-07-25', '16:24:43', 'RG/2017/07/00001', 'Beban Gaji Karyawan', '4043337.50', '0');
+INSERT INTO `tbt_laba_rugi` VALUES ('3', '2', '7', '1', '2017-07-25', '16:25:31', 'RG/2017/07/00002', 'Beban Gaji Karyawan', '4382705.00', '0');
+INSERT INTO `tbt_laba_rugi` VALUES ('4', '1', '5', '0', '2017-07-25', '16:42:50', 'REV/2017/07/00001', 'Testting', '10000000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_lembur_karyawan
@@ -6564,11 +6699,12 @@ CREATE TABLE `tbt_modal_transaksi` (
   `modal` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_modal_transaksi
 -- ----------------------------
+INSERT INTO `tbt_modal_transaksi` VALUES ('1', '1', '405000000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_mutasi_barang
@@ -6647,11 +6783,12 @@ CREATE TABLE `tbt_pembayaran_po` (
   `no_ref` varchar(60) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_pembayaran_po
 -- ----------------------------
+INSERT INTO `tbt_pembayaran_po` VALUES ('1', 'PO-PAY/2017/07/00001', '1', '2017-07-25', '16:30:02', '2500000.00', '229', '1', '9', '354656', '0');
 
 -- ----------------------------
 -- Table structure for tbt_pembayaran_tbs
@@ -6670,11 +6807,13 @@ CREATE TABLE `tbt_pembayaran_tbs` (
   `no_ref` varchar(60) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_pembayaran_tbs
 -- ----------------------------
+INSERT INTO `tbt_pembayaran_tbs` VALUES ('1', '1', 'PAY/2017/07/00001', '2017-07-25', '16:17:54', '18000.00', '229', '0', '8', '', '0');
+INSERT INTO `tbt_pembayaran_tbs` VALUES ('2', '1', 'PAY/2017/07/00002', '2017-07-25', '16:19:24', '27500000.00', '229', '1', '10', '23423423', '0');
 
 -- ----------------------------
 -- Table structure for tbt_pembayaran_tbs_copy
@@ -7135,11 +7274,12 @@ CREATE TABLE `tbt_purchase_order` (
   `id_coa` int(11) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_purchase_order
 -- ----------------------------
+INSERT INTO `tbt_purchase_order` VALUES ('1', '1', '2', 'PO/2017/07/00001', '2017-07-25', '0000-00-00', '23', null, '10.00', '100000.00', '8', '24', '0');
 
 -- ----------------------------
 -- Table structure for tbt_purchase_order_biaya_lain
@@ -7152,11 +7292,12 @@ CREATE TABLE `tbt_purchase_order_biaya_lain` (
   `biaya` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_purchase_order_biaya_lain
 -- ----------------------------
+INSERT INTO `tbt_purchase_order_biaya_lain` VALUES ('1', '1', 'Biaya Angkut', '100000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_purchase_order_detail
@@ -7177,11 +7318,13 @@ CREATE TABLE `tbt_purchase_order_detail` (
   `subtotal` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_purchase_order_detail
 -- ----------------------------
+INSERT INTO `tbt_purchase_order_detail` VALUES ('1', '1', '1', '1', '783', '33', '100.00', '100.00', '30000.00', '30000.00', '0.00', '3000000.00', '0');
+INSERT INTO `tbt_purchase_order_detail` VALUES ('2', '1', '2', '1', '1011', '15', '250.00', '250.00', '15000.00', '15000.00', '0.00', '3750000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_receiving_order
@@ -7196,11 +7339,12 @@ CREATE TABLE `tbt_receiving_order` (
   `catatan` text,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_receiving_order
 -- ----------------------------
+INSERT INTO `tbt_receiving_order` VALUES ('1', '1', 'RC/2017/07/00001', '334534', '2017-07-25', null, '0');
 
 -- ----------------------------
 -- Table structure for tbt_receiving_order_detail
@@ -7220,11 +7364,13 @@ CREATE TABLE `tbt_receiving_order_detail` (
   `subtotal` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_receiving_order_detail
 -- ----------------------------
+INSERT INTO `tbt_receiving_order_detail` VALUES ('1', '1', '1', '783', '33', '2028-09-01', '100.00', '30000.00', '30000.00', '5.00', '2850000.00', '0');
+INSERT INTO `tbt_receiving_order_detail` VALUES ('2', '1', '2', '1011', '15', '2020-02-01', '250.00', '15000.00', '15000.00', '6.00', '3525000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_rekap_gaji
@@ -7238,11 +7384,12 @@ CREATE TABLE `tbt_rekap_gaji` (
   `status` char(1) DEFAULT '0',
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_rekap_gaji
 -- ----------------------------
+INSERT INTO `tbt_rekap_gaji` VALUES ('1', '07', '2017', '114013560.00', '1', '0');
 
 -- ----------------------------
 -- Table structure for tbt_rekap_gaji_detail
@@ -7253,6 +7400,33 @@ CREATE TABLE `tbt_rekap_gaji_detail` (
   `id_rekap` int(11) DEFAULT '0',
   `id_bayar` int(11) DEFAULT NULL,
   `id_karyawan` int(11) DEFAULT NULL,
+  `gaji_pokok` float(36,2) DEFAULT NULL,
+  `tunjangan_natura` float(36,2) DEFAULT NULL,
+  `incentive` float(36,2) DEFAULT NULL,
+  `tunjangan_jabatan` float(36,2) DEFAULT NULL,
+  `tunjangan_komunikasi` float(36,2) DEFAULT NULL,
+  `premi_karyawan` float(36,2) DEFAULT NULL,
+  `total_gaji` float(36,2) DEFAULT NULL,
+  `lembur_lpp_jam` float(36,2) DEFAULT NULL,
+  `lembur_lpp_tarif` float(36,2) DEFAULT NULL,
+  `lembur_lpp_total` float(36,2) DEFAULT NULL,
+  `lembur_lppml_jam` float(36,2) DEFAULT NULL,
+  `lembur_lppml_tarif` float(36,2) DEFAULT NULL,
+  `lembur_lppml_total` float(36,2) DEFAULT NULL,
+  `lembur_lpplk_jam` float(36,2) DEFAULT NULL,
+  `lembur_lpplk_tarif` float(36,2) DEFAULT NULL,
+  `lembur_lpplk_total` float(36,2) DEFAULT NULL,
+  `total_lembur` float(36,2) DEFAULT NULL,
+  `mangkir` float(36,2) DEFAULT NULL,
+  `terlambat_masuk_kerja` float(36,2) DEFAULT NULL,
+  `total_mangkir_terlambat` float(36,2) DEFAULT NULL,
+  `total_gaji_kotor` float(36,2) DEFAULT NULL,
+  `bpjs_kesehatan` float(36,2) DEFAULT NULL,
+  `bpjs_ketenagakerjaan` float(36,2) DEFAULT NULL,
+  `pinjaman` float(36,2) DEFAULT NULL,
+  `kantin` float(36,2) DEFAULT NULL,
+  `koperasi` float(36,2) DEFAULT NULL,
+  `total_potongan` float(36,2) DEFAULT NULL,
   `jml_gaji_dibayarkan` decimal(36,2) DEFAULT NULL,
   `jns_bayar` char(1) DEFAULT '0',
   `id_bank` int(11) DEFAULT NULL,
@@ -7261,11 +7435,63 @@ CREATE TABLE `tbt_rekap_gaji_detail` (
   `status` char(1) DEFAULT '0',
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_rekap_gaji_detail
 -- ----------------------------
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('1', '1', null, '3', '2003250.00', '160000.00', null, null, null, '0.00', '2163250.00', null, '11579.48', '0.00', null, '17369.22', '0.00', null, '23158.96', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '40065.00', null, null, null, '40065.00', '2123185.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('2', '1', null, '4', '2063250.00', '10000.00', null, null, null, '0.00', '2073250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2073250.00', '0.00', '41265.00', null, null, null, '41265.00', '2031985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('3', '1', null, '5', '2063250.00', '10000.00', null, '0.00', '0.00', '0.00', '2073250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2073250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2011352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('4', '1', '1', '6', '2063250.00', '10000.00', null, '0.00', '0.00', '0.00', '2073250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2073250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2011352.50', '1', '9', '3423423', '835', '1', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('5', '1', '1', '7', '2063250.00', '10000.00', null, '0.00', '0.00', '0.00', '2073250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2073250.00', '0.00', '41265.00', null, null, null, '41265.00', '2031985.00', '0', '8', null, '835', '1', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('6', '1', null, '8', '2243250.00', '130000.00', null, '0.00', '0.00', '0.00', '2373250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2373250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2305952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('7', '1', '2', '9', '2063250.00', '190000.00', null, '0.00', '0.00', '0.00', '2253250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2253250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2191352.50', '0', '8', null, '835', '1', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('8', '1', null, '10', '2063250.00', '220000.00', null, '0.00', '0.00', '0.00', '2283250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2283250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2221352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('9', '1', null, '11', '2063250.00', '130000.00', null, '0.00', '0.00', '0.00', '2193250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2193250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2131352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('10', '1', '2', '12', '2063250.00', '190000.00', null, '0.00', '0.00', '0.00', '2253250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2253250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2191352.50', '0', '8', null, '835', '1', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('11', '1', null, '13', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '41265.00', null, null, null, '41265.00', '2121985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('12', '1', null, '14', '2063250.00', '190000.00', null, '0.00', '0.00', '0.00', '2253250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2253250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2191352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('13', '1', null, '15', '2063250.00', '160000.00', null, '0.00', '0.00', '0.00', '2223250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2223250.00', '0.00', '41265.00', null, null, null, '41265.00', '2181985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('14', '1', null, '16', '2063250.00', '220000.00', null, '0.00', '0.00', '0.00', '2283250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2283250.00', '0.00', '41265.00', null, null, null, '41265.00', '2241985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('15', '1', null, '17', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2101352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('16', '1', null, '18', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '41265.00', null, null, null, '41265.00', '2121985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('17', '1', null, '19', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '41265.00', null, null, null, '41265.00', '2121985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('18', '1', null, '20', '2068250.00', '100000.00', null, '0.00', '0.00', '0.00', '2168250.00', null, '11955.20', '0.00', null, '17932.80', '0.00', null, '23910.40', '0.00', '0.00', '0.00', '0.00', '0.00', '2168250.00', '20682.50', '41365.00', null, null, null, '62047.50', '2106202.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('19', '1', null, '21', '2518250.00', '190000.00', null, '0.00', '0.00', '0.00', '2708250.00', null, '14556.36', '0.00', null, '21834.54', '0.00', null, '29112.72', '0.00', '0.00', '0.00', '0.00', '0.00', '2708250.00', '25182.50', '50365.00', null, null, null, '75547.50', '2632702.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('20', '1', null, '22', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2101352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('21', '1', null, '23', '2068250.00', '100000.00', null, '0.00', '0.00', '0.00', '2168250.00', null, '11955.20', '0.00', null, '17932.80', '0.00', null, '23910.40', '0.00', '0.00', '0.00', '0.00', '0.00', '2168250.00', '20682.50', '41365.00', null, null, null, '62047.50', '2106202.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('22', '1', null, '24', '2433250.00', '190000.00', null, '0.00', '0.00', '0.00', '2623250.00', null, '14065.03', '0.00', null, '21097.54', '0.00', null, '28130.06', '0.00', '0.00', '0.00', '0.00', '0.00', '2623250.00', '24332.50', '48665.00', null, null, null, '72997.50', '2550252.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('23', '1', null, '25', '2243250.00', '190000.00', null, '0.00', '0.00', '0.00', '2433250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2433250.00', '0.00', '44865.00', null, null, null, '44865.00', '2388385.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('24', '1', null, '26', '2243250.00', '160000.00', null, '0.00', '0.00', '0.00', '2403250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2403250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2335952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('25', '1', null, '27', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '41265.00', null, null, null, '41265.00', '2121985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('26', '1', null, '28', '2063250.00', '220000.00', null, '0.00', '0.00', '0.00', '2283250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2283250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2221352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('27', '1', null, '29', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2101352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('28', '1', null, '30', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '41265.00', null, null, null, '41265.00', '2121985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('29', '1', null, '31', '2063250.00', '160000.00', null, '0.00', '0.00', '0.00', '2223250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2223250.00', '0.00', '41265.00', null, null, null, '41265.00', '2181985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('30', '1', null, '32', '2003250.00', '130000.00', null, '0.00', '0.00', '0.00', '2133250.00', null, '11579.48', '0.00', null, '17369.22', '0.00', null, '23158.96', '0.00', '0.00', '0.00', '0.00', '0.00', '2133250.00', '0.00', '40065.00', null, null, null, '40065.00', '2093185.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('31', '1', null, '33', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '41265.00', null, null, null, '41265.00', '2121985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('32', '1', null, '34', '2243250.00', '160000.00', null, '0.00', '0.00', '0.00', '2403250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2403250.00', '0.00', '44865.00', null, null, null, '44865.00', '2358385.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('33', '1', null, '35', '2003250.00', '100000.00', null, '0.00', '0.00', '0.00', '2103250.00', null, '11579.48', '0.00', null, '17369.22', '0.00', null, '23158.96', '0.00', '0.00', '0.00', '0.00', '0.00', '2103250.00', '0.00', '40065.00', null, null, null, '40065.00', '2063185.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('34', '1', null, '36', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2101352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('35', '1', null, '37', '1983250.00', '100000.00', null, '0.00', '0.00', '0.00', '2083250.00', null, '11463.87', '0.00', null, '17195.81', '0.00', null, '22927.75', '0.00', '0.00', '0.00', '0.00', '0.00', '2083250.00', '0.00', '39665.00', null, null, null, '39665.00', '2043585.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('36', '1', null, '38', '2433250.00', '130000.00', null, '0.00', '0.00', '0.00', '2563250.00', null, '14065.03', '0.00', null, '21097.54', '0.00', null, '28130.06', '0.00', '0.00', '0.00', '0.00', '0.00', '2563250.00', '24332.50', '48665.00', null, null, null, '72997.50', '2490252.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('37', '1', null, '39', '2243250.00', '130000.00', null, '0.00', '0.00', '0.00', '2373250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2373250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2305952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('38', '1', null, '40', '2243250.00', '100000.00', null, '0.00', '0.00', '0.00', '2343250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2343250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2275952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('39', '1', null, '41', '2063250.00', '160000.00', null, '0.00', '0.00', '0.00', '2223250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2223250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2161352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('40', '1', null, '42', '2243250.00', '190000.00', null, '0.00', '0.00', '0.00', '2433250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2433250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2365952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('41', '1', null, '43', '2243250.00', '190000.00', null, '0.00', '0.00', '0.00', '2433250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2433250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2365952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('42', '1', null, '44', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2101352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('43', '1', null, '45', '2243250.00', '100000.00', null, '0.00', '0.00', '0.00', '2343250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2343250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2275952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('44', '1', null, '46', '2063250.00', '160000.00', null, '0.00', '0.00', '0.00', '2223250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2223250.00', '0.00', '41265.00', null, null, null, '41265.00', '2181985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('45', '1', null, '47', '2063250.00', '100000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '41265.00', null, null, null, '41265.00', '2121985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('46', '1', null, '48', '2003250.00', '160000.00', null, '0.00', '0.00', '0.00', '2163250.00', null, '11579.48', '0.00', null, '17369.22', '0.00', null, '23158.96', '0.00', '0.00', '0.00', '0.00', '0.00', '2163250.00', '0.00', '40065.00', null, null, null, '40065.00', '2123185.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('47', '1', null, '49', '2063250.00', '160000.00', null, '0.00', '0.00', '0.00', '2223250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2223250.00', '20632.50', '41265.00', null, null, null, '61897.50', '2161352.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('48', '1', null, '50', '2243250.00', '160000.00', null, '0.00', '0.00', '0.00', '2403250.00', null, '12966.76', '0.00', null, '19450.14', '0.00', null, '25933.53', '0.00', '0.00', '0.00', '0.00', '0.00', '2403250.00', '22432.50', '44865.00', null, null, null, '67297.50', '2335952.50', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('49', '1', null, '51', '1983250.00', '160000.00', null, '0.00', '0.00', '0.00', '2143250.00', null, '11463.87', '0.00', null, '17195.81', '0.00', null, '22927.75', '0.00', '0.00', '0.00', '0.00', '0.00', '2143250.00', '0.00', '39665.00', null, null, null, '39665.00', '2103585.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('50', '1', null, '52', '1983250.00', '190000.00', null, '0.00', '0.00', '0.00', '2173250.00', null, '11463.87', '0.00', null, '17195.81', '0.00', null, '22927.75', '0.00', '0.00', '0.00', '0.00', '0.00', '2173250.00', '0.00', '39665.00', null, null, null, '39665.00', '2133585.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('51', '1', null, '53', '2063250.00', '160000.00', null, '0.00', '0.00', '0.00', '2223250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2223250.00', '0.00', '41265.00', null, null, null, '41265.00', '2181985.00', '0', null, null, null, '0', '0');
+INSERT INTO `tbt_rekap_gaji_detail` VALUES ('52', '1', null, '54', '2063250.00', '220000.00', null, '0.00', '0.00', '0.00', '2283250.00', null, '11926.30', '0.00', null, '17889.45', '0.00', null, '23852.60', '0.00', '0.00', '0.00', '0.00', '0.00', '2283250.00', '0.00', '41265.00', null, null, null, '41265.00', '2241985.00', '0', null, null, null, '0', '0');
 
 -- ----------------------------
 -- Table structure for tbt_rekap_neraca
@@ -7348,11 +7574,12 @@ CREATE TABLE `tbt_request_order` (
   `catatan` text,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_request_order
 -- ----------------------------
+INSERT INTO `tbt_request_order` VALUES ('1', '1', 'RO/2017/07/00001', '2017-07-25', '', '0');
 
 -- ----------------------------
 -- Table structure for tbt_request_order_detail
@@ -7370,11 +7597,13 @@ CREATE TABLE `tbt_request_order_detail` (
   `subtotal` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_request_order_detail
 -- ----------------------------
+INSERT INTO `tbt_request_order_detail` VALUES ('1', '1', '1', '783', '33', '100.00', '30000.00', '30000.00', '3000000.00', '0');
+INSERT INTO `tbt_request_order_detail` VALUES ('2', '1', '1', '1011', '15', '250.00', '15000.00', '15000.00', '3750000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_resign_employee
@@ -7413,11 +7642,12 @@ CREATE TABLE `tbt_revenue_transaction` (
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 PACK_KEYS=0;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 PACK_KEYS=0;
 
 -- ----------------------------
 -- Records of tbt_revenue_transaction
 -- ----------------------------
+INSERT INTO `tbt_revenue_transaction` VALUES ('1', 'REV/2017/07/00001', '2017-07-25', '214254', '1', '1', 'Testting', '5', '8', '10000000.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_sanksi
@@ -7514,11 +7744,14 @@ CREATE TABLE `tbt_stok_in_out` (
   `username` varchar(255) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_stok_in_out
 -- ----------------------------
+INSERT INTO `tbt_stok_in_out` VALUES ('1', '1020', '0.00', '60370000.00', '196202496.00', '0.00', '0.00', '60370000.00', '', '1', '2', '2017-07-25', '16:17:54', 'XADMIN', '0');
+INSERT INTO `tbt_stok_in_out` VALUES ('2', '783', '0.00', '100.00', '3000000.00', '0.00', '0.00', '100.00', '', '1', '1', '2017-07-25', '16:28:38', 'XADMIN', '0');
+INSERT INTO `tbt_stok_in_out` VALUES ('3', '1011', '0.00', '250.00', '3750000.00', '0.00', '0.00', '250.00', '', '2', '1', '2017-07-25', '16:28:39', 'XADMIN', '0');
 
 -- ----------------------------
 -- Table structure for tbt_tbs_order
@@ -7535,11 +7768,12 @@ CREATE TABLE `tbt_tbs_order` (
   `status` char(1) DEFAULT '0',
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_tbs_order
 -- ----------------------------
+INSERT INTO `tbt_tbs_order` VALUES ('1', 'TBS/2017/07/00001', '3', '1020', '2017-07-25', '16:16:42', '2017-12-28', '2', '0');
 
 -- ----------------------------
 -- Table structure for tbt_tbs_order_detail
@@ -7570,11 +7804,13 @@ CREATE TABLE `tbt_tbs_order_detail` (
   `total_tbs_order` float(11,2) DEFAULT NULL,
   `deleted` char(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tbt_tbs_order_detail
 -- ----------------------------
+INSERT INTO `tbt_tbs_order_detail` VALUES ('1', '1', '1', '1245 th', '44340.00', '12350.00', '31990.00', '12.00', '3.50', '1120.00', '383880.00', '30870.00', '3250.00', '100327504.00', '210.00', '152.00', '4', '0.00', '0.00', '0.00', '0.00', '99943616.00', '0');
+INSERT INTO `tbt_tbs_order_detail` VALUES ('2', '1', '6', 'BS 23498', '44340.00', '13770.00', '30570.00', '12.00', '3.50', '1070.00', '366840.00', '29500.00', '3250.00', '95875000.00', '210.00', '146.00', '4', '0.00', '0.00', '0.00', '0.00', '95508160.00', '0');
 
 -- ----------------------------
 -- Table structure for tbt_transaksi_luar

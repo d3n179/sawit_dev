@@ -1,5 +1,5 @@
 <?PHP
-class LaporanRekapGajiKaryawan extends MainConf
+class RekapGajiKaryawan extends MainConf
 {
 
 	public function onLoadComplete($param)
@@ -11,12 +11,22 @@ class LaporanRekapGajiKaryawan extends MainConf
 			if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 			{
 				//$this->cariBtnClicked($sender,$param);
-				$sqlRekapGaji = "SELECT tbt_rekap_gaji.tahun AS id,tbt_rekap_gaji.tahun AS nama FROM tbt_rekap_gaji WHERE deleted != '1' ";
-				$arrThn = $this->queryAction($sqlRekapGaji,'S');
-				
+				$tahun = date("Y");
+				$bulan = date("m");
+				$arrThn[] = array("id"=>$tahun,'nama'=>$tahun);
+				 
+				$a = 20;
+				$i = 1;
+				while($i < $a)
+				{
+					$arrThn[] = array("id"=>$tahun-$i,'nama'=>$tahun-$i); 
+					$i++;
+				}
 				$this->DDTahun->DataSource = $arrThn;
 				$this->DDTahun->DataBind();
 				
+				$this->DDBulan->SelectedValue = $bulan;
+				$this->DDTahun->SelectedValue = $tahun;
 				
 			}
 		}
@@ -64,6 +74,20 @@ class LaporanRekapGajiKaryawan extends MainConf
 		}
 	}
 	
+	function array_insert(&$array, $position, $insert)
+	{
+		if (is_int($position)) {
+			array_splice($array, $position, 0, $insert);
+		} else {
+			$pos   = array_search($position, array_keys($array));
+			$array = array_merge(
+				array_slice($array, 0, $pos),
+				$insert,
+				array_slice($array, $pos)
+			);
+		}
+	}
+	
 	public function cariBtnClicked($sender,$param)
 	{
 		$periode = $this->Periode->Text;
@@ -90,6 +114,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 		{
 			foreach($arrTrans as $row)
 			{
+				
 				$totalGajiKotor = 0;
 				$totalTelatMangkir = 0;
 				$totalPotongan = 0;
@@ -101,6 +126,35 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$KantorCabangRecord = KantorCabangRecord::finder()->findByPk($KaryawanRecord->id_cabang);
 				$LevelDistribusiRecord = LevelDistribusiRecord::finder()->findByPk($JabatanRecord->id_level_distribusi);
 				$GolonganKaryawanRecord = GolonganKaryawanRecord::finder()->findByPk($KaryawanRecord->id_golongan);
+				$arrTmp = array("idKaryawan"=>$idK,
+								"gaji_pokok"=>0,
+								"tunjangan_natura"=>0,
+								"incentive"=>0,
+								"tunjangan_jabatan"=>0,
+								"tunjangan_komunikasi"=>0,
+								"premi_karyawan"=>0,
+								"total_gaji"=>0,
+								"lembur_lpp_jam"=>0,
+								"lembur_lpp_tarif"=>0,
+								"lembur_lpp_total"=>0,
+								"lembur_lppml_jam"=>0,
+								"lembur_lppml_tarif"=>0,
+								"lembur_lppml_total"=>0,
+								"lembur_lpplk_jam"=>0,
+								"lembur_lpplk_tarif"=>0,
+								"lembur_lpplk_total"=>0,
+								"total_lembur"=>0,
+								"mangkir"=>0,
+								"terlambat_masuk_kerja"=>0,
+								"total_mangkir_terlambat"=>0,
+								"total_gaji_kotor"=>0,
+								"bpjs_kesehatan"=>0,
+								"bpjs_ketenagakerjaan"=>0,
+								"pinjaman"=>0,
+								"kantin"=>0,
+								"koperasi"=>0,
+								"total_potongan"=>0,
+								"gaji_dibayarkan"=>0);
 				
 				$IncentiveRecord = IncentiveRecord::finder()->find('id_karyawan = ? AND bulan = ? AND tahun = ? ',$idK,$month,$year);
 				
@@ -125,23 +179,30 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$tblBody .= '<td>'.$this->ConvertDate($KaryawanRecord->tglawalkerja,'3').'</td>';	
 				$tblBody .= '<td>'.number_format($GolonganKaryawanRecord->gaji_pokok,0,'.',',').'</td>';
 				$totalGajiKotor += $GolonganKaryawanRecord->gaji_pokok;
+				$arrTmp['gaji_pokok'] = $GolonganKaryawanRecord->gaji_pokok;
 				
 				$tblBody .= '<td>'.number_format($KaryawanRecord->tunjangan_natura,0,'.',',').'</td>';	
 				$totalGajiKotor += $KaryawanRecord->tunjangan_natura;
+				$arrTmp['tunjangan_natura'] = $KaryawanRecord->tunjangan_natura;
 				
 				$tblBody .= '<td>'.number_format($IncentiveRecord->jml_incentive,0,'.',',').'</td>';
 				$totalGajiKotor += $IncentiveRecord->jml_incentive;
+				$arrTmp['incentive'] = $IncentiveRecord->jml_incentive;
 					
 				$tblBody .= '<td>'.number_format($JabatanRecord->tunjangan_jabatan,0,'.',',').'</td>';	
 				$totalGajiKotor += $JabatanRecord->tunjangan_jabatan;
+				$arrTmp['tunjangan_jabatan'] = $JabatanRecord->tunjangan_jabatan;
 				
 				$tblBody .= '<td>'.number_format($JabatanRecord->tunjangan_komunikasi,0,'.',',').'</td>';	
 				$totalGajiKotor += $JabatanRecord->tunjangan_komunikasi;
+				$arrTmp['tunjangan_komunikasi'] = $JabatanRecord->tunjangan_komunikasi;
 				
 				$tblBody .= '<td>'.number_format($JabatanRecord->premi_karyawan,0,'.',',').'</td>';	
 				$totalGajiKotor += $JabatanRecord->premi_karyawan;
+				$arrTmp['premi_karyawan'] = $JabatanRecord->premi_karyawan;
 				
 				$tblBody .= '<td>'.number_format($totalGajiKotor,0,'.',',').'</td>';	
+				$arrTmp['total_gaji'] = $totalGajiKotor;
 				
 				$sqlLpp = "SELECT
 								SUM(
@@ -162,6 +223,9 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$tblBody .= '<td>'.number_format($tarifLpp,0,'.',',').'</td>';	
 				$tblBody .= '<td>'.number_format($jmlLpp,0,'.',',').'</td>';	
 				$totalLembur += $jmlLpp;
+				$arrTmp['lembur_lpp_jam'] = $arrLpp[0]['lama_lembur'];
+				$arrTmp['lembur_lpp_tarif'] = $tarifLpp;
+				$arrTmp['lembur_lpp_total'] = $jmlLpp;
 				
 				$sqlLppml = "SELECT
 								SUM(
@@ -182,6 +246,9 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$tblBody .= '<td>'.number_format($tarifLppml,0,'.',',').'</td>';	
 				$tblBody .= '<td>'.number_format($jmlLppml,0,'.',',').'</td>';	
 				$totalLembur += $jmlLppml;
+				$arrTmp['lembur_lppml_jam'] = $arrLppml[0]['lama_lembur'];
+				$arrTmp['lembur_lppml_tarif'] = $tarifLppml;
+				$arrTmp['lembur_lppml_total'] = $jmlLppml;
 				
 				$sqlLpplk = "SELECT
 								SUM(
@@ -202,9 +269,13 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$tblBody .= '<td>'.number_format($tarifLpplk,0,'.',',').'</td>';	
 				$tblBody .= '<td>'.number_format($jmlLpplk,0,'.',',').'</td>';	
 				$totalLembur += $jmlLpplk;
+				$arrTmp['lembur_lpplk_jam'] = $arrLpplk[0]['lama_lembur'];
+				$arrTmp['lembur_lpplk_tarif'] = $tarifLpplk;
+				$arrTmp['lembur_lpplk_total'] = $jmlLpplk;
 				
 				$tblBody .= '<td>'.number_format($totalLembur,0,'.',',').'</td>';	
 				$totalGajiKotor += $totalLembur;
+				$arrTmp['total_lembur'] = $totalLembur;
 				
 				$sqlMangkir = "SELECT
 									COUNT(
@@ -224,6 +295,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$kolom = 11;
 				$tblBody .= '<td>'.number_format($totalMangkir,0,'.',',').'</td>';	
 				$totalTelatMangkir += $totalMangkir;
+				$arrTmp['mangkir'] = $totalMangkir;
 				
 				$sqlTelat = "SELECT
 									COUNT(
@@ -244,11 +316,14 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$kolom = 11;
 				$tblBody .= '<td>'.number_format($totalTelat,0,'.',',').'</td>';	
 				$totalTelatMangkir += $totalTelat;
+				$arrTmp['terlambat_masuk_kerja'] = $totalTelat;
 				
 				$tblBody .= '<td>'.number_format($totalTelatMangkir,0,'.',',').'</td>';	
 				$totalGajiKotor -= $totalTelatMangkir;
+				$arrTmp['total_mangkir_terlambat'] = $totalTelat;
 				
 				$tblBody .= '<td>'.number_format($totalGajiKotor,0,'.',',').'</td>';	
+				$arrTmp['total_gaji_kotor'] = $totalGajiKotor;
 				
 				if($KaryawanRecord->st_bpjs_kesehatan == '1')
 				{
@@ -264,6 +339,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 				
 				$tblBody .= '<td>'.number_format($bpjsKesehatan,0,'.',',').'</td>';
 				$totalPotongan += $bpjsKesehatan;
+				$arrTmp['bpjs_kesehatan'] = $bpjsKesehatan;
 				
 				if($KaryawanRecord->st_bpjs_ketenagakerjaan == '1')
 					$bpjsTenagaKerja = $GolonganKaryawanRecord->gaji_pokok * (2/100);
@@ -272,6 +348,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 				
 				$tblBody .= '<td>'.number_format($bpjsTenagaKerja,0,'.',',').'</td>';
 				$totalPotongan += $bpjsTenagaKerja;
+				$arrTmp['bpjs_ketenagakerjaan'] = $bpjsTenagaKerja;
 				
 				$sqlPinjaman = "SELECT
 									SUM(
@@ -289,6 +366,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$jmlPinjaman = $arrPinjaman[0]['jml_expense'];
 				$tblBody .= '<td>'.number_format($jmlPinjaman,0,'.',',').'</td>';
 				$totalPotongan += $jmlPinjaman;
+				$arrTmp['pinjaman'] = $jmlPinjaman;
 				
 				$sqlKantin = "SELECT
 									SUM(
@@ -306,6 +384,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$jmlKantin = $arrKantin[0]['jml_expense'];
 				$tblBody .= '<td>'.number_format($jmlKantin,0,'.',',').'</td>';
 				$totalPotongan += $jmlKantin;
+				$arrTmp['kantin'] = $jmlKantin;
 				
 				$sqlKoperasi = "SELECT
 									SUM(
@@ -323,22 +402,25 @@ class LaporanRekapGajiKaryawan extends MainConf
 				$jmlKoperasi = $arrKoperasi[0]['jml_expense'];
 				$tblBody .= '<td>'.number_format($jmlKoperasi,0,'.',',').'</td>';
 				$totalPotongan += $jmlKoperasi;
+				$arrTmp['koperasi'] = $jmlKoperasi;
 				
 				$tblBody .= '<td>'.number_format($totalPotongan,0,'.',',').'</td>';
+				$arrTmp['total_potongan'] = $totalPotongan;
 				
 				$gajiDibayarkan = $totalGajiKotor - $totalPotongan;
 				$tblBody .= '<td>'.number_format($gajiDibayarkan,0,'.',',').'</td>';
+				$arrTmp['gaji_dibayarkan'] = $gajiDibayarkan;
 				
 				$tblBody .= '</tr>';
 				
-				$arrGaji[] = array("idKaryawan"=>$row['id'],"Gaji"=>$gajiDibayarkan);
+				$arrGaji[] = $arrTmp;
 			}
 		}
 		else
 		{
 			$tblBody = '';
 		}
-		
+		var_dump($arrGaji);
 		$this->arrGaji->Value = json_encode($arrGaji,true);
 		$this->getPage()->getClientScript()->registerEndScript
 					('','
@@ -439,16 +521,85 @@ class LaporanRekapGajiKaryawan extends MainConf
 						
 					$RekapGajiDetailRecord->id_rekap = $RekapGajiRecord->id;
 					$RekapGajiDetailRecord->id_karyawan = $row['idKaryawan'];
-					$RekapGajiDetailRecord->jml_gaji_dibayarkan = $row['Gaji'];
+					$RekapGajiDetailRecord->gaji_pokok= $row['gaji_pokok'];
+					$RekapGajiDetailRecord->tunjangan_natura= $row['tunjangan_natura'];
+					$RekapGajiDetailRecord->incentive= $row['incentive'];
+					$RekapGajiDetailRecord->tunjangan_jabatan= $row['tunjangan_jabatan'];
+					$RekapGajiDetailRecord->tunjangan_komunikasi= $row['tunjangan_komunikasi'];
+					$RekapGajiDetailRecord->premi_karyawan= $row['premi_karyawan'];
+					$RekapGajiDetailRecord->total_gaji= $row['total_gaji'];
+					$RekapGajiDetailRecord->lembur_lpp_jam= $row['lembur_lpp_jam'];
+					$RekapGajiDetailRecord->lembur_lpp_tarif= $row['lembur_lpp_tarif'];
+					$RekapGajiDetailRecord->lembur_lpp_total= $row['lembur_lpp_total'];
+					$RekapGajiDetailRecord->lembur_lppml_jam= $row['lembur_lppml_jam'];
+					$RekapGajiDetailRecord->lembur_lppml_tarif= $row['lembur_lppml_tarif'];
+					$RekapGajiDetailRecord->lembur_lppml_total= $row['lembur_lppml_total'];
+					$RekapGajiDetailRecord->lembur_lpplk_jam= $row['lembur_lpplk_jam'];
+					$RekapGajiDetailRecord->lembur_lpplk_tarif= $row['lembur_lpplk_tarif'];
+					$RekapGajiDetailRecord->lembur_lpplk_total= $row['lembur_lpplk_total'];
+					$RekapGajiDetailRecord->total_lembur= $row['total_lembur'];
+					$RekapGajiDetailRecord->mangkir= $row['mangkir'];
+					$RekapGajiDetailRecord->terlambat_masuk_kerja= $row['terlambat_masuk_kerja'];
+					$RekapGajiDetailRecord->total_mangkir_terlambat= $row['total_mangkir_terlambat'];
+					$RekapGajiDetailRecord->total_gaji_kotor= $row['total_gaji_kotor'];
+					$RekapGajiDetailRecord->bpjs_kesehatan= $row['bpjs_kesehatan'];
+					$RekapGajiDetailRecord->bpjs_ketenagakerjaan= $row['bpjs_ketenagakerjaan'];
+					$RekapGajiDetailRecord->pinjaman= $row['pinjaman'];
+					$RekapGajiDetailRecord->kantin= $row['kantin'];
+					$RekapGajiDetailRecord->koperasi= $row['koperasi'];
+					$RekapGajiDetailRecord->total_potongan= $row['total_potongan'];
+					$RekapGajiDetailRecord->jml_gaji_dibayarkan = $row['gaji_dibayarkan'];
 					$RekapGajiDetailRecord->deleted = '0';
 					$RekapGajiDetailRecord->save();
 					
-					$totalGaji += $row['Gaji'];
+					$totalGaji += $row['gaji_dibayarkan'];
 				}
 				
 				$RekapGajiRecord->total_gaji_dibayarkan = $totalGaji;
 				$RekapGajiRecord->save();
 				
+				$this->InsertJurnalUmum($RekapGajiRecord->id,
+										'9',
+										'0',
+										date("Y-m-d"),
+										date("G:i:s"),
+										"Beban Gaji",
+										$totalGaji,
+										$RekapGajiRecord->id);
+										
+				$this->InsertJurnalUmum($RekapGajiRecord->id,
+										'9',
+										'1',
+										date("Y-m-d"),
+										date("G:i:s"),
+										"Hutang Gaji",
+										$totalGaji,
+										$RekapGajiRecord->id);
+										
+				$this->InsertJurnalBukuBesar($RekapGajiRecord->id,
+											'9',
+											'0',
+											$RekapGajiRecord->id,
+											date("Y-m-d"),
+											date("G:i:s"),
+											'',
+											'',
+											"Beban Gaji",
+											"Rekap Gaji Bulan ".$bulan." Tahun ".$tahun,
+											$totalGaji);
+				
+				$this->InsertJurnalBukuBesar($RekapGajiRecord->id,
+											'9',
+											'0',
+											$RekapGajiRecord->id,
+											date("Y-m-d"),
+											date("G:i:s"),
+											'',
+											'',
+											"Hutang Gaji",
+											"Rekap Gaji Bulan ".$bulan." Tahun ".$tahun,
+											$totalGaji);
+																	
 				$this->getPage()->getClientScript()->registerEndScript
 						('','
 						unloadContent();

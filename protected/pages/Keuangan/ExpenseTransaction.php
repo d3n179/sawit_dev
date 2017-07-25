@@ -185,6 +185,32 @@ class ExpenseTransaction extends MainConf
 		$Record->coa_id = $this->DDCoa->text;
 		$Record->save();
 		
+		if($Record->bank_id == '8')
+			$namaAkun = 'Kas';
+		else
+			$namaAkun = 'Kas Bank';
+		
+		$this->UbahSaldoKas('1',$Record->bank_id,$Record->total_expense);
+			
+		$this->InsertJurnalUmum($Record->id,
+							'7',
+							'0',
+							$Record->tgl_transaksi,
+							date("G:i:s"),
+							'Beban Lain-lain',
+							$Record->total_expense,
+							$Record->transaction_no);
+		
+		$this->InsertJurnalUmum($Record->id,
+							'7',
+							'1',
+							$Record->tgl_transaksi,
+							date("G:i:s"),
+							$namaAkun,
+							$Record->total_expense,
+							$Record->transaction_no,
+							$Record->bank_id);
+							
 		$this->InsertJurnalBukuBesar($Record->id,
 										'4',
 										'1',
@@ -193,6 +219,19 @@ class ExpenseTransaction extends MainConf
 										date("G:i:s"),
 										$Record->coa_id,
 										$Record->bank_id,
+										$namaAkun,
+										$Record->deskripsi,
+										$Record->total_expense);
+		
+		$this->InsertJurnalBukuBesar($Record->id,
+										'4',
+										'0',
+										$Record->transaction_no,
+										$Record->tgl_transaksi,
+										date("G:i:s"),
+										$Record->coa_id,
+										$Record->bank_id,
+										'Beban Lain-lain',
 										$Record->deskripsi,
 										$Record->total_expense);
 		
@@ -205,24 +244,6 @@ class ExpenseTransaction extends MainConf
 								$Record->total_expense,
 								$Record->transaction_no);
 		
-		$this->InsertJurnalUmum($Record->id,
-								'7',
-								'0',
-								$Record->tgl_transaksi,
-								date("G:i:s"),
-								$Record->deskripsi,
-								$Record->total_expense,
-								$Record->transaction_no);
-									
-		$this->InsertJurnalUmum($Record->id,
-									'7',
-									'1',
-									$Record->tgl_transaksi,
-									date("G:i:s"),
-									'Kas',
-									$Record->total_expense,
-									$Record->transaction_no,
-									$Record->bank_id);
 		
 		$keterangan = ExpenseRecord::finder()->findByPk($Record->expense_id)->nama;
 		$nama_akun = ExpenseCategoryRecord::finder()->findByPk($Record->expense_category_id)->nama;

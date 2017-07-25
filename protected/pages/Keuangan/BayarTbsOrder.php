@@ -410,7 +410,13 @@ class BayarTbsOrder extends MainConf
 				$TbsOrderRecord->tgl_jatuh_tempo = $this->ConvertDate($this->jatuh_tempo->Text,'2');
 				$statusBaru = '2';
 			}
+			elseif($TbsOrderRecord->status == '2')
+			{
+				$TbsOrderRecord->status = '2';
+				$statusBaru = '2';
+			}
 		}
+		
 		$TbsOrderRecord->save();
 		
 		$DetailBayar = $param->CallbackParameter->BayarTbsTable;
@@ -529,59 +535,62 @@ class BayarTbsOrder extends MainConf
 		
 			if($totalBayar > 0)
 			{	
-				$this->InsertJurnalBukuBesar($BayarTbsOrderRecord->id,
-										'2',
-										'1',
-										$BayarTbsOrderRecord->no_pembayaran,
-										$BayarTbsOrderRecord->tgl_pembayaran,
-										date("G:i:s"),
-										$BayarTbsOrderRecord->id_coa,
-										$BayarTbsOrderRecord->id_bank,
-										'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
-										$BayarTbsOrderRecord->jumlah_pembayaran);
-				
-				$this->InsertLabaRugi($BayarTbsOrderRecord->id,
-									'2',
-									'1',
-									$BayarTbsOrderRecord->tgl_pembayaran,
-									date("G:i:s"),
-									'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
-									$BayarTbsOrderRecord->jumlah_pembayaran,
-									$BayarTbsOrderRecord->no_pembayaran);
-				
-				$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
-									'3',
-									'0',
-									$BayarTbsOrderRecord->tgl_pembayaran,
-									date("G:i:s"),
-									'Perlengkapan',
-									$BayarTbsOrderRecord->jumlah_pembayaran,
-									$BayarTbsOrderRecord->no_pembayaran);
-										
-				$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
-										'3',
-										'1',
-										$BayarTbsOrderRecord->tgl_pembayaran,
-										date("G:i:s"),
-										'Kas',
-										$BayarTbsOrderRecord->jumlah_pembayaran,
-										$BayarTbsOrderRecord->no_pembayaran,
-										$BayarTbsOrderRecord->id_bank);
-				
 				if(($statusLama == '0' || $statusLama == '1') &&  $statusBaru == '3')	
 				{
-					$jns_transaksi = '2';
-					$keterangan = 'Pembelian Tunai Kepada '.$supplierName;
-				}
-				else
-				{
-					$jns_transaksi = '1';
-					$keterangan = $supplierName;
-				}
+					if($BayarTbsOrderRecord->id_bank != '8')	
+						$namaAkun = 'Kas Bank';
+					else
+						$namaAkun = 'Kas';
+						
+					$this->UbahSaldoKas('1',$BayarTbsOrderRecord->id_bank,$BayarTbsOrderRecord->jumlah_pembayaran);
 					
-				$this->InsertJurnalPengeluaranKas($BayarTbsOrderRecord->id,
+					$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'0',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Persediaan Bahan Baku',
+											$BayarTbsOrderRecord->jumlah_pembayaran,
+											$BayarTbsOrderRecord->no_pembayaran);
+											
+					$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'1',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Kas',
+											$BayarTbsOrderRecord->jumlah_pembayaran,
+											$BayarTbsOrderRecord->no_pembayaran,
+											$BayarTbsOrderRecord->id_bank);
+											
+					$this->InsertJurnalBukuBesar($BayarTbsOrderRecord->id,
+												'4',
+												'1',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												$namaAkun,
+												'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$BayarTbsOrderRecord->jumlah_pembayaran);
+																	
+					$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+												'4',
+												'0',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												"Persediaan Bahan Baku",
+												'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$BayarTbsOrderRecord->jumlah_pembayaran);
+					
+					$keterangan = 'Pembelian Tunai Kepada '.$supplierName;
+					$this->InsertJurnalPengeluaranKas($BayarTbsOrderRecord->id,
 													$BayarTbsOrderRecord->no_pembayaran,
-													$jns_transaksi,
+													'2',
 													$BayarTbsOrderRecord->tgl_pembayaran,
 													date("G:i:s"),
 													$keterangan,
@@ -589,31 +598,94 @@ class BayarTbsOrder extends MainConf
 													'',
 													$BayarTbsOrderRecord->jumlah_pembayaran,
 													0);	
-			}	
-			
-			if(($statusLama == '0' || $statusLama == '1') && $statusBaru == '2')
-			{
-				$hutangTbs = $total_tbs - $totalBayar;
-				
-				$this->InsertJurnalUmum($TbsOrderRecord->id,
-										'1',
-										'0',
-										date("Y-m-d"),
-										date("G:i:s"),
-										'Perlengkapan',
-										$hutangTbs,
-										$TbsOrderRecord->no_tbs_order);
-										
-				$this->InsertJurnalUmum($TbsOrderRecord->id,
-										'1',
-										'1',
-										date("Y-m-d"),
-										date("G:i:s"),
-										'Hutang',
-										$hutangTbs,
-										$TbsOrderRecord->no_tbs_order);
-										
-				$this->InsertJurnalPembelian($TbsOrderRecord->id,
+									
+				}
+				elseif(($statusLama == '0' || $statusLama == '1') &&  $statusBaru == '2')
+				{
+					if($BayarTbsOrderRecord->id_bank != '8')	
+						$namaAkun = 'Kas Bank';
+					else
+						$namaAkun = 'Kas';
+						
+					$this->UbahSaldoKas('1',$BayarTbsOrderRecord->id_bank,$BayarTbsOrderRecord->jumlah_pembayaran);
+					
+					$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'0',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Persediaan Bahan Baku',
+											$total_tbs,
+											$BayarTbsOrderRecord->no_pembayaran);
+											
+					$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'1',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Hutang',
+											$total_tbs - $totalBayar,
+											$BayarTbsOrderRecord->no_pembayaran);	
+																
+					$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'1',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Kas',
+											$BayarTbsOrderRecord->jumlah_pembayaran,
+											$BayarTbsOrderRecord->no_pembayaran,
+											$BayarTbsOrderRecord->id_bank);
+											
+					$this->InsertJurnalBukuBesar($BayarTbsOrderRecord->id,
+												'4',
+												'1',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												$namaAkun,
+												'Pembelian Secara Kredit & Tunai Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$BayarTbsOrderRecord->jumlah_pembayaran);
+																	
+					$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+												'4',
+												'0',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												"Persediaan Bahan Baku",
+												'Pembelian Secara Kredit & Tunai Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$total_tbs);
+					
+					$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+												'4',
+												'0',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												"Hutang",
+												'Pembelian Secara Kredit & Tunai Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$total_tbs - $totalBayar);
+																			
+					$keterangan = $supplierName;
+					$this->InsertJurnalPengeluaranKas($BayarTbsOrderRecord->id,
+													$BayarTbsOrderRecord->no_pembayaran,
+													'1',
+													$BayarTbsOrderRecord->tgl_pembayaran,
+													date("G:i:s"),
+													$keterangan,
+													'',
+													'',
+													$BayarTbsOrderRecord->jumlah_pembayaran,
+													0);	
+													
+					$this->InsertJurnalPembelian($TbsOrderRecord->id,
 										$TbsOrderRecord->no_tbs_order,
 										'1',
 										date("Y-m-d"),
@@ -621,10 +693,130 @@ class BayarTbsOrder extends MainConf
 										$supplierName,
 										'',
 										'',
-										$hutangTbs);
-	
-			}
+										$total_tbs - $totalBayar);
+													
+				}
+				elseif($statusLama == '2' &&  $statusBaru == '2')
+				{
+					if($BayarTbsOrderRecord->id_bank != '8')	
+						$namaAkun = 'Kas Bank';
+					else
+						$namaAkun = 'Kas';
+						
+					$this->UbahSaldoKas('1',$BayarTbsOrderRecord->id_bank,$BayarTbsOrderRecord->jumlah_pembayaran);
+											
+					$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'0',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Hutang',
+											$BayarTbsOrderRecord->jumlah_pembayaran,
+											$BayarTbsOrderRecord->no_pembayaran);	
+																
+					$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'1',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Kas',
+											$BayarTbsOrderRecord->jumlah_pembayaran,
+											$BayarTbsOrderRecord->no_pembayaran,
+											$BayarTbsOrderRecord->id_bank);
+											
+					$this->InsertJurnalBukuBesar($BayarTbsOrderRecord->id,
+												'4',
+												'1',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												$namaAkun,
+												'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$BayarTbsOrderRecord->jumlah_pembayaran);
+					
+					$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+												'4',
+												'1',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												"Hutang",
+												'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$BayarTbsOrderRecord->jumlah_pembayaran);
+																			
+					$keterangan = $supplierName;
+					$this->InsertJurnalPengeluaranKas($BayarTbsOrderRecord->id,
+													$BayarTbsOrderRecord->no_pembayaran,
+													'1',
+													$BayarTbsOrderRecord->tgl_pembayaran,
+													date("G:i:s"),
+													$keterangan,
+													'',
+													'',
+													$BayarTbsOrderRecord->jumlah_pembayaran,
+													0);	
+				}
 				
+				/*$this->InsertLabaRugi($BayarTbsOrderRecord->id,
+									'2',
+									'1',
+									$BayarTbsOrderRecord->tgl_pembayaran,
+									date("G:i:s"),
+									'Pembayaran Pembelian Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+									$BayarTbsOrderRecord->jumlah_pembayaran,
+									$BayarTbsOrderRecord->no_pembayaran);*/
+				
+			}
+			else
+			{
+				$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'0',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Persediaan Bahan Baku',
+											$total_tbs,
+											$BayarTbsOrderRecord->no_pembayaran);
+											
+				$this->InsertJurnalUmum($BayarTbsOrderRecord->id,
+											'3',
+											'1',
+											$BayarTbsOrderRecord->tgl_pembayaran,
+											date("G:i:s"),
+											'Hutang',
+											$total_tbs,
+											$BayarTbsOrderRecord->no_pembayaran);	
+																
+				
+											
+					$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+												'4',
+												'0',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												'',
+												'',
+												"Persediaan Bahan Baku",
+												'Pembelian Secara Kredit Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$total_tbs);
+					
+					$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+												'4',
+												'0',
+												$BayarTbsOrderRecord->no_pembayaran,
+												$BayarTbsOrderRecord->tgl_pembayaran,
+												date("G:i:s"),
+												$BayarTbsOrderRecord->id_coa,
+												$BayarTbsOrderRecord->id_bank,
+												"Hutang",
+												'Pembelian Secara Kredit Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$total_tbs);
+			}
 	$tblBody = $this->BindGrid();
 		$id = $BayarTbsOrderRecord->id;
 		$url = "index.php?page=Keuangan.cetakKwtPembayaranTbs&id=".$id;

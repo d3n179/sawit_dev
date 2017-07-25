@@ -39,7 +39,475 @@ class KertasKerja extends MainConf
 		{
 		}
 	}
+	
 	public function cariBtnClicked($sender,$param)
+	{
+		$sqlBukuBesar = "SELECT
+							id,
+							nama_akun
+						FROM
+							tbt_jurnal_buku_besar
+						WHERE
+							deleted != '1'
+						GROUP BY
+							nama_akun ";
+		$arrBukuBesar = $this->queryAction($sqlBukuBesar,'S');
+		
+		$neracaSaldoDebet = 0;
+		$neracaSaldoKredit = 0;
+		$tblBody = '';
+		$tblBody .= '<tr>';
+		$tblBody .= '<td Rowspan=\"2\" align=\"center\"><strong>Nama Akun</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Neraca Saldo</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Penyesuaian</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Neraca Saldo Disesuaikan</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Laba / Rugi</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Neraca</strong></td>';
+		$tblBody .= '</tr>';
+		$tblBody .= '<tr>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '</tr>';
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Kas')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Kas</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Kas Bank')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Kas Bank</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Piutang Dagang')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Piutang Dagang</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Persediaan Bahan Baku')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Persediaan Bahan Baku</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Perlengkapan')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Perlengkapan</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Hutang')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Hutang</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Hutang Gaji')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Hutang Gaji</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Modal')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Modal</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Pendapatan')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Pendapatan</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Pendapatan Lain-lain')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Pendapatan Lain-lain</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Beban Gaji')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Beban Gaji</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Beban Lain-lain')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Beban Lain-lain</td>';
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+		
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+				}
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '<td align=\"right\"></td>';
+				$tblBody .= '</tr>';
+			}
+		}
+		
+		$tblBody .= '<tr>';
+		$tblBody .= '<td align=\"center\"><strong>Jumlah</strong></td>';
+		$tblBody .= '<td align=\"right\">'.number_format($neracaSaldoDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($neracaSaldoKredit,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '<td align=\"right\"></td>';
+		$tblBody .= '</tr>';
+				
+		$this->getPage()->getClientScript()->registerEndScript
+					('','
+					console.log("'.$tblBody.'");
+					jQuery("#table-1 tbody").empty();
+					jQuery("#table-1 tbody").append("'.$tblBody.'");
+					unloadContent();
+					');
+	}
+	
+	public function cariBtnClickedBAK2($sender,$param)
 	{
 		$sqlJurnalUmum = "SELECT * FROM tbt_jurnal_umum WHERE deleted != '1' ";
 		$arrJurnalUmum = $this->queryAction($sqlJurnalUmum,'S');
