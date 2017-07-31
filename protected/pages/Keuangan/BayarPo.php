@@ -443,7 +443,7 @@ class BayarPo extends MainConf
 								'1',
 								$BayarPoOrderRecord->tgl_pembayaran,
 								date("G:i:s"),
-								'Kas',
+								$namaAkun,
 								$BayarPoOrderRecord->total_pembayaran,
 								$BayarPoOrderRecord->no_pembayaran,
 								$BayarPoOrderRecord->id_bank);

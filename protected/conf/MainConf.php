@@ -220,8 +220,8 @@ class MainConf extends TPage
 			$fieldTgl = 'tgl_pembayaran';
 		}
 		
-		$month = date("m");
-		$year = date("Y");
+		$month = 1;
+		$year = 2017;
 		
 		$query = "SELECT 
 						id 
@@ -348,14 +348,15 @@ class MainConf extends TPage
 	{	
 		if($uomInitial == '0')
 		{
-			$sqlUomInitial = "SELECT id_satuan FROM tbm_satuan_barang WHERE deleted ='0' AND id_barang = '$productId' ORDER BY urutan DESC LIMIT 1";
+			$sqlUomInitial = "SELECT id_satuan FROM tbm_satuan_barang WHERE deleted ='0' AND id_barang = '".$productId."' ORDER BY urutan DESC LIMIT 1";
 			$arrInitial = $this->queryAction($sqlUomInitial,'S');
 			foreach($arrInitial as $rowInitial)
 			{
 				$uomInitial = $rowInitial['id_satuan'];
 			}
 		}
-		
+		var_dump($productId);
+		var_dump($uomInitial);
 		if($stTarget == '0')
 		{
 			$UomOrder = BarangSatuanRecord::finder()->find('id_barang = ? AND id_satuan = ? AND deleted = ?',$productId,$uomInitial,'0')->urutan;
@@ -380,8 +381,8 @@ class MainConf extends TPage
 									tbm_satuan_barang 
 								WHERE 
 									deleted ='0' 
-									AND id_barang = '$productId' 
-									AND urutan > '$uomInitial' 
+									AND id_barang = '".$productId."' 
+									AND urutan > ".$uomInitial."
 								ORDER BY urutan ASC ";
 				$arrConvert = $this->queryAction($sqlConvert,'S');
 				foreach($arrConvert as $rowConvert)
@@ -402,7 +403,7 @@ class MainConf extends TPage
 								INNER JOIN tbm_satuan ON tbm_satuan.id = tbm_satuan_barang.id_satuan
 							WHERE 
 								tbm_satuan_barang.deleted ='0' 
-								AND tbm_satuan_barang.id_barang ='$productId' 
+								AND tbm_satuan_barang.id_barang ='".$productId."' 
 								AND tbm_satuan.deleted = '0' ";
 			
 			$sqlOrderUom .= "ORDER BY urutan DESC ";
@@ -436,7 +437,7 @@ class MainConf extends TPage
 		{
 			if($uomTarget == '0')
 			{
-				$sqlUomTarget = "SELECT id_satuan FROM tbm_satuan_barang WHERE deleted ='0' AND id_barang = '$productId' ORDER BY urutan DESC LIMIT 1";
+				$sqlUomTarget = "SELECT id_satuan FROM tbm_satuan_barang WHERE deleted ='0' AND id_barang = '".$productId."' ORDER BY urutan DESC LIMIT 1";
 				$arrTarget = $this->queryAction($sqlUomTarget,'S');
 				foreach($arrTarget as $rowTarget)
 				{
@@ -462,22 +463,24 @@ class MainConf extends TPage
 								INNER JOIN tbm_satuan ON tbm_satuan.id = tbm_satuan_barang.id_satuan
 							WHERE 
 								tbm_satuan_barang.deleted ='0' 
-								AND tbm_satuan_barang.id_barang ='$productId' 
-								AND tbm_satuan.deleted = '0'";
+								AND tbm_satuan_barang.id_barang ='".$productId."' 
+								AND tbm_satuan.deleted = '0' ";
 								
 				if($UomOrderTarget > $UomOrderInitial)
 				{
-					$sqlOrderUom .="AND tbm_satuan_barang.urutan > $UomOrderInitial ";
+					$sqlOrderUom .="AND tbm_satuan_barang.urutan > ".$UomOrderInitial." ";
 					$sqlSort = "ASC";
 				}
 				elseif($UomOrderTarget <  $UomOrderInitial)
 				{
-					$sqlOrderUom .="AND tbm_satuan_barang.urutan < $UomOrderInitial ";
+					$sqlOrderUom .="AND tbm_satuan_barang.urutan < ".$UomOrderInitial." ";
 					$sqlSort = "DESC";
 				}
 				
-				$sqlOrderUom .= "ORDER BY urutan ".$sqlSort ;
-				//var_dump($sqlOrderUom);
+				$sqlOrderUom .= " ORDER BY urutan ".$sqlSort ;
+				var_dump($sqlOrderUom);
+				
+				exit();
 				$arrOrderUom = $this->queryAction($sqlOrderUom,'S');
 				
 				if($UomOrderTarget > $UomOrderInitial)
@@ -928,7 +931,7 @@ class MainConf extends TPage
 		
 		if(count($arrSaldo) > 0)
 		{
-			if(($namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain') && $arrSaldo[0]['status'] != '0')
+			if(($namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain' || $namaAkun == 'Beban Perlengkapan') && $arrSaldo[0]['status'] != '0')
 			{
 				$saldoAkhir = 0;
 				$posisiSaldoAkhir = '0';
@@ -947,13 +950,13 @@ class MainConf extends TPage
 		else
 		{
 			$saldoAkhir = 0;
-			if($namaAkun=='Kas' || $namaAkun=='Kas Bank' || $namaAkun=='Perlengkapan' || $namaAkun == 'Persediaan Bahan Baku' || $namaAkun == 'Persediaan Barang Dagangan' || $namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain')
+			if($namaAkun=='Kas' || $namaAkun=='Kas Bank' || $namaAkun=='Piutang' || $namaAkun=='Perlengkapan' || $namaAkun == 'Persediaan Bahan Baku' || $namaAkun == 'Persediaan Barang Dagangan' || $namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain' || $namaAkun == 'Beban Perlengkapan')
 				$posisiSaldoAkhir = '0';
 			elseif($namaAkun == 'Modal' || $namaAkun == 'Hutang' || $namaAkun == 'Hutang Gaji' || $namaAkun == 'Pendapatan' || $namaAkun == 'Pendapatan Lain-lain')
 				$posisiSaldoAkhir = '1';
 		}
 		
-		if($namaAkun=='Kas' || $namaAkun=='Kas Bank' || $namaAkun=='Perlengkapan' || $namaAkun == 'Persediaan Bahan Baku' || $namaAkun == 'Persediaan Barang Dagangan' || $namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain')
+		if($namaAkun=='Kas' || $namaAkun=='Kas Bank' || $namaAkun=='Perlengkapan' || $namaAkun=='Piutang' || $namaAkun == 'Persediaan Bahan Baku' || $namaAkun == 'Persediaan Barang Dagangan' || $namaAkun == 'Beban Gaji' || $namaAkun == 'Beban Lain-lain' || $namaAkun == 'Beban Perlengkapan')
 		{
 			if($jnsTrans == '0')
 			{

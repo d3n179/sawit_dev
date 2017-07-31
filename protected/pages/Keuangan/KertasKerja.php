@@ -53,8 +53,17 @@ class KertasKerja extends MainConf
 							nama_akun ";
 		$arrBukuBesar = $this->queryAction($sqlBukuBesar,'S');
 		
+		$arrRekapKertasKerja = array();
 		$neracaSaldoDebet = 0;
 		$neracaSaldoKredit = 0;
+		$penyesuaianDebet = 0;
+		$penyesuaianKredit = 0;
+		$nsdDebet = 0;
+		$nsdKredit = 0;
+		$labarugiDebet = 0;
+		$labarugiKredit = 0;
+		$neracaDebet = 0;
+		$neracaKredit = 0;
 		$tblBody = '';
 		$tblBody .= '<tr>';
 		$tblBody .= '<td Rowspan=\"2\" align=\"center\"><strong>Nama Akun</strong></td>';
@@ -81,32 +90,99 @@ class KertasKerja extends MainConf
 		{
 			if($row['nama_akun'] == 'Kas')
 			{
+				
+				
 				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
 				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Kas</td>';
+				
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Kas",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
+				
 			}
 		}
 		
@@ -119,62 +195,286 @@ class KertasKerja extends MainConf
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Kas Bank</td>';
+				
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Kas Bank",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
 		foreach($arrBukuBesar as $row)
 		{
-			if($row['nama_akun'] == 'Piutang Dagang')
+			if($row['nama_akun'] == 'Piutang')
 			{
 				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
 				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
-				$tblBody .= '<td align=\"left\">Piutang Dagang</td>';
+				$tblBody .= '<td align=\"left\">Piutang</td>';
+				
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Piutang",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Persediaan Barang Dagangan')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Persediaan Barang Dagangan</td>';
+				
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
+				}
+				
+				//Penyesuaian
+				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
+				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
+				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
+				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
+				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Persediaan Barang Dagangan",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -187,28 +487,91 @@ class KertasKerja extends MainConf
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Persediaan Bahan Baku</td>';
+				
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Persediaan Bahan Baku",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -221,28 +584,90 @@ class KertasKerja extends MainConf
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Perlengkapan</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Perlengkapan",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -255,28 +680,90 @@ class KertasKerja extends MainConf
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Hutang</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Hutang",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -289,28 +776,90 @@ class KertasKerja extends MainConf
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Hutang Gaji</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Hutang Gaji",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -323,28 +872,90 @@ class KertasKerja extends MainConf
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Modal</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
 				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$labarugiKreditTemp = 0;
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Modal",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -352,33 +963,105 @@ class KertasKerja extends MainConf
 		{
 			if($row['nama_akun'] == 'Pendapatan')
 			{
-				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' AND status = '0' ORDER BY id DESC LIMIT 1";
 				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Pendapatan</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$labarugiDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$labarugiDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$labarugiKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$labarugiKreditTemp = $saldoAkhir;
+				}
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Pendapatan",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -386,33 +1069,105 @@ class KertasKerja extends MainConf
 		{
 			if($row['nama_akun'] == 'Pendapatan Lain-lain')
 			{
-				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' AND status = '0' ORDER BY id DESC LIMIT 1";
 				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Pendapatan Lain-lain</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$labarugiDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$labarugiDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$labarugiKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$labarugiKreditTemp = $saldoAkhir;
+				}
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Pendapatan Lain-lain",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -420,33 +1175,211 @@ class KertasKerja extends MainConf
 		{
 			if($row['nama_akun'] == 'Beban Gaji')
 			{
-				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' AND status = '0' ORDER BY id DESC LIMIT 1";
 				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Beban Gaji</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$labarugiDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$labarugiDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$labarugiKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$labarugiKreditTemp = $saldoAkhir;
+				}
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Beban Gaji",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
+			}
+		}
+		
+		foreach($arrBukuBesar as $row)
+		{
+			if($row['nama_akun'] == 'Beban Perlengkapan')
+			{
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' AND status = '0' ORDER BY id DESC LIMIT 1";
+				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+				$tblBody .= '<tr>';
+				$tblBody .= '<td align=\"left\">Beban Perlengkapan</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaSaldoDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaSaldoKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
+				}
+				
+				//Penyesuaian
+				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
+				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$labarugiDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$labarugiDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$labarugiKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$labarugiKreditTemp = $saldoAkhir;
+				}
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
+				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Beban Perlengkapan",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -454,33 +1387,105 @@ class KertasKerja extends MainConf
 		{
 			if($row['nama_akun'] == 'Beban Lain-lain')
 			{
-				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' ORDER BY id DESC LIMIT 1";
+				$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$row['nama_akun']."' AND status = '0' ORDER BY id DESC LIMIT 1";
 				$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
 				$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
 				$tblBody .= '<tr>';
 				$tblBody .= '<td align=\"left\">Beban Lain-lain</td>';
+				$neracasaldoDebetTemp = 0;
+				$neracasaldoKreditTemp = 0;
+				$penyesuaianDebetTemp = 0;
+				$penyesuaianKreditTemp = 0;
+				$nsdDebetTemp = 0;
+				$nsdKreditTemp = 0;
+				$labarugiDebetTemp = 0;
+				$labarugiKreditTemp = 0;
+				$neracaDebetTemp = 0;
+				$neracaKreditTemp = 0;
+				//Neraca Saldo
 				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
 				{
 					$neracaSaldoDebet += $saldoAkhir;
-		
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
 					$tblBody .= '<td align=\"right\"></td>';
+					$neracasaldoDebetTemp = $saldoAkhir;
 				}
 				else
 				{
 					$neracaSaldoKredit += $saldoAkhir;
 					$tblBody .= '<td align=\"right\"></td>';
 					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracasaldoKreditTemp = $saldoAkhir;
 				}
+				
+				//Penyesuaian
 				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianDebetTemp = 0;
 				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
-				$tblBody .= '<td align=\"right\"></td>';
+				$penyesuaianKreditTemp = 0;
+				
+				//NSD
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$nsdDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$nsdDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$nsdKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$nsdKreditTemp = $saldoAkhir;
+				}
+				
+				//Laba Rugi
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$labarugiDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$labarugiDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$labarugiKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$labarugiKreditTemp = $saldoAkhir;
+				}
+				
+				//Neraca
+				if($arrSaldoAkhir[0]['posisi_saldo_akhir'] == '0')
+				{
+					$neracaDebet += $saldoAkhir;
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$tblBody .= '<td align=\"right\"></td>';
+					$neracaDebetTemp = $saldoAkhir;
+				}
+				else
+				{
+					$neracaKredit += $saldoAkhir;
+					$tblBody .= '<td align=\"right\"></td>';
+					$tblBody .= '<td align=\"right\">'.number_format($saldoAkhir,2,".",",").'</td>';
+					$neracaKreditTemp = $saldoAkhir;
+				}
+				
 				$tblBody .= '</tr>';
+				
+				$arrRekapKertasKerja[] = array("namaAkun"=>"Beban Lain-lain",
+												"neracasaldoDebetTemp"=>$neracasaldoDebetTemp,
+												"neracasaldoKreditTemp"=>$neracasaldoKreditTemp,
+												"penyesuaianDebetTemp"=>$penyesuaianDebetTemp,
+												"penyesuaianKreditTemp"=>$penyesuaianKreditTemp,
+												"nsdDebetTemp"=>$nsdDebetTemp,
+												"nsdKreditTemp"=>$nsdKreditTemp,
+												"labarugiDebetTemp"=>$labarugiDebetTemp,
+												"labarugiKreditTemp"=>$labarugiKreditTemp,
+												"neracaDebetTemp"=>$neracaDebetTemp,
+												"neracaKreditTemp"=>$neracaKreditTemp
+												);
 			}
 		}
 		
@@ -488,15 +1493,26 @@ class KertasKerja extends MainConf
 		$tblBody .= '<td align=\"center\"><strong>Jumlah</strong></td>';
 		$tblBody .= '<td align=\"right\">'.number_format($neracaSaldoDebet,2,".",",").'</td>';
 		$tblBody .= '<td align=\"right\">'.number_format($neracaSaldoKredit,2,".",",").'</td>';
-		$tblBody .= '<td align=\"right\"></td>';
-		$tblBody .= '<td align=\"right\"></td>';
-		$tblBody .= '<td align=\"right\"></td>';
-		$tblBody .= '<td align=\"right\"></td>';
-		$tblBody .= '<td align=\"right\"></td>';
-		$tblBody .= '<td align=\"right\"></td>';
-		$tblBody .= '<td align=\"right\"></td>';
-		$tblBody .= '<td align=\"right\"></td>';
+		
+		//Penyesuaian
+		$tblBody .= '<td align=\"right\">'.number_format($penyesuaianDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($penyesuaianKredit,2,".",",").'</td>';
+				
+		//NSD
+		$tblBody .= '<td align=\"right\">'.number_format($nsdDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($nsdKredit,2,".",",").'</td>';
+				
+		//Laba Rugi
+		$tblBody .= '<td align=\"right\">'.number_format($labarugiDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($labarugiKredit,2,".",",").'</td>';
+				
+		//Neraca
+		$tblBody .= '<td align=\"right\">'.number_format($neracaDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($neracaKredit,2,".",",").'</td>';
+		
 		$tblBody .= '</tr>';
+		
+		$this->setViewState('arrRekapKertasKerja',$arrRekapKertasKerja);
 				
 		$this->getPage()->getClientScript()->registerEndScript
 					('','
@@ -2056,11 +3072,13 @@ class KertasKerja extends MainConf
 	
 	public function closingClicked()
 	{
+		
+												
 		$bulan = date("m");
 		$tahun = date("Y");
-		$arrRekapNeraca = $this->getViewState('arrRekapNeraca');
+		$arrRekapKertasKerja = $this->getViewState('arrRekapKertasKerja');
 		
-		if(count($arrRekapNeraca) > 0)
+		if(count($arrRekapKertasKerja) > 0)
 		{
 			$RekapNeracaRecord = RekapNeracaRecord::finder()->find('bulan = ? AND tahun = ? AND deleted = ?',$bulan,$tahun,'0');
 			if(!$RekapNeracaRecord)
@@ -2071,23 +3089,39 @@ class KertasKerja extends MainConf
 				$RekapNeracaRecord->deleted = '0';
 				$RekapNeracaRecord->save();
 				
-				foreach($arrRekapNeraca as $row)
+				foreach($arrRekapKertasKerja as $row)
 				{
 					$RekapNeracaDetailRecord = new RekapNeracaDetailRecord();
-						
+											
 					$RekapNeracaDetailRecord->id_rekap = $RekapNeracaRecord->id;
-					$RekapNeracaDetailRecord->kelompok_akun = $row['kelompok_neraca'];
-					$RekapNeracaDetailRecord->nama_akun = $row['nama_akun'];
-					$RekapNeracaDetailRecord->nilai_akun = $row['nilai_akun'];
+					$RekapNeracaDetailRecord->nama_akun = $row['namaAkun'];
+					$RekapNeracaDetailRecord->neraca_saldo_debet = $row['neracasaldoDebetTemp'];
+					$RekapNeracaDetailRecord->neraca_saldo_kredit = $row['neracasaldoKreditTemp'];
+					$RekapNeracaDetailRecord->penyesuaian_debet = $row['penyesuaianDebetTemp'];
+					$RekapNeracaDetailRecord->penyesuaian_kredit = $row['penyesuaianKreditTemp'];
+					$RekapNeracaDetailRecord->ns_disesuaikan_debet = $row['nsdDebetTemp'];
+					$RekapNeracaDetailRecord->ns_disesuaikan_kredit = $row['nsdKreditTemp'];
+					$RekapNeracaDetailRecord->laba_rugi_debet = $row['labarugiDebetTemp'];
+					$RekapNeracaDetailRecord->laba_rugi_kredit = $row['labarugiKreditTemp'];
+					$RekapNeracaDetailRecord->neraca_debet = $row['neracaDebetTemp'];
+					$RekapNeracaDetailRecord->neraca_kredit = $row['neracaKreditTemp'];
 					$RekapNeracaDetailRecord->deleted = '0';
 					$RekapNeracaDetailRecord->save();
 					
 				}
 				
+				$sqlUpdateBukuBesar = "UPDATE tbt_jurnal_buku_besar SET status = '1' WHERE 
+										nama_akun LIKE 'Beban Perlengkapan' 
+										OR  nama_akun LIKE 'Beban Gaji'
+										OR  nama_akun LIKE 'Beban Lain-lain'
+										OR  nama_akun LIKE 'Pendapatan'
+										OR  nama_akun LIKE 'Pendapatan Lain-lain' ";
+				$this->queryAction($sqlUpdateBukuBesar,'C');
+				
 				$this->getPage()->getClientScript()->registerEndScript
 						('','
 						unloadContent();
-						toastr.info("Neraca Bulan Ini Berhasil Diclosing !");
+						toastr.info("Laporan Keuangan Bulan Ini Berhasil Diclosing !");
 						');	
 			}
 			else
@@ -2095,7 +3129,7 @@ class KertasKerja extends MainConf
 				$this->getPage()->getClientScript()->registerEndScript
 						('','
 						unloadContent();
-						toastr.error("Neraca Bulan Ini Sudah Diclosing Sebelumnya !");
+						toastr.error("Laporan Keuangan Bulan Ini Sudah Diclosing Sebelumnya !");
 						');	
 			}
 		}

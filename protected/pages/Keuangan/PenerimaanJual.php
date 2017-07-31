@@ -233,45 +233,58 @@ class PenerimaanJual extends MainConf
 		$CommodityTransactionRecord = CommodityTransactionRecord::finder()->findByPk($this->idPenjualan->Value);
 		$customerName = $CommodityTransactionRecord->pembeli;
 		
-		$this->InsertJurnalBukuBesar($RecordDetail->id,
-									'3',
-									'0',
-									$CommodityTransactionRecord->transaction_no,
-									$RecordDetail->tgl_pembayaran,
-									date("G:i:s"),
-									$RecordDetail->id_coa,
-									$RecordDetail->id_bank,
-									'Penerimaan Pembayaran Penjualan Dari '.$customerName,
-									$RecordDetail->total_pembayaran);
+		if($RecordDetail->id_bank != '8')
+			$namaAkun = 'Kas Bank';
+		else
+			$namaAkun = 'Kas';
 		
-		$this->InsertLabaRugi($RecordDetail->id,
-								'3',
-								'0',
-								$RecordDetail->tgl_pembayaran,
-								date("G:i:s"),
-								'Penerimaan Pembayaran Penjualan Dari '.$customerName,
-								$RecordDetail->total_pembayaran,
-								$CommodityTransactionRecord->transaction_no);
+		$this->UbahSaldoKas('0',$RecordDetail->id_bank,$RecordDetail->total_pembayaran);
 		
 		$this->InsertJurnalUmum($RecordDetail->id,
-								'5',
+								'11',
 								'0',
 								$RecordDetail->tgl_pembayaran,
 								date("G:i:s"),
-								'Kas',
+								$namaAkun,
 								$RecordDetail->total_pembayaran,
 								$CommodityTransactionRecord->transaction_no,
 								$RecordDetail->id_bank);
-									
+							
 		$this->InsertJurnalUmum($RecordDetail->id,
-									'5',
-									'1',
-									$RecordDetail->tgl_pembayaran,
-									date("G:i:s"),
-									'Piutang',
-									$RecordDetail->total_pembayaran,
-									$CommodityTransactionRecord->transaction_no);
+								'11',
+								'1',
+								$RecordDetail->tgl_pembayaran,
+								date("G:i:s"),
+								'Piutang',
+								$RecordDetail->total_pembayaran,
+								$CommodityTransactionRecord->transaction_no,
+								$RecordDetail->id_bank);
 		
+		
+		$this->InsertJurnalBukuBesar($RecordDetail->id,
+										'11',
+										'0',
+										$CommodityTransactionRecord->transaction_no,
+										$RecordDetail->tgl_pembayaran,
+										date("G:i:s"),
+										$RecordDetail->id_coa,
+										$RecordDetail->id_bank,
+										$namaAkun,
+										'Penerimaan Pembayaran Piutang Untuk Commodity No '.$CommodityTransactionRecord->transaction_no,
+										$RecordDetail->total_pembayaran);
+		
+		$this->InsertJurnalBukuBesar($RecordDetail->id,
+										'11',
+										'1',
+										$CommodityTransactionRecord->transaction_no,
+										$RecordDetail->tgl_pembayaran,
+										date("G:i:s"),
+										$RecordDetail->id_coa,
+										$RecordDetail->id_bank,
+										'Piutang',
+										'Penerimaan Pembayaran Piutang Untuk Commodity No '.$CommodityTransactionRecord->transaction_no,
+										$RecordDetail->total_pembayaran);
+										
 		$this->InsertJurnalPenerimaanKas($RecordDetail->id,
 										$CommodityTransactionRecord->transaction_no,
 										'1',

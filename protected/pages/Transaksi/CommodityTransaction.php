@@ -446,33 +446,66 @@ class CommodityTransaction extends MainConf
 						if($StockInOutRecord->save())
 						{
 							$this->InsertJurnalUmum($Record->id,
-									'4',
-									'0',
-									date("Y-m-d"),
-									date("G:i:s"),
-									'Piutang',
-									$Record->total,
-									$Record->transaction_no);
-										
+												'10',
+												'0',
+												date("Y-m-d"),
+												date("G:i:s"),
+												'Piutang',
+												$Record->total,
+												$Record->transaction_no);
+							
 							$this->InsertJurnalUmum($Record->id,
-														'4',
-														'1',
-														date("Y-m-d"),
-														date("G:i:s"),
-														'Pendapatan',
-														$Record->total,
-														$Record->transaction_no);
-														
+												'10',
+												'1',
+												date("Y-m-d"),
+												date("G:i:s"),
+												'Pendapatan',
+												$Record->total,
+												$Record->transaction_no);
+							
+							$this->InsertJurnalBukuBesar($Record->id,
+															'10',
+															'0',
+															$Record->transaction_no,
+															date("Y-m-d"),
+															date("G:i:s"),
+															'',
+															'',
+															'Piutang',
+															'Penjualan Commoditty Secara Kredit',
+															$Record->total);
+							
+							$this->InsertJurnalBukuBesar($Record->id,
+															'10',
+															'0',
+															$Record->transaction_no,
+															date("Y-m-d"),
+															date("G:i:s"),
+															'',
+															'',
+															'Pendapatan',
+															'Penjualan Commoditty Secara Kredit',
+															$Record->total);
+															
+							$this->InsertLabaRugi($Record->id,
+													'10',
+													'0',
+													date("Y-m-d"),
+													date("G:i:s"),
+													'Penjualan Commoditty Secara Kredit',
+													$Record->total,
+													$Record->transaction_no);
+							
 							$this->InsertJurnalPenjualan($Record->id,
-														$Record->transaction_no,
-														'1',
-														date("Y-m-d"),
-														date("G:i:s"),
-														$Record->pembeli,
-														'',
-														'',
-														$Record->total);
-	
+											$Record->transaction_no,
+											'1',
+											date("Y-m-d"),
+											date("G:i:s"),
+											$Record->pembeli,
+											'',
+											'',
+											$Record->total);
+											
 							$Record->status = '1';
 							$Record->save();
 							$tblBody = $this->BindGrid();
@@ -508,23 +541,56 @@ class CommodityTransaction extends MainConf
 			else
 			{
 				$this->InsertJurnalUmum($Record->id,
-									'4',
+									'10',
 									'0',
 									date("Y-m-d"),
 									date("G:i:s"),
 									'Piutang',
 									$Record->total,
 									$Record->transaction_no);
-										
+				
 				$this->InsertJurnalUmum($Record->id,
-											'4',
-											'1',
-											date("Y-m-d"),
-											date("G:i:s"),
-											'Pendapatan',
-											$Record->total,
-											$Record->transaction_no);
-											
+									'10',
+									'1',
+									date("Y-m-d"),
+									date("G:i:s"),
+									'Pendapatan',
+									$Record->total,
+									$Record->transaction_no);
+				
+				$this->InsertJurnalBukuBesar($Record->id,
+												'10',
+												'0',
+												$Record->transaction_no,
+												date("Y-m-d"),
+												date("G:i:s"),
+												'',
+												'',
+												'Piutang',
+												'Penjualan Commoditty Secara Kredit',
+												$Record->total);
+				
+				$this->InsertJurnalBukuBesar($Record->id,
+												'10',
+												'0',
+												$Record->transaction_no,
+												date("Y-m-d"),
+												date("G:i:s"),
+												'',
+												'',
+												'Pendapatan',
+												'Penjualan Commoditty Secara Kredit',
+												$Record->total);
+												
+				$this->InsertLabaRugi($Record->id,
+										'10',
+										'0',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Penjualan Commoditty Secara Kredit',
+										$Record->total,
+										$Record->transaction_no);
+				
 				$this->InsertJurnalPenjualan($Record->id,
 											$Record->transaction_no,
 											'1',
@@ -534,7 +600,7 @@ class CommodityTransaction extends MainConf
 											'',
 											'',
 											$Record->total);
-														
+																								
 				$Record->status = '1';
 				$Record->save();
 				$tblBody = $this->BindGrid();

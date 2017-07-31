@@ -148,7 +148,7 @@ class BukuBesar extends MainConf
 				$tblBody .= '<td>'.$row['nama_akun'].'</td>';
 				$tblBody .= '<td>'.$row['keterangan'].'</td>';
 				
-				if($row['nama_akun'] == 'Kas' || $row['nama_akun'] == 'Kas Bank' || $row['nama_akun'] == 'Perlengkapan' || $row['nama_akun'] == 'Persediaan Bahan Baku' || $row['nama_akun'] == 'Persediaan Barang Dagangan' || $row['nama_akun'] == 'Beban Gaji' || $row['nama_akun'] == 'Beban Lain-lain')
+				if($row['nama_akun'] == 'Kas' || $row['nama_akun'] == 'Kas Bank' || $row['nama_akun'] == 'Piutang' || $row['nama_akun'] == 'Perlengkapan' || $row['nama_akun'] == 'Persediaan Bahan Baku' || $row['nama_akun'] == 'Persediaan Barang Dagangan' || $row['nama_akun'] == 'Beban Perlengkapan' || $row['nama_akun'] == 'Beban Gaji' || $row['nama_akun'] == 'Beban Lain-lain')
 				{
 					if($row['jns_transaksi'] == '0')
 					{

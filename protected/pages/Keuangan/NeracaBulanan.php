@@ -49,9 +49,7 @@ class NeracaBulanan extends MainConf
 		$bulan = $this->DDBulan->SelectedValue;
 		
 		$sql = "SELECT 
-					tbt_rekap_neraca_detail.kelompok_akun,
-					tbt_rekap_neraca_detail.nama_akun,
-					tbt_rekap_neraca_detail.nilai_akun
+					*
 				FROM 
 					tbt_rekap_neraca_detail
 				INNER JOIN tbt_rekap_neraca ON tbt_rekap_neraca.id = tbt_rekap_neraca_detail.id_rekap 
@@ -61,148 +59,102 @@ class NeracaBulanan extends MainConf
 					AND tbt_rekap_neraca.bulan = '$bulan'
 				ORDER BY tbt_rekap_neraca_detail.id ASC ";
 		$arrAkun = $this->queryAction($sql,'S');		
-		$jmlAktivaLancar = 0;
-		$jmlAktivaTetap = 0;
-		$jmlAktiva = 0;
-		$jmlUtang = 0;
-		$jmlKewajiban = 0;
-		
+		$neracaSaldoDebet = 0;
+		$neracaSaldoKredit = 0;
+		$penyesuaianDebet = 0;
+		$penyesuaianKredit = 0;
+		$nsdDebet = 0;
+		$nsdKredit = 0;
+		$labarugiDebet = 0;
+		$labarugiKredit = 0;
+		$neracaDebet = 0;
+		$neracaKredit = 0;
 		$tblBody = '';
 		$tblBody .= '<tr>';
-		$tblBody .= '<td colspan=\"5\"><strong>Aktiva</strong></td>';
+		$tblBody .= '<td Rowspan=\"2\" align=\"center\"><strong>Nama Akun</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Neraca Saldo</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Penyesuaian</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Neraca Saldo Disesuaikan</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Laba / Rugi</strong></td>';
+		$tblBody .= '<td Colspan=\"2\" align=\"center\"><strong>Neraca</strong></td>';
 		$tblBody .= '</tr>';
 		$tblBody .= '<tr>';
-		$tblBody .= '<td colspan=\"5\"><strong>Aktiva Lancar</strong></td>';
-		$tblBody .= '</tr>';	
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Debet</strong></td>';
+		$tblBody .= '<td align=\"center\"><strong>Kredit</strong></td>';
+		$tblBody .= '</tr>';
+		
 		foreach($arrAkun as $row)
 		{
-			if($row['kelompok_akun'] == '1')
-			{
 				$tblBody .= '<tr>';
-				$tblBody .= '<td width=\"5%\"></td>';
-				$tblBody .= '<td width=\"40%\">'.$row['nama_akun'].'</td>';
-				$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($row['nilai_akun'],2,".",",").'</td>';
-				$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-				$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
+				$tblBody .= '<td align=\"left\">'.$row['nama_akun'].'</td>';
+				
+				//Neraca Saldo
+				$neracaSaldoDebet += $row['neraca_saldo_debet'];
+				$neracaSaldoKredit += $row['neraca_saldo_kredit'];
+				$tblBody .= '<td align=\"right\">'.number_format($row['neraca_saldo_debet'],2,".",",").'</td>';
+				$tblBody .= '<td align=\"right\">'.number_format($row['neraca_saldo_kredit'],2,".",",").'</td>';
+				
+				
+				//Penyesuaian
+				$penyesuaianDebet += $row['penyesuaian_debet'];
+				$penyesuaianKredit += $row['penyesuaian_kredit'];
+				$tblBody .= '<td align=\"right\">'.number_format($row['penyesuaian_debet'],2,".",",").'</td>';
+				$tblBody .= '<td align=\"right\">'.number_format($row['penyesuaian_kredit'],2,".",",").'</td>';
+				
+				//NSD
+				$nsdDebet += $row['ns_disesuaikan_debet'];
+				$nsdKredit += $row['ns_disesuaikan_kredit'];
+				$tblBody .= '<td align=\"right\">'.number_format($row['ns_disesuaikan_debet'],2,".",",").'</td>';
+				$tblBody .= '<td align=\"right\">'.number_format($row['ns_disesuaikan_kredit'],2,".",",").'</td>';
+				
+				//Laba Rugi
+				$labarugiDebet += $row['laba_rugi_debet'];
+				$labarugiKredit += $row['laba_rugi_kredit'];
+				$tblBody .= '<td align=\"right\">'.number_format($row['laba_rugi_debet'],2,".",",").'</td>';
+				$tblBody .= '<td align=\"right\">'.number_format($row['laba_rugi_kredit'],2,".",",").'</td>';
+				
+				//Neraca
+				$neracaDebet += $row['neraca_debet'];
+				$neracaKredit += $row['neraca_kredit'];
+				$tblBody .= '<td align=\"right\">'.number_format($row['neraca_debet'],2,".",",").'</td>';
+				$tblBody .= '<td align=\"right\">'.number_format($row['neraca_kredit'],2,".",",").'</td>';
+				
 				$tblBody .= '</tr>';
-				$jmlAktivaLancar += $row['nilai_akun'];
-			}
+				
 			
 		}
-		$tblBody .= '<tr>';
-		$tblBody .= '<td width=\"5%\"></td>';
-		$tblBody .= '<td width=\"40%\" align=\"right\">Jumlah Aktiva Lancar</td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"><strong>'.number_format($jmlAktivaLancar,2,".",",").'</strong></td>';
-		$tblBody .= '</tr>';
-		$jmlAktiva += $jmlAktivaLancar;
-		$tblBody .= '<tr>';
-		$tblBody .= '<td colspan=\"5\"><strong>Aktiva Tetap</strong></td>';
-		$tblBody .= '</tr>';	
 		
-		$prevAkun = '';
-		$nilaiAktiva = 0;
-		foreach($arrAkun as $row)
-		{
-			if($row['kelompok_akun'] == '2' || $row['kelompok_akun'] == '3')
-			{
-				if($row['kelompok_akun'] == '2')
-				{
-					$tblBody .= '<tr>';
-					$tblBody .= '<td width=\"5%\"></td>';
-					$tblBody .= '<td width=\"40%\">'.$row['nama_akun'].' </td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($row['nilai_akun'],2,".",",").'</td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-					$tblBody .= '</tr>';
-					$nilaiAktiva += $row['nilai_akun'];
-					$jmlAktivaTetap += $row['nilai_akun'];
-				}
+		$tblBody .= '<tr>';
+		$tblBody .= '<td align=\"center\"><strong>Jumlah</strong></td>';
+		
+		//Neraca Saldo
+		$tblBody .= '<td align=\"right\">'.number_format($neracaSaldoDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($neracaSaldoKredit,2,".",",").'</td>';
+		
+		//Penyesuaian
+		$tblBody .= '<td align=\"right\">'.number_format($penyesuaianDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($penyesuaianKredit,2,".",",").'</td>';
 				
-				if($row['kelompok_akun'] == '3')
-				{
-					$tblBody .= '<tr>';
-					$tblBody .= '<td width=\"5%\"></td>';
-					$tblBody .= '<td width=\"40%\">'.$row['nama_akun'].' </td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\">('.number_format($row['nilai_akun'],2,".",",").')</td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-					$tblBody .= '</tr>';
-					$nilaiAktiva -= $row['nilai_akun'];
-					$jmlAktivaTetap -= $row['nilai_akun'];
-				}
+		//NSD
+		$tblBody .= '<td align=\"right\">'.number_format($nsdDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($nsdKredit,2,".",",").'</td>';
 				
-				if($prevAkun == '2')
-				{
-					$tblBody .= '<tr>';
-					$tblBody .= '<td width=\"5%\"></td>';
-					$tblBody .= '<td width=\"40%\"></td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($nilaiAktiva,2,".",",").'</td>';
-					$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-					$tblBody .= '</tr>';
-					$nilaiAktiva = 0;
-				}
+		//Laba Rugi
+		$tblBody .= '<td align=\"right\">'.number_format($labarugiDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($labarugiKredit,2,".",",").'</td>';
 				
-				$prevAkun = $row['kelompok_akun'];
-				
-			}
-			
+		//Neraca
+		$tblBody .= '<td align=\"right\">'.number_format($neracaDebet,2,".",",").'</td>';
+		$tblBody .= '<td align=\"right\">'.number_format($neracaKredit,2,".",",").'</td>';
 		
-		}
-		
-		$jmlAktiva += $jmlAktivaTetap;	
-		
-		$tblBody .= '<tr>';
-		$tblBody .= '<td width=\"5%\"></td>';
-		$tblBody .= '<td width=\"40%\" align=\"right\">Jumlah Aktiva Tetap</td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"><strong>'.number_format($jmlAktivaTetap,2,".",",").'</strong></td>';
-		$tblBody .= '</tr>';
-		$tblBody .= '<tr>';
-		$tblBody .= '<td width=\"5%\"></td>';
-		$tblBody .= '<td width=\"40%\" align=\"right\"><strong>Jumlah Aktiva</strong></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"><strong>'.number_format($jmlAktiva,2,".",",").'</strong></td>';
-		$tblBody .= '</tr>';
-		
-		$tblBody .= '<tr>';
-		$tblBody .= '<td colspan=\"5\"><strong>Kewajiban</strong></td>';
-		$tblBody .= '</tr>';
-		$tblBody .= '<tr>';
-		$tblBody .= '<td colspan=\"5\"><strong>Utang Lancar</strong></td>';
-		$tblBody .= '</tr>';
-		foreach($arrAkun as $row)
-		{
-			if($row['kelompok_akun'] == '4')
-			{
-				$tblBody .= '<tr>';
-				$tblBody .= '<td width=\"5%\"></td>';
-				$tblBody .= '<td width=\"40%\">'.$row['nama_akun'].'</td>';
-				$tblBody .= '<td width=\"20%\" align=\"right\">'.number_format($row['nilai_akun'],2,".",",").'</td>';
-				$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-				$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-				$tblBody .= '</tr>';
-				$jmlUtang += $row['nilai_akun'];
-			}
-			
-		}
-		$tblBody .= '<tr>';
-		$tblBody .= '<td width=\"5%\"></td>';
-		$tblBody .= '<td width=\"40%\" align=\"right\">Jumlah Utang</td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"><strong>'.number_format($jmlUtang,2,".",",").'</strong></td>';
-		$tblBody .= '</tr>';
-		$tblBody .= '<tr>';
-		$tblBody .= '<td width=\"5%\"></td>';
-		$tblBody .= '<td width=\"40%\" align=\"right\"><strong>Jumlah Kewajiban</strong></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"></td>';
-		$tblBody .= '<td width=\"20%\" align=\"right\"><strong>'.number_format($jmlUtang,2,".",",").'</strong></td>';
 		$tblBody .= '</tr>';
 		
 		$this->getPage()->getClientScript()->registerEndScript
@@ -274,7 +226,7 @@ class NeracaBulanan extends MainConf
 	{
 		if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '')
 		{
-		$url = "index.php?page=Keuangan.cetakLaporanNeracaPdf&bln=".$this->DDBulan->SelectedValue."&thn=".$this->DDTahun->SelectedValue;
+		$url = "index.php?page=Keuangan.cetakLaporanKertasKerjaPdf&bln=".$this->DDBulan->SelectedValue."&thn=".$this->DDTahun->SelectedValue;
 		
 		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
 		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;

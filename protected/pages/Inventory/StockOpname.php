@@ -67,6 +67,21 @@ class StockOpname extends MainConf
 	
 	public function loadProductProses($sender,$param)
 	{
+		$jns_inventory = $this->jns_inventory->SelectedValue;
+		
+		if($jns_inventory == '0')
+		{
+			$sqlWhere = " AND tbm_kategori_barang.tipe_kategori = '1' ";
+		}
+		elseif($jns_inventory == '1')
+		{
+			$sqlWhere = " AND tbm_kategori_barang.tipe_kategori = '2' ";
+		}
+		elseif($jns_inventory == '2')
+		{
+			$sqlWhere = " AND tbm_kategori_barang.tipe_kategori = '0' ";
+		}
+		
 		$sql = "SELECT
 					tbm_barang.id,
 					tbm_barang.nama,
@@ -81,10 +96,14 @@ class StockOpname extends MainConf
 					tbm_barang.deleted = '0'
 				AND tbm_satuan_barang.deleted = '0'
 				AND tbm_satuan.deleted = '0'
+				AND tbm_kategori_barang.deleted = '0'
+				".$sqlWhere."
 				ORDER BY
 					tbm_barang.id ASC,
 					tbm_satuan_barang.urutan ASC ";
+					
 		$arr = $this->queryAction($sql,'S');
+		var_dump($sql);
 		$tblBodyStock = '';
 		$arrStok = array();
 		foreach($arr as $row)
@@ -174,6 +193,7 @@ class StockOpname extends MainConf
 			}
 		}
 		
+		$NilaiPersediaanBaru = 0;
 		foreach($arrStokBarang as $rowStokBarang)
 		{
 			
@@ -192,29 +212,64 @@ class StockOpname extends MainConf
 			$StockBarangRecord->stok = $stokAkhir;
 			$StockBarangRecord->save();	
 			
+			$hargaSatuanBesar = $this->GetLastProductPrice($rowStokBarang['idBarang']);
+					
+					if($hargaSatuanBesar > 0)
+					{
+						$sqlSatuanAkhir = "SELECT 
+												tbm_satuan_barang.id,
+												tbm_satuan_barang.id_satuan 
+											FROM 
+												tbm_satuan_barang 
+											WHERE 
+												tbm_satuan_barang.deleted != '1' 
+												AND tbm_satuan_barang.id_barang = '".$rowStokBarang['idBarang']."'
+											ORDER BY tbm_satuan_barang.urutan DESC LIMIT 1 ";
+						$arrSatuanAkhir = $this->queryAction($sqlSatuanAkhir,'S');
+						$idSatuanAkhir = $arrSatuanAkhir[0]['id_satuan'];
+						
+						$hargaReal = $this->checkConversionPrice($rowBarang['id'],$idSatuanAkhir,$hargaSatuanBesar);
+					}
+					else
+					{
+						$hargaReal = 0;
+					}
+			
+			$NilaiPersediaanBaru = $hargaReal * $stokAkhir;		
+			
 			if($stokAwal > $stokAkhir)
 			{
 				$stok_in = 0;
 				$stok_out = $stokAwal - $stokAkhir;
+				$nilaiIn = 0;
+				$nilaiOut = $stok_out * $hargaReal;
 			}
 			elseif($stokAwal < $stokAkhir)
 			{
 				$stok_in = $stokAkhir - $stokAwal;
 				$stok_out = 0 ;
+				$nilaiIn = $stok_in * $hargaReal;
+				$nilaiOut = 0;
+				
 			}
 			else
 			{
 				$stok_in = 0;
 				$stok_out = 0 ;
+				$nilaiIn = 0;
+				$nilaiOut = 0;
 			}
 			
+			
+			
+				
 			$StockInOutRecord = new StockInOutRecord();
 				$StockInOutRecord->id_barang = $rowStokBarang['idBarang'];
 				$StockInOutRecord->stok_awal = $stokAwal;
 				$StockInOutRecord->stok_in = $stok_in;
-				$StockInOutRecord->nilai_in = 0;
+				$StockInOutRecord->nilai_in = $nilaiIn;
 				$StockInOutRecord->stok_out = $stok_out;
-				$StockInOutRecord->nilai_out = 0;
+				$StockInOutRecord->nilai_out = $nilaiOut;
 				$StockInOutRecord->stok_akhir = $stokAkhir;
 				$StockInOutRecord->keterangan = 'Stok Opname';
 				$StockInOutRecord->id_transaksi = $StockOpnameRecord->id;
@@ -226,6 +281,138 @@ class StockOpname extends MainConf
 				
 		}
 		
+		if($NilaiPersediaanBaru > 0)
+		{
+			$jnsInventory = $this->jns_inventory->SelectedValue;
+			if($jnsInventory == '0')
+			{
+				$namaAkun = 'Persediaan Bahan Baku';
+			}
+			elseif($jnsInventory == '1')
+			{
+				$namaAkun = 'Persediaan Barang Dagangan';
+			}
+			elseif($jnsInventory == '2')
+			{
+				$namaAkun = 'Perlengkapan';
+			}
+			
+			$sqlSaldoAkhir = "SELECT * FROM tbt_jurnal_buku_besar WHERE nama_akun = '".$namaAkun."' ORDER BY id DESC LIMIT 1";
+			$arrSaldoAkhir = $this->queryAction($sqlSaldoAkhir,'S');
+			$saldoAkhir = $arrSaldoAkhir[0]['saldo_akhir'];
+			
+			if($NilaiPersediaanBaru > $saldoAkhir)
+			{
+				$selisihPersediaan = $NilaiPersediaanBaru - $saldoAkhir;
+				$this->InsertJurnalUmum($StockOpnameRecord->id,
+												'15',
+												'0',
+												$StockOpnameRecord->tgl_stock_opname,
+												$StockOpnameRecord->wkt_stock_opname,
+												$namaAkun,
+												$selisihPersediaan,
+												$StockOpnameRecord->no_stock_opname);
+							
+							$this->InsertJurnalUmum($StockOpnameRecord->id,
+												'15',
+												'1',
+												$StockOpnameRecord->tgl_stock_opname,
+												$StockOpnameRecord->wkt_stock_opname,
+												'Pendapatan Lain-lain',
+												$selisihPersediaan,
+												$StockOpnameRecord->no_stock_opname);
+							
+							$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
+															'15',
+															'0',
+															$StockOpnameRecord->no_stock_opname,
+															$StockOpnameRecord->tgl_stock_opname,
+															$StockOpnameRecord->wkt_stock_opname,
+															'',
+															'',
+															$namaAkun,
+															'Perhitungan Stok Opname No. '.$StockOpnameRecord->no_stock_opname,
+															$selisihPersediaan);
+							
+							$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
+															'15',
+															'0',
+															$StockOpnameRecord->no_stock_opname,
+															$StockOpnameRecord->tgl_stock_opname,
+															$StockOpnameRecord->wkt_stock_opname,
+															'',
+															'',
+															'Pendapatan Lain-lain',
+															'Perhitungan Stok Opname No.'.$StockOpnameRecord->no_stock_opname,
+															$selisihPersediaan);
+															
+							$this->InsertLabaRugi($StockOpnameRecord->id,
+													'15',
+													'0',
+													$StockOpnameRecord->tgl_stock_opname,
+													$StockOpnameRecord->wkt_stock_opname,
+													'Selisih Persediaan Stok Opname',
+													$selisihPersediaan,
+													$StockOpnameRecord->no_stock_opname);
+													
+			}
+			elseif($NilaiPersediaanBaru < $saldoAkhir)
+			{
+				$selisihPersediaan = $saldoAkhir - $NilaiPersediaanBaru;
+				
+				$this->InsertJurnalUmum($StockOpnameRecord->id,
+												'15',
+												'0',
+												$StockOpnameRecord->tgl_stock_opname,
+												$StockOpnameRecord->wkt_stock_opname,
+												'Beban Lain-lain',
+												$selisihPersediaan,
+												$StockOpnameRecord->no_stock_opname);
+												
+				$this->InsertJurnalUmum($StockOpnameRecord->id,
+												'15',
+												'1',
+												$StockOpnameRecord->tgl_stock_opname,
+												$StockOpnameRecord->wkt_stock_opname,
+												$namaAkun,
+												$selisihPersediaan,
+												$StockOpnameRecord->no_stock_opname);
+							
+				$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
+															'15',
+															'0',
+															$StockOpnameRecord->no_stock_opname,
+															$StockOpnameRecord->tgl_stock_opname,
+															$StockOpnameRecord->wkt_stock_opname,
+															'',
+															'',
+															'Beban Lain-lain',
+															'Perhitungan Stok Opname No.'.$StockOpnameRecord->no_stock_opname,
+															$selisihPersediaan);
+							
+				$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
+															'15',
+															'1',
+															$StockOpnameRecord->no_stock_opname,
+															$StockOpnameRecord->tgl_stock_opname,
+															$StockOpnameRecord->wkt_stock_opname,
+															'',
+															'',
+															$namaAkun,
+															'Perhitungan Stok Opname No. '.$StockOpnameRecord->no_stock_opname,
+															$selisihPersediaan);
+																							
+							$this->InsertLabaRugi($StockOpnameRecord->id,
+													'15',
+													'1',
+													$StockOpnameRecord->tgl_stock_opname,
+													$StockOpnameRecord->wkt_stock_opname,
+													'Selisih Persediaan Stok Opname',
+													$selisihPersediaan,
+													$StockOpnameRecord->no_stock_opname);
+													
+			}
+		}
 		$tblBody = $this->BindGrid();
 		$this->getPage()->getClientScript()->registerEndScript
 						('','

@@ -415,6 +415,7 @@ class MutasiBarangRusak extends MainConf
 			
 			$MutasiBarangRecord->save(); 
 			
+			$bebanPerlengkapan = 0;
 			foreach($arr as $row)
 			{
 				if($row->stAsset == '0')
@@ -498,6 +499,8 @@ class MutasiBarangRusak extends MainConf
 					$StockInOutRecord->wkt= date("G:i:s");
 					$StockInOutRecord->username = $this->User->IsUser;
 					$StockInOutRecord->save();
+					
+					$bebanPerlengkapan += $row->Jumlah * $hargaReal;
 				}
 				elseif($row->stAsset == '1')
 				{
@@ -508,6 +511,61 @@ class MutasiBarangRusak extends MainConf
 						$AktivaTetapRecord->save();
 					} 
 				}
+			}
+			
+			
+			if($bebanPerlengkapan > 0)
+			{
+				$this->InsertJurnalUmum($MutasiBarangRecord->id,
+									'9',
+									'0',
+									$tglTrans,
+									date("G:i:s"),
+									"Beban Perlengkapan",
+									$bebanPerlengkapan,
+									$tglTrans.'-'.$wktTrans);
+				
+				$this->InsertJurnalUmum($MutasiBarangRecord->id,
+									'9',
+									'1',
+									$tglTrans,
+									date("G:i:s"),
+									"Perlengkapan",
+									$bebanPerlengkapan,
+									$tglTrans.'-'.$wktTrans);
+									
+				$this->InsertJurnalBukuBesar($MutasiBarangRecord->id,
+												'6',
+												'0',
+												$MutasiBarangRecord->id,
+												$tglTrans,
+												date("G:i:s"),
+												'175',
+												'',
+												"Beban Perlengkapan",
+												"Pemakaian Perlengkapan",
+												$bebanPerlengkapan);
+				
+				$this->InsertJurnalBukuBesar($MutasiBarangRecord->id,
+												'6',
+												'1',
+												$MutasiBarangRecord->id,
+												$tglTrans,
+												date("G:i:s"),
+												'175',
+												'',
+												"Perlengkapan",
+												"Pemakaian Perlengkapan",
+												$bebanPerlengkapan);
+				
+				$this->InsertLabaRugi($MutasiBarangRecord->id,
+										'5',
+										'1',
+										$tglTrans,
+										date("G:i:s"),
+										"Pemakaian Perlengkapan",
+										$bebanPerlengkapan,
+										$MutasiBarangRecord->id);
 			}
 			
 			$tblBody = $this->BindGrid();

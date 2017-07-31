@@ -75,6 +75,34 @@
 						<div class="row">
 							<div class="col-md-3">
 								<div class="form-group">
+									<label class="control-label" for="jns_inventory">Jenis Inventory</label>
+									  <com:TActiveDropDownList 
+										ID="jns_inventory"
+										PromptText="--Jenis Inventory--"
+										PromptValue="empty"
+										AutoPostBack="true"
+										CausesValidation="true"
+										SelectedValue = "0"
+										OnSelectedIndexChanged="loadProductProses"
+										CssClass="form-control">
+										<com:TListItem Value = "0" Text="Persediaan Bahan Baku"/>
+										<com:TListItem Value = "1" Text="Persediaan Barang Dagangan"/>
+										<com:TListItem Value = "2" Text="Perlengkapan"/>
+										</com:TActiveDropDownList>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="jns_inventory"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>
+							
+							<div class="col-md-3">
+								<div class="form-group">
 									<label class="control-label" for="tgl_transaksi">Tanggal Stock Opname</label>
 									 <com:TActiveTextBox 
 											ID="tgl_transaksi" 

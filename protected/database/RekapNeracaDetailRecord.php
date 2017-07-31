@@ -8,9 +8,18 @@ class RekapNeracaDetailRecord extends TActiveRecord
 
 	public $id;
 	public $id_rekap;
-	public $kelompok_akun;
 	public $nama_akun;
-	public $nilai_akun;
+	public $neraca_saldo_debet;
+	public $neraca_saldo_kredit;
+	public $penyesuaian_debet;
+	public $penyesuaian_kredit;
+	public $ns_disesuaikan_debet;
+	public $ns_disesuaikan_kredit;
+	public $laba_rugi_debet;
+	public $laba_rugi_kredit;
+	public $neraca_debet;
+	public $neraca_kredit;
+
 	public $deleted;
 	
 	public static function finder($className=__CLASS__)

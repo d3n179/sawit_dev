@@ -500,6 +500,7 @@ class ProcessingTbs extends MainConf
 			$Record->jam_down_2 = $this->jam_down_2->Text;
 			$Record->save(); 
 			
+			$NilaiBahanBaku = 0;
 			foreach($arrBarang as $rowBarang)
 			{
 				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted != ? ',$rowBarang['id'],'1');
@@ -522,13 +523,37 @@ class ProcessingTbs extends MainConf
 					}
 					$StockBarangRecord->save();
 					
+					$hargaSatuanBesar = $this->GetLastProductPrice($rowBarang['id']);
+					
+					if($hargaSatuanBesar > 0)
+					{
+						$sqlSatuanAkhir = "SELECT 
+												tbm_satuan_barang.id,
+												tbm_satuan_barang.id_satuan 
+											FROM 
+												tbm_satuan_barang 
+											WHERE 
+												tbm_satuan_barang.deleted != '1' 
+												AND tbm_satuan_barang.id_barang = '".$rowBarang['id']."'
+											ORDER BY tbm_satuan_barang.urutan DESC LIMIT 1 ";
+						$arrSatuanAkhir = $this->queryAction($sqlSatuanAkhir,'S');
+						$idSatuanAkhir = $arrSatuanAkhir[0]['id_satuan'];
+						
+						$hargaReal = $this->checkConversionPrice($rowBarang['id'],$idSatuanAkhir,$hargaSatuanBesar);
+					}
+					else
+					{
+						$hargaReal = 0;
+					}
+				
+					$nilaiOut = $hargaReal * $stokOut;
 					$StockInOutRecord = new StockInOutRecord();
 					$StockInOutRecord->id_barang = $rowBarang['id'];
 					$StockInOutRecord->stok_awal = $stokAwal;
 					$StockInOutRecord->stok_in = 0;
 					$StockInOutRecord->nilai_in = 0;
 					$StockInOutRecord->stok_out = $stokOut;
-					$StockInOutRecord->nilai_out = 0;
+					$StockInOutRecord->nilai_out = $nilaiOut;
 					$StockInOutRecord->stok_akhir = $stokAkhir;
 					$StockInOutRecord->keterangan = '';
 					$StockInOutRecord->id_transaksi = $Record->id;
@@ -537,15 +562,58 @@ class ProcessingTbs extends MainConf
 					$StockInOutRecord->wkt= date("G:i:s");
 					$StockInOutRecord->username = $this->User->IsUser;
 					$StockInOutRecord->save();
-				
+					
+					$NilaiBahanBaku += $nilaiOut;
 				}
 			}
 			
+			$this->InsertJurnalUmum($Record->id,
+										'12',
+										'0',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Persediaan Barang Dagangan',
+										$NilaiBahanBaku,
+										$Record->no_processing);
+							
+			$this->InsertJurnalUmum($Record->id,
+										'12',
+										'1',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Persediaan Bahan Baku',
+										$NilaiBahanBaku,
+										$Record->no_processing);
+							
+			$this->InsertJurnalBukuBesar($Record->id,
+											'12',
+											'0',
+											$Record->no_processing,
+											date("Y-m-d"),
+											date("G:i:s"),
+											'',
+											'',
+											'Persediaan Barang Dagangan',
+											'Produksi Barang Dagangan',
+											$NilaiBahanBaku);
+							
+			$this->InsertJurnalBukuBesar($Record->id,
+											'12',
+											'1',
+											$Record->no_processing,
+											date("Y-m-d"),
+											date("G:i:s"),
+											'',
+											'',
+											'Persediaan Bahan Baku',
+											'Produksi Barang Dagangan',
+											$NilaiBahanBaku);
+											
 			//$stockBarangTbs -= $Olah_Netto_today;
 			//$StockBarangRecord->stok = $stockBarangTbs;
 			//$StockBarangRecord->save();
 			
-			$this->UpdateReporting($Record->id);
+			$this->UpdateReporting($Record->id,$hargaSatuanBesar);
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
@@ -566,7 +634,7 @@ class ProcessingTbs extends MainConf
 		
 	}
 	
-	public function UpdateReporting($idProcessing)
+	public function UpdateReporting($idProcessing,$hargaSatuanBesar)
 	{
 		$record = ProcessingTbsRecord::finder()->findByPk($idProcessing);
 		
@@ -659,7 +727,14 @@ class ProcessingTbs extends MainConf
 		$StockInOutRecord->wkt= date("G:i:s");
 		$StockInOutRecord->username = $this->User->IsUser;
 		$StockInOutRecord->save();
-					
+		
+		$BarangHargaRecord = new BarangHargaRecord();
+		$BarangHargaRecord->id_barang = '10';
+		$BarangHargaRecord->tgl = date("Y-m-d");
+		$BarangHargaRecord->harga = $hargaSatuanBesar;
+		$BarangHargaRecord->deleted = '0';
+		$BarangHargaRecord->save();
+							
 		$pk_bsk = $BSK1_Kg + $BSK2_Kg + $BSK3_Kg + $record->bsk_lantai;
 		$pk_ks = $KS1_Kg + $KS2_Kg + $KS3_Kg + $record->kernel_silo_lantai;
 		
@@ -705,6 +780,13 @@ class ProcessingTbs extends MainConf
 		$StockInOutRecord->wkt= date("G:i:s");
 		$StockInOutRecord->username = $this->User->IsUser;
 		$StockInOutRecord->save();
+		
+		$BarangHargaRecord = new BarangHargaRecord();
+		$BarangHargaRecord->id_barang = '11';
+		$BarangHargaRecord->tgl = date("Y-m-d");
+		$BarangHargaRecord->harga = $hargaSatuanBesar;
+		$BarangHargaRecord->deleted = '0';
+		$BarangHargaRecord->save();
 		
 		$nut_silo = $NS1_Kg + $NS2_Kg + $NS3_Kg + $NS4_Kg + $record->nut_silo_lantai;
 

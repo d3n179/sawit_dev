@@ -183,7 +183,17 @@
 										 <prop:ClientSide 
 											OnLoading="loadContent();"
 											OnComplete="unloadContent();"/>
-									</com:TActiveButton>		
+									</com:TActiveButton>	
+									<com:TActiveButton
+										ID="importBtn" 
+										Text="Import"
+										OnClick="importBtnClicked"
+										CausesValidation="false"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>	
 					</div>
 				</div>
 			</div>
