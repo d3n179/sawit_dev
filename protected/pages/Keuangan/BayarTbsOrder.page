@@ -228,9 +228,6 @@
 										CausesValidation="true"
 										ValidationGroup="val"
 										CssClass="btn btn-info">
-										 <prop:ClientSide 
-											OnLoading="loadContent();"
-											OnComplete="unloadContent();"/>
 									</com:TActiveButton>		
 					</div>
 				</div>
@@ -839,6 +836,7 @@
 			
 			function submitBtnClicked()
 			{
+				loadContent();
 				var statusTbs = jQuery('#<%= $this->statusTbsOrder->getClientID()%>').val();
 				var jml_bayar = parseFloat(jQuery('#<%= $this->jml_bayar->getClientID()%>').val().replace(/\,/g,''));
 				
@@ -862,16 +860,19 @@
 							}
 							else
 							{
+								unloadContent();
 								toastr.error("Transaksi Belum Dimasukkan !");
 							}
 						}
 						else
 						{
+							unloadContent();
 							toastr.error("Transaksi Belum Dimasukkan!");
 						}
 					}
 					else
 					{
+						unloadContent();
 						toastr.error("Jumlah Pembayaran Belum Dimasukkan!");
 					}
 				}

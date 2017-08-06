@@ -2690,6 +2690,14 @@
 		<div class="col-md-3">
 			<div class="form-group">
 				<a href="javascript:;" onclick="checkTodayProcessing();jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Processing Tbs');" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+				<com:TButton
+										ID="importBtn" 
+										Text="Import"
+										Visible="false"
+										OnClick="importBtnClicked"
+										CausesValidation="false"
+										CssClass="btn btn-info">
+									</com:TButton>	
 			</div>
 		</div>	
 	</div>	

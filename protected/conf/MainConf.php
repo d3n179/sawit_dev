@@ -220,8 +220,11 @@ class MainConf extends TPage
 			$fieldTgl = 'tgl_pembayaran';
 		}
 		
-		$month = date("m");
-		$year = date("Y");
+		if($month == '')
+			$month = date("m");
+		
+		if($year == '')	
+			$year = date("Y");
 		
 		$query = "SELECT 
 						id 

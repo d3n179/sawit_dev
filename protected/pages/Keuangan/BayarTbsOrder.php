@@ -824,18 +824,19 @@ class BayarTbsOrder extends MainConf
 		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
 		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
 		
-			$this->getPage()->getClientScript()->registerEndScript
+		$this->getPage()->getClientScript()->registerEndScript
 							('','
-							toastr.info("'.$msg.'");
 							jQuery("#modal-1").modal("hide");
 							jQuery("#table-1").dataTable().fnDestroy();
 							jQuery("#table-1 tbody").empty();
 							jQuery("#table-1 tbody").append("'.$tblBody.'");
-							clearForm();
 							BindGrid();
+							clearForm();
+							unloadContent();
+							toastr.info("Pembayaran TBS Telah Diproses");
 							var url = "'.$urlTemp.'";
-							window.open(url, "_blank");
-							unloadContent();');	
+							window.open(url, "_blank");');	
+							
 			
 			
 			

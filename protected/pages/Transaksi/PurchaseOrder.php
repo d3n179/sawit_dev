@@ -110,6 +110,7 @@ class PurchaseOrder extends MainConf
 					INNER JOIN tbm_satuan ON tbm_satuan.id = tbt_request_order_detail.id_satuan
 					WHERE
 						tbt_request_order_detail.deleted = '0'
+					AND tbt_request_order_detail.status = '0'
 					AND tbt_request_order_detail.id_ro = '$idRo'
 					ORDER BY
 						tbt_request_order_detail.id ASC ";

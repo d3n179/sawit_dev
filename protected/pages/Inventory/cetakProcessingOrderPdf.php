@@ -195,22 +195,22 @@ $Oil_In_Process_RCV3_Kg = $record->rcv_3 * $record->etc_rcv3_kg_cm * $this->getT
 
 $COT_Kg = $record->cot * $record->etc_cot_kg_cm;
 
-$NS1_Kg = ($record->nut_silo_no_1 > 0 ? $record->nut_silo_no_1 * $record->etc_ns1_kg_cm + $record->etc_ks3_kg : 0);
-$NS2_Kg = ($record->nut_silo_no_2 > 0 ? $record->nut_silo_no_2 * $record->etc_ns2_kg_cm + $record->etc_ns1_kg : 0);
-$NS3_Kg = ($record->nut_silo_no_3 > 0 ? $record->nut_silo_no_3 * $record->etc_ns3_kg_cm + $record->etc_ns2_kg : 0);
-$NS4_Kg = ($record->nut_silo_no_4 > 0 ? $record->nut_silo_no_4 * $record->etc_ns4_kg_cm + $record->etc_ns3_kg : 0);
+$NS1_Kg = ($record->nut_silo_no_1 > 0 ? $record->nut_silo_no_1 * $record->etc_ns1_kg_cm + $record->etc_ns1_kg : 0);
+$NS2_Kg = ($record->nut_silo_no_2 > 0 ? $record->nut_silo_no_2 * $record->etc_ns2_kg_cm + $record->etc_ns2_kg : 0);
+$NS3_Kg = ($record->nut_silo_no_3 > 0 ? $record->nut_silo_no_3 * $record->etc_ns3_kg_cm + $record->etc_ns3_kg : 0);
+$NS4_Kg = ($record->nut_silo_no_4 > 0 ? $record->nut_silo_no_4 * $record->etc_ns4_kg_cm + $record->etc_ns4_kg : 0);
 
-$KS1_Kg = ($record->kernel_silo_no_1 > 0 ? $record->kernel_silo_no_1 * $record->etc_ks1_kg_cm - 0 * 0 + $record->etc_bst2_kg : 0);
-$KS2_Kg = ($record->kernel_silo_no_2 > 0 ? $record->kernel_silo_no_2 * $record->etc_ks2_kg_cm - 0 * 0 + $record->etc_ks1_kg : 0);
-$KS3_Kg = ($record->kernel_silo_no_3 > 0 ? $record->kernel_silo_no_3 * $record->etc_ks3_kg_cm - 0 * 0 + $record->etc_ks2_kg : 0);
+$KS1_Kg = ($record->kernel_silo_no_1 > 0 ? $record->kernel_silo_no_1 * $record->etc_ks1_kg_cm - 0 * 0 + $record->etc_ks1_kg : 0);
+$KS2_Kg = ($record->kernel_silo_no_2 > 0 ? $record->kernel_silo_no_2 * $record->etc_ks2_kg_cm - 0 * 0 + $record->etc_ks2_kg : 0);
+$KS3_Kg = ($record->kernel_silo_no_3 > 0 ? $record->kernel_silo_no_3 * $record->etc_ks3_kg_cm - 0 * 0 + $record->etc_ks3_kg : 0);
 
-$BSK1_Kg = ($record->bsk_no_1 > 0 ? $record->bsk_no_1 * $record->etc_bsk1_kg_cm + $record->etc_ns4_kg : 0);
-$BSK2_Kg = ($record->bsk_no_2 > 0 ? $record->bsk_no_2 * $record->etc_bsk2_kg_cm + $record->etc_bsk1_kg : 0);
-$BSK3_Kg = ($record->bsk_no_3 > 0 ? $record->bsk_no_3 * $record->etc_bsk3_kg_cm + $record->etc_bsk2_kg : 0);
+$BSK1_Kg = ($record->bsk_no_1 > 0 ? $record->bsk_no_1 * $record->etc_bsk1_kg_cm + $record->etc_bsk1_kg : 0);
+$BSK2_Kg = ($record->bsk_no_2 > 0 ? $record->bsk_no_2 * $record->etc_bsk2_kg_cm + $record->etc_bsk2_kg : 0);
+$BSK3_Kg = ($record->bsk_no_3 > 0 ? $record->bsk_no_3 * $record->etc_bsk3_kg_cm + $record->etc_bsk3_kg : 0);
 
-$BSS1_Kg = ($record->bss_no_1 > 0 ? $record->bss_no_1 * $record->etc_bss1_kg_cm + $record->etc_bsk3_kg : 0);
-$BSS2_Kg = ($record->bss_no_2 > 0 ? $record->bss_no_2 * $record->etc_bss2_kg_cm + $record->etc_bss1_kg : 0);
-$BSS3_Kg = ($record->bss_no_3 > 0 ? $record->bss_no_3 * $record->etc_bss3_kg_cm + $record->etc_bss2_kg : 0);
+$BSS1_Kg = ($record->bss_no_1 > 0 ? $record->bss_no_1 * $record->etc_bss1_kg_cm + $record->etc_bss1_kg : 0);
+$BSS2_Kg = ($record->bss_no_2 > 0 ? $record->bss_no_2 * $record->etc_bss2_kg_cm + $record->etc_bss2_kg : 0);
+$BSS3_Kg = ($record->bss_no_3 > 0 ? $record->bss_no_3 * $record->etc_bss3_kg_cm + $record->etc_bss3_kg : 0);
 
 $cpo_bst1 = $Oil_Recovered_Total_isi_BST1 -  $record->etc_cot_kg;
 $cpo_cut_bst1 = $record->etc_cot_kg;

@@ -283,6 +283,59 @@ class ProcessingTbs extends MainConf
 		}
 	}
 	
+	public function importBtnClicked()
+	{
+		$sqlParent = "SELECT
+							lhp_april_2017.tgl
+						FROM
+							lhp_april_2017
+						GROUP BY
+							lhp_april_2017.tgl
+						ORDER BY lhp_april_2017.tgl ASC";
+		$arrParent = $this->queryAction($sqlParent,'S');
+		foreach($arrParent as $rowParent)
+		{		
+			$tglTemp = explode("-",$rowParent['tgl']);
+			$tglLhp =  $rowParent['tgl'];//$tglTemp[2].'-'.$tglTemp[0].'-'.$tglTemp[1];
+					
+			$Record = new ProcessingTbsRecord();
+			$msg = "Data Berhasil Disimpan";
+			$Record->no_processing = $this->GenerateNoDocument('PRC',$tglTemp[1],$tglTemp[0]);
+			$Record->tgl_processing = $tglLhp;
+			$Record->wkt_processing = date("G:i:s");
+						
+			$sql = "SELECT
+						lhp_april_2017.field_name_1,
+						lhp_april_2017.value_field_1,
+						lhp_april_2017.field_name_2,
+						lhp_april_2017.value_field_2,
+						lhp_april_2017.tgl
+					FROM
+						lhp_april_2017
+					WHERE 
+						lhp_april_2017.tgl = '".$rowParent['tgl']."'
+					ORDER BY
+						lhp_april_2017.tgl ";
+			$arr = $this->queryAction($sql,'S');
+			if($arr)
+			{
+				foreach($arr as $row)
+				{
+					if($row['field_name_1'] != '')
+					{
+						if($row['field_name_1'] != 'pengiriman_bunpress')
+							$Record->$row['field_name_1'] = $row['value_field_1'];
+					}
+						
+					if($row['field_name_2'] != '')
+						$Record->$row['field_name_2'] = $row['value_field_2'];
+				}
+			}
+			$Record->save();
+			$this->UpdateReporting($Record->id,0,$tglLhp,$tglTemp[1],$tglTemp[0]);
+		}
+	}
+	
 	public function submitBtnClicked($sender,$param)
 	{
 		$Persediaan_Today = round($this->tbs_awal->Text + $this->tbs_kebun->Text + $this->tbs_luar->Text + $this->tbs_potongan->Text);
@@ -613,7 +666,7 @@ class ProcessingTbs extends MainConf
 			//$StockBarangRecord->stok = $stockBarangTbs;
 			//$StockBarangRecord->save();
 			
-			$this->UpdateReporting($Record->id,$hargaSatuanBesar);
+			$this->UpdateReporting($Record->id,$hargaSatuanBesar,date("Y-m-d"),date("m"),date("Y"));
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
@@ -634,7 +687,7 @@ class ProcessingTbs extends MainConf
 		
 	}
 	
-	public function UpdateReporting($idProcessing,$hargaSatuanBesar)
+	public function UpdateReporting($idProcessing,$hargaSatuanBesar,$tglLhp,$bulanLhp,$tahunLhp)
 	{
 		$record = ProcessingTbsRecord::finder()->findByPk($idProcessing);
 		
@@ -829,7 +882,9 @@ class ProcessingTbs extends MainConf
 					tbt_processing_tbs
 				WHERE
 					tbt_processing_tbs.deleted = '0'
-				AND tbt_processing_tbs.tgl_processing < CURDATE()
+				AND MONTH(tbt_processing_tbs.tgl_processing) = '".$bulanLhp."'	
+				AND YEAR(tbt_processing_tbs.tgl_processing) = '".$tahunLhp."'	
+				AND tbt_processing_tbs.tgl_processing < '".$tglLhp."'
 				ORDER BY
 					tbt_processing_tbs.tgl_processing DESC
 				LIMIT 1 ";

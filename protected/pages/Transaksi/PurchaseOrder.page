@@ -262,7 +262,7 @@
 												<table class="table table-bordered table-striped datatable" id="tableBiaya">
 													<thead>
 														<tr>
-															<th width="300px">Nama </th>
+															<th width="300px">Nama</th>
 															<th width="300px">Biaya</th>
 															<th width="150px">Aksi</th>
 														</tr>
@@ -885,7 +885,7 @@
 				if(tglPO != '' && idRo != 'empty' && idSupplier != 'empty' && CHECK.length > 0)
 				{
 					console.log('valid');
-					var PurchaseOrderTable = localDB.queryAll('PurchaseOrderTable', {sort: [["ID", "ASC"]]});
+					var PurchaseOrderTable = localDB.queryAll('PurchaseOrderTable', {query: {deleted: "0"},sort: [["ID", "ASC"]]});
 					var BiayaTable = localDB.queryAll('BiayaTable', {sort: [["ID", "ASC"]]});
 					var request= <%= $this->submitBtnCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({

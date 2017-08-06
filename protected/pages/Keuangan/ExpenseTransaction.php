@@ -464,12 +464,12 @@ class ExpenseTransaction extends MainConf
 		$this->idExpenseTransaction->Value = "";	
 		$this->getPage()->getClientScript()->registerEndScript
 						('','
-						toastr.info("Data Berhasil Disimpan");
 						jQuery("#table-1").dataTable().fnDestroy();
 						jQuery("#table-1 tbody").empty();
 						jQuery("#table-1 tbody").append("'.$tblBody.'");
+						BindGrid();
 						jQuery("a[href=\"#listTab\"]").tab("show");
-						BindGrid();');	
+						toastr.info("Data Berhasil Disimpan");');	
 		
 		
 	}
