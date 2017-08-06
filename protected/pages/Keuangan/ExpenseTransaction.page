@@ -41,10 +41,11 @@
 											<th width="150px">No Transaksi</th>
 											<th width="150px">Tgl Transaksi</th>
 											<th width="150px">No Referensi</th>
+											<th width="150px">Keterangan</th>
 											<th width="150px">Expense</th>
 											<th width="150px">Bank</th>
 											<th width="150px">Total Expense</th>
-											<th width="50px">Aksi</th>
+											<!--<th width="50px">Aksi</th>-->
 										</tr>
 									</thead>
 									<tbody>
@@ -72,6 +73,14 @@
 												OnLoading="loadContent();"
 												OnComplete="unloadContent();"/>
 										</com:TActiveButton>
+											<com:TButton
+											ID="importBtn" 
+											Text="Import"
+											Visible="false"
+											OnClick="importBtnClicked"
+											CausesValidation="false"
+											CssClass="btn btn-info">
+										</com:TButton>	
 								</div>
 							</div>	
 						</div>	

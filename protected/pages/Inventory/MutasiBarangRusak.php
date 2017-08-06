@@ -40,6 +40,182 @@ class MutasiBarangRusak extends MainConf
 		}
 	}
 	
+	public function importBtnClicked()
+	{
+		$sqlParent = "SELECT
+							pengeluaran_barang_maret.TGL_PENGELUARAN
+						FROM
+							pengeluaran_barang_maret
+						GROUP BY
+							pengeluaran_barang_maret.TGL_PENGELUARAN ";
+		$arrParent = $this->queryAction($sqlParent,'S');
+		foreach($arrParent as $rowParent)
+		{
+			$tglTemp = explode("/",$rowParent['TGL_PENGELUARAN']);
+			$tglMutasi = $tglTemp[2].'-'.$tglTemp[1].'-'.$tglTemp[0];
+			
+			$sql = "SELECT
+						pengeluaran_barang_maret.TGL_PENGELUARAN,
+						pengeluaran_barang_maret.NAMA_ITEM,
+						pengeluaran_barang_maret.JUMLAH,
+						pengeluaran_barang_maret.SATUAN,
+						pengeluaran_barang_maret.JENIS_PENGELUARAN,
+						tbm_barang.id AS id_barang,
+						tbm_satuan_barang.id_satuan,
+					(
+							SELECT
+								tbm_satuan.id
+							FROM
+								tbm_satuan
+							WHERE
+								LOWER(tbm_satuan.singkatan) = LOWER(
+									pengeluaran_barang_maret.SATUAN
+								)
+							AND tbm_satuan.deleted = '0'
+							LIMIT 1
+						) AS id_satuan_baru,
+						tbd_stok_barang.stok
+					FROM
+						pengeluaran_barang_maret
+					LEFT JOIN tbm_barang ON LOWER(tbm_barang.nama) = LOWER(pengeluaran_barang_maret.NAMA_ITEM) AND tbm_barang.deleted = '0'
+					LEFT JOIN tbd_stok_barang ON tbd_stok_barang.id_barang = tbm_barang.id AND tbd_stok_barang.deleted = '0'
+					LEFT JOIN tbm_satuan_barang ON tbm_satuan_barang.id_barang = tbm_barang.id AND tbm_satuan_barang.urutan = '1' AND tbm_satuan_barang.deleted = '0' 
+					WHERE pengeluaran_barang_maret.TGL_PENGELUARAN = '".$rowParent['TGL_PENGELUARAN']."' ";
+			
+			$arr = $this->queryAction($sql,'S');
+			if($arr)
+			{
+				$MutasiBarangRecord = new MutasiBarangRecord();
+				$MutasiBarangRecord->tgl_transaksi = $tglMutasi;
+				$MutasiBarangRecord->wkt_transaksi = date("G:i:s");
+				$MutasiBarangRecord->jumlah_barang = count($arr);
+				$MutasiBarangRecord->save(); 
+				
+				foreach($arr as $row)
+				{
+					if(empty($row['id_barang']))
+					{
+						$BarangRecord = new BarangRecord();
+						$BarangRecord->kode_barang = '';
+						$BarangRecord->nama = $row['NAMA_ITEM'];
+						$BarangRecord->kelompok_id = '0';
+						$BarangRecord->kategori_id = '10';
+						$BarangRecord->min_stock = 0;
+						$BarangRecord->max_stock = 0;
+						$BarangRecord->max_beli_bulanan = 0;
+						$BarangRecord->deleted = '0';
+						$BarangRecord->save();
+						$idBarang = $BarangRecord->id;
+						
+						if(empty($row['id_satuan_baru']))
+						{
+							$SatuanRecord = new SatuanRecord();
+							$SatuanRecord->nama = $row['SATUAN'];
+							$SatuanRecord->singkatan = $row['SATUAN'];
+							$SatuanRecord->deleted = '0';
+							$SatuanRecord->save();
+							$idSatuan = $SatuanRecord->id;
+						}
+						else
+						{
+							$idSatuan = $row['id_satuan_baru'];
+						}
+						
+						$BarangSatuanRecord = new BarangSatuanRecord();
+						$BarangSatuanRecord->id_barang = $BarangRecord->id;
+						$BarangSatuanRecord->id_satuan = $idSatuan;
+						$BarangSatuanRecord->jumlah = 1;
+						$BarangSatuanRecord->urutan = 1;
+						$BarangSatuanRecord->deleted = '0';
+						$BarangSatuanRecord->save();
+					}
+					else
+					{
+						$idBarang = $row['id_barang'];
+						$idSatuan = $row['id_satuan'];
+					}
+					
+					$hargaSatuanBesar = $this->GetLastProductPrice($idBarang);
+					
+					if($hargaSatuanBesar > 0)
+					{
+						$hargaReal = $this->checkConversionPrice($idBarang,$idSatuan,$hargaSatuanBesar);
+					}
+					else
+					{
+						$hargaReal = 0;
+					}
+						
+					$MutasiBarangDetailRecord = new MutasiBarangDetailRecord();
+					$MutasiBarangDetailRecord->id_transaksi = $MutasiBarangRecord->id;
+					$MutasiBarangDetailRecord->id_barang = $idBarang;
+					$MutasiBarangDetailRecord->id_satuan = $idSatuan;
+					$MutasiBarangDetailRecord->jml = $row['JUMLAH'];
+					$MutasiBarangDetailRecord->jns_keluar = '3';
+					$MutasiBarangDetailRecord->st_asset = '0';
+					$MutasiBarangDetailRecord->deleted = '0';
+					$MutasiBarangDetailRecord->save();
+					
+					$bebanPerlengkapan = $hargaReal * $row['JUMLAH'];
+					if($bebanPerlengkapan > 0)
+					{
+						$this->InsertJurnalUmum($MutasiBarangRecord->id,
+											'9',
+											'0',
+											$tglMutasi,
+											date("G:i:s"),
+											"Beban Perlengkapan",
+											$bebanPerlengkapan,
+											$tglMutasi.'-'.$wktTrans);
+						
+						$this->InsertJurnalUmum($MutasiBarangRecord->id,
+											'9',
+											'1',
+											$tglMutasi,
+											date("G:i:s"),
+											"Perlengkapan",
+											$bebanPerlengkapan,
+											$tglMutasi.'-'.$wktTrans);
+											
+						/*$this->InsertJurnalBukuBesar($MutasiBarangRecord->id,
+														'6',
+														'0',
+														$MutasiBarangRecord->id,
+														$tglTrans,
+														date("G:i:s"),
+														'175',
+														'',
+														"Beban Perlengkapan",
+														"Pemakaian Perlengkapan",
+														$bebanPerlengkapan);
+						
+						$this->InsertJurnalBukuBesar($MutasiBarangRecord->id,
+														'6',
+														'1',
+														$MutasiBarangRecord->id,
+														$tglTrans,
+														date("G:i:s"),
+														'175',
+														'',
+														"Perlengkapan",
+														"Pemakaian Perlengkapan",
+														$bebanPerlengkapan);*/
+						
+						$this->InsertLabaRugi($MutasiBarangRecord->id,
+												'5',
+												'1',
+												$tglMutasi,
+												date("G:i:s"),
+												"Pemakaian Perlengkapan",
+												$bebanPerlengkapan,
+												$MutasiBarangRecord->id);
+					}
+			
+				}
+			}
+		}
+	}
+	
 	public function barangChanged($sender,$param)
 	{
 		$idBarang = $this->product_id_select2->Value;

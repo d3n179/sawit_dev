@@ -11,8 +11,8 @@ class KertasKerja extends MainConf
 			if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 			{
 				//$this->cariBtnClicked($sender,$param);
-				$tahun = date("Y");
-				$bulan = $this->namaBulan(date("m"));
+				$tahun = 2017;
+				$bulan = $this->namaBulan('01');
 				
 				$this->Periode->Text = $bulan." ".$tahun;
 				

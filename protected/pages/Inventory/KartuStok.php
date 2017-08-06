@@ -219,7 +219,7 @@ class KartuStok extends MainConf
 				$tblBody .= '<td>'.$row['tgl'].'</td>';
 				$tblBody .= '<td>'.$row['wkt'].'</td>';
 				$tblBody .= '<td>'.$jnsTrans.'</td>';
-				$tblBody .= '<td>'.$row['nama'].'</td>';
+				$tblBody .= '<td>'.mysql_escape_string($row['nama']).'</td>';
 				$tblBody .= '<td>'.$stokAwalList.'</td>';
 				$tblBody .= '<td>'.$stokInList.'</td>';
 				$tblBody .= '<td>'.number_format($row['nilai_in'],2,'.',',').'</td>';

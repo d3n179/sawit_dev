@@ -402,14 +402,14 @@ class RequestOrder extends MainConf
 	public function importBtnClicked()
 	{
 		$sql = "SELECT
-						transaksi_po_januari.NO_PO,
-						transaksi_po_januari.TGL_PO,
-						transaksi_po_januari.PPN,
-						transaksi_po_januari.PEMASOK,
-						transaksi_po_januari.ALAMAT_PEMASOK,
-						(SELECT tbm_pemasok.id FROM tbm_pemasok WHERE lower(tbm_pemasok.nama) = lower(transaksi_po_januari.PEMASOK) AND tbm_pemasok.deleted = '0' LIMIT 1) AS id_pemasok
+						transaksi_po_juni.NO_PO,
+						transaksi_po_juni.TGL_PO,
+						transaksi_po_juni.PPN,
+						transaksi_po_juni.PEMASOK,
+						transaksi_po_juni.ALAMAT_PEMASOK,
+						(SELECT tbm_pemasok.id FROM tbm_pemasok WHERE lower(tbm_pemasok.nama) = lower(transaksi_po_juni.PEMASOK) AND tbm_pemasok.deleted = '0' LIMIT 1) AS id_pemasok
 					FROM
-						transaksi_po_januari
+						transaksi_po_juni
 					WHERE
 						NO_PO != ''
 					AND TGL_PO != ''
@@ -419,28 +419,47 @@ class RequestOrder extends MainConf
 		$arr = $this->queryAction($sql,'S');
 		foreach($arr as $row)
 		{
+			if($row['id_pemasok'] == '')
+			{
+				$PemasokRecord = new PemasokRecord();
+				$PemasokRecord->kategori_id = '26';
+				$PemasokRecord->nama = $row['PEMASOK'];;
+				$PemasokRecord->alamat = $row['ALAMAT_PEMASOK'];
+				$PemasokRecord->telepon = '';
+				$PemasokRecord->fax = '';
+				$PemasokRecord->contact_person = '';
+				$PemasokRecord->fee = 0;
+				$PemasokRecord->no_sp = '';
+				$PemasokRecord->id_kategori_harga = 0;
+				$PemasokRecord->deleted = '0';
+				$PemasokRecord->save();
+			}
+		}
+		
+		$arr2 = $this->queryAction($sql,'S');	
+		foreach($arr2 as $row)
+		{
 			$noPO = $row['NO_PO'];
 			$PPN = $row['PPN'];
 			$tglPO = $row['TGL_PO'];
 			$arrTglPO = explode("/",$tglPO);
 			
-			if($arrTglPO[0] < 10)
-				$tglFormat = '0'.$arrTglPO[0];
+			/*if(intval($arrTglPO[1]) < 10)
+				$tglFormat = '0'.$arrTglPO[1];
 			
-			if($arrTglPO[1] < 10)
-				$blnFormat = '0'.$arrTglPO[1];
+			if(intval($arrTglPO[0]) < 10)
+				$blnFormat = '0'.$arrTglPO[0];*/
 					
-			$PODATE = $arrTglPO[2].'-'.$blnFormat.'-'.$tglFormat;
+			$PODATE = $arrTglPO[2].'-'.$arrTglPO[1].'-'.$arrTglPO[0];
 			
 			$RequestOrderRecord = new RequestOrderRecord();
 			$RequestOrderRecord->no_ro = $this->GenerateNoDocument('RO');
-			$RequestOrderRecord->status = '2';
+			$RequestOrderRecord->status = '1';
 			$RequestOrderRecord->tgl_ro = $PODATE;
 			$RequestOrderRecord->catatan = '';
 			$RequestOrderRecord->save();
 			
 			$ROID = $RequestOrderRecord->id;
-			
 			$PurchaseOrderRecord = new PurchaseOrderRecord();
 			$PurchaseOrderRecord->no_po = $this->GenerateNoDocument('PO');
 			$PurchaseOrderRecord->tgl_po = $PODATE;
@@ -448,7 +467,7 @@ class RequestOrder extends MainConf
 			$PurchaseOrderRecord->id_supplier = $row['id_pemasok'];
 			$PurchaseOrderRecord->ppn = $PPN;
 			$PurchaseOrderRecord->dp = 0;
-			$PurchaseOrderRecord->status = '3';
+			$PurchaseOrderRecord->status = '2';
 			$PurchaseOrderRecord->deleted = '0';
 			$PurchaseOrderRecord->save();
 			$POID = $PurchaseOrderRecord->id;
@@ -463,41 +482,83 @@ class RequestOrder extends MainConf
 			
 			$TotalPO = 0;
 			$sqlDetail = "SELECT
-							transaksi_po_januari.NAMA_ITEM,
-							transaksi_po_januari.JUMLAH,
-							transaksi_po_januari.HARGA_SATUAN,
-							(
-								SELECT
-									tbm_barang.id
-								FROM
-									tbm_barang
-								WHERE
-									lower(tbm_barang.nama) = transaksi_po_januari.NAMA_ITEM
-								AND tbm_barang.deleted != '1'
-								LIMIT 1
-							) AS id_barang,
-							transaksi_po_januari.SATUAN,
-							(
-								SELECT
-									tbm_satuan.id
-								FROM
-									tbm_satuan
-								WHERE
-									lower(tbm_satuan.singkatan) = transaksi_po_januari.SATUAN
-								AND tbm_satuan.deleted != '1'
-								LIMIT 1
-							) AS id_satuan
+							transaksi_po_juni.NAMA_ITEM,
+							transaksi_po_juni.JUMLAH,
+							transaksi_po_juni.HARGA_SATUAN,
+							transaksi_po_juni.SATUAN
 						FROM
-							transaksi_po_januari
-						WHERE transaksi_po_januari.NO_PO = '".$noPO."' ";
+							transaksi_po_juni
+						WHERE transaksi_po_juni.NO_PO = '".$noPO."' ";
+						
 			$arrDetail = $this->queryAction($sqlDetail,'S');
 			foreach($arrDetail as $rowDetail)
 			{
+				$sqlBarang = "SELECT tbm_barang.id FROM tbm_barang WHERE lower(tbm_barang.nama) = lower('".$rowDetail['NAMA_ITEM']."') AND tbm_barang.deleted != '1' LIMIT 1";
+				$arrBarang = $this->queryAction($sqlBarang,'S');
+				if($arrBarang)
+				{
+					$idBarang = $arrBarang[0]['id'];
+					
+					$sqlSatuan = "SELECT tbm_satuan_barang.id_satuan FROM tbm_satuan_barang WHERE id_barang = '".$idBarang."' AND tbm_satuan_barang.deleted != '1' AND tbm_satuan_barang.urutan = 1 LIMIT 1";
+					$arrSatuan = $this->queryAction($sqlSatuan,'S');
+					if($arrSatuan)
+					{
+						$idSatuan = $arrSatuan[0]['id_satuan'];
+					}
+					else
+					{
+							$SatuanRecord = new SatuanRecord();
+							$SatuanRecord->nama = $rowDetail['SATUAN'];
+							$SatuanRecord->singkatan = $rowDetail['SATUAN'];
+							$SatuanRecord->deleted = '0';
+							$SatuanRecord->save();
+							
+							$BarangSatuanRecord = new BarangSatuanRecord();
+							$BarangSatuanRecord->id_barang = $idBarang;
+							$BarangSatuanRecord->id_satuan = $SatuanRecord->id;
+							$BarangSatuanRecord->jumlah = 1;
+							$BarangSatuanRecord->urutan = 1;
+							$BarangSatuanRecord->deleted = '0';
+							$BarangSatuanRecord->save();
+							
+							$idSatuan = $SatuanRecord->id;
+					}
+				}
+				else
+				{
+					$BarangRecord = new BarangRecord();
+					$BarangRecord->kode_barang = '';
+					$BarangRecord->nama = $rowDetail['NAMA_ITEM'];
+					$BarangRecord->kelompok_id = '0';
+					$BarangRecord->kategori_id = '10';
+					$BarangRecord->min_stock = 0;
+					$BarangRecord->max_stock = 0;
+					$BarangRecord->max_beli_bulanan = 0;
+					$BarangRecord->deleted = '0';
+					$BarangRecord->save();
+					$idBarang = $BarangRecord->id;
+					
+					$SatuanRecord = new SatuanRecord();
+					$SatuanRecord->nama = $rowDetail['SATUAN'];
+					$SatuanRecord->singkatan = $rowDetail['SATUAN'];
+					$SatuanRecord->deleted = '0';
+					$SatuanRecord->save();
+					$idSatuan = $SatuanRecord->id;
+					
+					$BarangSatuanRecord = new BarangSatuanRecord();
+					$BarangSatuanRecord->id_barang = $BarangRecord->id;
+					$BarangSatuanRecord->id_satuan = $SatuanRecord->id;
+					$BarangSatuanRecord->jumlah = 1;
+					$BarangSatuanRecord->urutan = 1;
+					$BarangSatuanRecord->deleted = '0';
+					$BarangSatuanRecord->save();
+				}
+				
 				$RequestOrderDetailRecord = new RequestOrderDetailRecord();
 				$RequestOrderDetailRecord->status = '1'; 
 				$RequestOrderDetailRecord->id_ro = $ROID;
-				$RequestOrderDetailRecord->id_barang = $rowDetail['id_barang'];
-				$RequestOrderDetailRecord->id_satuan = $rowDetail['id_satuan'];
+				$RequestOrderDetailRecord->id_barang = $idBarang;
+				$RequestOrderDetailRecord->id_satuan = $idSatuan;
 				$RequestOrderDetailRecord->jumlah = $rowDetail['JUMLAH'];
 				$RequestOrderDetailRecord->harga_satuan_besar = $rowDetail['HARGA_SATUAN'];
 				$RequestOrderDetailRecord->harga_satuan = $rowDetail['HARGA_SATUAN'];
@@ -509,8 +570,8 @@ class RequestOrder extends MainConf
 				$PurchaseOrderDetailRecord->status = '1'; 
 				$PurchaseOrderDetailRecord->id_ro_detail = $RequestOrderDetailRecord->id;
 				$PurchaseOrderDetailRecord->id_po = $POID;
-				$PurchaseOrderDetailRecord->id_barang = $rowDetail['id_barang'];
-				$PurchaseOrderDetailRecord->id_satuan = $rowDetail['id_satuan'];
+				$PurchaseOrderDetailRecord->id_barang = $idBarang;
+				$PurchaseOrderDetailRecord->id_satuan = $idSatuan;
 				$PurchaseOrderDetailRecord->jumlah = $rowDetail['JUMLAH'];
 				$PurchaseOrderDetailRecord->jumlah_diterima = $rowDetail['JUMLAH'];
 				$PurchaseOrderDetailRecord->harga_satuan_besar = $rowDetail['HARGA_SATUAN'];
@@ -523,8 +584,8 @@ class RequestOrder extends MainConf
 				$ReceivingOrderDetailRecord = new ReceivingOrderDetailRecord();
 				$ReceivingOrderDetailRecord->id_po_detail = $PurchaseOrderDetailRecord->id;
 				$ReceivingOrderDetailRecord->id_parent = $RECOID;
-				$ReceivingOrderDetailRecord->id_barang = $rowDetail['id_barang'];
-				$ReceivingOrderDetailRecord->id_satuan = $rowDetail['id_satuan'];
+				$ReceivingOrderDetailRecord->id_barang = $idBarang;
+				$ReceivingOrderDetailRecord->id_satuan = $idSatuan;
 				$ReceivingOrderDetailRecord->jumlah = $rowDetail['JUMLAH'];
 				$ReceivingOrderDetailRecord->expired_date = '0000-00-00';
 				$ReceivingOrderDetailRecord->harga_satuan = $rowDetail['HARGA_SATUAN'];
@@ -535,7 +596,7 @@ class RequestOrder extends MainConf
 				$ReceivingOrderDetailRecord->save();
 				
 				$BarangHargaRecord = new BarangHargaRecord();
-				$BarangHargaRecord->id_barang = $rowDetail['id_barang'];
+				$BarangHargaRecord->id_barang = $idBarang;
 				$BarangHargaRecord->tgl = $PODATE;
 				$BarangHargaRecord->harga = $rowDetail['HARGA_SATUAN'];
 				$BarangHargaRecord->deleted = '0';
@@ -550,7 +611,7 @@ class RequestOrder extends MainConf
 								tbd_stok_barang
 							WHERE
 								tbd_stok_barang.deleted = '0' 
-								AND tbd_stok_barang.id_barang = '".$rowDetail['id_barang']."' ";
+								AND tbd_stok_barang.id_barang = '".$idBarang."' ";
 							
 				$arrStok = $this->queryAction($sqlStok,'S');
 					
@@ -559,9 +620,9 @@ class RequestOrder extends MainConf
 				else
 					$stokAwal = 0;
 					
-				$qtyConversion = $this->getTargetUom($rowDetail['id_barang'],$rowDetail['JUMLAH'],$rowDetail['id_satuan'],'1','0');
+				$qtyConversion = $this->getTargetUom($idBarang,$rowDetail['JUMLAH'],$idSatuan,'1','0');
 				
-				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ?',$rowDetail['id_barang'],'0');
+				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ?',$idBarang,'0');
 				
 				if($StockBarangRecord)
 				{
@@ -570,7 +631,7 @@ class RequestOrder extends MainConf
 				else
 				{
 					$StockBarangRecord = new StockBarangRecord();
-					$StockBarangRecord->id_barang = $rowDetail['id_barang'];
+					$StockBarangRecord->id_barang = $idBarang;
 					$StockBarangRecord->stok = $qtyConversion;
 					$StockBarangRecord->expired_date = '0000-00-00';
 					$StockBarangRecord->deleted = '0';
@@ -579,7 +640,7 @@ class RequestOrder extends MainConf
 				$StockBarangRecord->save();
 				
 				$StockInOutRecord = new StockInOutRecord();
-				$StockInOutRecord->id_barang = $rowDetail['id_barang'];
+				$StockInOutRecord->id_barang = $idBarang;
 				$StockInOutRecord->stok_awal = $stokAwal;
 				$StockInOutRecord->stok_in = $qtyConversion;
 				$StockInOutRecord->nilai_in = $nilaiIn;
@@ -595,13 +656,14 @@ class RequestOrder extends MainConf
 				$StockInOutRecord->save();
 				
 			}
+			
 			if($PPN > 0)
 			{
 				$pajakPo = $TotalPO * ($PPN / 100);
 				$TotalPO += $pajakPo;
 			}
 			
-			$BayarPoOrderRecord = new BayarPoOrderRecord();
+			/*$BayarPoOrderRecord = new BayarPoOrderRecord();
 			$BayarPoOrderRecord->no_pembayaran = $this->GenerateNoDocument('PO-PAY');
 			$BayarPoOrderRecord->id_po = $POID;
 			$BayarPoOrderRecord->tgl_pembayaran = $PODATE;
@@ -613,13 +675,13 @@ class RequestOrder extends MainConf
 			$BayarPoOrderRecord->no_ref = '4534545';		
 			$BayarPoOrderRecord->save();
 			 
-			$namaAkun = 'Kas Bank';
+			$namaAkun = 'Kas Bank';*/
 					
 			$supplierName = PemasokRecord::finder()->findByPk($row['id_pemasok'])->nama;
 		
-		$this->UbahSaldoKas('1',$BayarPoOrderRecord->id_bank,$BayarPoOrderRecord->total_pembayaran);
+		//$this->UbahSaldoKas('1',$BayarPoOrderRecord->id_bank,$BayarPoOrderRecord->total_pembayaran);
 		
-		$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
+		/*$this->InsertJurnalBukuBesar($BayarPoOrderRecord->id,
 									'3',
 									'0',
 									$BayarPoOrderRecord->no_pembayaran,
@@ -641,28 +703,36 @@ class RequestOrder extends MainConf
 									$BayarPoOrderRecord->id_bank,
 									$namaAkun,
 									'Pembayaran PO No '.$PurchaseOrderRecord->no_po.' Kepada '.$supplierName,
-									$BayarPoOrderRecord->total_pembayaran);
+									$BayarPoOrderRecord->total_pembayaran);*/
 														
-		$this->InsertJurnalUmum($BayarPoOrderRecord->id,
-								'2',
-								'0',
-								$BayarPoOrderRecord->tgl_pembayaran,
-								date("G:i:s"),
-								'Perlengkapan',
-								$BayarPoOrderRecord->total_pembayaran,
-								$BayarPoOrderRecord->no_pembayaran);
-									
-		$this->InsertJurnalUmum($BayarPoOrderRecord->id,
-								'2',
-								'1',
-								$BayarPoOrderRecord->tgl_pembayaran,
-								date("G:i:s"),
-								$namaAkun,
-								$BayarPoOrderRecord->total_pembayaran,
-								$BayarPoOrderRecord->no_pembayaran,
-								$BayarPoOrderRecord->id_bank);
-		
-		$this->InsertJurnalPengeluaranKas($BayarPoOrderRecord->id,
+		$this->InsertJurnalUmum($ReceivingOrderRecord->id,
+										'1',
+										'0',
+										$PODATE,
+										date("G:i:s"),
+										'Perlengkapan',
+										$TotalPO ,
+										$ReceivingOrderRecord->no_document);
+										
+				$this->InsertJurnalUmum($ReceivingOrderRecord->id,
+										'1',
+										'1',
+										$PODATE,
+										date("G:i:s"),
+										'Hutang',
+										$TotalPO,
+										$ReceivingOrderRecord->no_document);
+										
+				$this->InsertJurnalPembelian($ReceivingOrderRecord->id,
+											$ReceivingOrderRecord->no_document,
+											'1',
+											$PODATE,
+											date("G:i:s"),
+											$supplierName,
+											'',
+											'',
+											$TotalPO);
+		/*$this->InsertJurnalPengeluaranKas($BayarPoOrderRecord->id,
 											$BayarPoOrderRecord->no_pembayaran,
 											'1',
 											$BayarPoOrderRecord->tgl_pembayaran,
@@ -671,7 +741,7 @@ class RequestOrder extends MainConf
 											'',
 											'',
 											$BayarPoOrderRecord->total_pembayaran,
-											0);
+											0);*/
 		}
 			
 	}

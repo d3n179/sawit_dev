@@ -84,13 +84,14 @@ class ExpenseTransaction extends MainConf
 				$tblBody .= '<td>'.$row['transaction_no'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
 				$tblBody .= '<td>'.$row['no_referensi'].'</td>';
+				$tblBody .= '<td>'.$row['deskripsi'].'</td>';
 				$tblBody .= '<td>'.$row['nama_expense'].'</td>';
 				$tblBody .= '<td>'.$row['nama_bank'].'</td>';
 				$tblBody .= '<td>'.number_format($row['total_expense'],2,".",",").'</td>';
-				$tblBody .= '<td>';
+				/*$tblBody .= '<td>';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
 				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
-				$tblBody .=	'</td>';		
+				$tblBody .=	'</td>';	*/	
 				$tblBody .= '</tr>';
 			}
 		}
@@ -162,6 +163,206 @@ class ExpenseTransaction extends MainConf
 					unloadContent();
 					toastr.error("Data gagal Dihapus");
 					');
+		}
+	}
+	
+	public function importBtnClicked()
+	{
+		$sql = "SELECT
+					PETTY_CASH_IMPORT.TGL,
+					PETTY_CASH_IMPORT.KETERANGAN,
+					PETTY_CASH_IMPORT.REFERENSI,
+					PETTY_CASH_IMPORT.DEBET,
+					PETTY_CASH_IMPORT.KREDIT
+				FROM
+					PETTY_CASH_IMPORT ";
+		$arr = $this->queryAction($sql,'S');
+		if($arr)
+		{
+			foreach($arr as $row)
+			{
+				$tglTemp = explode("/",$row['TGL']);
+				$tglTrans = $tglTemp[2].'-'.$tglTemp[1].'-'.$tglTemp[0];
+				
+				if(!empty($row['KREDIT']))
+				{
+					$Record = new ExpenseTransactionRecord();
+					$Record->transaction_no = $this->GenerateNoDocument('EXP',$tglTemp[1],$tglTemp[2]);
+					$Record->tgl_transaksi = $tglTrans;
+					$Record->no_referensi = $row['REFERENSI'];
+					$Record->expense_category_id = '4';
+					$Record->expense_id = '5';
+					$Record->deskripsi = $row['KETERANGAN'];
+					$Record->bank_id = '8';
+					$Record->total_expense = $row['KREDIT'];
+					$Record->coa_id = '795';
+					$Record->save();
+					
+					if($Record->bank_id == '8')
+						$namaAkun = 'Kas';
+					else
+						$namaAkun = 'Kas Bank';
+					
+					$this->UbahSaldoKas('1',$Record->bank_id,$Record->total_expense);
+						
+					$this->InsertJurnalUmum($Record->id,
+										'7',
+										'0',
+										$Record->tgl_transaksi,
+										date("G:i:s"),
+										'Beban Lain-lain',
+										$Record->total_expense,
+										$Record->transaction_no);
+					
+					$this->InsertJurnalUmum($Record->id,
+										'7',
+										'1',
+										$Record->tgl_transaksi,
+										date("G:i:s"),
+										$namaAkun,
+										$Record->total_expense,
+										$Record->transaction_no,
+										$Record->bank_id);
+										
+					/*$this->InsertJurnalBukuBesar($Record->id,
+													'4',
+													'1',
+													$Record->transaction_no,
+													$Record->tgl_transaksi,
+													date("G:i:s"),
+													$Record->coa_id,
+													$Record->bank_id,
+													$namaAkun,
+													$Record->deskripsi,
+													$Record->total_expense);
+					
+					$this->InsertJurnalBukuBesar($Record->id,
+													'4',
+													'0',
+													$Record->transaction_no,
+													$Record->tgl_transaksi,
+													date("G:i:s"),
+													$Record->coa_id,
+													$Record->bank_id,
+													'Beban Lain-lain',
+													$Record->deskripsi,
+													$Record->total_expense);*/
+					
+					$this->InsertLabaRugi($Record->id,
+											'4',
+											'1',
+											$Record->tgl_transaksi,
+											date("G:i:s"),
+											$Record->deskripsi,
+											$Record->total_expense,
+											$Record->transaction_no);
+					
+					
+					$keterangan = ExpenseRecord::finder()->findByPk($Record->expense_id)->nama;
+					$nama_akun = ExpenseCategoryRecord::finder()->findByPk($Record->expense_category_id)->nama;
+					
+					$this->InsertJurnalPengeluaranKas($Record->id,
+														$Record->transaction_no,
+														'3',
+														$Record->tgl_transaksi,
+														date("G:i:s"),
+														$keterangan,
+														$nama_akun,
+														$Record->no_referensi,
+														$Record->total_expense,
+														0);
+				}
+				
+				if(!empty($row['DEBET']))
+				{
+					$Record = new RevenueTransactionRecord();
+					$Record->transaction_no = $this->GenerateNoDocument('REV',$tglTemp[1],$tglTemp[2]);
+					$Record->tgl_transaksi = $tglTrans;
+					$Record->no_referensi = $row['REFERENSI'];
+					$Record->revenue_category_id = '1';
+					$Record->revenue_id = '1';
+					$Record->deskripsi =$row['KETERANGAN'];
+					$Record->bank_id = '8';
+					$Record->total_revenue = $row['DEBET'];
+					$Record->coa_id = '795';
+					$Record->save();
+					
+					if($Record->bank_id == '8')
+						$namaAkun = 'Kas';
+					else
+						$namaAkun = 'Kas Bank';
+					
+					$this->UbahSaldoKas('0',$Record->bank_id,$Record->total_revenue);
+						
+					$this->InsertJurnalUmum($Record->id,
+										'6',
+										'0',
+										$Record->tgl_transaksi,
+										date("G:i:s"),
+										$namaAkun,
+										$Record->total_revenue,
+										$Record->transaction_no,
+										$Record->bank_id);
+					
+					$this->InsertJurnalUmum($Record->id,
+										'6',
+										'1',
+										$Record->tgl_transaksi,
+										date("G:i:s"),
+										'Pendapatan Lain-lain',
+										$Record->total_revenue,
+										$Record->transaction_no);
+					
+					$this->InsertJurnalBukuBesar($Record->id,
+													'5',
+													'0',
+													$Record->transaction_no,
+													$Record->tgl_transaksi,
+													date("G:i:s"),
+													$Record->coa_id,
+													$Record->bank_id,
+													$namaAkun,
+													$Record->deskripsi,
+													$Record->total_revenue);
+					
+					$this->InsertJurnalBukuBesar($Record->id,
+													'5',
+													'0',
+													$Record->transaction_no,
+													$Record->tgl_transaksi,
+													date("G:i:s"),
+													$Record->coa_id,
+													$Record->bank_id,
+													'Pendapatan Lain-lain',
+													$Record->deskripsi,
+													$Record->total_revenue);
+													
+					$this->InsertLabaRugi($Record->id,
+											'5',
+											'0',
+											$Record->tgl_transaksi,
+											date("G:i:s"),
+											$Record->deskripsi,
+											$Record->total_revenue,
+											$Record->transaction_no);
+					
+					
+					
+					$keterangan = RevenueRecord::finder()->findByPk($Record->revenue_id)->nama;
+					$nama_akun = RevenueCategoryRecord::finder()->findByPk($Record->revenue_category_id)->nama;
+					
+					$this->InsertJurnalPenerimaanKas($Record->id,
+													$Record->transaction_no,
+													'3',
+													$Record->tgl_transaksi,
+													date("G:i:s"),
+													$keterangan,
+													$nama_akun,
+													$Record->no_referensi,
+													$Record->total_revenue,
+													0);
+				}
+			}
 		}
 	}
 	

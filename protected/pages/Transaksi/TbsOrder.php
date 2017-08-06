@@ -410,6 +410,162 @@ class TbsOrder extends MainConf
 		}
 	}
 	
+	public function importBtnClicked($sender,$param)
+	{
+		$sql = "SELECT
+					tbm_setting_komidel.id,
+					tbm_setting_komidel.operator,
+					tbm_setting_komidel.komidel,
+					tbm_setting_komidel.nama
+				FROM
+					tbm_setting_komidel
+				WHERE
+					tbm_setting_komidel.deleted = '0'
+				ORDER BY
+					tbm_setting_komidel.komidel ASC ";
+					
+		$arrKomidel = $this->queryAction($sql,'S');
+		$kategoriTbs = '';
+		$idKomidel = '';
+		
+		$sqlParent = "SELECT
+							transaksi_tbs_juni.TANGGAL,
+							transaksi_tbs_juni.KATEGORI_TBS,
+							transaksi_tbs_juni.SUPPLIER,
+							(
+								SELECT
+									tbm_pemasok.id
+								FROM
+									tbm_pemasok
+								WHERE
+									lower(tbm_pemasok.nama) = lower(
+										transaksi_tbs_juni.SUPPLIER
+									)
+								AND tbm_pemasok.deleted = '0'
+								LIMIT 1
+							) AS id_pemasok
+						FROM
+							transaksi_tbs_juni
+						GROUP BY
+							transaksi_tbs_juni.TANGGAL,
+							transaksi_tbs_juni.KATEGORI_TBS,
+							transaksi_tbs_juni.SUPPLIER ";
+		$arrParent = $this->queryAction($sqlParent,'S');
+		foreach($arrParent as $row)
+		{
+			if($row['id_pemasok'] == '')
+			{
+				$PemasokRecord = new PemasokRecord();
+				$PemasokRecord->kategori_id = '2';
+				$PemasokRecord->nama = $row['SUPPLIER'];;
+				$PemasokRecord->alamat = '';
+				$PemasokRecord->telepon = '';
+				$PemasokRecord->fax = '';
+				$PemasokRecord->contact_person = '';
+				$PemasokRecord->fee = 0;
+				$PemasokRecord->no_sp = '002';
+				$PemasokRecord->id_kategori_harga = 2;
+				$PemasokRecord->deleted = '0';
+				$PemasokRecord->save();
+			}
+		}
+		$arrParent2 = $this->queryAction($sqlParent,'S');
+		foreach($arrParent2 as $row)
+		{
+			if($row['KATEGORI_TBS'] == 'BUAH LUAR' || $row['KATEGORI_TBS'] == '1')
+				$idBarang = '1021';
+			elseif($row['KATEGORI_TBS'] == 'BUAH KEBUN' || $row['KATEGORI_TBS'] == '0')
+				$idBarang = '1020';
+			
+			$tglOrder = $row['TANGGAL'];
+			$arrTglOrder = explode("/",$tglOrder);
+			$TBSDATE = $arrTglOrder[2].'-'.$arrTglOrder[1].'-'.$arrTglOrder[0];
+				
+			$Record = new TbsOrderRecord();
+			$msg = "Data Berhasil Disimpan";
+			$Record->no_tbs_order = $this->GenerateNoDocument('TBS');
+			$Record->id_barang = $idBarang;
+			$Record->id_pemasok = $row['id_pemasok'];
+			$Record->tgl_transaksi = $TBSDATE;
+			$Record->wkt_transaksi = date("G:i:s");
+			$Record->status= '0';
+			$Record->deleted= '0';
+			$Record->save(); 
+			
+			$sqlDetail = "SELECT
+							transaksi_tbs_juni.*,
+							(
+								SELECT
+									tbm_jenis_kendaraan.id
+								FROM
+									tbm_jenis_kendaraan
+								WHERE
+									lower(
+										tbm_jenis_kendaraan.jenis_kendaraan
+									) = lower(
+										transaksi_tbs_juni.KENDARAAN
+									)
+							) AS ID_KENDARAAN_DB
+						FROM
+							transaksi_tbs_juni 
+						WHERE 
+							transaksi_tbs_juni.TANGGAL = '".$row['TANGGAL']."'
+							AND transaksi_tbs_juni.KATEGORI_TBS = '".$row['KATEGORI_TBS']."'
+							AND transaksi_tbs_juni.SUPPLIER = '".$row['SUPPLIER']."' ";	
+			$arrDetail = $this->queryAction($sqlDetail,'S');
+			foreach($arrDetail as $rowDetail)
+			{
+				
+				if($arrKomidel)
+				{
+					foreach($arrKomidel as $rowKomidel)
+					{
+						if($rowKomidel['operator'] == '<=')
+						{
+							if(intval($rowDetail['KOMIDEL']) <= $rowKomidel['komidel'])
+							{
+								$kategoriTbs = $rowKomidel['nama'];
+								$idKomidel = $rowKomidel['id'];
+								break;
+							}
+						}
+						elseif($rowKomidel['operator'] == '>=')
+						{
+							if(intval($rowDetail['KOMIDEL']) >= $rowKomidel['komidel'])
+							{
+								$kategoriTbs = $rowKomidel['nama'];
+								$idKomidel = $rowKomidel['id'];
+								break;
+							}
+						}
+						
+					}
+				}
+		
+				$TbsOrderDetailRecord = new TbsOrderDetailRecord();
+				$TbsOrderDetailRecord->id_tbs_order = $Record->id;
+				$TbsOrderDetailRecord->id_jenis_kendaraan = $rowDetail['ID_KENDARAAN_DB'];
+				$TbsOrderDetailRecord->no_polisi = $rowDetail['NO_POLISI'];
+				$TbsOrderDetailRecord->bruto =  $rowDetail['BRUTTO'];
+				$TbsOrderDetailRecord->tarra =  $rowDetail['TARRA'];
+				$TbsOrderDetailRecord->netto_1 =  $rowDetail['NETTO_I'];
+				$TbsOrderDetailRecord->potongan =  $rowDetail['POTONGAN'] * 100;
+				$TbsOrderDetailRecord->hasil_potongan =  $rowDetail['HSL_POTONGAN'];
+				$TbsOrderDetailRecord->netto_2 =  $rowDetail['NETTO_II'];
+				$TbsOrderDetailRecord->jml_tandan =  $rowDetail['JLH_TANDAN'];
+				$TbsOrderDetailRecord->komidel =  intval($rowDetail['KOMIDEL']);
+				$TbsOrderDetailRecord->id_komidel = $idKomidel;
+				$TbsOrderDetailRecord->deleted = '0';
+				$TbsOrderDetailRecord->save();
+			}
+		}
+				
+		$this->getPage()->getClientScript()->registerEndScript
+								('','
+								toastr.info("'.$msg.'");');	
+			
+	}
+	
 	public function submitBtnClicked($sender,$param)
 	{
 		//if($this->Page->IsValid)

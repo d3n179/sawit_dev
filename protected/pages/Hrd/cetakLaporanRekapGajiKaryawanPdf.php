@@ -201,7 +201,52 @@ class cetakLaporanRekapGajiKaryawanPdf extends MainConf
 			$pdf->SetAligns(array('C','L','L','L','C','C','L','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R','R'));
 			$pdf->SetFont('Arial','',3);
 			
-			$sqlTrans = "SELECT 
+			
+			$sqlTrans = "SELECT
+						tbm_karyawan.id,
+						tbm_karyawan.nik,
+						tbm_karyawan.nama,
+						tbt_rekap_gaji_detail.gaji_pokok,
+						tbt_rekap_gaji_detail.tunjangan_natura,
+						tbt_rekap_gaji_detail.incentive,
+						tbt_rekap_gaji_detail.tunjangan_jabatan,
+						tbt_rekap_gaji_detail.tunjangan_komunikasi,
+						tbt_rekap_gaji_detail.premi_karyawan,
+						tbt_rekap_gaji_detail.total_gaji,
+						tbt_rekap_gaji_detail.lembur_lpp_jam,
+						tbt_rekap_gaji_detail.lembur_lpp_tarif,
+						tbt_rekap_gaji_detail.lembur_lpp_total,
+						tbt_rekap_gaji_detail.lembur_lppml_jam,
+						tbt_rekap_gaji_detail.lembur_lppml_tarif,
+						tbt_rekap_gaji_detail.lembur_lppml_total,
+						tbt_rekap_gaji_detail.lembur_lpplk_jam,
+						tbt_rekap_gaji_detail.lembur_lpplk_tarif,
+						tbt_rekap_gaji_detail.lembur_lpplk_total,
+						tbt_rekap_gaji_detail.total_lembur,
+						tbt_rekap_gaji_detail.mangkir,
+						tbt_rekap_gaji_detail.terlambat_masuk_kerja,
+						tbt_rekap_gaji_detail.total_mangkir_terlambat,
+						tbt_rekap_gaji_detail.total_gaji_kotor,
+						tbt_rekap_gaji_detail.bpjs_kesehatan,
+						tbt_rekap_gaji_detail.bpjs_ketenagakerjaan,
+						tbt_rekap_gaji_detail.pinjaman,
+						tbt_rekap_gaji_detail.kantin,
+						tbt_rekap_gaji_detail.koperasi,
+						tbt_rekap_gaji_detail.total_potongan,
+						tbt_rekap_gaji_detail.jml_gaji_dibayarkan
+					FROM
+						tbt_rekap_gaji_detail
+					INNER JOIN tbt_rekap_gaji ON tbt_rekap_gaji.id = tbt_rekap_gaji_detail.id_rekap
+					INNER JOIN tbm_karyawan ON tbm_karyawan.id = tbt_rekap_gaji_detail.id_karyawan
+					INNER JOIN tbm_jabatan ON tbm_jabatan.id = tbm_karyawan.id_jabatan
+					WHERE
+						tbm_karyawan.deleted = '0'
+					AND tbt_rekap_gaji_detail.deleted = '0'
+					AND tbm_jabatan.deleted ='0'
+					AND tbm_jabatan.id_department = '".$idDeparment."' 
+					AND tbt_rekap_gaji.bulan = '".$bln."' AND tbt_rekap_gaji.tahun = '".$thn."'";
+							
+			/*$sqlTrans = "SELECT 
 							tbm_karyawan.id,
 							tbm_karyawan.nik,
 							tbm_karyawan.nama
@@ -211,7 +256,7 @@ class cetakLaporanRekapGajiKaryawanPdf extends MainConf
 						WHERE
 							tbm_karyawan.deleted = '0' 
 							AND tbm_jabatan.deleted ='0'
-							AND tbm_jabatan.id_department = '".$idDeparment."' ";
+							AND tbm_jabatan.id_department = '".$idDeparment."' ";*/
 			$arrTrans = $this->queryAction($sqlTrans,'S');
 			$no = 1;
 			
@@ -271,198 +316,32 @@ class cetakLaporanRekapGajiKaryawanPdf extends MainConf
 					if($KaryawanRecord->id_ptkp == '4')
 						$snk = 'K-3';
 				
-					//$worksheet1->write_string($baris,$kolom,$DepartmentRecord->nama,$frmtTitleLeft10);$kolom++;
-					$totalGajiKotor += $GolonganKaryawanRecord->gaji_pokok;
-					$totalGajiKotor += $KaryawanRecord->tunjangan_natura;
-					$totalGajiKotor += $IncentiveRecord->jml_incentive;
-					$totalGajiKotor += $JabatanRecord->tunjangan_jabatan;
-					$totalGajiKotor += $JabatanRecord->tunjangan_komunikasi;
-					$totalGajiKotor += $JabatanRecord->premi_karyawan;
 					
-					$sqlLpp = "SELECT
-									SUM(
-										tbt_lembur_karyawan.lama_lembur
-									) AS lama_lembur
-								FROM
-									tbt_lembur_karyawan
-								WHERE
-									tbt_lembur_karyawan.id_karyawan = '$idK'
-								AND MONTH(tbt_lembur_karyawan.tgl) = '$month'
-								AND YEAR(tbt_lembur_karyawan.tgl) = '$year'
-								AND tbt_lembur_karyawan.jns_lembur = '1'
-								AND tbt_lembur_karyawan.deleted != '1' ";
-					$arrLpp = $this->queryAction($sqlLpp,'S');
-					$tarifLpp = (1/173) * $GolonganKaryawanRecord->gaji_pokok;
-					$jmlLpp = $arrLpp[0]['lama_lembur'] * $tarifLpp;
-					$totalLembur += $jmlLpp;
-					
-					$sqlLppml = "SELECT
-									SUM(
-										tbt_lembur_karyawan.lama_lembur
-									) AS lama_lembur
-								FROM
-									tbt_lembur_karyawan
-								WHERE
-									tbt_lembur_karyawan.id_karyawan = '$idK'
-								AND MONTH(tbt_lembur_karyawan.tgl) = '$month'
-								AND YEAR(tbt_lembur_karyawan.tgl) = '$year'
-								AND tbt_lembur_karyawan.jns_lembur = '2'
-								AND tbt_lembur_karyawan.deleted != '1' ";
-					$arrLppml = $this->queryAction($sqlLppml,'S');
-					$tarifLppml = ((1/173) * $GolonganKaryawanRecord->gaji_pokok) * 1.5;
-					$jmlLppml = $arrLppml[0]['lama_lembur'] * $tarifLppml;
-					$totalLembur += $jmlLppml;
-					
-					$sqlLpplk = "SELECT
-									SUM(
-										tbt_lembur_karyawan.lama_lembur
-									) AS lama_lembur
-								FROM
-									tbt_lembur_karyawan
-								WHERE
-									tbt_lembur_karyawan.id_karyawan = '$idK'
-								AND MONTH(tbt_lembur_karyawan.tgl) = '$month'
-								AND YEAR(tbt_lembur_karyawan.tgl) = '$year'
-								AND tbt_lembur_karyawan.jns_lembur = '3'
-								AND tbt_lembur_karyawan.deleted != '1' ";
-					$arrLpplk = $this->queryAction($sqlLpplk,'S');
-					$tarifLpplk = ((1/173) * $GolonganKaryawanRecord->gaji_pokok) * 2;
-					$jmlLpplk = $arrLpplk[0]['lama_lembur'] * $tarifLpplk;
-					$totalLembur += $jmlLpplk;
-					
-					$totalGajiKotorLembur = $totalGajiKotor + $totalLembur;
-					
-					$sqlMangkir = "SELECT
-										COUNT(
-											tbm_jadwal.id
-										) AS mangkir
-									FROM
-										tbm_jadwal
-									WHERE
-										tbm_jadwal.idkaryawan = '$idK'
-									AND tbm_jadwal.st_hadir = '1'
-									AND MONTH(tbm_jadwal.tanggal) = '$month'
-									AND YEAR(tbm_jadwal.tanggal) = '$year' ";
-					$arrMangkir = $this->queryAction($sqlMangkir,'S');
-					$jmlMangkir = $arrMangkir[0]['mangkir'];
-					$totalMangkir = ($GolonganKaryawanRecord->gaji_pokok / 25) * $jmlMangkir;
-					$totalTelatMangkir += $totalMangkir;
-					
-					$sqlTelat = "SELECT
-										COUNT(
-											tbm_jadwal.id
-										) AS telat
-									FROM
-										tbm_jadwal
-									WHERE
-										tbm_jadwal.idkaryawan = '$idK'
-									AND tbm_jadwal.st_hadir = '0'
-									AND tbm_jadwal.st_telat = '1'
-									AND MONTH(tbm_jadwal.tanggal) = '$month'
-									AND YEAR(tbm_jadwal.tanggal) = '$year' ";
-					$arrTelat = $this->queryAction($sqlTelat,'S');
-					$jmlTelat = $arrTelat[0]['telat'];
-					$totalTelat = ($GolonganKaryawanRecord->gaji_pokok / 25 / 7) * $jmlTelat;
-					$totalTelatMangkir += $totalTelat;
-					
-					$totalGajiKotorLembur -= $totalTelatMangkir;
-					
-					if($KaryawanRecord->st_bpjs_kesehatan == '1')
-					{
-						if($KaryawanRecord->tambahan_keluarga > 0)
-							$multiplyBpjs = $KaryawanRecord->tambahan_keluarga + 1;
-						else
-							$multiplyBpjs = 1;
-							
-						$bpjsKesehatan = ($GolonganKaryawanRecord->gaji_pokok * (1/100)) * $multiplyBpjs;
-					}
-					else
-						$bpjsKesehatan = 0;
-					
-					$totalPotongan += $bpjsKesehatan;
-					
-					if($KaryawanRecord->st_bpjs_ketenagakerjaan == '1')
-						$bpjsTenagaKerja = $GolonganKaryawanRecord->gaji_pokok * (2/100);
-					else
-						$bpjsTenagaKerja = 0;
-					
-					$totalPotongan += $bpjsTenagaKerja;
-					
-					$sqlPinjaman = "SELECT
-										SUM(
-											tbt_expense_karyawan.jml_expense
-										) AS jml_expense
-									FROM
-										tbt_expense_karyawan
-									WHERE
-										tbt_expense_karyawan.id_karyawan = '$idK'
-									AND tbt_expense_karyawan.jns_expense = '1'
-									AND MONTH(tbt_expense_karyawan.tgl) = '$month'
-									AND YEAR(tbt_expense_karyawan.tgl) = '$year'
-									AND tbt_expense_karyawan.deleted != '1' ";
-					$arrPinjaman = $this->queryAction($sqlPinjaman,'S');
-					$jmlPinjaman = $arrPinjaman[0]['jml_expense'];
-					$totalPotongan += $jmlPinjaman;
-					
-					$sqlKantin = "SELECT
-										SUM(
-											tbt_expense_karyawan.jml_expense
-										) AS jml_expense
-									FROM
-										tbt_expense_karyawan
-									WHERE
-										tbt_expense_karyawan.id_karyawan = '$idK'
-									AND tbt_expense_karyawan.jns_expense = '2'
-									AND MONTH(tbt_expense_karyawan.tgl) = '$month'
-									AND YEAR(tbt_expense_karyawan.tgl) = '$year'
-									AND tbt_expense_karyawan.deleted != '1' ";
-					$arrKantin = $this->queryAction($sqlKantin,'S');
-					$jmlKantin = $arrKantin[0]['jml_expense'];
-					$totalPotongan += $jmlKantin;
-					
-					$sqlKoperasi = "SELECT
-										SUM(
-											tbt_expense_karyawan.jml_expense
-										) AS jml_expense
-									FROM
-										tbt_expense_karyawan
-									WHERE
-										tbt_expense_karyawan.id_karyawan = '$idK'
-									AND tbt_expense_karyawan.jns_expense = '3'
-									AND MONTH(tbt_expense_karyawan.tgl) = '$month'
-									AND YEAR(tbt_expense_karyawan.tgl) = '$year'
-									AND tbt_expense_karyawan.deleted != '1' ";
-					$arrKoperasi = $this->queryAction($sqlKoperasi,'S');
-					$jmlKoperasi = $arrKoperasi[0]['jml_expense'];
-					$totalPotongan += $jmlKoperasi;
-					
-					$gajiDibayarkan = $totalGajiKotorLembur - $totalPotongan;
-					
-					$totalGajiPokokCol += $GolonganKaryawanRecord->gaji_pokok;
-					$totalTunjanganNaturaCol += $KaryawanRecord->tunjangan_natura;
-					$totalJmlIncentiveCol += $IncentiveRecord->jml_incentive;
-					$totalTunjanganJabatanCol += $JabatanRecord->tunjangan_jabatan;
-					$totalTunjanganKomunikasiCol += $JabatanRecord->tunjangan_komunikasi;
-					$totalPremiKaryawanCol += $JabatanRecord->premi_karyawan;
-					$totalGajiKotorCol += $totalGajiKotor;
-					$totalLamaLemburLppCol += $arrLpp[0]['lama_lembur'];
-					$totalJmlLemburLppCol += $jmlLpp;
-					$totalLamaLemburLppmlCol += $arrLppml[0]['lama_lembur'];
-					$totalJmlLemburLppmlCol += $jmlLppml;
-					$totalLamaLemburLpplkCol += $arrLpplk[0]['lama_lembur'];
-					$totalJmlLemburLpplkCol += $jmlLpplk;
-					$totalLemburCol += $totalLembur;
-					$totalMangkirCol += $totalMangkir;
-					$totalTelatCol += $totalTelat;
-					$totalTelatMangkirCol += $totalTelatMangkir;
-					$totalGajiKotorLemburCol += $totalGajiKotorLembur;
-					$totalBpjsKesehatanCol += $bpjsKesehatan;
-					$totalBpjsTenagaKerjaCol += $bpjsTenagaKerja;
-					$totalJmlPinjamanCol += $jmlPinjaman;
-					$totalJmlKantinCol += $jmlKantin;
-					$totalJmlKoperasiCol += $jmlKoperasi;
-					$totalPotonganCol += $totalPotongan;
-					$totalGajiDibayarkanCol += $gajiDibayarkan;
+					$totalGajiPokokCol += $row['gaji_pokok'];
+					$totalTunjanganNaturaCol += $row['tunjangan_natura'];
+					$totalJmlIncentiveCol += $row['incentive'];
+					$totalTunjanganJabatanCol += $row['tunjangan_jabatan'];
+					$totalTunjanganKomunikasiCol += $row['tunjangan_komunikasi'];
+					$totalPremiKaryawanCol += $row['premi_karyawan'];
+					$totalGajiKotorCol += $row['total_gaji'];
+					$totalLamaLemburLppCol += $row['lembur_lpp_jam'];
+					$totalJmlLemburLppCol += $row['lembur_lpp_total'];
+					$totalLamaLemburLppmlCol += $row['lembur_lppml_jam'];
+					$totalJmlLemburLppmlCol += $row['lembur_lppml_total'];
+					$totalLamaLemburLpplkCol += $row['lembur_lpplk_jam'];
+					$totalJmlLemburLpplkCol += $row['lembur_lpplk_total'];
+					$totalLemburCol += $row['total_lembur'];
+					$totalMangkirCol += $row['mangkir'];
+					$totalTelatCol += $row['terlambat_masuk_kerja'];
+					$totalTelatMangkirCol += $row['total_mangkir_terlambat'];
+					$totalGajiKotorLemburCol += $row['total_gaji_kotor'];
+					$totalBpjsKesehatanCol += $row['bpjs_kesehatan'];
+					$totalBpjsTenagaKerjaCol += $row['bpjs_ketenagakerjaan'];
+					$totalJmlPinjamanCol += $row['pinjaman'];
+					$totalJmlKantinCol += $row['kantin'];
+					$totalJmlKoperasiCol += $row['koperasi'];
+					$totalPotonganCol += $row['total_potongan'];
+					$totalGajiDibayarkanCol += $row['jml_gaji_dibayarkan'];
 			
 					$pdf->Row(array($no,
 									$row['nik'],
@@ -471,34 +350,34 @@ class cetakLaporanRekapGajiKaryawanPdf extends MainConf
 									$GolonganKaryawanRecord->nama,
 									$snk,
 									$this->ConvertDate($KaryawanRecord->tglawalkerja,'3'),
-									number_format($GolonganKaryawanRecord->gaji_pokok,0,'.',','),
-									number_format($KaryawanRecord->tunjangan_natura,0,'.',','),
-									number_format($IncentiveRecord->jml_incentive,0,'.',','),
-									number_format($JabatanRecord->tunjangan_jabatan,0,'.',','),
-									number_format($JabatanRecord->tunjangan_komunikasi,0,'.',','),
-									number_format($JabatanRecord->premi_karyawan,0,'.',','),
-									number_format($totalGajiKotor,0,'.',','),
-									$arrLpp[0]['lama_lembur'],
-									number_format($tarifLpp,0,'.',','),
-									number_format($jmlLpp,0,'.',','),
-									$arrLppml[0]['lama_lembur'],
-									number_format($tarifLppml,0,'.',','),
-									number_format($jmlLppml,0,'.',','),
-									$arrLpplk[0]['lama_lembur'],
-									number_format($tarifLpplk,0,'.',','),
-									number_format($jmlLpplk,0,'.',','),
-									number_format($totalLembur,0,'.',','),
-									number_format($totalMangkir,0,'.',','),
-									number_format($totalTelat,0,'.',','),
-									number_format($totalTelatMangkir,0,'.',','),
-									number_format($totalGajiKotorLembur,0,'.',','),
-									number_format($bpjsKesehatan,0,'.',','),
-									number_format($bpjsTenagaKerja,0,'.',','),
-									number_format($jmlPinjaman,0,'.',','),
-									number_format($jmlKantin,0,'.',','),
-									number_format($jmlKoperasi,0,'.',','),
-									number_format($totalPotongan,0,'.',','),
-									number_format($gajiDibayarkan,0,'.',',')));
+									number_format($row['gaji_pokok'],0,'.',','),
+									number_format($row['tunjangan_natura'],0,'.',','),
+									number_format($row['incentive'],0,'.',','),
+									number_format($row['tunjangan_jabatan'],0,'.',','),
+									number_format($row['tunjangan_komunikasi'],0,'.',','),
+									number_format($row['premi_karyawan'],0,'.',','),
+									number_format($row['total_gaji'],0,'.',','),
+									$row['lembur_lpp_jam'],
+									number_format($row['lembur_lpp_tarif'],0,'.',','),
+									number_format($row['lembur_lpp_total'],0,'.',','),
+									$row['lembur_lppml_jam'],
+									number_format($row['lembur_lppml_tarif'],0,'.',','),
+									number_format($row['lembur_lppml_total'],0,'.',','),
+									$row['lembur_lpplk_jam'],
+									number_format($row['lembur_lpplk_tarif'],0,'.',','),
+									number_format($row['lembur_lpplk_total'],0,'.',','),
+									number_format($row['total_lembur'],0,'.',','),
+									number_format($row['mangkir'],0,'.',','),
+									number_format($row['terlambat_masuk_kerja'],0,'.',','),
+									number_format($row['total_mangkir_terlambat'],0,'.',','),
+									number_format($row['total_gaji_kotor'],0,'.',','),
+									number_format($row['bpjs_kesehatan'],0,'.',','),
+									number_format($row['bpjs_ketenagakerjaan'],0,'.',','),
+									number_format($row['pinjaman'],0,'.',','),
+									number_format($row['kantin'],0,'.',','),
+									number_format($row['koperasi'],0,'.',','),
+									number_format($row['total_potongan'],0,'.',','),
+									number_format($row['jml_gaji_dibayarkan'],0,'.',',')));
 									
 					
 					$no++;				

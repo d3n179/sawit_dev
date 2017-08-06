@@ -322,7 +322,7 @@ class StockOpname extends MainConf
 												$selisihPersediaan,
 												$StockOpnameRecord->no_stock_opname);
 							
-							$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
+							/*$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
 															'15',
 															'0',
 															$StockOpnameRecord->no_stock_opname,
@@ -344,7 +344,7 @@ class StockOpname extends MainConf
 															'',
 															'Pendapatan Lain-lain',
 															'Perhitungan Stok Opname No.'.$StockOpnameRecord->no_stock_opname,
-															$selisihPersediaan);
+															$selisihPersediaan);*/
 															
 							$this->InsertLabaRugi($StockOpnameRecord->id,
 													'15',
@@ -378,7 +378,7 @@ class StockOpname extends MainConf
 												$selisihPersediaan,
 												$StockOpnameRecord->no_stock_opname);
 							
-				$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
+				/*$this->InsertJurnalBukuBesar($StockOpnameRecord->id,
 															'15',
 															'0',
 															$StockOpnameRecord->no_stock_opname,
@@ -400,7 +400,7 @@ class StockOpname extends MainConf
 															'',
 															$namaAkun,
 															'Perhitungan Stok Opname No. '.$StockOpnameRecord->no_stock_opname,
-															$selisihPersediaan);
+															$selisihPersediaan);*/
 																							
 							$this->InsertLabaRugi($StockOpnameRecord->id,
 													'15',

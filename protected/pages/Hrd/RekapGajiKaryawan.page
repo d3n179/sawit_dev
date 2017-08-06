@@ -96,6 +96,15 @@
 								Closing
 								<i class="entypo-check"></i>
 							</button>
+				
+											<com:TButton
+											ID="importBtn" 
+											Text="Import"
+											Visible="false"
+											OnClick="importBtnClicked"
+											CausesValidation="false"
+											CssClass="btn btn-info">
+										</com:TButton>			
 			</div>
 		</div>	
 					

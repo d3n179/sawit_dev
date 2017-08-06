@@ -625,6 +625,175 @@ class RekapGajiKaryawan extends MainConf
 		}
 	}
 	
+	public function importBtnClicked()
+	{
+		$sql = "SELECT
+					tbm_karyawan.id,
+					rekap_gaji_juni.nama,
+					rekap_gaji_juni.gaji_pokok,
+					rekap_gaji_juni.tunjangan_natura,
+					rekap_gaji_juni.incentive,
+					rekap_gaji_juni.tunjangan_jabatan,
+					rekap_gaji_juni.tunjangan_komunikasi,
+					rekap_gaji_juni.premi_karyawan,
+					rekap_gaji_juni.total_gaji,
+					rekap_gaji_juni.lembur_lpp_jam,
+					rekap_gaji_juni.lembur_lpp_tarif,
+					rekap_gaji_juni.lembur_lpp_total,
+					rekap_gaji_juni.lembur_lppml_jam,
+					rekap_gaji_juni.lembur_lppml_tarif,
+					rekap_gaji_juni.lembur_lppml_total,
+					rekap_gaji_juni.lembur_lpplk_jam,
+					rekap_gaji_juni.lembur_lpplk_tarif,
+					rekap_gaji_juni.lembur_lpplk_total,
+					rekap_gaji_juni.total_lembur,
+					rekap_gaji_juni.mangkir,
+					rekap_gaji_juni.terlambat_masuk_kerja,
+					rekap_gaji_juni.total_mangkir_terlambat,
+					rekap_gaji_juni.total_gaji_kotor,
+					rekap_gaji_juni.bpjs_kesehatan,
+					rekap_gaji_juni.bpjs_ketenagakerjaan,
+					rekap_gaji_juni.pinjaman,
+					rekap_gaji_juni.kantin,
+					rekap_gaji_juni.koperasi,
+					rekap_gaji_juni.total_potongan,
+					rekap_gaji_juni.jml_gaji_dibayarkan,
+					rekap_gaji_juni.status_bayar,
+					rekap_gaji_juni.tgl_pembayaran
+				FROM
+					rekap_gaji_juni
+				LEFT JOIN tbm_karyawan ON LOWER(tbm_karyawan.nama) = LOWER(rekap_gaji_juni.nama)
+				AND tbm_karyawan.deleted = '0' ";
+		$arr = $this->queryAction($sql,'S');
+		if($arr)
+		{
+			$RekapGajiRecord = new RekapGajiRecord();
+			$RekapGajiRecord->bulan = '06';
+			$RekapGajiRecord->tahun = '2017';
+			$RekapGajiRecord->status = '2';
+			$RekapGajiRecord->deleted = '0';
+			$RekapGajiRecord->save();
+			
+			$BayarRekapGajiRecord = new BayarRekapGajiRecord();
+			$BayarRekapGajiRecord->no_pembayaran = $this->GenerateNoDocument("RG",'07','2017');
+			$BayarRekapGajiRecord->tgl_pembayaran = '2017-07-05';
+			$BayarRekapGajiRecord->id_rekap = $RekapGajiRecord->id;
+			$BayarRekapGajiRecord->user = $this->User->IsUser;
+			$BayarRekapGajiRecord->deleted = '0';
+			$BayarRekapGajiRecord->save();
+			
+			$totalGaji = 0;
+			foreach($arr as $row)
+			{
+				if($row['jml_gaji_dibayarkan'] > 0)
+				{
+					$RekapGajiDetailRecord = new RekapGajiDetailRecord();
+					$RekapGajiDetailRecord->id_rekap = $RekapGajiRecord->id;
+					$RekapGajiDetailRecord->id_bayar = $BayarRekapGajiRecord->id;
+					$RekapGajiDetailRecord->id_karyawan = $row['id'];
+					$RekapGajiDetailRecord->gaji_pokok= $row['gaji_pokok'];
+					$RekapGajiDetailRecord->tunjangan_natura= $row['tunjangan_natura'];
+					$RekapGajiDetailRecord->incentive= $row['incentive'];
+					$RekapGajiDetailRecord->tunjangan_jabatan= $row['tunjangan_jabatan'];
+					$RekapGajiDetailRecord->tunjangan_komunikasi= $row['tunjangan_komunikasi'];
+					$RekapGajiDetailRecord->premi_karyawan= $row['premi_karyawan'];
+					$RekapGajiDetailRecord->total_gaji= $row['total_gaji'];
+					$RekapGajiDetailRecord->lembur_lpp_jam= $row['lembur_lpp_jam'];
+					$RekapGajiDetailRecord->lembur_lpp_tarif= $row['lembur_lpp_tarif'];
+					$RekapGajiDetailRecord->lembur_lpp_total= $row['lembur_lpp_total'];
+					$RekapGajiDetailRecord->lembur_lppml_jam= $row['lembur_lppml_jam'];
+					$RekapGajiDetailRecord->lembur_lppml_tarif= $row['lembur_lppml_tarif'];
+					$RekapGajiDetailRecord->lembur_lppml_total= $row['lembur_lppml_total'];
+					$RekapGajiDetailRecord->lembur_lpplk_jam= $row['lembur_lpplk_jam'];
+					$RekapGajiDetailRecord->lembur_lpplk_tarif= $row['lembur_lpplk_tarif'];
+					$RekapGajiDetailRecord->lembur_lpplk_total= $row['lembur_lpplk_total'];
+					$RekapGajiDetailRecord->total_lembur= $row['total_lembur'];
+					$RekapGajiDetailRecord->mangkir= $row['mangkir'];
+					$RekapGajiDetailRecord->terlambat_masuk_kerja= $row['terlambat_masuk_kerja'];
+					$RekapGajiDetailRecord->total_mangkir_terlambat= $row['total_mangkir_terlambat'];
+					$RekapGajiDetailRecord->total_gaji_kotor= $row['total_gaji_kotor'];
+					$RekapGajiDetailRecord->bpjs_kesehatan= $row['bpjs_kesehatan'];
+					$RekapGajiDetailRecord->bpjs_ketenagakerjaan= $row['bpjs_ketenagakerjaan'];
+					$RekapGajiDetailRecord->pinjaman= $row['pinjaman'];
+					$RekapGajiDetailRecord->kantin= $row['kantin'];
+					$RekapGajiDetailRecord->koperasi= $row['koperasi'];
+					$RekapGajiDetailRecord->total_potongan= $row['total_potongan'];
+					$RekapGajiDetailRecord->jml_gaji_dibayarkan = $row['jml_gaji_dibayarkan'];
+					$RekapGajiDetailRecord->status = '1';
+					$RekapGajiDetailRecord->id_bank = '11';
+					$RekapGajiDetailRecord->jns_bayar = '1';
+					$RekapGajiDetailRecord->id_coa = '835';	
+					$RekapGajiDetailRecord->deleted = '0';
+					$RekapGajiDetailRecord->save();
+					
+					$this->UbahSaldoKas('1',$RekapGajiDetailRecord->id_bank,$RekapGajiDetailRecord->jml_gaji_dibayarkan);
+				
+					$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
+									'8',
+									'0',
+									$BayarRekapGajiRecord->tgl_pembayaran,
+									date("G:i:s"),
+									'Beban Gaji',
+									$RekapGajiDetailRecord->jml_gaji_dibayarkan,
+									$BayarRekapGajiRecord->no_pembayaran,
+									$RekapGajiDetailRecord->id_bank);
+					
+					$this->InsertJurnalUmum($BayarRekapGajiRecord->id,
+									'8',
+									'1',
+									$BayarRekapGajiRecord->tgl_pembayaran,
+									date("G:i:s"),
+									'Kas Bank',
+									$RekapGajiDetailRecord->jml_gaji_dibayarkan,
+									$BayarRekapGajiRecord->no_pembayaran,
+									$RekapGajiDetailRecord->id_bank);
+					
+					/*$this->InsertJurnalBukuBesar($BayarRekapGajiRecord->id,
+												'7',
+												'1',
+												$BayarRekapGajiRecord->no_pembayaran,
+												$BayarRekapGajiRecord->tgl_pembayaran,
+												date("G:i:s"),
+												'',
+												'',
+												'Hutang Gaji',
+												'Pembayaran Gaji Karyawan Kepada '.$row->namaKaryawan,
+												$RekapGajiDetailRecord->jml_gaji_dibayarkan);
+					
+					$this->InsertJurnalBukuBesar($BayarRekapGajiRecord->id,
+												'7',
+												'1',
+												$BayarRekapGajiRecord->no_pembayaran,
+												$BayarRekapGajiRecord->tgl_pembayaran,
+												date("G:i:s"),
+												'',
+												'',
+												$namaAkun,
+												'Pembayaran Gaji Karyawan Kepada '.$row->namaKaryawan,
+												$RekapGajiDetailRecord->jml_gaji_dibayarkan);	*/
+					$totalGaji += $row['jml_gaji_dibayarkan'];
+				}
+			}
+			
+			$RekapGajiRecord->total_gaji_dibayarkan = $totalGaji;
+			$RekapGajiRecord->save();
+			
+			$BayarRekapGajiRecord->total_gaji_dibayarkan = $totalGaji;
+			$BayarRekapGajiRecord->save();
+			
+			$this->InsertJurnalPengeluaranKas($BayarRekapGajiRecord->id,
+												$BayarRekapGajiRecord->no_pembayaran,
+												'3',
+												$BayarRekapGajiRecord->tgl_pembayaran,
+												date("G:i:s"),
+												'Gaji Karyawan',
+												'Beban Gaji',
+												'',
+												$totalGaji,
+												0);
+		}
+	}
+	
 	public function cetakLapKartuStok()
 	{
 		//if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '')

@@ -84,6 +84,7 @@ class RevenueTransaction extends MainConf
 				$tblBody .= '<td>'.$row['transaction_no'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
 				$tblBody .= '<td>'.$row['no_referensi'].'</td>';
+				$tblBody .= '<td>'.$row['deskripsi'].'</td>';
 				$tblBody .= '<td>'.$row['nama_revenue'].'</td>';
 				$tblBody .= '<td>'.$row['nama_bank'].'</td>';
 				$tblBody .= '<td>'.number_format($row['total_revenue'],2,".",",").'</td>';
