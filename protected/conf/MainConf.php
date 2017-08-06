@@ -152,7 +152,7 @@ class MainConf extends TPage
 		return $noTrans;
 	}
 	
-	public function GenerateNoDocument($kode)
+	public function GenerateNoDocument($kode,$month='',$year='')
 	{
 		if($kode == "RO")
 		{
@@ -220,8 +220,8 @@ class MainConf extends TPage
 			$fieldTgl = 'tgl_pembayaran';
 		}
 		
-		$month = 1;
-		$year = 2017;
+		$month = date("m");
+		$year = date("Y");
 		
 		$query = "SELECT 
 						id 
@@ -355,8 +355,8 @@ class MainConf extends TPage
 				$uomInitial = $rowInitial['id_satuan'];
 			}
 		}
-		var_dump($productId);
-		var_dump($uomInitial);
+		//var_dump($productId);
+		//var_dump($uomInitial);
 		if($stTarget == '0')
 		{
 			$UomOrder = BarangSatuanRecord::finder()->find('id_barang = ? AND id_satuan = ? AND deleted = ?',$productId,$uomInitial,'0')->urutan;
@@ -478,9 +478,8 @@ class MainConf extends TPage
 				}
 				
 				$sqlOrderUom .= " ORDER BY urutan ".$sqlSort ;
-				var_dump($sqlOrderUom);
+				//var_dump($sqlOrderUom);
 				
-				exit();
 				$arrOrderUom = $this->queryAction($sqlOrderUom,'S');
 				
 				if($UomOrderTarget > $UomOrderInitial)
@@ -757,7 +756,7 @@ class MainConf extends TPage
 	public static function prosesLogout()
 	{
 		$user = Prado::getApplication()->User->Name;
-		var_dump($user);
+		//var_dump($user);
 		$userData = UserRecord::finder()->findByPk($user);
 		$userData->st_log = '0';
 		$userData->ssid = '';
