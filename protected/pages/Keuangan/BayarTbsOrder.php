@@ -75,7 +75,7 @@ class BayarTbsOrder extends MainConf
 				else
 					$jnsBayar = 'Bank Transfer';
 				
-				$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakKwitansiClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Kwitansi</a>&nbsp;&nbsp;';
+				$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakKwitansiClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Kwitansi</a>&nbsp;&nbsp;';
 					
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['no_pembayaran'].'</td>';

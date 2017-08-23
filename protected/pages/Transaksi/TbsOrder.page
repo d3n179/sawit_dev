@@ -388,6 +388,7 @@
 								<div class="form-group">
 								<label class="control-label" for="kategori_tbs">Kategori TBS</label>	 
 								<com:TActiveHiddenField ID="idKomidel"/> 
+								<com:TActiveHiddenField ID="arrKomidel"/> 
 								<com:TActiveTextBox 
 											ID="kategori_tbs" 
 											Enabled="false"
@@ -541,6 +542,7 @@
 			function formTabShow()
 			{
 				jQuery("a[href=\"#formTab\"]").tab("show");
+				loadContent();
 				var today = new Date();
 						var dd = today.getDate();
 						var mm = today.getMonth()+1; 
@@ -558,6 +560,9 @@
 						console.log(today);
 						jQuery('#<%= $this->tgl_transaksi->getClientID()%>').val(today);
 						Prado.Validation.reset('val');
+						
+						var request= <%= $this->komidelCallback->ActiveControl->Javascript %>;
+						request.dispatch();
 						//var target = e.target.attributes.href.value;
 						//jQuery(target +' input:first').focus();
 			}
@@ -620,13 +625,40 @@
 					
 				var komidel = netto_1 / jmlTandan;
 				komidel = Math.round(komidel);
-					jQuery('#<%= $this->komidel->getClientID()%>').val(komidel);
+				jQuery('#<%= $this->komidel->getClientID()%>').val(komidel);
 				
-				var request= <%= $this->komidelCallback->ActiveControl->Javascript %>;
-						request.setCallbackParameter({
-							komidel:komidel
-						});
-						request.dispatch();
+				var jsonParam = jQuery("#<%=$this->arrKomidel->getClientID()%>").val();
+				
+				if(jsonParam != '')
+				{
+					var obj = JSON.parse(jsonParam);
+					console.log(obj);	
+					
+					jQuery.each(obj,function(i,el)
+					{
+						if(el.operator == '<=')
+						{
+							if(komidel <= el.komidel)
+							{
+								jQuery("#<%=$this->idKomidel->getClientID()%>").val(el.id);
+								jQuery("#<%=$this->kategori_tbs->getClientID()%>").val(el.nama);
+								
+								return false;
+							}
+						}
+						else if(el.operator == '>=')
+						{
+							if(komidel >= el.komidel)
+							{
+								jQuery("#<%=$this->idKomidel->getClientID()%>").val(el.id);
+								jQuery("#<%=$this->kategori_tbs->getClientID()%>").val(el.nama);
+								
+								return false;
+							}
+						}
+					});
+				}	
+				
 						
 			}
 			

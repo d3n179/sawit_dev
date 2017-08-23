@@ -72,7 +72,7 @@ class TbsOrder extends MainConf
 	}
 	
 	
-	public function komidelCallback($sender,$param)
+	public function komidelCallbackBAK($sender,$param)
 	{
 		$komidel = $param->CallBackParameter->komidel;
 		
@@ -119,6 +119,35 @@ class TbsOrder extends MainConf
 		
 		$this->idKomidel->Value = $idKomidel;
 		$this->kategori_tbs->Text = $kategoriTbs;
+	}
+	
+	public function komidelCallback($sender,$param)
+	{
+		$komidel = $param->CallBackParameter->komidel;
+		
+		$sql = "SELECT
+					tbm_setting_komidel.id,
+					tbm_setting_komidel.operator,
+					tbm_setting_komidel.komidel,
+					tbm_setting_komidel.nama
+				FROM
+					tbm_setting_komidel
+				WHERE
+					tbm_setting_komidel.deleted = '0'
+				ORDER BY
+					tbm_setting_komidel.komidel ASC ";
+					
+		$arrKomidel = $this->queryAction($sql,'S');
+		$kategoriTbs = '';
+		$idKomidel = '';
+		$this->arrKomidel->value = json_encode($arrKomidel,true);
+		$this->getPage()->getClientScript()->registerEndScript
+		('','
+			unloadContent();
+			');
+		
+		/*$this->idKomidel->Value = $idKomidel;
+		$this->kategori_tbs->Text = $kategoriTbs;*/
 	}
 	
 	public function komidelDetailCallback($sender,$param)

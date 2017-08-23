@@ -24,6 +24,15 @@ class ContractSales extends MainConf
 		}
 	}
 	
+	public function kontrakChanged()
+	{
+		$this->no_kontrak->Enabled=false;
+		if($this->jnsKontrak->SelectedValue == "1")
+		{
+			$this->no_kontrak->Enabled=true;
+		}
+	}
+	
 	public function commodityChanged()
 	{
 		$idCommodity = $this->commodity_type->SelectedValue;
@@ -508,7 +517,10 @@ class ContractSales extends MainConf
 			$thn = substr($this->tgl_kontrak->Text,6,4);
 			$tipeCommodity = $this->commodity_type->SelectedValue;
 			
-			$Record->sales_no = $this->GenerateNoSales($bln,$thn,$tipeCommodity);
+			if($this->jnsKontrak->SelectedValue == "1")
+				$Record->sales_no = $this->no_kontrak->Text;
+			else
+				$Record->sales_no = $this->GenerateNoSales($bln,$thn,$tipeCommodity);
 		}
 		
 		
