@@ -857,7 +857,7 @@ class RekapGajiKaryawan extends MainConf
 			/*$this->Response->redirect($this->Service->constructUrl('Hrd.cetakLapRekapGajiKaryawan',
 				array(
 				'bulan'=>$this->DDBulan->SelectedValue,
-				'tahun'=>$this->DDTahun->SelectedValue)));*/
+				'tahun'=>$this->DDTahun->SelectedValue)));
 		/*}
 		else
 		{

@@ -95,7 +95,6 @@
 				<button type="button" class="btn btn-primary btn-icon" OnClick="closingClicked()">
 								Closing
 								<i class="entypo-check"></i>
-							</button>
 				<button type="button" class="btn btn-success btn-icon" OnClick="cetakClicked()">
 								Cetak
 								<i class="entypo-print"></i>
@@ -109,8 +108,7 @@
 											CssClass="btn btn-info">
 										</com:TButton>			
 			</div>
-		</div>	
-					
+		</div>				
 	</div>
 	
 
