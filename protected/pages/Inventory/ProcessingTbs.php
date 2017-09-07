@@ -969,11 +969,21 @@ class ProcessingTbs extends MainConf
 	{
 		$id = $param->CallbackParameter->id;
 		$url = "index.php?page=Inventory.cetakProcessingOrderPdf&idProcessing=".$id;
+		
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
 		$this->getPage()->getClientScript()->registerEndScript('',"
+					var url = '".$urlTemp."';
+					window.open(url, '_blank');
+					unloadContent();
+		");
+		
+		/*$this->getPage()->getClientScript()->registerEndScript('',"
 		jQuery('#cetakFrame').attr('src','".$url."')
 		jQuery('#modal-2').modal('show');
 		unloadContent();
-		");
+		");*/
 	}
 	
 	public function checkProcessing()

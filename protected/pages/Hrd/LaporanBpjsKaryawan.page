@@ -1,7 +1,27 @@
 <com:TContent ID="Main">
-	<h2>Rekap Gaji Karyawan</h2>
+	<h2>Laporan BPJS Karyawan</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->	
+	<div class="row">
+		<div class="col-md-3">
+			<div class="form-group">
+				<label for="Periode" class="control-label">Jenis BPJS</label>
+				<com:TActiveDropDownList 
+									ID="jnsBpjs"
+									Width="190px"
+									AutoPostBack="true"
+									CausesValidation="false"
+									SelectedValue = "0"
+									OnSelectedIndexChanged = "cariBtnClicked"
+									CssClass="form-control">
+									<com:TListItem Text="Kesehatan" Value="0"/>
+									<com:TListItem Text="Ketenagakerjaan" Value="1"/>
+									</com:TActiveDropDownList>	
+			</div>	
+						
+		</div>		
+	</div>
+		 
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
@@ -28,6 +48,23 @@
 	
 	<div class="row">
 		
+		<div class="col-md-3" id="panelTahunan">
+			<div class="form-group">
+				<label for="DDTahun" class="control-label">Tahun</label>
+				<com:TActiveDropDownList 
+									ID="DDTahun"
+									Width="190px"
+									PromptText="--Pilih Tahun--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="true"
+									CssClass="form-control"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+			</div>	
+							
+		</div>
 		
 		<div class="col-md-3" id="panelBulanan">
 			<div class="form-group">
@@ -37,7 +74,6 @@
 									Width="190px"
 									PromptText="--Pilih Bulan--"
 									PromptValue="empty"
-									Enabled="false"
 									AutoPostBack="false"
 									CausesValidation="true"
 									CssClass="form-control">
@@ -58,24 +94,7 @@
 							
 		</div>
 		
-		<div class="col-md-3" id="panelTahunan">
-			<div class="form-group">
-				<label for="DDTahun" class="control-label">Tahun</label>
-				<com:TActiveDropDownList 
-									ID="DDTahun"
-									Width="190px"
-									Enabled="false"
-									PromptText="--Pilih Tahun--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="true"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-			</div>	
-							
-		</div>
+		
 		
 		<div class="col-md-3" id="panelMingguan" Style="Display:None;">
 			<div class="form-group">
@@ -92,22 +111,14 @@
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
-				<button type="button" class="btn btn-primary btn-icon" OnClick="closingClicked()">
-								Closing
-								<i class="entypo-check"></i>
+				<button type="button" class="btn btn-blue btn-icon" OnClick="cariClicked()">
+								Proses
+								<i class="entypo-search"></i>
 							</button>
-				<button type="button" class="btn btn-success btn-icon" OnClick="cetakClicked()">
+				<button type="button" class="btn btn-green btn-icon" OnClick="cetakClicked()">
 								Cetak
 								<i class="entypo-print"></i>
 							</button>
-											<com:TButton
-											ID="importBtn" 
-											Text="Import"
-											Visible="false"
-											OnClick="importBtnClicked"
-											CausesValidation="false"
-											CssClass="btn btn-info">
-										</com:TButton>			
 			</div>
 		</div>	
 					
@@ -122,52 +133,10 @@
 			<table class="table table-bordered datatable" id="table-1">
 				<thead>
 					<tr>
-						<th width="300px" Rowspan="3">Department</th>
-						<th width="300px" Rowspan="3">Employee ID</th>
-						<th width="300px" Rowspan="3">Nama</th>
-						<th width="300px" Rowspan="3">Posisi</th>
-						<th width="300px" Rowspan="3">Gol</th>
-						<th width="300px" Rowspan="3">PTKP</th>
-						<th width="300px" Rowspan="3">TMK</th>
-						<th width="300px" Rowspan="3">Gaji Pokok</th>
-						<th width="300px" Rowspan="3">Tunjangan Natura</th>
-						<th width="300px" Rowspan="3">Incentive</th>
-						<th width="300px" Rowspan="3">Tunjangan Jabatan</th>
-						<th width="300px" Rowspan="3">Tunjangan Komunikasi</th>
-						<th width="300px" Rowspan="3">Premi Karyawan</th>
-						<th width="300px" Rowspan="3">Total Gaji</th>
-						<th width="300px" colspan="9">Lembur</th>
-						<th width="300px" Rowspan="3">Total Lembur</th>
-						<th width="300px" Rowspan="3">Mangkir</th>
-						<th width="300px" Rowspan="3">Terlambat Masuk Kerja</th>
-						<th width="300px" Rowspan="3">Total Mangkir & Terlambat</th>
-						<th width="300px" Rowspan="3">Total Gaji Kotor</th>
-						<th width="300px" colspan="5">Potongan</th>
-						<th width="300px" Rowspan="3">Total Potongan</th>
-						<th width="300px" Rowspan="3">Gaji Dibayarkan</th>
-					</tr>
-					<tr>
-						<th width="300px" colspan="3">Tarif LPP</th>
-						<th width="300px" colspan="3">Tarif LPPML</th>
-						<th width="300px" colspan="3">Tarif LPPLK</th>
-						
-						<th width="300px" Rowspan="2">BPJS Kesehatan</th>
-						<th width="300px" Rowspan="2">BPJS Ketenagakerjaan</th>
-						<th width="300px" Rowspan="2">Pinjaman</th>
-						<th width="300px" Rowspan="2">Kantin</th>
-						<th width="300px" Rowspan="2">Koperasi</th>
-					</tr>
-					<tr>
-						<th width="300px">Jam</th>
-						<th width="300px">Rp/Tarif</th>
-						<th width="300px">Total</th>
-						
-						<th width="300px">Jam</th>
-						<th width="300px">Rp/Tarif</th>
-						<th width="300px">Total</th>
-						
-						<th width="300px">Jam</th>
-						<th width="300px">Rp/Tarif</th>
+						<th width="300px">NIK</th>
+						<th width="300px">Nama</th>
+						<th width="300px">Perusahaan</th>
+						<th width="300px">Karyawan</th>
 						<th width="300px">Total</th>
 					</tr>
 				</thead>
@@ -222,9 +191,6 @@
 				        if (!responsiveHelper) {
 				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
 				        }
-				    },
-				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-				        responsiveHelper.createExpandIcon(nRow);
 				    },
 				    fnDrawCallback : function (oSettings) {
 				        responsiveHelper.respond();

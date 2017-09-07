@@ -322,6 +322,56 @@
 		</div>
 	</div>
 	
+	<div class="modal fade custom-width" id="modal-3">
+		<div class="modal-dialog" style="width: 300px; height: 200px; ">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Closing Purchase Order</h4>
+				</div>
+				<div class="modal-body" style="height: 100px; ">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label class="control-label" for="tglRo">Tanggal Jatuh Tempo</label>
+								<com:TActiveHiddenField ID="idPOClosing"/>
+								<com:TActiveTextBox 
+										ID="tglJthTempo" 
+										CssClass="form-control mask_date date-picker" />
+										<com:TRequiredFieldValidator 
+										  ControlToValidate="tglJthTempo"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="valClosing" />
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<div class="row">
+						<com:TActiveButton
+										ID="closingBtn" 
+										Text="Proses"
+										Attributes.OnClick="closingBtnClicked();"
+										CausesValidation="true"
+										ValidationGroup="valClosing"
+										CssClass="btn btn-info">
+										 <prop:ClientSide 
+											OnLoading="loadContent();"
+											OnComplete="unloadContent();"/>
+									</com:TActiveButton>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
@@ -365,6 +415,7 @@
 	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="dpChangedCallback" OnCallback="dpChanged" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="closingCallback" OnCallback="closingCallback" ActiveControl.CausesValidation="false"/>
 	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
@@ -402,6 +453,23 @@
 				bindRequestOrderGridLine();
 				bindBiayaLainGridLine();
 			});
+			
+			function closingClicked(id)
+			{
+				jQuery('#<%= $this->idPOClosing->getClientID()%>').val(id);
+				jQuery('#<%= $this->tglJthTempo->getClientID()%>').val('');
+				jQuery('#modal-3').modal('show');
+			}
+			
+			function closingBtnClicked()
+			{
+					if(jQuery('#<%= $this->tglJthTempo->getClientID()%>').val() != '')
+					{
+						var request= <%= $this->closingCallback->ActiveControl->Javascript %>;
+							request.dispatch();
+					}
+					
+			}
 			
 			function dpChanged()
 			{

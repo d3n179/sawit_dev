@@ -204,6 +204,11 @@ class PurchaseOrder extends MainConf
 				$ppn = $row['total_biaya'] * ($ppnPercent / 100);
 		
 				$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak</a>&nbsp;&nbsp;';
+				if($row['status'] == '1')
+				{
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"closingClicked('.$row['id'].')\"><i class=\"entypo-check\" ></i>Closing</a>&nbsp;&nbsp;';
+				}
+				
 				$tglPo = $this->ConvertDate($row['tgl_po'],'3');
 				$tblBody .= '<tr>';
 				$tblBody .= '<td class=\"details-control dont_shown\"><input type=\"hidden\" value=\"'.$row['id'].'\"></td>';
@@ -224,6 +229,151 @@ class PurchaseOrder extends MainConf
 			$tblBody = '';
 		}
 		return 	$tblBody;
+	}
+	
+	public function closingCallback($sender,$param)
+	{
+		$idPO = $this->idPOClosing->Value;
+		if($idPO != '')
+		{
+			$PurchaseOrderRecord = PurchaseOrderRecord::finder()->findByPk($idPO);
+			$PurchaseOrderRecord->status = '2';
+			$PurchaseOrderRecord->tgl_jatuh_tempo = $this->ConvertDate($this->tglJthTempo->Text,'2');
+			$PurchaseOrderRecord->save();
+			
+			$sql = "UPDATE tbt_purchase_order_detail SET status = '1' WHERE id_po = '".$idPO."' ";
+			$this->queryAction($sql,'C');
+			
+			$sqlReceiving = "SELECT
+									tbt_receiving_order.id,
+									tbt_receiving_order.id_po,
+									tbt_receiving_order.no_document,
+									SUM(
+										tbt_receiving_order_detail.subtotal
+									) AS total_receiving
+								FROM
+									tbt_receiving_order
+								INNER JOIN tbt_receiving_order_detail ON tbt_receiving_order_detail.id_parent = tbt_receiving_order.id
+								WHERE
+									tbt_receiving_order.deleted != '1'
+								AND tbt_receiving_order_detail.deleted != '1'
+								AND tbt_receiving_order.id_po = '".$idPO."'
+								GROUP BY
+									tbt_receiving_order.id_po ";
+				$arrReceiving = $this->queryAction($sqlReceiving,'S');
+				$idRO = $arrReceiving[0]['id'];
+				$noDocumentRo = $arrReceiving[0]['no_document'];
+				$jmlSaldo = $arrReceiving[0]['total_receiving'];	
+							
+				$ppnPo = $PurchaseOrderRecord->ppn;
+				$dpPo = $PurchaseOrderRecord->dp;
+				if($ppnPo > 0)
+				{
+					$ppnSaldo = $jmlSaldo * ($ppnPo / 100);
+					$jmlSaldo += $ppnSaldo;
+				}
+				
+				$sqlBiaya = "SELECT
+								tbt_purchase_order_biaya_lain.nama_biaya,
+								tbt_purchase_order_biaya_lain.biaya
+							FROM
+								tbt_purchase_order_biaya_lain
+							WHERE
+								tbt_purchase_order_biaya_lain.deleted = '0'
+							AND tbt_purchase_order_biaya_lain.id_po = '".$idPO."' ";
+
+				$arrBiaya = $this->queryAction($sqlBiaya,'S');
+				if($arrBiaya)
+				{
+					foreach($arrBiaya as $rowBiaya)
+					{
+						$jmlSaldo += $rowBiaya['biaya'];
+					}
+				}
+				var_dump($jmlSaldo);
+				if($dpPo > 0)
+				{
+					$jmlSaldo -= $dpPo;
+				}
+				var_dump($jmlSaldo);
+				
+				$this->InsertJurnalUmum($idRO,
+										'1',
+										'0',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Perlengkapan',
+										$jmlSaldo - $dpPo,
+										$noDocumentRo);
+										
+				$this->InsertJurnalUmum($idRO,
+										'1',
+										'1',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Hutang',
+										$jmlSaldo - $dpPo,
+										$noDocumentRo);
+				
+				$this->InsertJurnalBukuBesar($idRO,
+														'2',
+														'0',
+														$noDocumentRo,
+														date("Y-m-d"),
+														date("G:i:s"),
+														'',
+														'',
+														'Perlengkapan',
+														'Penerimaan Perlengkapan Dari PO No '.$PurchaseOrderRecord->no_po,
+														$jmlSaldo - $dpPo);
+														
+				$this->InsertJurnalBukuBesar($idRO,
+														'2',
+														'0',
+														$noDocumentRo,
+														date("Y-m-d"),
+														date("G:i:s"),
+														'',
+														'',
+														"Hutang",
+														'Penerimaan Perlengkapan Dari PO No '.$PurchaseOrderRecord->no_po,
+														$jmlSaldo - $dpPo);
+																				
+				
+				
+				$supplierName = PemasokRecord::finder()->findByPk($PurchaseOrderRecord->id_supplier)->nama;		
+								
+				$this->InsertJurnalPembelian($idRO,
+											$noDocumentRo,
+											'1',
+											date("Y-m-d"),
+											date("G:i:s"),
+											$supplierName,
+											'',
+											'',
+											$jmlSaldo - $dpPo);
+											
+			$tblBody = $this->BindGrid();
+			$this->getPage()->getClientScript()->registerEndScript
+					('','
+					toastr.info("Purchase Order NO <strong>'.$PurchaseOrderRecord->no_po.'</strong> Telah Diclosing");
+					jQuery("#table-1").dataTable().fnDestroy();
+					jQuery("#table-1 tbody").empty();
+					jQuery("#table-1 tbody").append("'.$tblBody.'");
+					BindGrid();
+					unloadContent();
+					jQuery("#modal-3").modal("hide");
+					');
+		}
+		else
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+					('','
+					toastr.info("Purchase Order Kosong");
+					unloadContent();
+					');
+		}
+		
 	}
 	
 	public function editForm($sender,$param)

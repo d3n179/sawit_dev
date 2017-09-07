@@ -95,14 +95,20 @@ class RekapGajiKaryawan extends MainConf
 		$arrGaji = array();
 		if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue)
 		{
-		$sqlTrans = "SELECT 
+		$sqlTrans = "SELECT
 						tbm_karyawan.id,
 						tbm_karyawan.nik,
 						tbm_karyawan.nama
-					FROM 
+					FROM
 						tbm_karyawan
+					INNER JOIN tbm_jabatan ON tbm_jabatan.id = tbm_karyawan.id_jabatan
+					INNER JOIN tbm_department ON tbm_department.id = tbm_jabatan.id_department
 					WHERE
-						tbm_karyawan.deleted = '0' ";
+						tbm_karyawan.deleted = '0'
+					AND tbm_jabatan.deleted = '0'
+					AND tbm_department.deleted = '0'
+					GROUP BY
+						tbm_karyawan.id";
 		
 		
 		$month = $this->DDBulan->SelectedValue;
@@ -148,7 +154,9 @@ class RekapGajiKaryawan extends MainConf
 								"terlambat_masuk_kerja"=>0,
 								"total_mangkir_terlambat"=>0,
 								"total_gaji_kotor"=>0,
+								"bpjs_kesehatan_perusahaan"=>0,
 								"bpjs_kesehatan"=>0,
+								"bpjs_ketenagakerjaan_perusahaan"=>0,
 								"bpjs_ketenagakerjaan"=>0,
 								"pinjaman"=>0,
 								"kantin"=>0,
@@ -327,28 +335,63 @@ class RekapGajiKaryawan extends MainConf
 				
 				if($KaryawanRecord->st_bpjs_kesehatan == '1')
 				{
-					if($KaryawanRecord->tambahan_keluarga > 0)
+					/*if($KaryawanRecord->tambahan_keluarga > 0)
 						$multiplyBpjs = $KaryawanRecord->tambahan_keluarga + 1;
 					else
-						$multiplyBpjs = 1;
-						
-					$bpjsKesehatan = ($GolonganKaryawanRecord->gaji_pokok * (1/100)) * $multiplyBpjs;
+						$multiplyBpjs = 1;*/
+					
+					$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$KaryawanRecord->id,'0','0');
+					
+					if($BpjsKaryawanRecord)	
+					{
+						$bpjsKesehatan = $BpjsKaryawanRecord->karyawan;
+						$bpjsKesehatanPerusahaan = $BpjsKaryawanRecord->perusahaan;
+					}
+					else
+					{
+						$bpjsKesehatan = 0;
+						$bpjsKesehatanPerusahaan = 0;
+					}
 				}
 				else
+				{
 					$bpjsKesehatan = 0;
+					$bpjsKesehatanPerusahaan = 0;
+				}
 				
 				$tblBody .= '<td>'.number_format($bpjsKesehatan,0,'.',',').'</td>';
 				$totalPotongan += $bpjsKesehatan;
 				$arrTmp['bpjs_kesehatan'] = $bpjsKesehatan;
+				$arrTmp['bpjs_kesehatan_perusahaan'] = $bpjsKesehatanPerusahaan;
 				
 				if($KaryawanRecord->st_bpjs_ketenagakerjaan == '1')
-					$bpjsTenagaKerja = $GolonganKaryawanRecord->gaji_pokok * (2/100);
+				{
+					//$bpjsTenagaKerja = $GolonganKaryawanRecord->gaji_pokok * (2/100);
+					
+					$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$KaryawanRecord->id,'1','0');
+					
+					if($BpjsKaryawanRecord)	
+					{
+						$bpjsTenagaKerja = $BpjsKaryawanRecord->karyawan;
+						$bpjsTenagaKerjaPerusahaan = $BpjsKaryawanRecord->perusahaan;
+					}
+					else
+					{
+						$bpjsTenagaKerja = 0;
+						$bpjsTenagaKerjaPerusahaan = 0;
+					}
+						
+				}
 				else
+				{
 					$bpjsTenagaKerja = 0;
+					$bpjsTenagaKerjaPerusahaan = 0;
+				}
 				
 				$tblBody .= '<td>'.number_format($bpjsTenagaKerja,0,'.',',').'</td>';
 				$totalPotongan += $bpjsTenagaKerja;
 				$arrTmp['bpjs_ketenagakerjaan'] = $bpjsTenagaKerja;
+				$arrTmp['bpjs_ketenagakerjaan_perusahaan'] = $bpjsTenagaKerjaPerusahaan;
 				
 				$sqlPinjaman = "SELECT
 									SUM(
@@ -541,9 +584,11 @@ class RekapGajiKaryawan extends MainConf
 					$RekapGajiDetailRecord->mangkir= $row['mangkir'];
 					$RekapGajiDetailRecord->terlambat_masuk_kerja= $row['terlambat_masuk_kerja'];
 					$RekapGajiDetailRecord->total_mangkir_terlambat= $row['total_mangkir_terlambat'];
-					$RekapGajiDetailRecord->total_gaji_kotor= $row['total_gaji_kotor'];
-					$RekapGajiDetailRecord->bpjs_kesehatan= $row['bpjs_kesehatan'];
-					$RekapGajiDetailRecord->bpjs_ketenagakerjaan= $row['bpjs_ketenagakerjaan'];
+					$RekapGajiDetailRecord->total_gaji_kotor = $row['total_gaji_kotor'];
+					$RekapGajiDetailRecord->bpjs_kesehatan = $row['bpjs_kesehatan'];
+					$RekapGajiDetailRecord->bpjs_ketenagakerjaan = $row['bpjs_ketenagakerjaan'];
+					$RekapGajiDetailRecord->bpjs_kesehatan_perusahaan = $row['bpjs_kesehatan_perusahaan'];
+					$RekapGajiDetailRecord->bpjs_ketenagakerjaan_perusahaan = $row['bpjs_ketenagakerjaan_perusahaan'];
 					$RekapGajiDetailRecord->pinjaman= $row['pinjaman'];
 					$RekapGajiDetailRecord->kantin= $row['kantin'];
 					$RekapGajiDetailRecord->koperasi= $row['koperasi'];
@@ -799,7 +844,7 @@ class RekapGajiKaryawan extends MainConf
 		//if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '')
 		//{
 		//$this->Response->redirect($this->Service->constructUrl('Hrd.cetakLapRekapGajiKaryawan',
-		$url = "index.php?page=Hrd.cetakLaporanRekapGajiKaryawanPdf&bulan=".$this->DDBulan->SelectedValue."&tahun=".$this->DDTahun->SelectedValue;
+		$url = "index.php?page=Hrd.cetakLaporanRekapGajiKaryawanPreviewPdf&bulan=".$this->DDBulan->SelectedValue."&tahun=".$this->DDTahun->SelectedValue;
 		
 		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
 		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;

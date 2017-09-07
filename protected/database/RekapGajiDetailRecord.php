@@ -33,6 +33,8 @@ class RekapGajiDetailRecord extends TActiveRecord
 	public $total_gaji_kotor;
 	public $bpjs_kesehatan;
 	public $bpjs_ketenagakerjaan;
+	public $bpjs_kesehatan_perusahaan;
+	public $bpjs_ketenagakerjaan_perusahaan;
 	public $pinjaman;
 	public $kantin;
 	public $koperasi;

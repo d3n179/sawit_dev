@@ -197,17 +197,80 @@ class MasterKaryawan extends MainConf
 		return 	$tblBody;
 	}
 	
-	public function bpjsChanged()
+	public function tenagaKerjaChanged()
 	{
-		if($this->st_bpjs_kesehatan->SelectedValue == '1')
+		$this->upah_tenaga_kerja->Text = '';
+		$this->perusahaan_tenaga_kerja->Text = '';
+		$this->karyawan_tenaga_kerja->Text = '';
+			
+		if($this->st_bpjs_ketenagakerjaan->SelectedValue == '1')
 		{
-			$this->tambahan_keluarga->Text = '';
-			$this->tambahan_keluarga->Enabled = true;
+			if($this->golongan_karyawan->SelectedValue != '')
+			{
+				$GolonganKaryawanRecord = GolonganKaryawanRecord::finder()->findByPk($this->golongan_karyawan->SelectedValue);
+				if($GolonganKaryawanRecord)
+				{
+					$this->upah_tenaga_kerja->Text = $GolonganKaryawanRecord->gaji_pokok;
+					$upah = $GolonganKaryawanRecord->gaji_pokok;
+					$perusahaan = $upah * (4.54/100);
+					$karyawan = $upah * (2/100);
+					$this->perusahaan_tenaga_kerja->Text = $perusahaan;
+					$this->karyawan_tenaga_kerja->Text = $karyawan;
+					$this->total_tenaga_kerja->Text = $perusahaan + $karyawan;
+				}
+			}
+			$this->upah_tenaga_kerja->Enabled = true;
+			$this->perusahaan_tenaga_kerja->Enabled = true;
+			$this->karyawan_tenaga_kerja->Enabled = true;
 		}
 		else
 		{
-			$this->tambahan_keluarga->Text = '';
+			$this->upah_tenaga_kerja->Enabled = false;
+			$this->perusahaan_tenaga_kerja->Enabled = false;
+			$this->karyawan_tenaga_kerja->Enabled = false;
+		}
+	}
+	
+	public function bpjsChanged()
+	{
+		$this->upah_kesehatan->Text = '';
+		$this->perusahaan_kesehatan->Text = '';
+		$this->karyawan_kesehatan->Text = '';
+		$this->tambahan_keluarga->Text = '';
+		$this->total_kesehatan->Text = '';
+		
+		if($this->st_bpjs_kesehatan->SelectedValue == '1')
+		{
+			if($this->golongan_karyawan->SelectedValue != '')
+			{
+				$GolonganKaryawanRecord = GolonganKaryawanRecord::finder()->findByPk($this->golongan_karyawan->SelectedValue);
+				if($GolonganKaryawanRecord)
+				{
+					$this->upah_kesehatan->Text = $GolonganKaryawanRecord->gaji_pokok;
+					$upah = $GolonganKaryawanRecord->gaji_pokok;
+					$perusahaan = $upah * (4/100);
+					$karyawan = $upah * (1/100);
+					$this->perusahaan_kesehatan->Text = $perusahaan;
+					$this->karyawan_kesehatan->Text = $karyawan;
+					
+					$initPengali = 1;
+					$pengali = $this->tambahan_keluarga->Text + $initPengali;
+					$this->total_kesehatan->Text = $perusahaan + ($karyawan + $pengali);
+				}
+			}
+			
+			$this->tambahan_keluarga->Enabled = true;
+			$this->upah_kesehatan->Enabled = true;
+			$this->perusahaan_kesehatan->Enabled = true;
+			$this->karyawan_kesehatan->Enabled = true;
+		
+		}
+		else
+		{
 			$this->tambahan_keluarga->Enabled = false;
+			$this->upah_kesehatan->Enabled = false;
+			$this->perusahaan_kesehatan->Enabled = false;
+			$this->karyawan_kesehatan->Enabled = false;
 		}
 	}
 	
@@ -246,8 +309,34 @@ class MasterKaryawan extends MainConf
 			$this->id_cabang->SelectedValue = $Record->posisi_dinas;
 			$this->st_bpjs_kesehatan->SelectedValue = $Record->st_bpjs_kesehatan;
 			$this->bpjsChanged();
+			
+			if($Record->st_bpjs_kesehatan == '1')
+			{
+				$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$Record->id,'0','0');
+				if($BpjsKaryawanRecord)
+				{
+					$this->upah_kesehatan->Text = $BpjsKaryawanRecord->jumlah_upah;
+					$this->perusahaan_kesehatan->Text = $BpjsKaryawanRecord->perusahaan;
+					$this->karyawan_kesehatan->Text = $BpjsKaryawanRecord->karyawan;
+					$this->tambahan_keluarga->Text = $BpjsKaryawanRecord->tambahan_keluarga;
+					$this->total_kesehatan->Text = $BpjsKaryawanRecord->total_bpjs;
+				}
+			}
+			
 			$this->st_bpjs_ketenagakerjaan->SelectedValue = $Record->st_bpjs_ketenagakerjaan;
-			$this->tambahan_keluarga->Text = $Record->tambahan_keluarga;
+			$this->tenagaKerjaChanged();
+			if($Record->st_bpjs_ketenagakerjaan == '1')
+			{
+				$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$Record->id,'1','0');
+				if($BpjsKaryawanRecord)
+				{
+					$this->upah_tenaga_kerja->Text = $BpjsKaryawanRecord->jumlah_upah;
+					$this->perusahaan_tenaga_kerja->Text = $BpjsKaryawanRecord->perusahaan;
+					$this->karyawan_tenaga_kerja->Text = $BpjsKaryawanRecord->karyawan;
+					$this->total_tenaga_kerja->Text = $BpjsKaryawanRecord->total_bpjs;
+				}
+			}
+			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
@@ -398,6 +487,61 @@ class MasterKaryawan extends MainConf
 			$Record->st_bpjs_ketenagakerjaan = $this->st_bpjs_ketenagakerjaan->SelectedValue;
 			$Record->tambahan_keluarga = $this->tambahan_keluarga->text;
 			$Record->save(); 
+			
+			
+			if($Record->st_bpjs_kesehatan == '1')
+			{
+				$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$Record->id,'0','0');
+				if(!$BpjsKaryawanRecord)
+				{
+					$BpjsKaryawanRecord = new BpjsKaryawanRecord();
+					$BpjsKaryawanRecord->id_karyawan = $Record->id;
+					$BpjsKaryawanRecord->jns_bpjs = '0';
+				}
+				
+				
+				$BpjsKaryawanRecord->jumlah_upah = str_replace(",","",$this->upah_kesehatan->Text);
+				$BpjsKaryawanRecord->perusahaan = str_replace(",","",$this->perusahaan_kesehatan->Text);
+				$BpjsKaryawanRecord->karyawan = str_replace(",","",$this->karyawan_kesehatan->Text);
+				$BpjsKaryawanRecord->tambahan_keluarga = $this->tambahan_keluarga->Text;
+				$BpjsKaryawanRecord->total_bpjs = str_replace(",","",$this->total_kesehatan->Text);
+				$BpjsKaryawanRecord->save();
+			}
+			else
+			{
+				$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$Record->id,'0','0');
+				if($BpjsKaryawanRecord)
+				{
+					$BpjsKaryawanRecord->deleted = '1';
+					$BpjsKaryawanRecord->save();
+				}
+			}
+			
+			if($Record->st_bpjs_ketenagakerjaan == '1')
+			{
+				$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$Record->id,'1','0');
+				if(!$BpjsKaryawanRecord)
+				{
+					$BpjsKaryawanRecord = new BpjsKaryawanRecord();
+					$BpjsKaryawanRecord->id_karyawan = $Record->id;
+					$BpjsKaryawanRecord->jns_bpjs = '1';
+				}
+				
+				$BpjsKaryawanRecord->jumlah_upah = str_replace(",","",$this->upah_tenaga_kerja->Text);
+				$BpjsKaryawanRecord->perusahaan = str_replace(",","",$this->perusahaan_tenaga_kerja->Text);
+				$BpjsKaryawanRecord->karyawan = str_replace(",","",$this->karyawan_tenaga_kerja->Text);
+				$BpjsKaryawanRecord->total_bpjs = str_replace(",","",$this->total_tenaga_kerja->Text);
+				$BpjsKaryawanRecord->save();
+			}
+			else
+			{
+				$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$Record->id,'1','0');
+				if($BpjsKaryawanRecord)
+				{
+					$BpjsKaryawanRecord->deleted = '1';
+					$BpjsKaryawanRecord->save();
+				}	
+			}
 			
 			$tblBody = $this->BindGrid();
 			

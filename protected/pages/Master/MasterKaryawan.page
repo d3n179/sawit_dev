@@ -12,497 +12,685 @@
 				</div>
 				
 				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_cabang">Cabang</label>
-								<com:TActiveHiddenField ID="idKaryawan"/>
-								<com:TActiveDropDownList 
-									ID="id_cabang"
-									PromptText="--Pilih Cabang--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="id_cabang"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_jabatan">Jabatan</label>
-								<com:TActiveDropDownList 
-									ID="id_jabatan"
-									PromptText="--Pilih Jabatan--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="id_jabatan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="status_karyawan">Status Karyawan</label>
-								<com:TActiveDropDownList 
-									ID="status_karyawan"
-									PromptText="--Pilih Status--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="status_karyawan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="golongan_karyawan">Golongan Karyawan</label>
-								<com:TActiveDropDownList 
-									ID="golongan_karyawan"
-									PromptText="--Pilih Golongan--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="golongan_karyawan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="ptkp">PTKP</label>
-								<com:TActiveDropDownList 
-									ID="ptkp"
-									PromptText="--Pilih PTKP--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control">
-									<com:TListItem Value="0" Text="S"/>
-									<com:TListItem Value="1" Text="K-0"/>
-									<com:TListItem Value="2" Text="K-1"/>
-									<com:TListItem Value="3" Text="K-2"/>
-									<com:TListItem Value="4" Text="K-3"/>
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="ptkp"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="tunjangan_natura">Tunjangan Natura</label>
-								<com:TActiveTextBox 
-										ID="tunjangan_natura" 
-										CssClass="form-control mask_integer" 
-										Attributes.PlaceHolder="Tunjangan Natura"/>
-							</div>
-						</div>
-					</div>	
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="ktp">KTP</label>
-								<com:TActiveTextBox 
-										ID="ktp" 
-										CssClass="form-control" 
-										Attributes.PlaceHolder="KTP"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="ktp"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-					
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="nik">NIK</label>
-								<com:TActiveTextBox 
-										ID="nik" 
-										CssClass="form-control" 
-										Attributes.PlaceHolder="NIK"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="nik"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
+					<div class="row">	
+						<div class="col-md-12">
+							<ul class="nav nav-tabs"><!-- available classes "bordered", "right-aligned" -->
+								<li class="active">
+									<a href="#pribadiTab" data-toggle="tab">
+										<i class="fa fa-user"></i> Data Pribadi
+									</a>
+								</li>
+								<li>
+								<a href="#bpjsTenagaKerjaTab" data-toggle="tab">
+										<i class="fa fa-medkit"></i> BPJS Ketenagakerjaan
+									</a>
+								</li>
+								<li>
+								<a href="#bpjsKesehatanTab" data-toggle="tab">
+										<i class="fa fa-medkit"></i> BPJS Kesehatan
+									</a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div class="tab-pane active" id="pribadiTab">
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="id_cabang">Cabang</label>
+												<com:TActiveHiddenField ID="idKaryawan"/>
+												<com:TActiveDropDownList 
+													ID="id_cabang"
+													PromptText="--Pilih Cabang--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="id_cabang"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="id_jabatan">Jabatan</label>
+												<com:TActiveDropDownList 
+													ID="id_jabatan"
+													PromptText="--Pilih Jabatan--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="id_jabatan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="status_karyawan">Status Karyawan</label>
+												<com:TActiveDropDownList 
+													ID="status_karyawan"
+													PromptText="--Pilih Status--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="status_karyawan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="golongan_karyawan">Golongan Karyawan</label>
+												<com:TActiveDropDownList 
+													ID="golongan_karyawan"
+													PromptText="--Pilih Golongan--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="golongan_karyawan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="ptkp">PTKP</label>
+												<com:TActiveDropDownList 
+													ID="ptkp"
+													PromptText="--Pilih PTKP--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control">
+													<com:TListItem Value="0" Text="S"/>
+													<com:TListItem Value="1" Text="K-0"/>
+													<com:TListItem Value="2" Text="K-1"/>
+													<com:TListItem Value="3" Text="K-2"/>
+													<com:TListItem Value="4" Text="K-3"/>
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="ptkp"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="tunjangan_natura">Tunjangan Natura</label>
+												<com:TActiveTextBox 
+														ID="tunjangan_natura" 
+														CssClass="form-control mask_integer" 
+														Attributes.PlaceHolder="Tunjangan Natura"/>
+											</div>
+										</div>
+									</div>	
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="ktp">KTP</label>
+												<com:TActiveTextBox 
+														ID="ktp" 
+														CssClass="form-control" 
+														Attributes.PlaceHolder="KTP"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="ktp"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+									
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="nik">NIK</label>
+												<com:TActiveTextBox 
+														ID="nik" 
+														CssClass="form-control" 
+														Attributes.PlaceHolder="NIK"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="nik"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+									</div>
+									
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="nama">Nama Lengkap</label>
+												<com:TActiveTextBox 
+														ID="nama" 
+														CssClass="form-control" 
+														Attributes.PlaceHolder="Nama"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="nama"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="jkel">Jenis Kelamin</label>
+												<com:TActiveDropDownList 
+													ID="jkel"
+													PromptText="--Pilih--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control">
+													<com:TListItem Value="0" Text="Laki-laki"/>
+													<com:TListItem Value="1" Text="Perempuan"/>
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="jkel"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="tmplahir">Tempat Lahir</label>
+												<com:TActiveTextBox 
+														ID="tmplahir" 
+														CssClass="form-control " 
+														Attributes.PlaceHolder="Tempat Lahir"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="tmplahir"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="tgllahir">Tgl Lahir</label>
+												<com:TActiveTextBox 
+														ID="tgllahir" 
+														CssClass="form-control mask_date date-picker" 
+														Attributes.PlaceHolder="Tgl Lahir"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="tgllahir"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>	
+									</div>	
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="alamat">Alamat</label>
+												<com:TActiveTextBox 
+														ID="alamat" 
+														CssClass="form-control" 
+														TextMode="MultiLine"
+														Attributes.PlaceHolder="Alamat"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="alamat"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="id_kota">Kota</label>
+												<com:TActiveDropDownList 
+													ID="id_kota"
+													PromptText="--Pilih Kota--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="id_kota"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="id_agama">Agama</label>
+												<com:TActiveDropDownList 
+													ID="id_agama"
+													PromptText="--Pilih Agama--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="id_agama"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="id_pendidikan">Pendidikan</label>
+												<com:TActiveDropDownList 
+													ID="id_pendidikan"
+													PromptText="--Pilih Pendidikan--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="id_pendidikan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="status_kawin">Status Kawin</label>
+												<com:TActiveDropDownList 
+													ID="status_kawin"
+													PromptText="--Pilih--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control">
+													<com:TListItem Value="0" Text="Lajang"/>
+													<com:TListItem Value="1" Text="Menikah"/>
+													<com:TListItem Value="2" Text="Cerai"/>
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="status_kawin"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>	
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="telp">Telp</label>
+												<com:TActiveTextBox 
+														ID="telp" 
+														CssClass="form-control mask_integer" 
+														Attributes.PlaceHolder="Telepon"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="telp"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="tglawalkerja">Tgl Mulai Kerja</label>
+												<com:TActiveTextBox 
+														ID="tglawalkerja" 
+														CssClass="form-control mask_date date-picker" 
+														Attributes.PlaceHolder="Tgl Awal Kerja"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="tglawalkerja"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="id_bank">Bank</label>
+												<com:TActiveDropDownList 
+													ID="id_bank"
+													PromptText="--Pilih Bank--"
+													PromptValue="empty"
+													AutoPostBack="false"
+													CausesValidation="false"
+													CssClass="form-control"
+													DataTextField="nama"
+													DataValueField="id">
+													</com:TActiveDropDownList>
+											</div>
+										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="control-label" for="norek">No Rek</label>
+												<com:TActiveTextBox 
+														ID="norek" 
+														CssClass="form-control" 
+														Attributes.PlaceHolder="No Rek"/>
+											</div>
+										</div>
+									</div>	
+								</div>
+								<div class="tab-pane" id="bpjsTenagaKerjaTab">
+									<div class="row">
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="st_bpjs_ketenagakerjaan">BPJS Ketenagakerjaan</label>
+												<com:TActiveDropDownList 
+													ID="st_bpjs_ketenagakerjaan"
+													PromptText="--Pilih--"
+													PromptValue="empty"
+													AutoPostBack="true"
+													OnSelectedIndexChanged = "tenagaKerjaChanged"
+													CausesValidation="false"
+													CssClass="form-control">
+													<com:TListItem Value="0" Text="Tidak Aktif"/>
+													<com:TListItem Value="1" Text="Aktif"/>
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="st_bpjs_ketenagakerjaan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="upah_tenaga_kerja">Gaji</label>
+												<com:TActiveTextBox 
+														ID="upah_tenaga_kerja" 
+														CssClass="form-control mask_currency" 
+														Attributes.OnChange="upahChanged(0);"
+														Enabled="false"
+														Attributes.PlaceHolder="Gaji"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="upah_tenaga_kerja"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="perusahaan_tenaga_kerja">Perusahaan</label>
+												<com:TActiveTextBox 
+														ID="perusahaan_tenaga_kerja" 
+														Attributes.OnChange="hitungBpjsTenagaKerja();" 
+														CssClass="form-control mask_currency" 
+														Enabled="false"
+														Attributes.PlaceHolder="Perusahaan"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="perusahaan_tenaga_kerja"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="karyawan_tenaga_kerja">Karyawan</label>
+												<com:TActiveTextBox 
+														ID="karyawan_tenaga_kerja"
+														Attributes.OnChange="hitungBpjsTenagaKerja();" 
+														CssClass="form-control mask_currency" 
+														Enabled="false"
+														Attributes.PlaceHolder="Karyawan"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="karyawan_tenaga_kerja"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="total_tenaga_kerja">Total BPJS</label>
+												<com:TActiveTextBox 
+														ID="total_tenaga_kerja" 
+														CssClass="form-control mask_currency" 
+														Enabled="false"
+														Attributes.PlaceHolder="Total BPJS"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="total_tenaga_kerja"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane" id="bpjsKesehatanTab">
+									<div class="row">
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="st_bpjs_kesehatan">BPJS Kesehatan</label>
+												<com:TActiveDropDownList 
+													ID="st_bpjs_kesehatan"
+													PromptText="--Pilih--"
+													PromptValue="empty"
+													AutoPostBack="true"
+													CausesValidation="false"
+													OnSelectedIndexChanged="bpjsChanged"
+													CssClass="form-control">
+													<com:TListItem Value="0" Text="Tidak Aktif"/>
+													<com:TListItem Value="1" Text="Aktif"/>
+													</com:TActiveDropDownList>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="st_bpjs_kesehatan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" 
+														  InitialValue="empty"/>
+											</div>
+										</div>	
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="upah_kesehatan">Gaji</label>
+												<com:TActiveTextBox 
+														ID="upah_kesehatan" 
+														CssClass="form-control mask_currency" 
+														Attributes.OnChange="upahChanged(1);"
+														Enabled="false"
+														Attributes.PlaceHolder="Gaji"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="upah_kesehatan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="perusahaan_kesehatan">Perusahaan</label>
+												<com:TActiveTextBox 
+														ID="perusahaan_kesehatan" 
+														CssClass="form-control mask_currency" 
+														Attributes.OnChange="hitungBpjsKesehatan();"
+														Enabled="false"
+														Attributes.PlaceHolder="Perusahaan"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="perusahaan_kesehatan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="karyawan_kesehatan">Karyawan</label>
+												<com:TActiveTextBox 
+														ID="karyawan_kesehatan" 
+														Attributes.OnChange="hitungBpjsKesehatan();"
+														CssClass="form-control mask_currency" 
+														Enabled="false"
+														Attributes.PlaceHolder="Karyawan"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="karyawan_kesehatan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+										
+										
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="tambahan_keluarga">Tambahan Keluarga</label>
+												<com:TActiveTextBox 
+														ID="tambahan_keluarga" 
+														Attributes.OnChange="hitungBpjsKesehatan();"
+														Enabled="false"
+														CssClass="form-control mask_integer" 
+														Attributes.PlaceHolder="Tambahan Keluarga"/>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="form-group">
+												<label class="control-label" for="total_kesehatan">Total BPJS</label>
+												<com:TActiveTextBox 
+														ID="total_kesehatan" 
+														CssClass="form-control mask_currency" 
+														Enabled="false"
+														Attributes.PlaceHolder="Total BPJS"/>
+														<com:TRequiredFieldValidator 
+														  ControlToValidate="total_kesehatan"											 
+														  ErrorMessage=""
+														  Display="Dynamic"
+														  FocusOnError="true" 
+														  CssClass="valRequired"
+														  ControlCssClass="valctrl"
+														  ValidationGroup="val" />
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
 					
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="nama">Nama Lengkap</label>
-								<com:TActiveTextBox 
-										ID="nama" 
-										CssClass="form-control" 
-										Attributes.PlaceHolder="Nama"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="nama"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="jkel">Jenis Kelamin</label>
-								<com:TActiveDropDownList 
-									ID="jkel"
-									PromptText="--Pilih--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control">
-									<com:TListItem Value="0" Text="Laki-laki"/>
-									<com:TListItem Value="1" Text="Perempuan"/>
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="jkel"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="tmplahir">Tempat Lahir</label>
-								<com:TActiveTextBox 
-										ID="tmplahir" 
-										CssClass="form-control " 
-										Attributes.PlaceHolder="Tempat Lahir"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="tmplahir"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="tgllahir">Tgl Lahir</label>
-								<com:TActiveTextBox 
-										ID="tgllahir" 
-										CssClass="form-control mask_date date-picker" 
-										Attributes.PlaceHolder="Tgl Lahir"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="tgllahir"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>	
-					</div>	
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="alamat">Alamat</label>
-								<com:TActiveTextBox 
-										ID="alamat" 
-										CssClass="form-control" 
-										TextMode="MultiLine"
-										Attributes.PlaceHolder="Alamat"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="alamat"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_kota">Kota</label>
-								<com:TActiveDropDownList 
-									ID="id_kota"
-									PromptText="--Pilih Kota--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="id_kota"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_agama">Agama</label>
-								<com:TActiveDropDownList 
-									ID="id_agama"
-									PromptText="--Pilih Agama--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="id_agama"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_pendidikan">Pendidikan</label>
-								<com:TActiveDropDownList 
-									ID="id_pendidikan"
-									PromptText="--Pilih Pendidikan--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="id_pendidikan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="status_kawin">Status Kawin</label>
-								<com:TActiveDropDownList 
-									ID="status_kawin"
-									PromptText="--Pilih--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control">
-									<com:TListItem Value="0" Text="Lajang"/>
-									<com:TListItem Value="1" Text="Menikah"/>
-									<com:TListItem Value="2" Text="Cerai"/>
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="status_kawin"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="telp">Telp</label>
-								<com:TActiveTextBox 
-										ID="telp" 
-										CssClass="form-control mask_integer" 
-										Attributes.PlaceHolder="Telepon"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="telp"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="tglawalkerja">Tgl Mulai Kerja</label>
-								<com:TActiveTextBox 
-										ID="tglawalkerja" 
-										CssClass="form-control mask_date date-picker" 
-										Attributes.PlaceHolder="Tgl Awal Kerja"/>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="tglawalkerja"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" />
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="id_bank">Bank</label>
-								<com:TActiveDropDownList 
-									ID="id_bank"
-									PromptText="--Pilih Bank--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control"
-									DataTextField="nama"
-									DataValueField="id">
-									</com:TActiveDropDownList>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="norek">No Rek</label>
-								<com:TActiveTextBox 
-										ID="norek" 
-										CssClass="form-control" 
-										Attributes.PlaceHolder="No Rek"/>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="st_bpjs_ketenagakerjaan">BPJS Ketenagakerjaan</label>
-								<com:TActiveDropDownList 
-									ID="st_bpjs_ketenagakerjaan"
-									PromptText="--Pilih--"
-									PromptValue="empty"
-									AutoPostBack="false"
-									CausesValidation="false"
-									CssClass="form-control">
-									<com:TListItem Value="0" Text="Belum Terdaftar"/>
-									<com:TListItem Value="1" Text="Terdaftar"/>
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="st_bpjs_ketenagakerjaan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="st_bpjs_kesehatan">BPJS Kesehatan</label>
-								<com:TActiveDropDownList 
-									ID="st_bpjs_kesehatan"
-									PromptText="--Pilih--"
-									PromptValue="empty"
-									AutoPostBack="true"
-									CausesValidation="false"
-									OnSelectedIndexChanged="bpjsChanged"
-									CssClass="form-control">
-									<com:TListItem Value="0" Text="Belum Terdaftar"/>
-									<com:TListItem Value="1" Text="Terdaftar"/>
-									</com:TActiveDropDownList>
-										<com:TRequiredFieldValidator 
-										  ControlToValidate="st_bpjs_kesehatan"											 
-										  ErrorMessage=""
-										  Display="Dynamic"
-										  FocusOnError="true" 
-										  CssClass="valRequired"
-										  ControlCssClass="valctrl"
-										  ValidationGroup="val" 
-										  InitialValue="empty"/>
-							</div>
-						</div>	
-						
-						<div class="col-md-3">
-							<div class="form-group">
-								<label class="control-label" for="tambahan_keluarga">Tambahan Keluarga</label>
-								<com:TActiveTextBox 
-										ID="tambahan_keluarga" 
-										Enabled="false"
-										CssClass="form-control mask_integer" 
-										Attributes.PlaceHolder="Tambahan Keluarga"/>
-							</div>
-						</div>
-					</div>
+					
 				</div>
 				
 				<div class="modal-footer">
@@ -713,9 +901,72 @@
 				jQuery('#<%= $this->norek->getClientID()%>').val('');
 				jQuery('#<%= $this->st_bpjs_kesehatan->getClientID()%>').val('empty');
 				jQuery('#<%= $this->st_bpjs_ketenagakerjaan->getClientID()%>').val('empty');
+				
+				jQuery('#<%= $this->upah_tenaga_kerja->getClientID()%>').val('');
+				jQuery('#<%= $this->perusahaan_tenaga_kerja->getClientID()%>').val('');
+				jQuery('#<%= $this->karyawan_tenaga_kerja->getClientID()%>').val('');
+				jQuery('#<%= $this->total_tenaga_kerja->getClientID()%>').val('');
+				
+				jQuery('#<%= $this->upah_kesehatan->getClientID()%>').val('');
+				jQuery('#<%= $this->perusahaan_kesehatan->getClientID()%>').val('');
+				jQuery('#<%= $this->karyawan_kesehatan->getClientID()%>').val('');
+				jQuery('#<%= $this->total_kesehatan->getClientID()%>').val('');
+				jQuery('#<%= $this->tambahan_keluarga->getClientID()%>').val('');
+				
 			}
 			
 			
+			function upahChanged(type)
+			{
+				console.log(type);
+				if(type == '0')
+				{
+					var upah = parseFloat(jQuery('#<%= $this->upah_tenaga_kerja->getClientID()%>').val().replace(/\,/g,''));
+					var perusahaan = upah * (4.54 / 100);
+					var karyawan = upah * (2 / 100);
+					
+					jQuery('#<%= $this->perusahaan_tenaga_kerja->getClientID()%>').val(perusahaan);
+					jQuery('#<%= $this->karyawan_tenaga_kerja->getClientID()%>').val(karyawan);
+					hitungBpjsTenagaKerja();
+				}
+				else if(type == '1')
+				{
+					var upah = parseFloat(jQuery('#<%= $this->upah_kesehatan->getClientID()%>').val().replace(/\,/g,''));
+					var perusahaan = upah * (4 / 100);
+					var karyawan = upah * (1 / 100);
+					
+					jQuery('#<%= $this->perusahaan_kesehatan->getClientID()%>').val(perusahaan);
+					jQuery('#<%= $this->karyawan_kesehatan->getClientID()%>').val(karyawan);
+					hitungBpjsKesehatan();
+				}
+			}
+			
+			function hitungBpjsTenagaKerja()
+			{
+				var perusahaan = parseFloat(jQuery('#<%= $this->perusahaan_tenaga_kerja->getClientID()%>').val().replace(/\,/g,''));
+				var karyawan = parseFloat(jQuery('#<%= $this->karyawan_tenaga_kerja->getClientID()%>').val().replace(/\,/g,''));
+				var total = perusahaan + karyawan;
+				jQuery('#<%= $this->total_tenaga_kerja->getClientID()%>').val(total);
+				
+			}
+			
+ 			function hitungBpjsKesehatan()
+			{
+				var perusahaan = parseFloat(jQuery('#<%= $this->perusahaan_kesehatan->getClientID()%>').val().replace(/\,/g,''));
+				var karyawan = parseFloat(jQuery('#<%= $this->karyawan_kesehatan->getClientID()%>').val().replace(/\,/g,''));
+				var initPengali = 1;
+				var pengali = parseInt(jQuery('#<%= $this->tambahan_keluarga->getClientID()%>').val());
+				
+				if(pengali > 0)
+					pengali = pengali + initPengali;
+				else
+					pengali = initPengali;
+					
+				var total = perusahaan + (karyawan * pengali);
+				console.log(pengali);
+				jQuery('#<%= $this->total_kesehatan->getClientID()%>').val(total);
+				
+			}
 			
 			function BindGrid()
 			{
