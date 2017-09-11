@@ -148,6 +148,11 @@ class MasterKaryawan extends MainConf
 				INNER JOIN tbm_status_karyawan ON tbm_status_karyawan.id = tbm_karyawan.status_karyawan
 				WHERE
 					tbm_karyawan.deleted = '0'
+					AND a.deleted = '0' 
+					AND b.deleted = '0' 
+					AND c.deleted = '0' 
+					AND d.deleted = '0' 
+					AND tbm_jabatan.deleted = '0'
 				ORDER BY 
 					tbm_karyawan.id ASC ";
 		$Record = $this->queryAction($sql,'S');

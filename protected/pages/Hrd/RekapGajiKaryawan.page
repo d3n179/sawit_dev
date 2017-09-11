@@ -208,7 +208,6 @@
 				
 				tableContainer.dataTable({
 					"sPaginationType": "bootstrap",
-					"sDom": "t<'row'<'col-xs-6 col-left'i><'col-xs-6 col-right'p>>",
 					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 					"bStateSave": true,
 					"scrollX": "100%",
