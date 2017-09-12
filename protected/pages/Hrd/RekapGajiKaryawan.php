@@ -344,7 +344,8 @@ class RekapGajiKaryawan extends MainConf
 					
 					if($BpjsKaryawanRecord)	
 					{
-						$bpjsKesehatan = $BpjsKaryawanRecord->karyawan;
+						$Pengali = 1 + $BpjsKaryawanRecord->tambahan_keluarga;
+						$bpjsKesehatan = $BpjsKaryawanRecord->karyawan * $Pengali;
 						$bpjsKesehatanPerusahaan = $BpjsKaryawanRecord->perusahaan;
 					}
 					else

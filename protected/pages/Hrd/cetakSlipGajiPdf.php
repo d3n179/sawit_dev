@@ -271,7 +271,21 @@ $sqlLpplk = "SELECT
 
 $totalPotongan = 0;				
 if($KaryawanRecord->st_bpjs_ketenagakerjaan == '1')
-	$bpjsTenagaKerja = $GolonganKaryawanRecord->gaji_pokok * (2/100);
+{
+	//$bpjsTenagaKerja = $GolonganKaryawanRecord->gaji_pokok * (2/100);
+	$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$KaryawanRecord->id,'1','0');
+					
+	if($BpjsKaryawanRecord)	
+	{
+		$bpjsTenagaKerja = $BpjsKaryawanRecord->karyawan;
+		$bpjsTenagaKerjaPerusahaan = $BpjsKaryawanRecord->perusahaan;
+	}
+	else
+	{
+		$bpjsTenagaKerja = 0;
+		$bpjsTenagaKerjaPerusahaan = 0;
+	}
+}
 else
 	$bpjsTenagaKerja = 0;
 
@@ -279,12 +293,26 @@ $totalPotongan += $bpjsTenagaKerja;
 
 if($KaryawanRecord->st_bpjs_kesehatan == '1')
 {
-	if($KaryawanRecord->tambahan_keluarga > 0)
+	$BpjsKaryawanRecord = BpjsKaryawanRecord::finder()->find('id_karyawan = ? AND jns_bpjs = ? AND deleted = ?',$KaryawanRecord->id,'0','0');
+	
+	if($BpjsKaryawanRecord)	
+	{
+		$Pengali = 1 + $BpjsKaryawanRecord->tambahan_keluarga;
+		$bpjsKesehatan = $BpjsKaryawanRecord->karyawan * $Pengali;
+		$bpjsKesehatanPerusahaan = $BpjsKaryawanRecord->perusahaan;
+	}
+	else
+	{
+		$bpjsKesehatan = 0;
+		$bpjsKesehatanPerusahaan = 0;
+	}
+					
+	/*if($KaryawanRecord->tambahan_keluarga > 0)
 		$multiplyBpjs = $KaryawanRecord->tambahan_keluarga + 1;
 	else
 		$multiplyBpjs = 1;
 				
-	$bpjsKesehatan = ($GolonganKaryawanRecord->gaji_pokok * (1/100)) * $multiplyBpjs;
+	$bpjsKesehatan = ($GolonganKaryawanRecord->gaji_pokok * (1/100)) * $multiplyBpjs;*/
 }
 else
 	$bpjsKesehatan = 0;

@@ -338,6 +338,24 @@ class ProcessingTbs extends MainConf
 	
 	public function submitBtnClicked($sender,$param)
 	{
+		$tglLhp = $this->ConvertDate($this->tgl_processing->Text,'2');
+		$sqlValid = "SELECT id FROM tbt_processing_tbs WHERE tgl_processing >= '$tglLhp' ";
+		$arrValid = $this->queryAction($sqlValid,'S');
+		
+		if(count($arrValid) > 0)
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						toastr.error("Sudah Ada Proses LHP yg dilakukan setelah tanggal tersebut !!");');
+		}
+		else
+		{
+			$this->simpanData();
+		}
+	}
+	
+	public function simpanData()
+	{
 		$Persediaan_Today = round($this->tbs_awal->Text + $this->tbs_kebun->Text + $this->tbs_luar->Text + $this->tbs_potongan->Text);
 		$Cap_Rebusan = ($this->tbs_proses_shift_1->Text == 0 && $this->tbs_proses_shift_2->Text == 0 ? 0 : floor($Persediaan_Today / ($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text + $this->tbs_rbs_mentah->Text + $this->tbs_rbs_masak->Text + $this->tbs_restan_ramp->Text + $this->tbs_restan_lantai->Text)));
 		$Olah_Brutto_today = round(($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text) * $Cap_Rebusan);

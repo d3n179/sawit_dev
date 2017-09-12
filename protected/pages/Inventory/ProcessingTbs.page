@@ -34,6 +34,24 @@
 				
 				<div class="modal-body">
 					<div class="row">
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="tgl_processing">Tgl LHP</label>
+									<com:TActiveTextBox 
+											ID="tgl_processing" 
+											CssClass="form-control date-picker" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="tgl_processing"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>	
+						</div>	
+					<div class="row">
 						<div class="col-md-12">
 								<ul class="nav nav-tabs bordered"><!-- available classes "bordered", "right-aligned" -->
 									<li class="active">
@@ -2742,6 +2760,79 @@
 			{
 				jQuery('#<%= $this->idProcessing->getClientID()%>').val('');
 				jQuery(".form-control").val('');
+				
+				jQuery('#<%= $this->etc_cst1_kg_cm->getClientID()%>').val('247.93');
+				jQuery('#<%= $this->etc_cst1_kg->getClientID()%>').val('5379');
+				
+				jQuery('#<%= $this->etc_cst2_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_cst2_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_cst3_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_cst3_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_ot1_kg_cm->getClientID()%>').val('113.350');
+				jQuery('#<%= $this->etc_ot1_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_ot2_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_ot2_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_rcv1_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_rcv1_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_rcv2_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_rcv2_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_rcv3_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_rcv3_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_cot_kg_cm->getClientID()%>').val('73.720');
+				jQuery('#<%= $this->etc_cot_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_bst1_kg_cm->getClientID()%>').val('714.440');
+				jQuery('#<%= $this->etc_bst1_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_bst2_kg_cm->getClientID()%>').val('1409.550');
+				jQuery('#<%= $this->etc_bst2_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_ks1_kg_cm->getClientID()%>').val('40.570');
+				jQuery('#<%= $this->etc_ks1_kg->getClientID()%>').val('1758');
+				
+				jQuery('#<%= $this->etc_ks2_kg_cm->getClientID()%>').val('42.320');
+				jQuery('#<%= $this->etc_ks2_kg->getClientID()%>').val('1758');
+				
+				jQuery('#<%= $this->etc_ks3_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_ks3_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_ns1_kg_cm->getClientID()%>').val('78.530');
+				jQuery('#<%= $this->etc_ns1_kg->getClientID()%>').val('3139');
+				
+				jQuery('#<%= $this->etc_ns2_kg_cm->getClientID()%>').val('78.530');
+				jQuery('#<%= $this->etc_ns2_kg->getClientID()%>').val('3139');
+				
+				jQuery('#<%= $this->etc_ns3_kg_cm->getClientID()%>').val('78.530');
+				jQuery('#<%= $this->etc_ns3_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_ns4_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_ns4_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_bsk1_kg_cm->getClientID()%>').val('460.610');
+				jQuery('#<%= $this->etc_bsk1_kg->getClientID()%>').val('19048');
+				
+				jQuery('#<%= $this->etc_bsk2_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_bsk2_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_bsk3_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_bsk3_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_bss1_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_bss1_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_bss2_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_bss2_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->etc_bss3_kg_cm->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->etc_bss3_kg->getClientID()%>').val('0.000');
+			
 			}
 			
 			
