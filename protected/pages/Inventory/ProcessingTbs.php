@@ -411,7 +411,7 @@ class ProcessingTbs extends MainConf
 				$Record = new ProcessingTbsRecord();
 				$msg = "Data Berhasil Disimpan";
 				$Record->no_processing = $this->GenerateNoDocument('PRC');
-				$Record->tgl_processing = date("Y-m-d");
+				$Record->tgl_processing = $this->ConvertDate($this->tgl_processing->Text,'2');//date("Y-m-d");
 				$Record->wkt_processing = date("G:i:s");
 			}
 			
@@ -683,8 +683,10 @@ class ProcessingTbs extends MainConf
 			//$stockBarangTbs -= $Olah_Netto_today;
 			//$StockBarangRecord->stok = $stockBarangTbs;
 			//$StockBarangRecord->save();
+			$tglLhp = $this->ConvertDate($this->tgl_processing->Text,'2');
+			$arrTglLhp = explode("-",$tglLhp);
 			
-			$this->UpdateReporting($Record->id,$hargaSatuanBesar,date("Y-m-d"),date("m"),date("Y"));
+			$this->UpdateReporting($Record->id,$hargaSatuanBesar,$tglLhp,$arrTglLhp[1],$arrTglLhp[0]);
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
