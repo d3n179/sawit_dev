@@ -391,38 +391,64 @@ class MasterKaryawan extends MainConf
 	public function cetakGaji($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
-		$Record = KaryawanRecord::finder()->findByPk($id);
-		if($Record)
+		if($id != '0')
 		{
-			var_dump($this->User->UserMenu);
-			$this->idKaryawanCetak->Value = $id;
-			$this->nama_karyawan_lbl->Text = $Record->nama;
-			$this->nik_lbl->Text = $Record->nik;
-			
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					jQuery("#modal-2").modal("show");
-					');
+			$Record = KaryawanRecord::finder()->findByPk($id);
+			if($Record)
+			{
+				$this->idKaryawanCetak->Value = $id;
+				$this->nama_karyawan_lbl->Text = $Record->nama;
+				$this->nik_lbl->Text = $Record->nik;
+				
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						jQuery("#karyawanPanel").show();
+						jQuery("#modal-2").modal("show");
+						');
+			}
+			else
+			{
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						toastr.error("Data Tidak Ditemukan");
+						');	
+			}
 		}
 		else
 		{
-			$this->getPage()->getClientScript()->registerEndScript
-					('','
-					unloadContent();
-					toastr.error("Data Tidak Ditemukan");
-					');	
+			$this->idKaryawanCetak->Value = $id;
+				
+				$this->getPage()->getClientScript()->registerEndScript
+						('','
+						unloadContent();
+						jQuery("#karyawanPanel").hide();
+						jQuery("#modal-2").modal("show");
+						');
 		}
 	}
 	
 	public function cetakBtnClicked()
 	{
-		$this->Response->redirect($this->Service->constructUrl('Hrd.cetakSlipGajiPdf',
-			array(
-				'bulan'=>$this->DDBulan->SelectedValue,
-				'tahun'=>$this->DDTahun->SelectedValue,
-				'nik'=>$this->nik_lbl->Text,
-				'id'=>$this->idKaryawanCetak->Value)));
+		if($this->idKaryawanCetak->Value != '0')
+		{
+			$this->Response->redirect($this->Service->constructUrl('Hrd.cetakSlipGajiPdf',
+				array(
+					'bulan'=>$this->DDBulan->SelectedValue,
+					'tahun'=>$this->DDTahun->SelectedValue,
+					'nik'=>$this->nik_lbl->Text,
+					'id'=>$this->idKaryawanCetak->Value)));
+		}	
+		else
+		{
+			$this->Response->redirect($this->Service->constructUrl('Hrd.cetakMultiSlipGajiPdf',
+				array(
+					'bulan'=>$this->DDBulan->SelectedValue,
+					'tahun'=>$this->DDTahun->SelectedValue,
+					'nik'=>$this->nik_lbl->Text,
+					'id'=>$this->idKaryawanCetak->Value)));
+		}
 	}
 	
 	public function submitBtnClicked($sender,$param)
