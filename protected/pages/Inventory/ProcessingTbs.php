@@ -1009,6 +1009,25 @@ class ProcessingTbs extends MainConf
 	public function checkProcessing()
 	{
 		$Record =  ProcessingTbsRecord::finder()->find('tgl_processing = ? AND deleted = ?',date("Y-m-d"),'0');
+		$queryStockBuahKebun = "SELECT
+									SUM(tbd_stok_barang.stok) AS stok
+								FROM
+									tbd_stok_barang
+								WHERE
+									tbd_stok_barang.deleted = '0'
+								AND tbd_stok_barang.id_barang = '1020' ";
+		$arrBuahKebun = $this->queryAction($queryStockBuahKebun,'S');
+		$stokBuahKebun = $arrBuahKebun[0]['stok'];
+		
+		$queryStockBuahLuar = "SELECT
+									SUM(tbd_stok_barang.stok) AS stok
+								FROM
+									tbd_stok_barang
+								WHERE
+									tbd_stok_barang.deleted = '0'
+								AND tbd_stok_barang.id_barang = '1021' ";
+		$arrBuahLuar = $this->queryAction($queryStockBuahLuar,'S');
+		$stokBuahLuar = $arrBuahLuar[0]['stok'];
 		
 		if($Record)
 		{
@@ -1054,6 +1073,8 @@ class ProcessingTbs extends MainConf
 						('','
 						clearForm();
 						jQuery("#'.$this->tbs_awal->getClientID().'").val("'.$tbs_akhir.'");
+						jQuery("#'.$this->tbs_kebun->getClientID().'").val("'.$stokBuahKebun.'");
+						jQuery("#'.$this->tbs_luar->getClientID().'").val("'.$stokBuahLuar.'");
 						jQuery("#'.$this->bst_kemarin->getClientID().'").val("'.$bst_akhir.'");
 						jQuery("#'.$this->oil_in_process->getClientID().'").val("'.$bst_in_process.'");
 						jQuery("#'.$this->pk_bsk->getClientID().'").val("'.$pk_bsk_akhir.'");
