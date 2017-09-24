@@ -10,7 +10,7 @@ class cetakDataKaryawanPdf extends MainConf
 	{
 		$profilPerusahaan = $this->profilPerusahaan();	
 			
-		$pdf=new reportKwitansi('L','mm','legal');
+		$pdf=new reportKwitansi('P','mm','legal');
 		$pdf->AliasNbPages(); 
 		$pdf->AddPage();
 		
@@ -29,8 +29,7 @@ class cetakDataKaryawanPdf extends MainConf
 		$pdf->Ln(1);		
 		$pdf->SetFont('Arial','BU',10);
 		$pdf->SetFont('Arial','B',6);
-		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'L');
-		$pdf->Ln(10);
+		$pdf->Ln(5);
 		
 		
 		$sqlDepartment = "SELECT
@@ -52,24 +51,22 @@ class cetakDataKaryawanPdf extends MainConf
 		foreach($arrDepartment as $rowDepartment)
 		{
 			if($row != 0)
-				$pdf->Ln(15);
+				$pdf->Ln(10);
 				
 			$row++;
 			$idDeparment = $rowDepartment['id'];
 			$pdf->SetFont('Arial','B',6);
 			$pdf->Cell(0,5,'Department : '.$rowDepartment['nama'],'0',0,'L');
 			$pdf->Ln(5);
-			$pdf->SetFont('Arial','B',3);
-			$pdf->SetWidths(array(5,25,40,30,30,30,45));
+			$pdf->SetFont('Arial','B',4);
+			$pdf->SetWidths(array(5,25,40,25,25,25,45));
 			$pdf->SetAligns(array('C','C','C','C','C','C','C'));
 			
-			$pdf->Row(array("NO","NIK","NAMA","JABATAN","PENDIDIKAN","STATUS KARYAWAN""KETERANGAN"));
-									
+			$pdf->Row(array("NO","NIK","NAMA","JABATAN","PENDIDIKAN","STATUS KARYAWAN","KETERANGAN"));
+							
+			$pdf->SetLn(5);
 			
-			$pdf->Ln(5);
-			$pdf->SetLn(2);
-			
-			$pdf->SetFont('Arial','',3);
+			$pdf->SetFont('Arial','',4);
 			
 			$sqlTrans = "SELECT 
 							tbm_karyawan.id,
@@ -85,7 +82,7 @@ class cetakDataKaryawanPdf extends MainConf
 			$arrTrans = $this->queryAction($sqlTrans,'S');
 			$no = 1;
 			
-										
+			$pdf->SetAligns(array('C','L','L','L','L','L','C'));							
 			foreach($arrTrans as $row)
 			{	
 				$idK = $row['id'];
