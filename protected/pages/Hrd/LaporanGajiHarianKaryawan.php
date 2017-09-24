@@ -323,7 +323,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$date1=date_create($tgl1);
 					$date2=date_create($tgl2);
 					$diff=date_diff($date1,$date2);
-					$dateDiff = $diff->days
+					$dateDiff = $diff->days;
 					
 					$tempVar = $GolonganKaryawanRecord->gaji_pokok / 25;
 					$tblBody .= '<td>'.number_format($tempVar * $dateDiff,0,'.',',').'</td>';
@@ -372,7 +372,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$date1=date_create($tgl1);
 					$date2=date_create($tgl2);
 					$diff=date_diff($date1,$date2);
-					$dateDiff = $diff->days
+					$dateDiff = $diff->days;
 					
 					$tempVar = $GolonganKaryawanRecord->gaji_pokok / 25;
 					$tblBody .= '<td>'.number_format($tempVar * $dateDiff,0,'.',',').'</td>';
@@ -436,9 +436,9 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$tgl1 = $this->ConvertDate($tgl1,'2');
 					$tgl2 = $this->ConvertDate($tgl2,'2');
 					
-					$queryAdd = " AND tbt_lembur_karyawan.tgl BETWEEN = '".$tgl1."' AND '".$tgl2."' ";
-					$queryMangkir = " AND tbm_jadwal.tanggal BETWEEN = '".$tgl1."' AND '".$tgl2."' ";
-					$queryExpense = " AND tbt_expense_karyawan.tgl = '".$tgl1."' AND '".$tgl2."' ";
+					$queryAdd = " AND tbt_lembur_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
+					$queryMangkir = " AND tbm_jadwal.tanggal BETWEEN '".$tgl1."' AND '".$tgl2."' ";
+					$queryExpense = " AND tbt_expense_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
 				}
 				elseif($this->Periode->SelectedValue == '3')
 				{
@@ -446,9 +446,9 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$arrDate = explode("-",$tgl2);
 					$tgl1 = $arrDate[0]."-".$arrDate[1]."-01";
 					
-					$queryAdd = " AND tbt_lembur_karyawan.tgl BETWEEN = '".$tgl1."' AND '".$tgl2."' ";
-					$queryMangkir = " AND tbm_jadwal.tanggal BETWEEN = '".$tgl1."' AND '".$tgl2."' ";
-					$queryExpense = " AND tbt_expense_karyawan.tgl = '".$tgl1."' AND '".$tgl2."' ";
+					$queryAdd = " AND tbt_lembur_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
+					$queryMangkir = " AND tbm_jadwal.tanggal BETWEEN '".$tgl1."' AND '".$tgl2."' ";
+					$queryExpense = " AND tbt_expense_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
 				}
 		
 				$sqlLpp = "SELECT
@@ -459,9 +459,9 @@ class LaporanGajiHarianKaryawan extends MainConf
 								tbt_lembur_karyawan
 							WHERE
 								tbt_lembur_karyawan.id_karyawan = '$idK'
-							".$queryAdd."
 							AND tbt_lembur_karyawan.jns_lembur = '1'
-							AND tbt_lembur_karyawan.deleted != '1' ";
+							AND tbt_lembur_karyawan.deleted != '1' 
+							".$queryAdd." ";
 				$arrLpp = $this->queryAction($sqlLpp,'S');
 				$tarifLpp = (1/173) * $GolonganKaryawanRecord->gaji_pokok;
 				$jmlLpp = $arrLpp[0]['lama_lembur'] * $tarifLpp;
@@ -481,9 +481,9 @@ class LaporanGajiHarianKaryawan extends MainConf
 								tbt_lembur_karyawan
 							WHERE
 								tbt_lembur_karyawan.id_karyawan = '$idK'
-							".$queryAdd."
 							AND tbt_lembur_karyawan.jns_lembur = '2'
-							AND tbt_lembur_karyawan.deleted != '1' ";
+							AND tbt_lembur_karyawan.deleted != '1' 
+							".$queryAdd." ";
 				$arrLppml = $this->queryAction($sqlLppml,'S');
 				$tarifLppml = ((1/173) * $GolonganKaryawanRecord->gaji_pokok) * 1.5;
 				$jmlLppml = $arrLppml[0]['lama_lembur'] * $tarifLppml;
@@ -503,9 +503,9 @@ class LaporanGajiHarianKaryawan extends MainConf
 								tbt_lembur_karyawan
 							WHERE
 								tbt_lembur_karyawan.id_karyawan = '$idK'
-							".$queryAdd."
 							AND tbt_lembur_karyawan.jns_lembur = '3'
-							AND tbt_lembur_karyawan.deleted != '1' ";
+							AND tbt_lembur_karyawan.deleted != '1' 
+							".$queryAdd." ";
 				$arrLpplk = $this->queryAction($sqlLpplk,'S');
 				$tarifLpplk = ((1/173) * $GolonganKaryawanRecord->gaji_pokok) * 2;
 				$jmlLpplk = $arrLpplk[0]['lama_lembur'] * $tarifLpplk;
@@ -658,7 +658,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$date1=date_create($tgl1);
 					$date2=date_create($tgl2);
 					$diff=date_diff($date1,$date2);
-					$dateDiff = $diff->days
+					$dateDiff = $diff->days;
 					
 					$tempVar = $bpjsKesehatan / 25;
 					$tempVar2 = $bpjsKesehatanPerusahaan / 25;
@@ -683,7 +683,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$date1=date_create($tgl1);
 					$date2=date_create($tgl2);
 					$diff=date_diff($date1,$date2);
-					$dateDiff = $diff->days
+					$dateDiff = $diff->days;
 					
 					$tempVar = $bpjsKesehatan / 25;
 					$tempVar2 = $bpjsKesehatanPerusahaan / 25;
@@ -709,8 +709,8 @@ class LaporanGajiHarianKaryawan extends MainConf
 								WHERE
 									tbt_expense_karyawan.id_karyawan = '$idK'
 								AND tbt_expense_karyawan.jns_expense = '1'
-								".$queryExpense."
-								AND tbt_expense_karyawan.deleted != '1' ";
+								AND tbt_expense_karyawan.deleted != '1' 
+								".$queryExpense." ";
 				$arrPinjaman = $this->queryAction($sqlPinjaman,'S');
 				$jmlPinjaman = $arrPinjaman[0]['jml_expense'];
 				$tblBody .= '<td>'.number_format($jmlPinjaman,0,'.',',').'</td>';
@@ -726,8 +726,8 @@ class LaporanGajiHarianKaryawan extends MainConf
 								WHERE
 									tbt_expense_karyawan.id_karyawan = '$idK'
 								AND tbt_expense_karyawan.jns_expense = '2'
-								".$queryExpense."
-								AND tbt_expense_karyawan.deleted != '1' ";
+								AND tbt_expense_karyawan.deleted != '1' 
+								".$queryExpense." ";
 				$arrKantin = $this->queryAction($sqlKantin,'S');
 				$jmlKantin = $arrKantin[0]['jml_expense'];
 				$tblBody .= '<td>'.number_format($jmlKantin,0,'.',',').'</td>';
@@ -743,8 +743,8 @@ class LaporanGajiHarianKaryawan extends MainConf
 								WHERE
 									tbt_expense_karyawan.id_karyawan = '$idK'
 								AND tbt_expense_karyawan.jns_expense = '3'
-								".$queryExpense."
-								AND tbt_expense_karyawan.deleted != '1' ";
+								AND tbt_expense_karyawan.deleted != '1' 
+								".$queryExpense." ";
 				$arrKoperasi = $this->queryAction($sqlKoperasi,'S');
 				$jmlKoperasi = $arrKoperasi[0]['jml_expense'];
 				$tblBody .= '<td>'.number_format($jmlKoperasi,0,'.',',').'</td>';
@@ -1148,7 +1148,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 		//if($this->DDBulan->SelectedValue != '' && $this->DDTahun->SelectedValue != '')
 		//{
 		//$this->Response->redirect($this->Service->constructUrl('Hrd.cetakLapRekapGajiKaryawan',
-		$url = "index.php?page=Hrd.cetakLaporanRekapGajiKaryawanPreviewPdf&bulan=".$this->DDBulan->SelectedValue."&tahun=".$this->DDTahun->SelectedValue;
+		$url = "index.php?page=Hrd.cetakLaporanGajiHarianKaryawanPdf&periode=".$this->Periode->SelectedValue."&bulan=".$this->DDBulan->SelectedValue."&tahun=".$this->DDTahun->SelectedValue."&mingguan=".$this->mingguan->Text."&harian=".$this->harian->Text;
 		
 		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
 		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;

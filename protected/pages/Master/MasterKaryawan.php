@@ -429,6 +429,23 @@ class MasterKaryawan extends MainConf
 		}
 	}
 	
+	
+	
+	public function cetakDataKaryawan()
+	{
+		$url = "index.php?page=Master.cetakDataKaryawanPdf";
+		
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
+		$this->getPage()->getClientScript()->registerEndScript
+							('','
+							var url = "'.$urlTemp.'";
+							window.open(url, "_blank");
+							unloadContent();');	
+			
+	}
+	
 	public function cetakBtnClicked()
 	{
 		if($this->idKaryawanCetak->Value != '0')
