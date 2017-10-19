@@ -33,6 +33,17 @@ class PembayaranGajiKaryawan extends MainConf
 		}
 	}
 	
+	public function JnsBayarChanged()
+	{
+		$tblBodyHistory = $this->BindGridHistory();
+		$this->getPage()->getClientScript()->registerEndScript
+						('','
+							jQuery("#table-history").dataTable().fnDestroy();
+							jQuery("#table-history tbody").empty();
+							jQuery("#table-history tbody").append("'.$tblBodyHistory.'");
+							BindGridHistory();');
+	}
+	
 	public function BindGrid()
 	{
 		$sql = "SELECT
@@ -89,11 +100,13 @@ class PembayaranGajiKaryawan extends MainConf
 				{
 					$status = '<div class=\"label label-secondary\">NEW</div>';
 					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"prosesClicked('.$row['id'].')\"><i class=\"entypo-check\" ></i>Proses</a>&nbsp;&nbsp;';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakPOClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Permohonan</a>&nbsp;&nbsp;';
 				}
 				elseif($row['status'] == '1')
 				{
 					$status = '<div class=\"label label-warning\">PARSIAL</div>';
 					$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"prosesClicked('.$row['id'].')\"><i class=\"entypo-check\" ></i>Proses</a>&nbsp;&nbsp;';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakPOClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Permohonan</a>&nbsp;&nbsp;';
 				}
 				elseif($row['status'] == '2')
 				{
@@ -120,14 +133,25 @@ class PembayaranGajiKaryawan extends MainConf
 	
 	public function BindGridHistory()
 	{
+		$jnsBayar = $this->DDJnsBayar->SelectedValue;
 		$sql = "SELECT
 					tbt_bayar_rekap_gaji.id,
 					tbt_bayar_rekap_gaji.no_pembayaran,
 					tbt_bayar_rekap_gaji.tgl_pembayaran,
-					tbt_bayar_rekap_gaji.total_gaji_dibayarkan,
-					tbt_bayar_rekap_gaji.user
+					tbt_bayar_rekap_gaji.user,
+					SUM(tbt_rekap_gaji_detail.jml_gaji_dibayarkan) AS total_gaji_dibayarkan
 				FROM
-					tbt_bayar_rekap_gaji";
+					tbt_bayar_rekap_gaji
+					INNER JOIN tbt_rekap_gaji_detail ON tbt_rekap_gaji_detail.id_bayar = tbt_bayar_rekap_gaji.id	
+				WHERE 
+					tbt_rekap_gaji_detail.status = '1' ";
+					
+		if($jnsBayar != '')
+		{
+			$sql .= "AND tbt_rekap_gaji_detail.jns_bayar = '$jnsBayar' ";
+		}
+		$sql .= "GROUP BY tbt_bayar_rekap_gaji.id";
+		
 		$Record = $this->queryAction($sql,'S');
 		
 		$count = count($Record);
@@ -139,6 +163,7 @@ class PembayaranGajiKaryawan extends MainConf
 				$actionBtn = '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak</a>&nbsp;&nbsp;';
 				
 				$tblBody .= '<tr>';
+				$tblBody .= '<td class=\"details-control dont_shown\"><input type=\"hidden\" value=\"'.$row['id'].'\"></td>';
 				$tblBody .= '<td>'.$row['no_pembayaran'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_pembayaran'],'3').'</td>';
 				$tblBody .= '<td>'.number_format($row['total_gaji_dibayarkan'],2,'.',',').'</td>';	
@@ -390,11 +415,30 @@ class PembayaranGajiKaryawan extends MainConf
 		
 	}
 	
-
-	public function cetakClicked($sender,$param)
+	
+	
+	public function cetakPOClicked($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
-		$url = "index.php?page=Hrd.cetakPembayaranGajiPdf&id=".$id;
+		$url = "index.php?page=Hrd.cetakPermohonanBayarGajiPdf&id=".$id;
+		
+		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
+		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
+		
+		$this->getPage()->getClientScript()->registerEndScript
+							('','
+							var url = "'.$urlTemp.'";
+							window.open(url, "_blank");
+							unloadContent();');
+							
+	}
+	
+	public function cetakClicked($sender,$param)
+	{
+		$jnsBayar = $this->DDJnsBayar->SelectedValue;
+		
+		$id = $param->CallbackParameter->id;
+		$url = "index.php?page=Hrd.cetakPembayaranGajiPdf&id=".$id."&jnsBayar=".$jnsBayar;
 		
 		$folderApp = explode("/",$_SERVER['REQUEST_URI']);
 		$urlTemp="http://".$_SERVER['HTTP_HOST']."/".$folderApp[1]."/".$url;
@@ -406,6 +450,62 @@ class PembayaranGajiKaryawan extends MainConf
 							unloadContent();');	
 							
 		//$this->Response->redirect($this->Service->constructUrl('Hrd.cetakPembayaranGajiPdf',array("id"=>$id)));
+	}
+	
+	
+	public function generateDetailCallback($sender,$param)
+	{
+		$id = $param->CallbackParameter->id;
+		$jnsBayar = $this->DDJnsBayar->SelectedValue;
+		
+		$sql = "SELECT
+					tbm_karyawan.nik,
+					tbm_karyawan.nama,
+
+				IF (
+					tbt_rekap_gaji_detail.jns_bayar = '0',
+					'CASH',
+					'TRANSFER'
+				) AS jnsBayarNama,
+				 tbt_rekap_gaji_detail.jns_bayar,
+				 tbm_bank.nama AS nama_bank,
+				 tbm_karyawan.norek,
+				 tbt_rekap_gaji_detail.jml_gaji_dibayarkan
+				FROM
+					tbt_rekap_gaji_detail
+				INNER JOIN tbm_karyawan ON tbm_karyawan.id = tbt_rekap_gaji_detail.id_karyawan
+				LEFT JOIN tbm_bank ON tbm_bank.id = tbt_rekap_gaji_detail.id_bank
+				WHERE
+					tbt_rekap_gaji_detail.`status` = '1'
+				AND tbt_rekap_gaji_detail.id_bayar = '$id' ";
+		
+		if($jnsBayar != '')
+		{
+			$sql .= " AND tbt_rekap_gaji_detail.jns_bayar = '$jnsBayar' ";
+		}
+		$sql .= " ORDER BY tbm_karyawan.nama ASC  ";
+		
+		$arrSatuanBarang = $this->queryAction($sql,'S');
+		
+		if(count($arrSatuanBarang) > 0)
+		{
+			foreach($arrSatuanBarang as $row)
+			{
+					$tblBody .= '<tr>';
+					$tblBody .= '<td>'.$row['nik'].'</td>';
+					$tblBody .= '<td>'.$row['nama'].'</td>';
+					$tblBody .= '<td>'.$row['jnsBayarNama'].'</td>';	
+					$tblBody .= '<td>'.$row['nama_bank'].'</td>';	
+					$tblBody .= '<td>'.$row['norek'].'</td>';	
+					$tblBody .= '<td>'.number_format($row['jml_gaji_dibayarkan'],2,'.',',').'</td>';			
+					$tblBody .= '</tr>';
+			}
+		}
+		$this->getPage()->getClientScript()->registerEndScript
+					('','
+					jQuery("#tableDetail-'.$id.' tbody").empty();
+					jQuery("#tableDetail-'.$id.' tbody").append("'.$tblBody.'");
+					unloadContent();');
 	}
 	
 }

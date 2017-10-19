@@ -372,7 +372,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$date1=date_create($tgl1);
 					$date2=date_create($tgl2);
 					$diff=date_diff($date1,$date2);
-					$dateDiff = $diff->days;
+					$dateDiff = 1;//$diff->days;
 					
 					$tempVar = $GolonganKaryawanRecord->gaji_pokok / 25;
 					$tblBody .= '<td>'.number_format($tempVar * $dateDiff,0,'.',',').'</td>';
@@ -446,9 +446,9 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$arrDate = explode("-",$tgl2);
 					$tgl1 = $arrDate[0]."-".$arrDate[1]."-01";
 					
-					$queryAdd = " AND tbt_lembur_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
-					$queryMangkir = " AND tbm_jadwal.tanggal BETWEEN '".$tgl1."' AND '".$tgl2."' ";
-					$queryExpense = " AND tbt_expense_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
+					$queryAdd = " AND tbt_lembur_karyawan.tgl = '".$tgl2."' ";
+					$queryMangkir = " AND tbm_jadwal.tanggal = '".$tgl2."' ";
+					$queryExpense = " AND tbt_expense_karyawan.tgl = '".$tgl2."' ";
 				}
 		
 				$sqlLpp = "SELECT
@@ -683,7 +683,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 					$date1=date_create($tgl1);
 					$date2=date_create($tgl2);
 					$diff=date_diff($date1,$date2);
-					$dateDiff = $diff->days;
+					$dateDiff = 1;//$diff->days;
 					
 					$tempVar = $bpjsKesehatan / 25;
 					$tempVar2 = $bpjsKesehatanPerusahaan / 25;

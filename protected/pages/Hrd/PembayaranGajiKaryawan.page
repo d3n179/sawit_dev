@@ -52,11 +52,30 @@
 				</div>
 				<div class="tab-pane" id="historyTab">
 					<div class="row">
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label">Jenis Bayar</label>
+								<com:TActiveDropDownList
+									ID="DDJnsBayar"
+									AutoPostBack="true"
+									PromptText="--Pilih Jenis Bayar--"
+									PromptValue="empty"
+									CausesValidation="false"
+									CssClass="form-control"
+									OnSelectedIndexChanged="JnsBayarChanged">
+									<com:TListItem Value="0" Text="CASH"/>
+									<com:TListItem Value="1" Text="TRANSFER"/>
+							</com:TActiveDropDownList>
+							</div>
+						</div>	
+					</div>
+					<div class="row">
 						<div class="col-md-12">
 							<div class="form-group">
 								<table class="table table-bordered table-striped datatable" id="table-history">
 									<thead>
 										<tr>
+											<th width="1px"></th>
 											<th>No Pembayaran</th>
 											<th>Tgl Pembayaran</th>
 											<th>Total Pembayaran</th>
@@ -176,6 +195,7 @@
 	<com:TCallback ID="satuanChangedCallback" OnCallback="satuanChanged" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="bindROCallback" OnCallback="bindROCallback" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="cetakPOCallback" OnCallback="cetakPOClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="prosesCallback" OnCallback="prosesClicked" ActiveControl.CausesValidation="false"/>
 	
 	<script type="text/javascript">
@@ -506,15 +526,7 @@
 			
 			function BindGridHistory()
 			{
-				var responsiveHelper;
-				var breakpointDefinition = {
-					tablet: 1024,
-					phone : 480
-				};
-				var tableContainer;
-				tableContainer = jQuery("#table-history");
-				
-				tableContainer.dataTable({
+				var table = jQuery('#table-history').DataTable({
 					"sPaginationType": "bootstrap",
 					"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 					"bStateSave": true,
@@ -523,22 +535,73 @@
 				    // Responsive Settings
 				    bAutoWidth     : false,
 				    fnPreDrawCallback: function () {
-				        // Initialize the responsive datatables helper once.
-				        if (!responsiveHelper) {
-				            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
-				        }
 				    },
 				    fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-				        responsiveHelper.createExpandIcon(nRow);
 				    },
 				    fnDrawCallback : function (oSettings) {
-				        responsiveHelper.respond();
 				    }
 				});
 				
-				jQuery(".dataTables_wrapper select").select2({
-					minimumResultsForSearch: -1
-				});
+    
+				jQuery('#table-history tbody').on('click', 'td.details-control', function () {
+						var tr = jQuery(this).closest('tr');
+						var row = table.row( tr );
+						
+						console.log(row.data()[0]);
+						
+						
+						if ( row.child.isShown() ) {
+							// This row is already open - close it
+							row.child.hide();
+							jQuery(this).removeClass('shown');
+							jQuery(this).addClass('dont_shown');
+						}
+						else {
+							// Open this row
+							row.child( format(row.data()) ).show();
+							jQuery(this).removeClass('dont_shown');
+							jQuery(this).addClass('shown');
+							
+							console.log(row.data()[0]);
+							var inputHtml = row.data()[0];
+							var id = jQuery(inputHtml).attr('value');
+				
+							loadContent();
+							var request= <%= $this->generateDetailCallback->ActiveControl->Javascript %>;
+								request.setCallbackParameter({
+										id:id
+								});
+								request.dispatch();
+							
+				
+						}
+					} );
+					
+			}
+			
+			function format ( d ) {
+				// `d` is the original data object for the row
+				console.log(d[0]);
+				var inputHtml = d[0];
+				var id = jQuery(inputHtml).attr('value');
+				var tableDetail = 'tableDetail-'+id;
+				return '<table id="'+tableDetail+'" class="table table-hover datatable" width="200">'+
+					'<thead>'+
+						'<tr>'+
+							'<th>NIK</th>'+
+							'<th>Nama Karyawan</th>'+
+							'<th>Jenis bayar</th>'+
+							'<th>Bank</th>'+
+							'<th>No Rekening</th>'+
+							'<th>Total Gaji</th>'+
+						'</tr>'+
+					'</thead>'+
+					'<tbody>'+
+					'</tbody>'+
+				'</table>';
+				
+				
+						
 			}
 			
 			function submitBtnClicked()
@@ -589,6 +652,16 @@
 			{
 				loadContent();
 					var request= <%= $this->cetakCallback->ActiveControl->Javascript %>;
+						request.setCallbackParameter({
+							id:id
+						});
+						request.dispatch();
+			}
+			
+			function cetakPOClicked(id)
+			{
+				loadContent();
+					var request= <%= $this->cetakPOCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
 							id:id
 						});

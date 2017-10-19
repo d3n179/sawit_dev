@@ -407,7 +407,7 @@ class cetakLaporanGajiHarianKaryawanPdf extends MainConf
 						$date1=date_create($tgl1);
 						$date2=date_create($tgl2);
 						$diff=date_diff($date1,$date2);
-						$dateDiff = $diff->days;
+						$dateDiff = 1;//$diff->days;
 						
 						$IncentiveRecord = IncentiveRecord::finder()->find('id_karyawan = ? AND bulan = ? AND tahun = ? ',$idK,$blnIncentive,$thnIncentive);
 						
@@ -464,9 +464,9 @@ class cetakLaporanGajiHarianKaryawanPdf extends MainConf
 						$arrDate = explode("-",$tgl2);
 						$tgl1 = $arrDate[0]."-".$arrDate[1]."-01";
 						
-						$queryAdd = " AND tbt_lembur_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
-						$queryMangkir = " AND tbm_jadwal.tanggal BETWEEN '".$tgl1."' AND '".$tgl2."' ";
-						$queryExpense = " AND tbt_expense_karyawan.tgl BETWEEN '".$tgl1."' AND '".$tgl2."' ";
+						$queryAdd = " AND tbt_lembur_karyawan.tgl = '".$tgl2."' ";
+						$queryMangkir = " AND tbm_jadwal.tanggal = '".$tgl2."' ";
+						$queryExpense = " AND tbt_expense_karyawan.tgl = '".$tgl2."' ";
 					}
 				
 					$sqlLpp = "SELECT
@@ -628,7 +628,7 @@ class cetakLaporanGajiHarianKaryawanPdf extends MainConf
 						$date1=date_create($tgl1);
 						$date2=date_create($tgl2);
 						$diff=date_diff($date1,$date2);
-						$dateDiff = $diff->days;
+						$dateDiff = 1;//$diff->days;
 						
 						$bpjsKesehatan = ($bpjsKesehatan / 25)* $dateDiff;
 						$bpjsTenagaKerja = ($bpjsTenagaKerja / 25)* $dateDiff;

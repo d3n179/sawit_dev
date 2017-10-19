@@ -10,6 +10,7 @@ class cetakPembayaranGajiPdf extends MainConf
 	public function onLoad($param)
 	{
 		$id = $this->Request['id'];
+		$jnsBayar = $this->Request['jnsBayar'];
 		$BayarRekapGajiRecord = BayarRekapGajiRecord::finder()->findByPk($id);
 		$tglBayar = $this->ConvertDate($BayarRekapGajiRecord->tgl_pembayaran,'3');
 		
@@ -56,9 +57,15 @@ class cetakPembayaranGajiPdf extends MainConf
 					FROM
 						tbt_rekap_gaji_detail
 					INNER JOIN tbm_karyawan ON tbm_karyawan.id = tbt_rekap_gaji_detail.id_karyawan
-					INNER JOIN tbm_bank ON tbm_bank.id = tbt_rekap_gaji_detail.id_bank
+					LEFT JOIN tbm_bank ON tbm_bank.id = tbt_rekap_gaji_detail.id_bank
 					WHERE
 						tbt_rekap_gaji_detail.id_bayar = '$id' ";
+						
+		if($jnsBayar != '')
+		{
+			$sql .= " AND tbt_rekap_gaji_detail.jns_bayar = '$jnsBayar' ";
+		}
+		
 		$arrData=$this->queryAction($sql,'S');
 		$Jumlah = 0;
 		foreach($arrData as $row)
