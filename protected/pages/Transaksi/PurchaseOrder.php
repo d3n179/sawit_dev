@@ -149,7 +149,7 @@ class PurchaseOrder extends MainConf
 				GROUP BY
 					tbt_purchase_order.id
 				ORDER BY 
-					tbt_purchase_order.id ASC ";
+					tbt_purchase_order.status ASC ";
 		$arr = $this->queryAction($sql,'S');
 		
 		$count = count($arr);
@@ -352,6 +352,7 @@ class PurchaseOrder extends MainConf
 											'',
 											'',
 											$jmlSaldo - $dpPo);
+				$this->closingStockPO($idPO);
 											
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
@@ -372,6 +373,80 @@ class PurchaseOrder extends MainConf
 					toastr.info("Purchase Order Kosong");
 					unloadContent();
 					');
+		}
+		
+	}
+	
+	public function closingStockPO($idPo)
+	{
+		
+		$sqlRO = "SELECT
+					tbt_receiving_order_detail.id,
+					tbt_receiving_order_detail.id_barang,
+					tbt_receiving_order_detail.expired_date,
+					tbt_receiving_order_detail.jumlah,
+					tbt_receiving_order_detail.id_satuan
+				FROM
+					tbt_receiving_order_detail
+				INNER JOIN tbt_receiving_order ON tbt_receiving_order.id_po = '".$idPo."'
+				WHERE
+					tbt_receiving_order_detail.deleted != '1'
+				ORDER BY
+					tbt_receiving_order_detail.id ASC ";
+		$dataRO = $this->queryAction($sqlRO,'S');
+		foreach($dataRO as $row)
+		{
+			
+				$sql = "SELECT 
+								SUM(tbd_stok_barang.stok) AS stok
+							FROM
+								tbd_stok_barang
+							WHERE
+								tbd_stok_barang.deleted = '0' 
+								AND tbd_stok_barang.id_barang = '".$row['id_barang']."' ";
+							
+					$arr = $this->queryAction($sql,'S');
+					
+					if($arr[0]['stok'] > 0)
+						$stokAwal = $arr[0]['stok'];
+					else
+						$stokAwal = 0;
+						
+						
+				$qtyConversion = $this->getTargetUom($row['id_barang'],$row['jumlah'],$row['id_satuan'],'1','0');
+				
+				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ?',$row['id_barang'],'0');
+				
+				if($StockBarangRecord)
+				{
+					$StockBarangRecord->stok += $qtyConversion;	
+				}
+				else
+				{
+					$StockBarangRecord = new StockBarangRecord();
+					$StockBarangRecord->id_barang = $row['id_barang'];
+					$StockBarangRecord->stok = $qtyConversion;
+					$StockBarangRecord->expired_date = '0000-00-00';
+					$StockBarangRecord->deleted = '0';
+				}
+				
+				$StockBarangRecord->save();
+				
+				$StockInOutRecord = new StockInOutRecord();
+				$StockInOutRecord->id_barang = $row['id_barang'];
+				$StockInOutRecord->stok_awal = $stokAwal;
+				$StockInOutRecord->stok_in = $qtyConversion;
+				$StockInOutRecord->nilai_in = $nilaiIn;
+				$StockInOutRecord->stok_out = 0;
+				$StockInOutRecord->nilai_out = 0;
+				$StockInOutRecord->stok_akhir = $stokAwal + $qtyConversion;
+				$StockInOutRecord->keterangan = '';
+				$StockInOutRecord->id_transaksi = $row['id'];
+				$StockInOutRecord->jns_transaksi = "1";
+				$StockInOutRecord->tgl = date("Y-m-d");
+				$StockInOutRecord->wkt= date("G:i:s");
+				$StockInOutRecord->username = $this->User->IsUser;
+				$StockInOutRecord->save();
 		}
 		
 	}

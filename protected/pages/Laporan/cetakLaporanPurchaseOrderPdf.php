@@ -87,6 +87,8 @@ class cetakLaporanPurchaseOrderPdf extends MainConf
 		foreach($arrData as $row)
 		{
 			$arrDetail = $this->getDetailPO($row['id']);
+			$totalSubPO = 0;
+			$pdf->SetFont('Arial','',8);
 			foreach($arrDetail as $rowDetail)
 			{
 				if($idPo != $row['id'])
@@ -96,9 +98,14 @@ class cetakLaporanPurchaseOrderPdf extends MainConf
 					$tglPO = $this->ConvertDate($row['tgl_po'],'3');
 					$nmSupplier = $row['supplier'];
 					$idPo = $row['id'];
+					
+						
+						
+					
 				}
 				else
 				{
+					
 					$no = '';
 					$noPO = '';
 					$tglPO = '';
@@ -112,7 +119,12 @@ class cetakLaporanPurchaseOrderPdf extends MainConf
 				$Harga    +=$rowDetail['harga_satuan'];
 				$Discount +=$rowDetail['discount'];
 				$Subtotal +=$rowDetail['subtotal'];
+				$totalSubPO += $rowDetail['subtotal'];
 			}
+			$pdf->SetFont('Arial','B',8);
+			$pdf->Row(array('','','','','','','','','',number_format($totalSubPO ,2,'.',',')));
+			
+			
 			$i++;
 		}
 		

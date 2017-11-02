@@ -327,6 +327,10 @@ $html .='<tr style="vertical-align:top;" >
 	<td align="right"><strong>TOTAL</strong></td>
 	<td align="right" class="border"><strong>'.number_format($totalSesudahPpn ,'2',',','.').'</strong></td>
   </tr>
+  <tr style="vertical-align:top;" >
+    <td align="right"><strong>TERBILANG</strong></td>
+    <td align="right" colspan="6"><h3><strong>'.$this->terbilang($totalSesudahPpn).'</strong></h3></td>
+  </tr>
 </table>
 
 <table width="100%" border="0" class="txt7 nopadding">

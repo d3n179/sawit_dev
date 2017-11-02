@@ -112,7 +112,7 @@ class RequestOrder extends MainConf
 				GROUP BY
 					tbt_request_order.id
 				ORDER BY 
-					tbt_request_order.id ASC ";
+					tbt_request_order.status ASC ";
 		$arr = $this->queryAction($sql,'S');
 		
 		$count = count($arr);
