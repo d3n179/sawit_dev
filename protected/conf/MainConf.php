@@ -385,7 +385,7 @@ class MainConf extends TPage
 								WHERE 
 									deleted ='0' 
 									AND id_barang = '".$productId."' 
-									AND urutan > ".$uomInitial."
+									AND urutan > ".$UomOrder."
 								ORDER BY urutan ASC ";
 				$arrConvert = $this->queryAction($sqlConvert,'S');
 				foreach($arrConvert as $rowConvert)
@@ -412,10 +412,14 @@ class MainConf extends TPage
 			$sqlOrderUom .= "ORDER BY urutan DESC ";
 			$arrOrderUom = $this->queryAction($sqlOrderUom,'S');
 			$realQty = $conversionQty;
+			//var_dump($realQty);
 			$arrQty = array();
+			
+			$sqlFirst = "SELECT urutan,jumlah FROM tbm_satuan_barang WHERE deleted ='0' AND id_barang = '$productId' ORDER BY urutan ASC LIMIT 1";
+			$urutanFirst = $this->queryAction($sqlFirst,'S');
 			foreach($arrOrderUom as $rowOrder)
 			{
-				if($rowOrder['urutan'] == '1')
+				if($rowOrder['urutan'] == $urutanFirst[0]['urutan'])
 				{
 					
 					$arrQty[] = array("qty"=>intval($realQty),"name"=>$rowOrder['nama'],"id"=>$rowOrder['id_satuan']);
@@ -430,7 +434,7 @@ class MainConf extends TPage
 				}
 				$realQty = $realQty / $rowOrder['jumlah'];
 			}
-				
+				//var_dump($arrQty);
 			usort($arrQty, function($a, $b) {
 								return $a['order'] - $b['order'];
 							});

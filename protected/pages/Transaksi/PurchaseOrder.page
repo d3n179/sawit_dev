@@ -124,8 +124,9 @@
 							<label class="control-label" for="DDCoa">Coa</label>
 								<com:TActiveTextBox 
 										ID="DDCoa" 
+										Text = "28"
 										Enabled="false"
-										CssClass="form-control" />
+										CssClass="" />
 									<com:TRequiredFieldValidator 
 										  ControlToValidate="DDCoa"										 
 										  ErrorMessage=""

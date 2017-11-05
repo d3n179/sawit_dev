@@ -191,7 +191,7 @@ $style = '
 $header = '
 <table width="100%" cellpadding="0">
   <tr>
-    <td width="25%" rowspan="3"><img  style="position:absolute;" src="'.$urlImg.'"/></td>
+    <td width="25%" rowspan="3"><img height="100px" style="position:absolute;" src="'.$urlImg.'"/></td>
 	<td align="center" style="font-size:50px"><b>'.strtoupper($profilPerusahaan->nama).'</b></td>
   </tr>
   <tr>

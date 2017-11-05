@@ -31,7 +31,8 @@ class ProcessingTbs extends MainConf
 		$sql = "SELECT 
 					tbt_processing_tbs.id,
 					tbt_processing_tbs.no_processing,
-					tbt_processing_tbs.tgl_processing
+					tbt_processing_tbs.tgl_processing,
+					tbt_processing_tbs.version
 				FROM 
 					tbt_processing_tbs
 				WHERE 
@@ -52,9 +53,9 @@ class ProcessingTbs extends MainConf
 				$tblBody .= '<td>'.$tglProcessing.'</td>';
 				$tblBody .= '<td>';
 				
-				if($row['tgl_processing'] == date("Y-m-d"))
+				if($row['tgl_processing'] == date("Y-m-d") && $row['version'] == 1)
 				{
-					//$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
+					$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
 					//$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
 				}
 				
@@ -404,6 +405,7 @@ class ProcessingTbs extends MainConf
 			if($this->idProcessing->Value != '')
 			{
 				$Record = ProcessingTbsRecord::finder()->findByPk($this->idProcessing->Value);
+				$Record->version = 2;
 				$msg = "Data Berhasil Diedit";
 			}
 			else

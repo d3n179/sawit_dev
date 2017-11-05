@@ -60,7 +60,7 @@ class PurchaseOrder extends MainConf
 		$dp = str_replace(",","",$this->dp->Text);
 		if($dp > 0 )
 		{
-			$this->DDCoa->Enabled = true;
+			$this->DDCoa->Enabled = false;
 			$this->DDJnsBayar->Enabled = true;
 		}
 		else

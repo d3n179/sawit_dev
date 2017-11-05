@@ -145,54 +145,257 @@ class LaporanHutangPO extends MainConf
 				
 				
 				$sqlDiff30 = "SELECT
-									COUNT(tbt_purchase_order.id) AS umur
+									tbt_purchase_order.id,
+									tbt_purchase_order.dp,
+									tbt_purchase_order.ppn
 								FROM
 									tbt_purchase_order
 								WHERE
 									tbt_purchase_order.`status` = '2'
 								AND tbt_purchase_order.id_supplier = '".$idSupplier."'
+								AND tbt_purchase_order.deleted = '0' 
 								AND DATEDIFF(
 									tbt_purchase_order.tgl_jatuh_tempo,
 									CURDATE()
 								) <= 30 ";
 				$arrDiff30 = $this->queryAction($sqlDiff30,'S');
-				$diff30 = $arrDiff30[0]['umur'];
+				$ttlPo30 = 0;
+				$ttlByrPo30 = 0;
+				foreach($arrDiff30 as $rowPo30)
+				{
+					$idPo = $rowPo30['id'];
+					$ppn = $rowPo30['ppn'];
+					
+					$sqlTtlPO30 = "SELECT
+									SUM(
+										tbt_receiving_order_detail.subtotal
+									) AS total_po
+								FROM
+									tbt_receiving_order_detail
+								INNER JOIN tbt_receiving_order ON tbt_receiving_order.id = tbt_receiving_order_detail.id_parent
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_receiving_order.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+									AND tbt_receiving_order.deleted = '0' 
+									AND tbt_receiving_order_detail.deleted = '0' 
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrTtlPO30 = $this->queryAction($sqlTtlPO30,'S');
+					$ttlPo30 += $arrTtlPO30[0]['total_po'];
+					
+					$sqlBiaya30 = "SELECT
+									SUM(
+										tbt_purchase_order_biaya_lain.biaya
+									) AS Total_Biaya
+								FROM
+									tbt_purchase_order_biaya_lain
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_purchase_order_biaya_lain.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_purchase_order_biaya_lain.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id";
+									
+					$arrTtlBiaya30 = $this->queryAction($sqlBiaya30,'S');
+					//$ttlPo += $arrTtlBiaya[0]['Total_Biaya'];
+					
+					$ppnCurrency = $ttlPo30 * ($rowPo30['ppn'] / 100);
+					$ttlPo30 += $ppnCurrency + $arrTtlBiaya30[0]['Total_Biaya'];
+					$ttlPo30 -= $rowPo30['dp'];
+					
+					$sqlBayar30 = "SELECT
+									SUM(
+										tbt_pembayaran_po.total_pembayaran
+									) AS total_pembayaran
+								FROM
+									tbt_pembayaran_po
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_pembayaran_po.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_pembayaran_po.deleted = '0'
+								AND tbt_purchase_order.`status` = '2'
+								AND tbt_purchase_order.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrttlByrPo30 = $this->queryAction($sqlBayar30,'S');
+					$ttlByrPo30 += $arrttlByrPo30[0]['total_pembayaran'];
+					
+				}
+				$sisaBayar30 = $ttlPo30 - $ttlByrPo30;
+				$diff30 = $sisaBayar30;
+				
 				
 				$sqlDiff60 = "SELECT
-									COUNT(tbt_purchase_order.id) AS umur
+									tbt_purchase_order.id,
+									tbt_purchase_order.dp,
+									tbt_purchase_order.ppn
 								FROM
 									tbt_purchase_order
 								WHERE
 									tbt_purchase_order.`status` = '2'
 								AND tbt_purchase_order.id_supplier = '".$idSupplier."'
+								AND tbt_purchase_order.deleted = '0' 
 								AND DATEDIFF(
 									tbt_purchase_order.tgl_jatuh_tempo,
 									CURDATE()
 								) BETWEEN 30 AND 60 ";
 				$arrDiff60 = $this->queryAction($sqlDiff60,'S');
-				$diff60 = $arrDiff60[0]['umur'];
+				$ttlPo60 = 0;
+				$ttlByrPo60 = 0;
+				foreach($arrDiff60 as $rowPo60)
+				{
+					$idPo = $rowPo60['id'];
+					$ppn = $rowPo60['ppn'];
+					
+					$sqlTtlPO60 = "SELECT
+									SUM(
+										tbt_receiving_order_detail.subtotal
+									) AS total_po
+								FROM
+									tbt_receiving_order_detail
+								INNER JOIN tbt_receiving_order ON tbt_receiving_order.id = tbt_receiving_order_detail.id_parent
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_receiving_order.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+									AND tbt_receiving_order.deleted = '0' 
+									AND tbt_receiving_order_detail.deleted = '0' 
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrTtlPO60 = $this->queryAction($sqlTtlPO60,'S');
+					$ttlPo60 += $arrTtlPO60[0]['total_po'];
+					
+					$sqlBiaya60 = "SELECT
+									SUM(
+										tbt_purchase_order_biaya_lain.biaya
+									) AS Total_Biaya
+								FROM
+									tbt_purchase_order_biaya_lain
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_purchase_order_biaya_lain.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_purchase_order_biaya_lain.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id";
+									
+					$arrTtlBiaya60 = $this->queryAction($sqlBiaya60,'S');
+					//$ttlPo += $arrTtlBiaya[0]['Total_Biaya'];
+					
+					$ppnCurrency = $ttlPo60 * ($rowPo60['ppn'] / 100);
+					$ttlPo60 += $ppnCurrency + $arrTtlBiaya60[0]['Total_Biaya'];
+					$ttlPo60 -= $rowPo60['dp'];
+					
+					$sqlBayar60 = "SELECT
+									SUM(
+										tbt_pembayaran_po.total_pembayaran
+									) AS total_pembayaran
+								FROM
+									tbt_pembayaran_po
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_pembayaran_po.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_pembayaran_po.deleted = '0'
+								AND tbt_purchase_order.`status` = '2'
+								AND tbt_purchase_order.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrttlByrPo60 = $this->queryAction($sqlBayar60,'S');
+					$ttlByrPo60 += $arrttlByrPo60[0]['total_pembayaran'];
+					
+				}
+				$sisaBayar60 = $ttlPo60 - $ttlByrPo60;
+				$diff60 = $sisaBayar60;
+				
 				
 				$sqlDiff90 = "SELECT
-									COUNT(tbt_purchase_order.id) AS umur
+									tbt_purchase_order.id,
+									tbt_purchase_order.dp,
+									tbt_purchase_order.ppn
 								FROM
 									tbt_purchase_order
 								WHERE
 									tbt_purchase_order.`status` = '2'
 								AND tbt_purchase_order.id_supplier = '".$idSupplier."'
+								AND tbt_purchase_order.deleted = '0' 
 								AND DATEDIFF(
 									tbt_purchase_order.tgl_jatuh_tempo,
 									CURDATE()
 								) BETWEEN 60 AND 90 ";
 				$arrDiff90 = $this->queryAction($sqlDiff90,'S');
-				$diff90 = $arrDiff90[0]['umur'];
+				$ttlPo90 = 0;
+				$ttlByrPo90 = 0;
+				foreach($arrDiff90 as $rowPo90)
+				{
+					$idPo = $rowPo90['id'];
+					$ppn = $rowPo90['ppn'];
+					
+					$sqlTtlPO90 = "SELECT
+									SUM(
+										tbt_receiving_order_detail.subtotal
+									) AS total_po
+								FROM
+									tbt_receiving_order_detail
+								INNER JOIN tbt_receiving_order ON tbt_receiving_order.id = tbt_receiving_order_detail.id_parent
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_receiving_order.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+									AND tbt_receiving_order.deleted = '0' 
+									AND tbt_receiving_order_detail.deleted = '0' 
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrTtlPO90 = $this->queryAction($sqlTtlPO90,'S');
+					$ttlPo90 += $arrTtlPO90[0]['total_po'];
+					
+					$sqlBiaya90 = "SELECT
+									SUM(
+										tbt_purchase_order_biaya_lain.biaya
+									) AS Total_Biaya
+								FROM
+									tbt_purchase_order_biaya_lain
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_purchase_order_biaya_lain.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_purchase_order_biaya_lain.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id";
+									
+					$arrTtlBiaya90 = $this->queryAction($sqlBiaya90,'S');
+					//$ttlPo += $arrTtlBiaya[0]['Total_Biaya'];
+					
+					$ppnCurrency = $ttlPo90 * ($rowPo90['ppn'] / 100);
+					$ttlPo90 += $ppnCurrency + $arrTtlBiaya90[0]['Total_Biaya'];
+					$ttlPo90 -= $rowPo90['dp'];
+					
+					$sqlBayar90 = "SELECT
+									SUM(
+										tbt_pembayaran_po.total_pembayaran
+									) AS total_pembayaran
+								FROM
+									tbt_pembayaran_po
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_pembayaran_po.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_pembayaran_po.deleted = '0'
+								AND tbt_purchase_order.`status` = '2'
+								AND tbt_purchase_order.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrttlByrPo90 = $this->queryAction($sqlBayar90,'S');
+					$ttlByrPo90 += $arrttlByrPo90[0]['total_pembayaran'];
+					
+				}
+				$sisaBayar90 = $ttlPo90 - $ttlByrPo90;
+				$diff90 = $sisaBayar90;
 				
 				$sqlDiff120 = "SELECT
-									COUNT(tbt_purchase_order.id) AS umur
+									tbt_purchase_order.id,
+									tbt_purchase_order.dp,
+									tbt_purchase_order.ppn
 								FROM
 									tbt_purchase_order
 								WHERE
 									tbt_purchase_order.`status` = '2'
 								AND tbt_purchase_order.id_supplier = '".$idSupplier."'
+								AND tbt_purchase_order.deleted = '0' 
 								AND (DATEDIFF(
 									tbt_purchase_order.tgl_jatuh_tempo,
 									CURDATE()
@@ -201,7 +404,71 @@ class LaporanHutangPO extends MainConf
 									CURDATE()
 								) > 120 )";
 				$arrDiff120 = $this->queryAction($sqlDiff120,'S');
-				$diff120 = $arrDiff120[0]['umur'];
+				$ttlPo120 = 0;
+				$ttlByrPo120 = 0;
+				foreach($arrDiff120 as $rowPo120)
+				{
+					$idPo = $rowPo120['id'];
+					$ppn = $rowPo120['ppn'];
+					
+					$sqlTtlPO120 = "SELECT
+									SUM(
+										tbt_receiving_order_detail.subtotal
+									) AS total_po
+								FROM
+									tbt_receiving_order_detail
+								INNER JOIN tbt_receiving_order ON tbt_receiving_order.id = tbt_receiving_order_detail.id_parent
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_receiving_order.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+									AND tbt_receiving_order.deleted = '0' 
+									AND tbt_receiving_order_detail.deleted = '0' 
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrTtlPO120 = $this->queryAction($sqlTtlPO120,'S');
+					$ttlPo120 += $arrTtlPO90[0]['total_po'];
+					
+					$sqlBiaya120 = "SELECT
+									SUM(
+										tbt_purchase_order_biaya_lain.biaya
+									) AS Total_Biaya
+								FROM
+									tbt_purchase_order_biaya_lain
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_purchase_order_biaya_lain.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_purchase_order_biaya_lain.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id";
+									
+					$arrTtlBiaya120 = $this->queryAction($sqlBiaya120,'S');
+					//$ttlPo += $arrTtlBiaya[0]['Total_Biaya'];
+					
+					$ppnCurrency = $ttlPo120 * ($rowPo120['ppn'] / 100);
+					$ttlPo120 += $ppnCurrency + $arrTtlBiaya120[0]['Total_Biaya'];
+					$ttlPo120 -= $rowPo90['dp'];
+					
+					$sqlBayar120 = "SELECT
+									SUM(
+										tbt_pembayaran_po.total_pembayaran
+									) AS total_pembayaran
+								FROM
+									tbt_pembayaran_po
+								INNER JOIN tbt_purchase_order ON tbt_purchase_order.id = tbt_pembayaran_po.id_po
+								WHERE
+									tbt_purchase_order.id = '".$idPo."'
+								AND tbt_pembayaran_po.deleted = '0'
+								AND tbt_purchase_order.`status` = '2'
+								AND tbt_purchase_order.deleted = '0'
+								GROUP BY
+									tbt_purchase_order.id ";
+					$arrttlByrPo120 = $this->queryAction($sqlBayar120,'S');
+					$ttlByrPo120 += $arrttlByrPo120[0]['total_pembayaran'];
+					
+				}
+				$sisaBayar120 = $ttlPo120 - $ttlByrPo120;
+				$diff120 = $sisaBayar120;
+				
 				
 				/*$years = floor($diff / (365*60*60*24));
 				$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
@@ -215,10 +482,10 @@ class LaporanHutangPO extends MainConf
 				$tblBody .= '<td>'.number_format($ttlByrPo,2,'.',',').'</td>';	
 				$tblBody .= '<td>'.number_format($sisaBayar,2,'.',',').'</td>';	
 				
-				$tblBody .= '<td>'.$diff30 .'</td>';
-				$tblBody .= '<td>'.$diff60 .'</td>';
-				$tblBody .= '<td>'.$diff90 .'</td>';
-				$tblBody .= '<td>'.$diff120 .'</td>';
+				$tblBody .= '<td>'.number_format($diff30,2,'.',',').'</td>';
+				$tblBody .= '<td>'.number_format($diff60,2,'.',',').'</td>';
+				$tblBody .= '<td>'.number_format($diff90,2,'.',',').'</td>';
+				$tblBody .= '<td>'.number_format($diff120,2,'.',',').'</td>';
 				$tblBody .= '</tr>';
 			}
 		}

@@ -1,5 +1,5 @@
 <com:TContent ID="Main">
-	<h2>Laporan Umur Hutang PO</h2>
+	<h2>Laporan Umur Hutang TBS</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->	
 	<div class="row">

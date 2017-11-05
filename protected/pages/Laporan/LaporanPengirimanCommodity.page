@@ -1,5 +1,5 @@
 <com:TContent ID="Main">
-	<h2>Laporan Penjualan Commodity</h2>
+	<h2>Laporan Pengiriman Commodity</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
 	<div class="row">

@@ -42,6 +42,7 @@ class StokBarang extends MainConf
 				WHERE 
 					tbm_barang.deleted = '0' 
 					AND tbm_barang.kategori_id != '5'
+					AND tbm_barang.id = '84'
 				ORDER BY 
 					tbm_barang.id ASC ";
 		$BarangRecord = $this->queryAction($sql,'S');

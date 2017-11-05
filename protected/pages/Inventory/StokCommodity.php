@@ -74,7 +74,7 @@ class StokCommodity extends MainConf
 				
 				foreach($realQty as $rowQty)
 				{
-					$stokList .= $rowQty['qty']." ".$rowQty['name']."<br>";
+					$stokList .= number_format($rowQty['qty'],2,'.',',')." ".$rowQty['name']."<br>";
 				}
 				$idMaxSatuan = BarangSatuanRecord::finder()->find('urutan = ? AND id_barang = ? AND deleted = ?','1',$row['id'],'0')->id_satuan;
 				$MaxSatuanName = SatuanRecord::finder()->findByPk($idMaxSatuan)->nama;

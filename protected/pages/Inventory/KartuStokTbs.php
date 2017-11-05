@@ -193,25 +193,25 @@ class KartuStokTbs extends MainConf
 				$stokAwal = $this->getTargetUom($row['id_barang'],$row['stok_awal']); 
 				foreach($stokAwal as $rowQty)
 				{
-					$stokAwalList .= $rowQty['qty']." ".$rowQty['name']."<br>";
+					$stokAwalList .= number_format($rowQty['qty'],2,'.',',')." ".$rowQty['name']."<br>";
 				}
 				
 				$stokIn = $this->getTargetUom($row['id_barang'],$row['stok_in']); 
 				foreach($stokIn as $rowQty)
 				{
-					$stokInList .= $rowQty['qty']." ".$rowQty['name']."<br>";
+					$stokInList .= number_format($rowQty['qty'],2,'.',',')." ".$rowQty['name']."<br>";
 				}
 				
 				$stokOut = $this->getTargetUom($row['id_barang'],$row['stok_out']); 
 				foreach($stokOut as $rowQty)
 				{
-					$stokOutList .= $rowQty['qty']." ".$rowQty['name']."<br>";
+					$stokOutList .= number_format($rowQty['qty'],2,'.',',')." ".$rowQty['name']."<br>";
 				}
 				
 				$stokAkhir = $this->getTargetUom($row['id_barang'],$row['stok_akhir']); 
 				foreach($stokAkhir as $rowQty)
 				{
-					$stokAkhirList .= $rowQty['qty']." ".$rowQty['name']."<br>";
+					$stokAkhirList .= number_format($rowQty['qty'],2,'.',',')." ".$rowQty['name']."<br>";
 				}
 					
 				//var_dump($arrTot[0]['total_item']);

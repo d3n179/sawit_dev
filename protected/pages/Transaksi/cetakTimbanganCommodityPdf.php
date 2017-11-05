@@ -83,9 +83,9 @@ class cetakTimbanganCommodityPdf extends MainConf
 		$pdf->RowNoBorder(array('No DO/PO',':',$CommodityTransactionRecord->no_do,"","No Segel/Locis %",":",$CommodityTransactionRecord->no_segel));
 		$pdf->Ln(5);
 		$pdf->SetAligns(array('L','C','R','L','L','C','L'));	
-		$pdf->RowNoBorder(array('Bruto',':',$CommodityTransactionRecord->bruto.' KG',"",'TIMBANGAN','',"TANGGAL - JAM"));
-		$pdf->RowNoBorder(array('Tarra',':',$CommodityTransactionRecord->tarra.' KG',"",'MASUK','',$this->ConvertDate($CommodityTransactionRecord->tgl_masuk,'1').' - '.$CommodityTransactionRecord->wkt_masuk));
-		$pdf->RowNoBorder(array('Netto I',':',$CommodityTransactionRecord->netto_1.' KG',"",'KELUAR','',$this->ConvertDate($CommodityTransactionRecord->tgl_keluar,'1').' - '.$CommodityTransactionRecord->wkt_keluar));
+		$pdf->RowNoBorder(array('Bruto',':',number_format($CommodityTransactionRecord->bruto,2,'.',',').' KG',"",'TIMBANGAN','',"TANGGAL - JAM"));
+		$pdf->RowNoBorder(array('Tarra',':',number_format($CommodityTransactionRecord->tarra,2,'.',',').' KG',"",'MASUK','',$this->ConvertDate($CommodityTransactionRecord->tgl_masuk,'1').' - '.$CommodityTransactionRecord->wkt_masuk));
+		$pdf->RowNoBorder(array('Netto I',':',number_format($CommodityTransactionRecord->netto_1,2,'.',',').' KG',"",'KELUAR','',$this->ConvertDate($CommodityTransactionRecord->tgl_keluar,'1').' - '.$CommodityTransactionRecord->wkt_keluar));
 		if($CommodityTransactionRecord->potongan > 0)
 		{
 			$potongan = $CommodityTransactionRecord->potongan / 100;
@@ -95,8 +95,8 @@ class cetakTimbanganCommodityPdf extends MainConf
 		{
 			$hsilPotongan = '';
 		}
-		$pdf->RowNoBorder(array('Potongan',':',$CommodityTransactionRecord->potongan.' %',"",'Hasil Potongan',':',$hsilPotongan.' KG'));
-		$pdf->RowNoBorder(array('Netto II',':',$CommodityTransactionRecord->netto_2.' KG',"",'','',''));
+		$pdf->RowNoBorder(array('Potongan',':',number_format($CommodityTransactionRecord->potongan,2,'.',',').' %',"",'Hasil Potongan',':',$hsilPotongan.' KG'));
+		$pdf->RowNoBorder(array('Netto II',':',number_format($CommodityTransactionRecord->netto_2,2,'.',',').' KG',"",'','',''));
 		$pdf->SetWidths(array(195));
 		$pdf->SetAligns(array('L'));
 		$pdf->Ln(5);

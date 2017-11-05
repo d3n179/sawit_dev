@@ -7,6 +7,7 @@ class ProcessingTbsRecord extends TActiveRecord
 	const TABLE='tbt_processing_tbs';
 
 	public $id;
+	public $version;
 	public $no_processing;
 	public $tgl_processing;
 	public $wkt_processing;

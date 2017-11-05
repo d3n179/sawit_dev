@@ -209,12 +209,12 @@ class LaporanTimbangan extends MainConf
 				$tblBody .= '<td>'.$row['no_polisi'].'</td>';		
 				$tblBody .= '<td>'.$row['barang'].'</td>';		
 				$tblBody .= '<td>'.$row['pemasok'].'</td>';		
-				$tblBody .= '<td>'.$row['bruto'].'</td>';	
-				$tblBody .= '<td>'.$row['tarra'].'</td>';	
-				$tblBody .= '<td>'.$row['netto_1'].'</td>';		
+				$tblBody .= '<td>'.number_format($row['bruto'],2,'.',',').'</td>';	
+				$tblBody .= '<td>'.number_format($row['tarra'],2,'.',',').'</td>';	
+				$tblBody .= '<td>'.number_format($row['netto_1'],2,'.',',').'</td>';		
 				$tblBody .= '<td>'.$row['potongan'].'</td>';	
 				$tblBody .= '<td>'.$row['hasil_potongan'].'</td>';	
-				$tblBody .= '<td>'.$row['netto_2'].'</td>';		
+				$tblBody .= '<td>'.number_format($row['netto_2'],2,'.',',').'</td>';		
 				$tblBody .= '<td>'.$row['jml_tandan'].'</td>';	
 				$tblBody .= '<td>'.$row['komidel'].'</td>';		
 				$tblBody .= '<td>'.$row['kategori_tbs'].'</td>';		

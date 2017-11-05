@@ -162,7 +162,7 @@ $html = '
 </style>
 <table width="100%" class="txt9">
   <tr>
-    <td width="25%"><img  style="position:absolute;" src="'.$urlImg.'"/></td>
+    <td width="25%"><img height="100px"  style="position:absolute;" src="'.$urlImg.'"/></td>
 	<td align="center">
 		<div><span class="title">SURAT PESANAN<br/></span>PURCHASE ORDER</div></td>
   </tr>
