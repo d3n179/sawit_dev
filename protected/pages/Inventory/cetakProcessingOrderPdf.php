@@ -1283,7 +1283,7 @@ $html = '</br></br><table width="100%" cellpadding="2">
 			<td align="center">Asst. Proses Shift I</td>
 		  </tr>
 		  <tr>
-			<td rowspan="9" colspan="9"></td>
+			<td rowspan="9" colspan="9">'.$record->catatan.'</td>
 			<td></td>
 			<td align="center">Diverifkasi</td>
 			<td align="center">Diketahui</td>

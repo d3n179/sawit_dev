@@ -81,6 +81,7 @@ class ProcessingTbs extends MainConf
 			$this->modalJudul->Text = 'Edit Processing Tbs';
 			$this->idProcessing->Value = $id;
 			
+			
 			$this->tbs_awal->Text = $Record->tbs_awal;
 			$this->tbs_kebun->Text = $Record->tbs_kebun;
 			$this->tbs_luar->Text = $Record->tbs_luar;
@@ -236,8 +237,8 @@ class ProcessingTbs extends MainConf
 			$this->jam_main_2->Text = $Record->jam_main_2;
 			$this->jam_down_1->Text = $Record->jam_down_1;
 			$this->jam_down_2->Text = $Record->jam_down_2;
-			$Record->save(); 
-			
+			//$Record->save(); 
+			$this->catatan->Text = $Record->catatan;
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
@@ -343,16 +344,26 @@ class ProcessingTbs extends MainConf
 		$sqlValid = "SELECT id FROM tbt_processing_tbs WHERE tgl_processing >= '$tglLhp' ";
 		$arrValid = $this->queryAction($sqlValid,'S');
 		
-		if(count($arrValid) > 0)
+		if($this->idProcessing->Value != '')
 		{
-			$this->getPage()->getClientScript()->registerEndScript
-						('','
-						toastr.error("Sudah Ada Proses LHP yg dilakukan setelah tanggal tersebut !!");');
+				$this->simpanData();
 		}
 		else
 		{
-			$this->simpanData();
+			if(count($arrValid) > 0)
+			{
+				$this->getPage()->getClientScript()->registerEndScript
+							('','
+							toastr.error("Sudah Ada Proses LHP yg dilakukan setelah tanggal tersebut !!");');
+			}
+			else
+			{
+				$this->simpanData();
+			}
 		}
+		
+			
+		
 	}
 	
 	public function simpanData()
@@ -417,6 +428,7 @@ class ProcessingTbs extends MainConf
 				$Record->wkt_processing = date("G:i:s");
 			}
 			
+			$Record->catatan = $this->catatan->Text;
 			$Record->tbs_awal = $this->tbs_awal->Text;
 			$Record->tbs_kebun = $this->tbs_kebun->Text;
 			$Record->tbs_luar = $this->tbs_luar->Text;

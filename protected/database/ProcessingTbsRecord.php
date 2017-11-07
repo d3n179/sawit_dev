@@ -168,7 +168,8 @@ class ProcessingTbsRecord extends TActiveRecord
 	public $jam_main_2;
 	public $jam_down_1;
 	public $jam_down_2;
-
+	public $catatan;
+	
 	public $deleted;
 
 

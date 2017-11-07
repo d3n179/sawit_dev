@@ -298,7 +298,7 @@ class SettingTbsOrder extends MainConf
 		$TbsOrderRecord->save();
 		
 		$DetailBayar = $param->CallbackParameter->BayarTbsTable;
-		
+		$totalTbsOrder = 0;
 		foreach($DetailBayar as $row)
 		{		
 			//if($row->status == '0')
@@ -317,6 +317,8 @@ class SettingTbsOrder extends MainConf
 					$TbsOrderDetailRecord->pph = $row->pph;
 					$TbsOrderDetailRecord->total_tbs_order = $row->total_tbs_order;
 					$TbsOrderDetailRecord->save();
+					
+					$totalTbsOrder += $row->total_tbs_order;
 				}
 				
 				$totalNettoMasuk += $row->netto_2;
@@ -327,6 +329,60 @@ class SettingTbsOrder extends MainConf
 			
 		}
 		
+		$supplierName = PemasokRecord::finder()->findByPk($idPemasok)->nama;
+		$this->InsertJurnalUmum($TbsOrderRecord->id,
+											'3',
+											'0',
+											$TbsOrderRecord->tgl_transaksi,
+											date("G:i:s"),
+											'Persediaan Bahan Baku',
+											$totalTbsOrder,
+											$TbsOrderRecord->no_tbs_order);
+											
+				$this->InsertJurnalUmum($TbsOrderRecord->id,
+											'3',
+											'1',
+											$TbsOrderRecord->tgl_transaksi,
+											date("G:i:s"),
+											'Hutang',
+											$totalTbsOrder,
+											$TbsOrderRecord->no_tbs_order);	
+																
+				
+											
+					$this->InsertJurnalBukuBesar($TbsOrderRecord->id,
+												'4',
+												'0',
+												$TbsOrderRecord->no_tbs_order,
+												$TbsOrderRecord->tgl_transaksi,
+												date("G:i:s"),
+												'',
+												'',
+												"Persediaan Bahan Baku",
+												'Pembelian Secara Kredit Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$totalTbsOrder);
+					
+					$this->InsertJurnalBukuBesar($TbsOrderRecord->id,
+												'4',
+												'0',
+												$TbsOrderRecord->no_tbs_order,
+												$TbsOrderRecord->tgl_transaksi,
+												date("G:i:s"),
+												'',
+												'',
+												"Hutang",
+												'Pembelian Secara Kredit Kelapa Sawit No '.$TbsOrderRecord->no_tbs_order.' Kepada '.$supplierName,
+												$totalTbsOrder);
+												
+			$this->InsertJurnalPembelian($TbsOrderRecord->id,
+										$TbsOrderRecord->no_tbs_order,
+										'1',
+										date("Y-m-d"),
+										date("G:i:s"),
+										$supplierName,
+										'',
+										'',
+										$totalTbsOrder);
 		
 						
 	$tblBody = $this->BindGrid();

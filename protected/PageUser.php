@@ -52,6 +52,7 @@ class PageUser extends TDbUser
 					WHERE
 						tbm_menu.deleted = '0'
 						AND tbm_menu.aktif = '1'
+					GROUP BY tbm_menu.id
 					ORDER BY
 						tbm_menu.urutan ASC ";
 						

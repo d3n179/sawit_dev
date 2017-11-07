@@ -141,6 +141,12 @@
 											<span class="hidden-xs">ETC</span>
 										</a>
 									</li>
+									<li>
+										<a href="#setting15" data-toggle="tab">
+											<span class="visible-xs"><i class="entypo-home"></i></span>
+											<span class="hidden-xs">CATATAN</span>
+										</a>
+									</li>
 								</ul>
 								
 								<div class="tab-content">
@@ -2673,6 +2679,17 @@
 															  CssClass="valRequired"
 															  ControlCssClass="valctrl"
 															  ValidationGroup="val" />
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="tab-pane" id="setting15">
+										<div class="row">
+											<div class="col-md-9">
+												<div class="form-group">
+													<label class="control-label" for="catatan">Catatan</label>
+													<com:CSHtmlArea ID="catatan" Width="100%" Height="300px" />
+													
 												</div>
 											</div>
 										</div>

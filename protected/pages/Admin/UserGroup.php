@@ -80,6 +80,7 @@ class UserGroup extends MainConf
 				WHERE 
 					tbm_menu.deleted = '0'
 					AND tbm_menu.parent_id != '0'
+				GROUP BY tbm_menu.id
 				ORDER BY 
 					tbm_user_menu_group.id ASC ";
 		$Record = $this->queryAction($sql,'S');
