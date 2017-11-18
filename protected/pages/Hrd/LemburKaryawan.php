@@ -7,6 +7,11 @@ class LemburKaryawan extends MainConf
 		parent::onPreRenderComplete($param);
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
+			$sqlJabatan = "SELECT id, nama FROM tbm_jabatan WHERE deleted ='0' ";
+			$arrJabatan = $this->queryAction($sqlJabatan,'S');
+			$this->DDJabatan->DataSource = $arrJabatan;
+			$this->DDJabatan->DataBind();
+			
 			$sqlKaryawan = "SELECT id, nama FROM tbm_karyawan WHERE deleted ='0' ";
 			$arrKaryawan = $this->queryAction($sqlKaryawan,'S');
 			$this->DDKaryawan->DataSource = $arrKaryawan;
@@ -14,6 +19,18 @@ class LemburKaryawan extends MainConf
 			
 		}
 		
+	}
+	
+	public function jabatanChanged()
+	{
+		$sqlKaryawan = "SELECT id, nama FROM tbm_karyawan WHERE deleted ='0' ";
+		
+		if($this->DDJabatan->SelectedValue != 'empty')
+			$sqlKaryawan .= " AND tbm_karyawan.id_jabatan = '".$this->DDJabatan->SelectedValue."'";
+		$arrKaryawan = $this->queryAction($sqlKaryawan,'S');
+		
+		$this->DDKaryawan->DataSource = $arrKaryawan;
+		$this->DDKaryawan->DataBind();
 	}
 	
 	public function onPreRender($param)
@@ -35,12 +52,14 @@ class LemburKaryawan extends MainConf
 		$sql = "SELECT
 					tbt_lembur_karyawan.id,
 					tbm_karyawan.nama AS karyawan,
+					tbm_jabatan.nama AS jabatan,
 					tbt_lembur_karyawan.tgl ,
 					tbt_lembur_karyawan.jns_lembur,
 					tbt_lembur_karyawan.lama_lembur
 				FROM
 					tbt_lembur_karyawan
 				INNER JOIN tbm_karyawan ON tbm_karyawan.id = tbt_lembur_karyawan.id_karyawan
+				INNER JOIN tbm_jabatan ON tbm_jabatan.id = tbm_karyawan.id_jabatan
 				WHERE
 					tbt_lembur_karyawan.deleted = '0'
 				ORDER BY 
@@ -62,6 +81,7 @@ class LemburKaryawan extends MainConf
 					
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['karyawan'].'</td>';
+				$tblBody .= '<td>'.$row['jabatan'].'</td>';
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl'],'3').'</td>';
 				$tblBody .= '<td>'.$jnsLembur.'</td>';
 				$tblBody .= '<td>'.$row['lama_lembur'].' Jam</td>';

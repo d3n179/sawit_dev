@@ -42,6 +42,7 @@
 											<th width="150px">Tgl Transaksi</th>
 											<th width="150px">Pembeli</th>
 											<th width="150px">No Kendaraan</th>
+											<th width="150px">Nama Supir</th>
 											<th width="150px">Transporter</th>
 											<th width="150px">Tipe Commodity</th>
 											<th width="150px">Jumlah</th>
@@ -151,6 +152,8 @@
 											
 								</div>
 							</div>
+						</div>
+						<div class="row">
 							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="transporter">No Kendaraan</label>
@@ -159,6 +162,22 @@
 											CssClass="form-control upper" />
 											<com:TRequiredFieldValidator 
 											  ControlToValidate="no_kendaraan"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="nama_supir">Nama Supir</label>
+									 <com:TActiveTextBox 
+											ID="nama_supir" 
+											CssClass="form-control upper" />
+											<com:TRequiredFieldValidator 
+											  ControlToValidate="nama_supir"											 
 											  ErrorMessage=""
 											  Display="Dynamic"
 											  FocusOnError="true" 
@@ -210,9 +229,9 @@
 											  InitialValue="empty"/>
 								</div>
 							</div>
-							<div class="col-md-2">
+							<div class="col-md-2" id="noKontrak">
 								<div class="form-group">
-									<label class="control-label" for="DDKontrak">Jenis Kontrak</label>
+									<label class="control-label" for="DDKontrak">Nomor Kontrak</label>
 									 <com:TActiveDropDownList 
 										ID="DDKontrak"
 										PromptText="--Pilih Jenis Kontrak--"
@@ -234,6 +253,23 @@
 											  ControlCssClass="valctrl"
 											  ValidationGroup="val" 
 											  InitialValue="empty"/>
+								</div>
+							</div>
+							<div class="col-md-2" id="noDoManual" Style="Display:None;">
+								<div class="form-group">
+									<label class="control-label" for="no_do">Nomor DO</label>
+									 <com:TActiveTextBox 
+											ID="no_do" 
+											AutoPostBack="false"
+											CssClass="form-control upper" />
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="no_do"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
 								</div>
 							</div>
 							<div class="col-md-2">
@@ -544,6 +580,11 @@
 					jQuery('#<%= $this->tgl_keluar->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->wkt_keluar->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->JnsKontrak->getClientID()%>').prop("disabled",false);
+					jQuery('#<%= $this->no_do->getClientID()%>').prop("disabled",true);
+					
+					jQuery('#noKontrak').show();
+					jQuery('#noDoManual').hide();
+					
 					jQuery('#<%= $this->DDKontrak->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->Pembeli->getClientID()%>').prop("disabled",false);
 					jQuery('#<%= $this->npwp->getClientID()%>').prop("disabled",false);
@@ -622,6 +663,9 @@
 				if(JnsKontrak == '1')
 				{
 					jQuery('#<%= $this->DDKontrak->getClientID()%>').prop('disabled',false);
+					jQuery('#noKontrak').show();
+					jQuery('#<%= $this->no_do->getClientID()%>').prop('disabled',true);
+					jQuery('#noDoManual').hide();
 					jQuery('#<%= $this->Pembeli->getClientID()%>').prop('disabled',true);
 					jQuery('#<%= $this->npwp->getClientID()%>').prop('disabled',true);
 					jQuery('#<%= $this->alamat_pembeli->getClientID()%>').prop('disabled',true);
@@ -631,6 +675,9 @@
 				else
 				{
 					jQuery('#<%= $this->DDKontrak->getClientID()%>').prop('disabled',true);
+					jQuery('#noKontrak').hide();
+					jQuery('#<%= $this->no_do->getClientID()%>').prop('disabled',false);
+					jQuery('#noDoManual').show();
 					jQuery('#<%= $this->Pembeli->getClientID()%>').prop('disabled',false);
 					jQuery('#<%= $this->npwp->getClientID()%>').prop('disabled',false);
 					jQuery('#<%= $this->alamat_pembeli->getClientID()%>').prop('disabled',false);

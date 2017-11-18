@@ -35,7 +35,7 @@ class cetakLaporanRekapGajiKaryawanPreviewPdf extends MainConf
 		elseif($bln == '10')
 			$nmBulan = "Oktober";
 		elseif($bln == '11')
-			$nmBulan = "Novemver";
+			$nmBulan = "November";
 		elseif($bln == '12')
 			$nmBulan = "Desember";
 		
@@ -78,6 +78,7 @@ class cetakLaporanRekapGajiKaryawanPreviewPdf extends MainConf
 						WHERE
 							tbm_department.deleted = '0'
 							AND tbm_jabatan.deleted ='0'
+							AND tbm_karyawan.aktif ='0'
 							AND tbm_karyawan.deleted ='0'
 							AND tbm_department.id_parent = '0' 
 							GROUP BY tbm_department.id ";
@@ -210,6 +211,7 @@ class cetakLaporanRekapGajiKaryawanPreviewPdf extends MainConf
 							INNER JOIN tbm_jabatan ON tbm_jabatan.id = tbm_karyawan.id_jabatan
 						WHERE
 							tbm_karyawan.deleted = '0' 
+							AND tbm_karyawan.aktif ='0'
 							AND tbm_jabatan.deleted ='0'
 							AND tbm_jabatan.id_department = '".$idDeparment."' ";
 			$arrTrans = $this->queryAction($sqlTrans,'S');

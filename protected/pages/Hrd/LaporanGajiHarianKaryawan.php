@@ -160,6 +160,7 @@ class LaporanGajiHarianKaryawan extends MainConf
 					WHERE
 						tbm_karyawan.deleted = '0'
 					AND tbm_jabatan.deleted = '0'
+					AND tbm_karyawan.aktif = '0'
 					AND tbm_department.deleted = '0'
 					GROUP BY
 						tbm_karyawan.id";

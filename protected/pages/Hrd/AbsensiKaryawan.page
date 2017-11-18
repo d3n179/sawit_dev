@@ -24,6 +24,25 @@
 					ValidationGroup="val" />
 			</div>
 		</div>	
+		<div class="col-md-3">
+							<div class="form-group">
+							<label for="DDJabatan" class="control-label">Jabatan Karyawan</label>
+								<com:TActiveDropDownList 
+									ID="DDJabatan"
+									Width="190px"
+									PromptText="--Pilih Jabatan--"
+									PromptValue="empty"
+									AutoPostBack="false"
+									CausesValidation="false"
+									CssClass="form-control"
+									Attributes.OnChange="dateChanged();"
+									DataTextField="nama"
+									DataValueField="id">
+									</com:TActiveDropDownList>
+								
+										
+							</div>
+						</div>
 	</div>	
 	<div class="row">
 		<div class="col-md-3">

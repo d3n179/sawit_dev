@@ -3,7 +3,7 @@
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
 	<div class="modal fade-in custom-width" id="modal-1" aria-hidden="false">
-		<div class="modal-dialog" style="width: 60%;">
+		<div class="modal-dialog" style="width: 80%;">
 			<div class="modal-content">
 				
 				<div class="modal-header">
@@ -17,6 +17,7 @@
 							<div class="form-group">
 								<label class="control-label" for="tgl_kontrak">Tanggal Kontrak</label>
 								<com:TActiveHiddenField ID="idKontrak"/>
+								<com:TActiveHiddenField ID="stDp"/>
 								<com:TActiveTextBox 
 										ID="tgl_kontrak" 
 										CssClass="form-control mask_date date-picker" />
@@ -111,6 +112,7 @@
 								<div class="input-group">
 								 <com:TActiveTextBox 
 										ID="quantity" 
+										Attributes.Onchange="totalContract();"
 										CssClass="form-control mask_decimal" 
 										Attributes.PlaceHolder="0"/>
 								<com:TRequiredFieldValidator 
@@ -152,10 +154,30 @@
 								<label class="control-label" for="pricing">Harga</label>
 								 <com:TActiveTextBox 
 										ID="pricing" 
-										CssClass="form-control mask_decimal" 
+										Attributes.Onchange="totalContract();"
+										CssClass="form-control mask_currency" 
 										Attributes.PlaceHolder="0"/>
 								<com:TRequiredFieldValidator 
 										  ControlToValidate="pricing"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>	
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label" for="total_contract">Total</label>
+								 <com:TActiveTextBox 
+										ID="total_contract" 
+										Enabled="false"
+										CssClass="form-control mask_currency" 
+										Attributes.PlaceHolder="0"/>
+								<com:TRequiredFieldValidator 
+										  ControlToValidate="total_contract"											 
 										  ErrorMessage=""
 										  Display="Dynamic"
 										  FocusOnError="true" 
@@ -213,6 +235,62 @@
 										
 							</div>
 						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label class="control-label" for="ppn">PPN</label>
+								 <com:TActiveTextBox 
+										ID="ppn" 
+										CssClass="form-control mask_decimal" 
+										Attributes.PlaceHolder="0"/>
+										
+							</div>
+						</div>
+					</div>	
+					<div id="dpPanel" class="row" style="Display:None;">
+						<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="DDBank">Tujuan Kas</label>
+									 <com:TActiveDropDownList 
+										ID="DDBank"
+										PromptText="--Bank--"
+										PromptValue="empty"
+										AutoPostBack="false"
+										CausesValidation="true"
+										Enabled="true"
+										DataTextField="nama"
+										DataValueField="id"
+										CssClass="form-control">
+										</com:TActiveDropDownList>
+										<com:TRequiredFieldValidator 
+											  ControlToValidate="DDBank"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" 
+											  InitialValue="empty"/>
+								</div>
+							</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label class="control-label" for="dp_contract">DP</label>
+								 <com:TActiveTextBox 
+										ID="dp_contract" 
+										Enabled="true"
+										CssClass="form-control mask_currency" 
+										Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+										  ControlToValidate="dp_contract"											 
+										  ErrorMessage=""
+										  Display="Dynamic"
+										  FocusOnError="true" 
+										  CssClass="valRequired"
+										  ControlCssClass="valctrl"
+										  ValidationGroup="val" />
+										
+							</div>
+						</div>	
 					</div>
 					<div class="row">
 						<div class="col-md-6">
@@ -364,7 +442,7 @@
 	<div class="row">
 		<div class="col-md-3">
 			<div class="form-group">
-				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Kontrak Penjualan');clearForm();enabledForm();" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
+				<a href="javascript:;" onclick="jQuery('#modal-1').modal('show');jQuery('#<%= $this->modalJudul->getClientID()%>').text('Tambah Kontrak Penjualan');clearForm();enabledForm();dpRefresh(0);" class="btn btn-info btn-icon icon-left"><i class="entypo-plus" ></i>Tambah</a>
 			</div>
 		</div>	
 	</div>	
@@ -416,6 +494,14 @@
 				BindGrid();
 			});
 			
+			function totalContract()
+			{
+				var jumlah = parseFloat(jQuery('#<%= $this->quantity->getClientID()%>').val());
+				var harga = parseFloat(jQuery('#<%= $this->pricing->getClientID()%>').val().replace(/\,/g,''));
+				var  totalContract = jumlah * harga;
+				jQuery('#<%= $this->total_contract->getClientID()%>').val(totalContract);
+				console.log(totalContract);
+			}
 			
 			function clearForm()
 			{
@@ -427,9 +513,12 @@
 				jQuery('#<%= $this->quantity->getClientID()%>').val('');
 				jQuery('#<%= $this->quality->getClientID()%>').val('');
 				jQuery('#<%= $this->pricing->getClientID()%>').val('');
+				jQuery('#<%= $this->total_contract->getClientID()%>').val('');
+				jQuery('#<%= $this->dp_contract->getClientID()%>').val('');
 				jQuery('#<%= $this->term_of_payment->getClientID()%>').val('');
 				jQuery('#<%= $this->remark->getClientID()%>').val('');
 				jQuery('#<%= $this->delivery->getClientID()%>').val('');
+				jQuery('#<%= $this->stDp->getClientID()%>').val('');
 				
 				Prado.Validation.reset('val');
 				jQuery('.form-control').val('');
@@ -446,12 +535,35 @@
 				jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->id_pembeli->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->alamat_pembeli->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->npwp->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->ppn->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->DDSatuan->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->quantity->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->quality->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->pricing->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->term_of_payment->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->remark->getClientID()%>').prop('disabled',false);
+			}
+			
+			function dpRefresh(stDp)
+			{
+				if(stDp != 1)
+				{
+					jQuery("#dpPanel").prop('disabled',true);
+					jQuery('#<%= $this->DDBank->getClientID()%>').prop('disabled',true);
+					jQuery('#<%= $this->dp_contract->getClientID()%>').prop('disabled',true);
+					
+					
+					jQuery("#dpPanel").hide();
+				}
+				else
+				{
+					jQuery('#<%= $this->DDBank->getClientID()%>').prop('disabled',false);
+					jQuery('#<%= $this->dp_contract->getClientID()%>').prop('disabled',false);
+					jQuery("#dpPanel").prop('disabled',false);
+					jQuery("#dpPanel").show();
+				}
 			}
 			
 			function disabledForm()
@@ -505,16 +617,45 @@
 			
 			
 			
-			function editClicked(id)
+			function editClicked(id,status)
 			{
-				if(confirm('Edit Data Ini ? '))
+				if(status == 0)
+					var msg = 'Edit Data Ini ? ';
+				else if(status == 1)
+				{
+					var msg = 'Masukkan DP ? ';
+					
+				}
+					
+				if(confirm(msg))
 				{
 					loadContent();
 					clearForm();
 					disabledForm();
+					jQuery('#<%= $this->stDp->getClientID()%>').val(status);
+					dpRefresh(status);
+					if(status == 1)
+					{
+						jQuery('#<%= $this->delivery->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->tgl_kontrak->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->id_pembeli->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->alamat_pembeli->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->npwp->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->ppn->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->commodity_type->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->DDSatuan->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->quantity->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->quality->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->pricing->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->term_of_payment->getClientID()%>').prop('disabled',true);
+						jQuery('#<%= $this->remark->getClientID()%>').prop('disabled',true);
+						
+					}
+				
 					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
-							id:id
+							id:id,
+							status:status
 						});
 						request.dispatch();
 					
@@ -548,7 +689,7 @@
 				{
 					loadContent();
 					clearForm();
-					
+					dpRefresh(0);
 					jQuery('#<%= $this->submitBtn->getClientID()%>').hide();
 					jQuery('#<%= $this->approveBtn->getClientID()%>').show();
 					jQuery('#<%= $this->cancelBtn->getClientID()%>').show();

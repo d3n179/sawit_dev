@@ -7,7 +7,10 @@ class AbsensiKaryawan extends MainConf
 		parent::onPreRenderComplete($param);
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
-			
+			$sqlJabatan = "SELECT id, nama FROM tbm_jabatan WHERE deleted ='0' ";
+			$arrJabatan = $this->queryAction($sqlJabatan,'S');
+			$this->DDJabatan->DataSource = $arrJabatan;
+			$this->DDJabatan->DataBind();
 		}
 		
 	}
@@ -75,9 +78,14 @@ class AbsensiKaryawan extends MainConf
 						tbm_jadwal
 					INNER JOIN tbm_karyawan ON tbm_karyawan.id = tbm_jadwal.idkaryawan
 					WHERE
-						tbm_jadwal.tanggal = '$tglAbsen'
-					ORDER BY 
+						tbm_jadwal.tanggal = '$tglAbsen'  ";
+						
+			if($this->DDJabatan->SelectedValue != 'empty')
+				$sql .= " AND tbm_karyawan.id_jabatan = '".$this->DDJabatan->SelectedValue."'";
+			
+			$sql .= " ORDER BY 
 						tbm_karyawan.id ASC ";
+						
 			$Record = $this->queryAction($sql,'S');
 			
 			$count = count($Record);

@@ -105,6 +105,7 @@ class RekapGajiKaryawan extends MainConf
 					INNER JOIN tbm_department ON tbm_department.id = tbm_jabatan.id_department
 					WHERE
 						tbm_karyawan.deleted = '0'
+						AND tbm_karyawan.aktif = '0'
 					AND tbm_jabatan.deleted = '0'
 					AND tbm_department.deleted = '0'
 					GROUP BY
@@ -461,6 +462,7 @@ class RekapGajiKaryawan extends MainConf
 			}
 		}
 		else
+
 		{
 			$tblBody = '';
 		}
@@ -709,7 +711,8 @@ class RekapGajiKaryawan extends MainConf
 				FROM
 					rekap_gaji_juni
 				LEFT JOIN tbm_karyawan ON LOWER(tbm_karyawan.nama) = LOWER(rekap_gaji_juni.nama)
-				AND tbm_karyawan.deleted = '0' ";
+				AND tbm_karyawan.deleted = '0'
+				AND tbm_karyawan.aktif = '0' ";
 		$arr = $this->queryAction($sql,'S');
 		if($arr)
 		{

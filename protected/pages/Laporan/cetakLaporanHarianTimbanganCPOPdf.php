@@ -1,5 +1,5 @@
 <?PHP
-class cetakLaporanPengirimanCommodityPdf extends MainConf
+class cetakLaporanHarianTimbanganCPOPdf extends MainConf
 {
 	public function onPreInit($param)
 	{
@@ -77,23 +77,25 @@ class cetakLaporanPengirimanCommodityPdf extends MainConf
 		$pdf->SetFont('Arial','BU',10);
 		
 		$pdf->SetFont('Arial','B',10);
-		$pdf->Cell(0,5,'LAPORAN PENJUALAN COMMODITY','0',0,'C');
+		$pdf->Cell(0,5,'LAPORAN HARIAN TIMBANGAN CPO','0',0,'C');
 		$pdf->Ln(5);
 		$pdf->Cell(0,5,'PERIODE : '.$nmPeriode,'0',0,'C');
 		$pdf->Ln(5);
-		$pdf->SetAligns(array('C','C','C','C','C','C','C','C'));
-		$pdf->SetWidths(array(10,40,40,30,50,35,35,35));
-		$pdf->Row(array('NO','NO. TIKET','NO. DO','TGL. KIRIM','PEMBELI','COMMODITY','JUMLAH KIRIM','TOTAL PENGIRIMAN'));
+		$pdf->SetAligns(array('C','C','C','C','C','C','C','C','C','C','C'));
+		$pdf->SetWidths(array(10,35,35,35,35,35,35,25,25,25,25));
+		$pdf->Row(array('NO','NO. DO','NO. KONTRAK','NO. POLISI','NAMA SUPIR','NAMA BARANG','BUYER','BRUTTO','TARRA','POTONGAN (%)','NETTO'));
 		//$pdf->Ln(1);
 		$pdf->SetFont('Arial','',8);
-		$pdf->SetAligns(array('C','L','L','L','L','R','R','R'));
+		$pdf->SetAligns(array('C','L','L','L','L','L','L','R','R','R','R'));
 		$session=new THttpSession;
 		$session->open();
-		$sql = $session['cetakLapPengirimanCommoditySql'];
+		$sql = $session['cetakLapharianTimbanganCpoSql'];
 		$arrData=$this->queryAction($sql,'S');
 		$no = 0;
-		$ttlKirim = 0;
-		$ttlPengiriman = 0;
+		$ttlBruto = 0;
+		$ttlTarra = 0;
+		$ttlPotongan = 0;
+		$ttlNetto = 0;
 		foreach($arrData as $row)
 		{
 			if($row['commodity_type'] == '0')
@@ -106,23 +108,38 @@ class cetakLaporanPengirimanCommodityPdf extends MainConf
 				$commodity_type = 'CANGKANG';
 					
 			$no++;
+			
+			if($row['jns_kontrak'] == '0')
+				$noDo .= $row['no_do_manual'];
+			else
+				$noDo .= $row['no_do'];
+				
 			$pdf->Row(array($no,
-							$row['transaction_no'],
-							$row['no_do'],
-							$this->ConvertDate($row['tgl_do'],'3'),
-							$row['pembeli'],
+							$noDo,
+							$row['sales_no'],
+							$row['no_kendaraan'],
+							$row['nama_supir'],
 							$commodity_type,
-							$row['jumlah_kirim'],
-							number_format($row['total_pengiriman'],2,'.',',')));
+							$row['pembeli'],
+							number_format($row['bruto'],2,'.',','),
+							number_format($row['tarra'],2,'.',','),
+							number_format($row['potongan'],2,'.',','),
+							number_format($row['netto_2'],2,'.',',')));
 			
 			
-			$ttlKirim = $row['jumlah_kirim'];
-			$ttlPengiriman = $row['total_pengiriman'];
+			$ttlBruto += $row['bruto'];
+			$ttlTarra += $row['tarra'];
+			$ttlPotongan += $row['potongan'];
+			$ttlNetto += $row['netto_2'];
 		}
-		$pdf->SetAligns(array('C','R','R','R','R','R'));
-		$pdf->SetWidths(array(205,35,35));
+		$pdf->SetAligns(array('C','R','R','R','R'));
+		$pdf->SetWidths(array(220,25,25,25,25));
 		$pdf->SetFont('Arial','B',8);
-		$pdf->Row(array("Total",$ttlKirim,number_format($ttlPengiriman,2,'.',',')));
+		$pdf->Row(array("Total",
+						number_format($ttlBruto,2,'.',','),
+						number_format($ttlTarra,2,'.',','),
+						number_format($ttlPotongan,2,'.',','),
+						number_format($ttlNetto,2,'.',',')));
 			
 		$pdf->Output();	
 	}

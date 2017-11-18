@@ -65,7 +65,7 @@ class RevenueTransaction extends MainConf
 					tbt_revenue_transaction.deleted
 				FROM
 					tbt_revenue_transaction
-				INNER JOIN tbm_revenue ON tbm_revenue.id = tbt_revenue_transaction.revenue_id
+				LEFT JOIN tbm_revenue ON tbm_revenue.id = tbt_revenue_transaction.revenue_id
 				INNER JOIN tbm_bank ON tbm_bank.id = tbt_revenue_transaction.bank_id
 				WHERE
 					tbt_revenue_transaction.deleted = '0'

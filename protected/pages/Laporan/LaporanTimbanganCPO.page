@@ -1,13 +1,13 @@
 <com:TContent ID="Main">
-	<h2>Laporan Pengiriman Commodity</h2>
+	<h2>Laporan Harian Timbangan CPO</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
 	<div class="row">
-		<div class="col-md-1">
+		<div class="col-md-2">
 			<div class="form-group">
-				<label for="noSp" class="control-label">No Tiket</label>
+				<label for="noSp" class="control-label">No Kontrak</label>
 				<com:TActiveTextBox 
-					ID="noTiket" 
+					ID="noKontrak" 
 					CssClass="form-control" />
 			</div>	
 		</div>
@@ -21,7 +21,7 @@
 		</div>	
 		<div class="col-md-2">
 			<div class="form-group">
-				<label for="nmPembeli" class="control-label">Pembeli</label>
+				<label for="nmPembeli" class="control-label">Buyer</label>
 				<com:TActiveTextBox 
 					ID="nmPembeli" 
 					CssClass="form-control" />
@@ -35,6 +35,8 @@
 						PromptText="--Commodity Type--"
 						PromptValue="empty"
 						AutoPostBack="false"
+						Enabled="true"
+						SelectedValue="0"
 						CausesValidation="true"
 						CssClass="form-control">
 							<com:TListItem Value = "0" Text="CPO - Crude Palm Oil"/>
@@ -54,9 +56,10 @@
 				<com:TActiveDropDownList 
 									ID="Periode"
 									Width="190px"
+									Enabled="true"
 									AutoPostBack="true"
 									CausesValidation="false"
-									SelectedValue = "0"
+									SelectedValue = "3"
 									OnSelectedIndexChanged = "periodeChanged"
 									CssClass="form-control">
 									<com:TListItem Text="Bulanan" Value="0"/>
@@ -166,13 +169,16 @@
 			<table class="table table-bordered datatable" id="table-1">
 				<thead>
 					<tr>
-					<th>No Tiket</th>
 					<th>No DO</th>
-					<th>Tgl Kirim</th>
-					<th>Pembeli</th>
-					<th>Tipe Commodity</th>
-					<th>Jumlah Dikirim</th>
-					<th>Total Pengiriman</th>
+					<th>No Kontrak</th>
+					<th>No Polisi</th>
+					<th>Nama Supir</th>
+					<th>Nama Barang</th>
+					<th>Buyer</th>
+					<th>Bruto</th>
+					<th>Tarra</th>
+					<th>Potongan (%)</th>
+					<th>Netto</th>
 				</tr>
 				</thead>
 				<tbody>

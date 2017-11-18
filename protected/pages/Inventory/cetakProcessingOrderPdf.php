@@ -177,7 +177,7 @@ if($record->bst1_cpo_isi > 0)
 else
 	$Oil_Recovered_Total_isi_BST1 = 0;
 	
-if($Oil_Recovered_Total_isi_BST2 > 0)
+if($record->bst2_cpo_isi > 0)
 	$Oil_Recovered_Total_isi_BST2 = $record->bst2_cpo_isi * $record->etc_bst2_kg_cm * $this->getTempVariable($record->temp_bst2) + $record->etc_bst2_kg * $this->getTempVariable($record->temp_bst2);
 else
 	$Oil_Recovered_Total_isi_BST2 = 0;

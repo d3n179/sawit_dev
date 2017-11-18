@@ -9,6 +9,7 @@ class ContractSalesRecord extends TActiveRecord
 	public $id;
 	public $status;
 	public $sales_no;
+	public $jns_kontrak;
 	public $commodity_type;
 	public $id_pembeli;
 	public $alamat_pembeli;
@@ -20,6 +21,10 @@ class ContractSalesRecord extends TActiveRecord
 	public $satuan_commodity;
 	public $quality;
 	public $pricing;
+	public $total_contract;
+	public $bank_id;
+	public $dp_contract;
+	public $ppn;
 	public $delivery;
 	public $term_of_payment;
 	public $remark;

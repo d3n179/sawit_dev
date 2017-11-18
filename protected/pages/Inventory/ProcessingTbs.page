@@ -39,7 +39,8 @@
 									<label class="control-label" for="tgl_processing">Tgl LHP</label>
 									<com:TActiveTextBox 
 											ID="tgl_processing" 
-											CssClass="form-control date-picker" />
+											CssClass="form-control date-picker" 
+											Attributes.OnChange="tglProcessingChanged();"/>
 											<com:TRequiredFieldValidator 
 											  ControlToValidate="tgl_processing"											 
 											  ErrorMessage=""
@@ -48,6 +49,16 @@
 											  CssClass="valRequired"
 											  ControlCssClass="valctrl"
 											  ValidationGroup="val" />
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<label class="control-label" for="tgl_processing">Tgl Transaksi</label>
+									<com:TActiveTextBox 
+											ID="tgl_transaksi" 
+											Enabled="false"
+											CssClass="form-control date-picker" />
+											
 								</div>
 							</div>	
 						</div>	
@@ -157,6 +168,7 @@
 												<div class="form-group">
 													<label class="control-label" for="tbs_awal">TBS Awal</label>
 													<com:TActiveHiddenField ID="idProcessing"/>
+													<com:TActiveHiddenField ID="statusProcessing" Value="0"/>
 													<com:TActiveTextBox 
 															ID="tbs_awal" 
 															CssClass="form-control mask_decimal" 
@@ -229,6 +241,8 @@
 													<label class="control-label" for="tbs_rbs_mentah">TBS Rbs Mentah</label>
 													<com:TActiveTextBox 
 															ID="tbs_rbs_mentah" 
+															Attributes.onchange="hitungKg();" 
+															AutoPostBack="true"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="TBS Rbs Mentah"/>
 															<com:TRequiredFieldValidator 
@@ -239,6 +253,11 @@
 															  CssClass="valRequired"
 															  ControlCssClass="valctrl"
 															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="tbs_rbs_mentah_kg" 
+															Enabled="false"
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Kg"/>
 												</div>
 											</div>	
 											<div class="col-md-3">
@@ -246,6 +265,8 @@
 													<label class="control-label" for="tbs_rbs_masak">TBS Rbs Masak</label>
 													<com:TActiveTextBox 
 															ID="tbs_rbs_masak" 
+															Attributes.onchange="hitungKg();" 
+															AutoPostBack="true"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="TBS Rbs Masak"/>
 															<com:TRequiredFieldValidator 
@@ -256,6 +277,11 @@
 															  CssClass="valRequired"
 															  ControlCssClass="valctrl"
 															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="tbs_rbs_masak_kg" 
+															Enabled="false"
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Kg"/>
 												</div>
 											</div>	
 											<div class="col-md-3">
@@ -263,7 +289,9 @@
 													<label class="control-label" for="tbs_restan_ramp">TBS Restan Ramp</label>
 													<com:TActiveTextBox 
 															ID="tbs_restan_ramp" 
-															CssClass="form-control mask_decimal" 
+															CssClass="form-control mask_decimal"
+															Attributes.onchange="hitungKg();" 
+															AutoPostBack="true"
 															Attributes.PlaceHolder="TBS Restan Ramp"/>
 															<com:TRequiredFieldValidator 
 															  ControlToValidate="tbs_restan_ramp"											 
@@ -273,6 +301,11 @@
 															  CssClass="valRequired"
 															  ControlCssClass="valctrl"
 															  ValidationGroup="val" />
+													<com:TActiveTextBox 
+															ID="tbs_restan_ramp_kg" 
+															Enabled="false"
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Kg"/>
 												</div>
 											</div>	
 											<div class="col-md-3">
@@ -299,6 +332,8 @@
 													<label class="control-label" for="tbs_proses_shift_1">TBS di Proses Shift I</label>
 													<com:TActiveTextBox 
 															ID="tbs_proses_shift_1" 
+															Attributes.onchange="hitungKg();" 
+															AutoPostBack="true"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="TBS di Proses Shift I"/>
 															<com:TRequiredFieldValidator 
@@ -316,6 +351,8 @@
 													<label class="control-label" for="tbs_proses_shift_2">TBS di Proses Shift II</label>
 													<com:TActiveTextBox 
 															ID="tbs_proses_shift_2" 
+															Attributes.onchange="hitungKg();" 
+															AutoPostBack="true"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="TBS di Proses Shift II"/>
 															<com:TRequiredFieldValidator 
@@ -326,6 +363,18 @@
 															  CssClass="valRequired"
 															  ControlCssClass="valctrl"
 															  ValidationGroup="val" />
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label class="control-label" for="cap_rebusan">CAP Rebusan</label>
+													<com:TActiveTextBox 
+															ID="cap_rebusan" 
+															Enabled="false"
+															AutoPostBack="false"
+															CssClass="form-control mask_decimal" 
+															Attributes.PlaceHolder="Cap Rebusan"/>
+															
 												</div>
 											</div>
 										</div>
@@ -1580,6 +1629,7 @@
 													<com:TActiveTextBox 
 															ID="nomor_kolam_tanah" 
 															CssClass="form-control mask_decimal" 
+															Text="0"
 															Attributes.PlaceHolder="Nomor Kolam Tanah"/>
 															<com:TRequiredFieldValidator 
 															  ControlToValidate="nomor_kolam_tanah"											 
@@ -1596,6 +1646,7 @@
 													<label class="control-label" for="mutu_pk_impurities">Kolam Tanah</label>
 													<com:TActiveTextBox 
 															ID="kolam_tanah" 
+															Text="0"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="Kolam Tanah"/>
 															<com:TRequiredFieldValidator 
@@ -1613,6 +1664,7 @@
 													<label class="control-label" for="oil_recovered_ffa">FFA</label>
 													<com:TActiveTextBox 
 															ID="oil_recovered_ffa" 
+															Text="0"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="FFA"/>
 															<com:TRequiredFieldValidator 
@@ -1630,6 +1682,7 @@
 													<label class="control-label" for="oil_recovered_ffa">Moisture</label>
 													<com:TActiveTextBox 
 															ID="oil_recovered_moisture" 
+															Text="0"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="Moisture"/>
 															<com:TRequiredFieldValidator 
@@ -1647,6 +1700,7 @@
 													<label class="control-label" for="pengutipan_minyak">Pengutipan Minyak</label>
 													<com:TActiveTextBox 
 															ID="pengutipan_minyak" 
+															Text="0"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="Pengutipan Minyak"/>
 															<com:TRequiredFieldValidator 
@@ -1664,6 +1718,7 @@
 													<label class="control-label" for="produksi_abu_janjang_goni">Produksi Abu Janjang</label>
 													<com:TActiveTextBox 
 															ID="produksi_abu_janjang_goni" 
+															Text="0"
 															CssClass="form-control mask_decimal" 
 															Attributes.PlaceHolder="Goni"/>
 															<com:TRequiredFieldValidator 
@@ -2688,7 +2743,7 @@
 											<div class="col-md-9">
 												<div class="form-group">
 													<label class="control-label" for="catatan">Catatan</label>
-													<com:CSHtmlArea ID="catatan" Width="100%" Height="300px" />
+													<com:TActiveTextBox TextMode="MultiLine" ID="catatan" Width="100%" Height="300px" />
 													
 												</div>
 											</div>
@@ -2742,8 +2797,10 @@
 	<table class="table table-bordered table-striped datatable" id="table-1">
 			<thead>
 				<tr>
+					<th width="50px">Status</th>
 					<th width="300px">No Processing</th>
 					<th width="300px">Tgl Processing</th>
+					<th width="300px">Tgl Transaksi</th>
 					<th width="150px">Aksi</th>
 				</tr>
 			</thead>
@@ -2764,6 +2821,7 @@
 	<com:TCallback ID="hargaPotongEditCallback" OnCallback="editHargaPotong" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="cetakCallback" OnCallback="cetakClicked" ActiveControl.CausesValidation="false"/>
 	<com:TCallback ID="checkProcessingCallback" OnCallback="checkProcessing" ActiveControl.CausesValidation="false"/>
+	<com:TCallback ID="hitungKg" OnCallback="hitungKg" ActiveControl.CausesValidation="false"/>
 	
 	<script type="text/javascript">
 			jQuery(document).ready(function(jQuery)
@@ -2777,6 +2835,44 @@
 			{
 				jQuery('#<%= $this->idProcessing->getClientID()%>').val('');
 				jQuery(".form-control").val('');
+				jQuery('#<%= $this->tgl_processing->getClientID()%>').prop('disabled',false);
+				
+				jQuery('#<%= $this->nomor_kolam_tanah->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->kolam_tanah->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->oil_recovered_ffa->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->oil_recovered_moisture->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->pengutipan_minyak->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->produksi_abu_janjang_goni->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->produksi_abu_janjang_kg->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->cst_1->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->cst_1_temp->getClientID()%>').val('70');
+				jQuery('#<%= $this->cst_2->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->cst_2_temp->getClientID()%>').val('77');
+				jQuery('#<%= $this->cst_3->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->cst_3_temp->getClientID()%>').val('76');
+				
+				jQuery('#<%= $this->rcv_1->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->rcv_1_temp->getClientID()%>').val('60');
+				jQuery('#<%= $this->rcv_2->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->rcv_2_temp->getClientID()%>').val('62');
+				jQuery('#<%= $this->rcv_3->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->cot->getClientID()%>').val('76');
+				
+				jQuery('#<%= $this->bss_no_1->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->bss_no_2->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->bss_no_3->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->bss_lantai->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->ffa_cst_1->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->ffa_cst_2->getClientID()%>').val('0.000');
+				jQuery('#<%= $this->ffa_cot->getClientID()%>').val('0.000');
+				
+				jQuery('#<%= $this->jam_main_1->getClientID()%>').val('00:00');
+				jQuery('#<%= $this->jam_main_2->getClientID()%>').val('00:00');
+				jQuery('#<%= $this->jam_down_1->getClientID()%>').val('00:00');
+				jQuery('#<%= $this->jam_down_2->getClientID()%>').val('00:00');
+				
 				
 				jQuery('#<%= $this->etc_cst1_kg_cm->getClientID()%>').val('247.93');
 				jQuery('#<%= $this->etc_cst1_kg->getClientID()%>').val('5379');
@@ -2891,6 +2987,38 @@
 				});
 			}
 			
+			function tglProcessingChanged()
+			{
+				var tglProcessing = jQuery('#<%= $this->tgl_processing->getClientID()%>').val();
+				if(tglProcessing != '')
+				{
+					var arrSplit = tglProcessing.split("-");
+					tglProcessing = arrSplit[2]+"-"+arrSplit[1]+"-"+arrSplit[0];
+					var d = new Date(tglProcessing);
+						d.setDate(d.getDate() - 1);
+					
+					var tglTransaksi = d.getDate()+"-"+(d.getMonth()+1)+"-"+d.getFullYear();
+					console.log(tglProcessing);
+					console.log(tglTransaksi);
+					console.log(d.getDate());
+					console.log(d.getMonth()+1);
+					console.log(d.getFullYear());
+					
+					jQuery('#<%= $this->tgl_transaksi->getClientID()%>').val(tglTransaksi);
+				}
+				else
+				{
+					jQuery('#<%= $this->tgl_transaksi->getClientID()%>').val('');
+				}
+				
+			}
+			
+			function hitungKg()
+			{
+				var request= <%= $this->hitungKg->ActiveControl->Javascript %>;
+					request.dispatch();
+			}
+			
 			function checkTodayProcessing()
 			{
 				loadContent();
@@ -2898,14 +3026,20 @@
 					request.dispatch();
 			}
 			
-			function editClicked(id)
+			function editClicked(id,status)
 			{
-				if(confirm('Edit Data Ini ? '))
+				if(status == 0)
+					var msg = 'Edit Data Ini ? ';
+				else if(status == 1)
+					var msg = 'Proses Data Ini ? ';
+					
+				if(confirm(msg))
 				{
 					loadContent();
 					var request= <%= $this->editCallback->ActiveControl->Javascript %>;
 						request.setCallbackParameter({
-							id:id
+							id:id,
+							status:status
 						});
 						request.dispatch();
 					

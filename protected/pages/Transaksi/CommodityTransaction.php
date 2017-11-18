@@ -53,6 +53,7 @@ class CommodityTransaction extends MainConf
 					tbt_commodity_transaction.id,
 					tbt_commodity_transaction.transaction_no,
 					tbt_commodity_transaction.no_kendaraan,
+					tbt_commodity_transaction.nama_supir,
 					tbt_commodity_transaction.transporter,
 					tbt_commodity_transaction.tgl_transaksi,
 					tbt_commodity_transaction.pembeli,
@@ -70,7 +71,7 @@ class CommodityTransaction extends MainConf
 				WHERE
 					tbt_commodity_transaction.deleted = '0'
 				ORDER BY 
-					tbt_commodity_transaction.id ASC ";
+					tbt_commodity_transaction.status ASC ";
 		$arr = $this->queryAction($sql,'S');
 		
 		$count = count($arr);
@@ -107,6 +108,7 @@ class CommodityTransaction extends MainConf
 				$tblBody .= '<td>'.$this->ConvertDate($row['tgl_transaksi'],'3').'</td>';
 				$tblBody .= '<td>'.$row['pembeli'].'</td>';
 				$tblBody .= '<td>'.$row['no_kendaraan'].'</td>';
+				$tblBody .= '<td>'.$row['nama_supir'].'</td>';
 				$tblBody .= '<td>'.$row['transporter'].'</td>';
 				$tblBody .= '<td>'.$commodity_type.'</td>';
 				$tblBody .= '<td>'.$row['netto_2'].'</td>';
@@ -140,11 +142,18 @@ class CommodityTransaction extends MainConf
 			$this->JnsKontrak->SelectedValue = $Record->jns_kontrak;
 			
 			if($Record->jns_kontrak == '1')	
+			{
 				$this->DDKontrak->SelectedValue = $Record->id_kontrak;
+				$this->no_do->text = '';
+			}
 			else
+			{
 				$this->DDKontrak->SelectedValue = 'empty';
+				$this->no_do->text = $Record->no_do;
+			}
 			
 			$this->no_kendaraan->Text = $Record->no_kendaraan;
+			$this->nama_supir->Text = $Record->nama_supir;
 			$this->transporter->Text = $Record->transporter;	
 			$this->Pembeli->Text = $Record->pembeli;
 			$this->npwp->Text = $Record->npwp;
@@ -165,14 +174,29 @@ class CommodityTransaction extends MainConf
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
+					var jnsKontrak = '.$Record->jns_kontrak.';
+					
+					if(jnsKontrak == "0")
+					{
+						jQuery("#noDoManual").show();
+						jQuery("#noKontrak").hide();
+					}
+					else if(jnsKontrak == "1")
+					{
+						jQuery("#noDoManual").hide();
+						jQuery("#noKontrak").show();
+					}
+					
 					jQuery("#'.$this->tgl_masuk->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->wkt_masuk->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->tgl_keluar->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->wkt_keluar->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->JnsKontrak->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->DDKontrak->getClientID().'").prop("disabled",true);
+					jQuery("#'.$this->no_do->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->Pembeli->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->no_kendaraan->getClientID().'").prop("disabled",true);
+					jQuery("#'.$this->nama_supir->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->transporter->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->npwp->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->alamat_pembeli->getClientID().'").prop("disabled",true);
@@ -215,11 +239,20 @@ class CommodityTransaction extends MainConf
 			$this->JnsKontrak->SelectedValue = $Record->jns_kontrak;
 			
 			if($Record->jns_kontrak == '1')	
+			{
 				$this->DDKontrak->SelectedValue = $Record->id_kontrak;
+				$this->no_do->text = '';
+			}
 			else
+			{
 				$this->DDKontrak->SelectedValue = 'empty';
+				$this->no_do->text = $Record->no_do;
+			}
+			
+			
 			
 			$this->no_kendaraan->Text = $Record->no_kendaraan;
+			$this->nama_supir->Text = $Record->nama_supir;
 			$this->transporter->Text = $Record->transporter;		
 			$this->Pembeli->Text = $Record->pembeli;
 			$this->npwp->Text = $Record->npwp;
@@ -241,8 +274,21 @@ class CommodityTransaction extends MainConf
 					('','
 					unloadContent();
 					var jnsKontrak = '.$Record->jns_kontrak.';
+					
+					if(jnsKontrak == "0")
+					{
+						jQuery("#noDoManual").show();
+						jQuery("#noKontrak").hide();
+					}
+					else if(jnsKontrak == "1")
+					{
+						jQuery("#noDoManual").hide();
+						jQuery("#noKontrak").show();
+					}
+					
 					jQuery("#'.$this->JnsKontrak->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->DDKontrak->getClientID().'").prop("disabled",true);
+					jQuery("#'.$this->no_do->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->Pembeli->getClientID().'").prop("disabled",true);
 					jQuery("#'.$this->npwp->getClientID().'").prop("disabled",false);
 					jQuery("#'.$this->alamat_pembeli->getClientID().'").prop("disabled",false);
@@ -312,16 +358,15 @@ class CommodityTransaction extends MainConf
 			
 			if($this->idCommodityTransaction->Value == '')
 			{
-				
-				
 				if($this->JnsKontrak->SelectedValue == '1')	
 				{
 					$Record->jns_kontrak = $this->JnsKontrak->SelectedValue;
 					$Record->id_kontrak = $this->DDKontrak->SelectedValue;
+					$Record->no_do = '';
 				}
 				else
 				{
-					$Record->jns_kontrak = '1';
+					$Record->jns_kontrak = '0';
 					$arrContractSales = array("tipeCommodity"=>$this->commodity_type->SelectedValue,
 												"tglKontrak"=>date("Y-m-d"),
 												"id_pembeli"=>$this->Pembeli->Text,
@@ -330,10 +375,12 @@ class CommodityTransaction extends MainConf
 												"quantity"=>$this->netto_2->text,
 												"pricing"=>$this->harga->text);
 					$Record->id_kontrak = $this->createNewContract($arrContractSales);
+					$Record->no_do = $this->no_do->Text;
 				}
 			}
 			
 			$Record->no_kendaraan = strtoupper($this->no_kendaraan->Text);
+			$Record->nama_supir = strtoupper($this->nama_supir->Text);
 			$Record->transporter = strtoupper($this->transporter->Text);		
 			$Record->pembeli = strtoupper($this->Pembeli->Text);
 			$Record->npwp = $this->npwp->Text;
@@ -370,7 +417,7 @@ class CommodityTransaction extends MainConf
 		{
 			$arrDoc = $this->GenerateNoDO(date("m"),date("Y"),$Record->commodity_type);
 			$Record->tgl_do = date("Y-m-d");
-			$Record->no_do = $arrDoc['noDO'];
+			//$Record->no_do = $arrDoc['noDO'];
 			$Record->no_surat_kuasa = $arrDoc['noSKP'];
 			
 			$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($Record->id_kontrak);

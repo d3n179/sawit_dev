@@ -124,7 +124,6 @@
 							<label class="control-label" for="DDCoa">Coa</label>
 								<com:TActiveTextBox 
 										ID="DDCoa" 
-										Text = "28"
 										Enabled="false"
 										CssClass="" />
 									<com:TRequiredFieldValidator 
@@ -499,6 +498,7 @@
 									table_name:"tbm_coa",
 									field_name:"CONCAT(kode_coa,' - ',nama)",
 									field_sortby:"nama",
+									custom_query:[["deleted","EQUAL","0"],["kode_coa","STARTS_WITH","5",1],["kode_coa","STARTS_WITH","6",1],["kode_coa","STARTS_WITH","7"]],
 									page_number: page // page number
 								};
 							},

@@ -30,8 +30,10 @@ class ProcessingTbs extends MainConf
 	{
 		$sql = "SELECT 
 					tbt_processing_tbs.id,
+					tbt_processing_tbs.status,
 					tbt_processing_tbs.no_processing,
 					tbt_processing_tbs.tgl_processing,
+					tbt_processing_tbs.tgl_transaksi,
 					tbt_processing_tbs.version
 				FROM 
 					tbt_processing_tbs
@@ -47,19 +49,42 @@ class ProcessingTbs extends MainConf
 		{
 			foreach($Record as $row)
 			{
+				
 				$tglProcessing = $this->ConvertDate($row['tgl_processing'],'3');
+				
+				if($row['tgl_transaksi'] != '' || $row['tgl_transaksi'] != '0000-00-00' )
+				{
+					$tglTransaksi = date('Y-m-d', strtotime($row['tgl_processing'] .' -1 day'));
+					$tglTransaksi = $this->ConvertDate($tglTransaksi,'3');
+				}
+				else
+					$tglTransaksi = $this->ConvertDate($row['tgl_transaksi'],'3');
+				
+				if($row['status'] == '0')
+					$status = '<div class=\"label label-secondary\">NEW</div>';
+				elseif($row['status'] == '1')
+					$status = '<div class=\"label label-success\">PROCESSED</div>';
+				
 				$tblBody .= '<tr>';
+				$tblBody .= '<td>'.$status.'</td>';
 				$tblBody .= '<td>'.$row['no_processing'].'</td>';
 				$tblBody .= '<td>'.$tglProcessing.'</td>';
+				$tblBody .= '<td>'.$tglTransaksi.'</td>';
 				$tblBody .= '<td>';
 				
-				if($row['tgl_processing'] == date("Y-m-d") && $row['version'] == 1)
+				//if($row['tgl_processing'] == date("Y-m-d") && $row['status'] == '0')
+				if($row['status'] == '0')
 				{
-					$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
+					$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].',1)\"><i class=\"entypo-check\" ></i>Proses</a>&nbsp;&nbsp;</br>';
+					$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].',0)\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;';
+					$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Preview</a>&nbsp;&nbsp;</br>';
 					//$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
 				}
-				
-				$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak</a>&nbsp;&nbsp;</br>';
+				else
+				{
+					$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak</a>&nbsp;&nbsp;</br>';
+				}
+				//$tblBody .= '<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak</a>&nbsp;&nbsp;</br>';
 				$tblBody .=	'</td>';			
 				$tblBody .= '</tr>';
 			}
@@ -75,13 +100,26 @@ class ProcessingTbs extends MainConf
 	public function editForm($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
+		$status = $param->CallbackParameter->status;
 		$Record = ProcessingTbsRecord::finder()->findByPk($id);
 		if($Record)
 		{
-			$this->modalJudul->Text = 'Edit Processing Tbs';
+			if($status == 0)
+			{
+				$this->modalJudul->Text = 'Edit Processing Tbs';
+				$this->submitBtn->Text = 'Submit';
+			}
+			elseif($status == 1)
+			{
+				$this->modalJudul->Text = 'Proses Processing Tbs';
+				$this->submitBtn->Text = 'Proses';
+			}
+				
 			$this->idProcessing->Value = $id;
-			
-			
+			$this->statusProcessing->Value = $status;
+			$this->tgl_processing->Text = $this->ConvertDate($Record->tgl_processing,'1');
+			$this->tgl_transaksi->Text = $this->ConvertDate($Record->tgl_transaksi,'1');
+			$this->tgl_processing->Enabled=false;
 			$this->tbs_awal->Text = $Record->tbs_awal;
 			$this->tbs_kebun->Text = $Record->tbs_kebun;
 			$this->tbs_luar->Text = $Record->tbs_luar;
@@ -239,6 +277,7 @@ class ProcessingTbs extends MainConf
 			$this->jam_down_2->Text = $Record->jam_down_2;
 			//$Record->save(); 
 			$this->catatan->Text = $Record->catatan;
+			$this->hitungKg();
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
@@ -346,7 +385,7 @@ class ProcessingTbs extends MainConf
 		
 		if($this->idProcessing->Value != '')
 		{
-				$this->simpanData();
+				$this->simpanData($this->statusProcessing->Value);
 		}
 		else
 		{
@@ -358,7 +397,7 @@ class ProcessingTbs extends MainConf
 			}
 			else
 			{
-				$this->simpanData();
+				$this->simpanData(0);
 			}
 		}
 		
@@ -366,49 +405,66 @@ class ProcessingTbs extends MainConf
 		
 	}
 	
-	public function simpanData()
+	public function hitungKg()
+	{
+		$Persediaan_Today = round($this->tbs_awal->Text + $this->tbs_kebun->Text + $this->tbs_luar->Text + $this->tbs_potongan->Text);
+		$Cap_Rebusan = ($this->tbs_proses_shift_1->Text == 0 && $this->tbs_proses_shift_2->Text == 0 ? 0 : floor($Persediaan_Today / ($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text + $this->tbs_rbs_mentah->Text + $this->tbs_rbs_masak->Text + $this->tbs_restan_ramp->Text + $this->tbs_restan_lantai->Text)));
+		$this->tbs_rbs_mentah_kg->Text = $this->tbs_rbs_mentah->Text * $Cap_Rebusan;
+		$this->tbs_rbs_masak_kg->Text = $this->tbs_rbs_masak->Text * $Cap_Rebusan;
+		$this->tbs_restan_ramp_kg->Text = $this->tbs_restan_ramp->Text * $Cap_Rebusan;
+		$this->cap_rebusan->Text = $Cap_Rebusan;
+	}
+	
+	public function simpanData($statusProcessing)
 	{
 		$Persediaan_Today = round($this->tbs_awal->Text + $this->tbs_kebun->Text + $this->tbs_luar->Text + $this->tbs_potongan->Text);
 		$Cap_Rebusan = ($this->tbs_proses_shift_1->Text == 0 && $this->tbs_proses_shift_2->Text == 0 ? 0 : floor($Persediaan_Today / ($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text + $this->tbs_rbs_mentah->Text + $this->tbs_rbs_masak->Text + $this->tbs_restan_ramp->Text + $this->tbs_restan_lantai->Text)));
 		$Olah_Brutto_today = round(($this->tbs_proses_shift_1->Text + $this->tbs_proses_shift_2->Text) * $Cap_Rebusan);
 		$Olah_Netto_today  = ($Olah_Brutto_today == 0 ? 0 : round($Olah_Brutto_today - $this->tbs_potongan->Text));
 		
-		$stockBarangTbs = 0;
-		$BarangKategoriRecord = BarangKategoriRecord::finder()->find('tipe_kategori = ? AND deleted != ? ','1','1');
-		if($BarangKategoriRecord)
-		{
-			$idKategori = $BarangKategoriRecord->id;
-			$sql = "SELECT tbm_barang.id FROM tbm_barang WHERE tbm_barang.kategori_id = '$idKategori' AND deleted != '1' "; 
-			$arrBarang = $this->queryAction($sql,'S');
-			foreach($arrBarang as $rowBarang)
-			{
-				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted != ? ',$rowBarang['id'],'1');
-				if($StockBarangRecord)
-					$stockBarangTbs += $this->getTargetUom($rowBarang['id'],$StockBarangRecord->stok,'0','1','0');
-			}
-		}
-		
-		/*$BarangRecord = BarangRecord::finder()->find('kategori_id = ? AND deleted = ?','1','0');
-		if($BarangRecord)
-		{
-			$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ? ',$BarangRecord->id,'0');
-			if($StockBarangRecord)
-				$stockBarangTbs = $this->getTargetUom($BarangRecord->id,$StockBarangRecord->stok,'0','1','0');
-			else
-				$stockBarangTbs = 0;
-		}
-		else
+		if($statusProcessing == 1)
 		{
 			$stockBarangTbs = 0;
-		}*/
-		
-		if($stockBarangTbs >= $Olah_Netto_today)
-		{
-			$stStok = '1';
+			$BarangKategoriRecord = BarangKategoriRecord::finder()->find('tipe_kategori = ? AND deleted != ? ','1','1');
+			if($BarangKategoriRecord)
+			{
+				$idKategori = $BarangKategoriRecord->id;
+				$sql = "SELECT tbm_barang.id FROM tbm_barang WHERE tbm_barang.kategori_id = '$idKategori' AND deleted != '1' "; 
+				$arrBarang = $this->queryAction($sql,'S');
+				foreach($arrBarang as $rowBarang)
+				{
+					$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted != ? ',$rowBarang['id'],'1');
+					if($StockBarangRecord)
+						$stockBarangTbs += $this->getTargetUom($rowBarang['id'],$StockBarangRecord->stok,'0','1','0');
+				}
+			}
+			
+			/*$BarangRecord = BarangRecord::finder()->find('kategori_id = ? AND deleted = ?','1','0');
+			if($BarangRecord)
+			{
+				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ? ',$BarangRecord->id,'0');
+				if($StockBarangRecord)
+					$stockBarangTbs = $this->getTargetUom($BarangRecord->id,$StockBarangRecord->stok,'0','1','0');
+				else
+					$stockBarangTbs = 0;
+			}
+			else
+			{
+				$stockBarangTbs = 0;
+			}*/
+			
+			if($stockBarangTbs >= $Olah_Netto_today)
+			{
+				$stStok = '1';
+			}
+			else
+			{
+				$stStok = '0';
+			}
 		}
 		else
 		{
-			$stStok = '0';
+			$stStok = '1';
 		}
 		
 		if($stStok == '1')
@@ -416,16 +472,29 @@ class ProcessingTbs extends MainConf
 			if($this->idProcessing->Value != '')
 			{
 				$Record = ProcessingTbsRecord::finder()->findByPk($this->idProcessing->Value);
-				$Record->version = 2;
-				$msg = "Data Berhasil Diedit";
+				$Record->version += 1;
+				
+				if($statusProcessing == 0)
+					$msg = "Data Berhasil Diedit";
+				elseif($statusProcessing == 1)
+				{
+					$Record->status= '1';
+					$msg = "Data Berhasil Diproses";
+				}
+					
 			}
 			else
 			{
 				$Record = new ProcessingTbsRecord();
 				$msg = "Data Berhasil Disimpan";
 				$Record->no_processing = $this->GenerateNoDocument('PRC');
-				$Record->tgl_processing = $this->ConvertDate($this->tgl_processing->Text,'2');//date("Y-m-d");
+				$processDate = $this->ConvertDate($this->tgl_processing->Text,'2');
+				$transDate = $this->ConvertDate($this->tgl_transaksi->Text,'2');
+				//$tglTransaksi = date('Y-m-d', strtotime($processDate .' -1 day'));
+				$Record->tgl_processing = $processDate;//date("Y-m-d");
 				$Record->wkt_processing = date("G:i:s");
+				$Record->tgl_transaksi= $transDate;
+				$Record->status= '0';
 			}
 			
 			$Record->catatan = $this->catatan->Text;
@@ -585,122 +654,124 @@ class ProcessingTbs extends MainConf
 			$Record->jam_down_2 = $this->jam_down_2->Text;
 			$Record->save(); 
 			
-			$NilaiBahanBaku = 0;
-			foreach($arrBarang as $rowBarang)
+			if($statusProcessing == 1)
 			{
-				$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted != ? ',$rowBarang['id'],'1');
-				if($StockBarangRecord)
+				$NilaiBahanBaku = 0;
+				foreach($arrBarang as $rowBarang)
 				{
-					$stokAwal = $StockBarangRecord->stok;
-					$stokIn = 0;
-					$stokOut = $Olah_Netto_today;
-					
-					if($StockBarangRecord->stok > $Olah_Netto_today)
+					$StockBarangRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted != ? ',$rowBarang['id'],'1');
+					if($StockBarangRecord)
 					{
-						$stokAkhir = $StockBarangRecord->stok - $Olah_Netto_today;
-						$StockBarangRecord->stok = $stokAkhir;
+						$stokAwal = $StockBarangRecord->stok;
+						$stokIn = 0;
+						$stokOut = $Olah_Netto_today;
 						
-					}
-					else
-					{
-						$stokAkhir = 0;
-						$StockBarangRecord->stok = 0;
-					}
-					$StockBarangRecord->save();
-					
-					$hargaSatuanBesar = $this->GetLastProductPrice($rowBarang['id']);
-					
-					if($hargaSatuanBesar > 0)
-					{
-						$sqlSatuanAkhir = "SELECT 
-												tbm_satuan_barang.id,
-												tbm_satuan_barang.id_satuan 
-											FROM 
-												tbm_satuan_barang 
-											WHERE 
-												tbm_satuan_barang.deleted != '1' 
-												AND tbm_satuan_barang.id_barang = '".$rowBarang['id']."'
-											ORDER BY tbm_satuan_barang.urutan DESC LIMIT 1 ";
-						$arrSatuanAkhir = $this->queryAction($sqlSatuanAkhir,'S');
-						$idSatuanAkhir = $arrSatuanAkhir[0]['id_satuan'];
+						if($StockBarangRecord->stok > $Olah_Netto_today)
+						{
+							$stokAkhir = $StockBarangRecord->stok - $Olah_Netto_today;
+							$StockBarangRecord->stok = $stokAkhir;
+							
+						}
+						else
+						{
+							$stokAkhir = 0;
+							$StockBarangRecord->stok = 0;
+						}
+						$StockBarangRecord->save();
 						
-						$hargaReal = $this->checkConversionPrice($rowBarang['id'],$idSatuanAkhir,$hargaSatuanBesar);
-					}
-					else
-					{
-						$hargaReal = 0;
-					}
-				
-					$nilaiOut = $hargaReal * $stokOut;
-					$StockInOutRecord = new StockInOutRecord();
-					$StockInOutRecord->id_barang = $rowBarang['id'];
-					$StockInOutRecord->stok_awal = $stokAwal;
-					$StockInOutRecord->stok_in = 0;
-					$StockInOutRecord->nilai_in = 0;
-					$StockInOutRecord->stok_out = $stokOut;
-					$StockInOutRecord->nilai_out = $nilaiOut;
-					$StockInOutRecord->stok_akhir = $stokAkhir;
-					$StockInOutRecord->keterangan = '';
-					$StockInOutRecord->id_transaksi = $Record->id;
-					$StockInOutRecord->jns_transaksi = "9";
-					$StockInOutRecord->tgl = date("Y-m-d");
-					$StockInOutRecord->wkt= date("G:i:s");
-					$StockInOutRecord->username = $this->User->IsUser;
-					$StockInOutRecord->save();
+						$hargaSatuanBesar = $this->GetLastProductPrice($rowBarang['id']);
+						
+						if($hargaSatuanBesar > 0)
+						{
+							$sqlSatuanAkhir = "SELECT 
+													tbm_satuan_barang.id,
+													tbm_satuan_barang.id_satuan 
+												FROM 
+													tbm_satuan_barang 
+												WHERE 
+													tbm_satuan_barang.deleted != '1' 
+													AND tbm_satuan_barang.id_barang = '".$rowBarang['id']."'
+												ORDER BY tbm_satuan_barang.urutan DESC LIMIT 1 ";
+							$arrSatuanAkhir = $this->queryAction($sqlSatuanAkhir,'S');
+							$idSatuanAkhir = $arrSatuanAkhir[0]['id_satuan'];
+							
+							$hargaReal = $this->checkConversionPrice($rowBarang['id'],$idSatuanAkhir,$hargaSatuanBesar);
+						}
+						else
+						{
+							$hargaReal = 0;
+						}
 					
-					$NilaiBahanBaku += $nilaiOut;
+						$nilaiOut = $hargaReal * $stokOut;
+						$StockInOutRecord = new StockInOutRecord();
+						$StockInOutRecord->id_barang = $rowBarang['id'];
+						$StockInOutRecord->stok_awal = $stokAwal;
+						$StockInOutRecord->stok_in = 0;
+						$StockInOutRecord->nilai_in = 0;
+						$StockInOutRecord->stok_out = $stokOut;
+						$StockInOutRecord->nilai_out = $nilaiOut;
+						$StockInOutRecord->stok_akhir = $stokAkhir;
+						$StockInOutRecord->keterangan = '';
+						$StockInOutRecord->id_transaksi = $Record->id;
+						$StockInOutRecord->jns_transaksi = "9";
+						$StockInOutRecord->tgl = date("Y-m-d");
+						$StockInOutRecord->wkt= date("G:i:s");
+						$StockInOutRecord->username = $this->User->IsUser;
+						$StockInOutRecord->save();
+						
+						$NilaiBahanBaku += $nilaiOut;
+					}
 				}
-			}
-			
-			$this->InsertJurnalUmum($Record->id,
-										'12',
-										'0',
-										date("Y-m-d"),
-										date("G:i:s"),
-										'Persediaan Barang Dagangan',
-										$NilaiBahanBaku,
-										$Record->no_processing);
-							
-			$this->InsertJurnalUmum($Record->id,
-										'12',
-										'1',
-										date("Y-m-d"),
-										date("G:i:s"),
-										'Persediaan Bahan Baku',
-										$NilaiBahanBaku,
-										$Record->no_processing);
-							
-			$this->InsertJurnalBukuBesar($Record->id,
+				
+				$this->InsertJurnalUmum($Record->id,
 											'12',
 											'0',
-											$Record->no_processing,
 											date("Y-m-d"),
 											date("G:i:s"),
-											'',
-											'',
 											'Persediaan Barang Dagangan',
-											'Produksi Barang Dagangan',
-											$NilaiBahanBaku);
-							
-			$this->InsertJurnalBukuBesar($Record->id,
+											$NilaiBahanBaku,
+											$Record->no_processing);
+								
+				$this->InsertJurnalUmum($Record->id,
 											'12',
 											'1',
-											$Record->no_processing,
 											date("Y-m-d"),
 											date("G:i:s"),
-											'',
-											'',
 											'Persediaan Bahan Baku',
-											'Produksi Barang Dagangan',
-											$NilaiBahanBaku);
-											
+											$NilaiBahanBaku,
+											$Record->no_processing);
+								
+				$this->InsertJurnalBukuBesar($Record->id,
+												'12',
+												'0',
+												$Record->no_processing,
+												date("Y-m-d"),
+												date("G:i:s"),
+												'',
+												'',
+												'Persediaan Barang Dagangan',
+												'Produksi Barang Dagangan',
+												$NilaiBahanBaku);
+								
+				$this->InsertJurnalBukuBesar($Record->id,
+												'12',
+												'1',
+												$Record->no_processing,
+												date("Y-m-d"),
+												date("G:i:s"),
+												'',
+												'',
+												'Persediaan Bahan Baku',
+												'Produksi Barang Dagangan',
+												$NilaiBahanBaku);
+			}								
 			//$stockBarangTbs -= $Olah_Netto_today;
 			//$StockBarangRecord->stok = $stockBarangTbs;
 			//$StockBarangRecord->save();
 			$tglLhp = $this->ConvertDate($this->tgl_processing->Text,'2');
 			$arrTglLhp = explode("-",$tglLhp);
 			
-			$this->UpdateReporting($Record->id,$hargaSatuanBesar,$tglLhp,$arrTglLhp[1],$arrTglLhp[0]);
+			$this->UpdateReporting($Record->id,$hargaSatuanBesar,$tglLhp,$arrTglLhp[1],$arrTglLhp[0],$statusProcessing);
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
@@ -721,7 +792,7 @@ class ProcessingTbs extends MainConf
 		
 	}
 	
-	public function UpdateReporting($idProcessing,$hargaSatuanBesar,$tglLhp,$bulanLhp,$tahunLhp)
+	public function UpdateReporting($idProcessing,$hargaSatuanBesar,$tglLhp,$bulanLhp,$tahunLhp,$statusProcessing)
 	{
 		$record = ProcessingTbsRecord::finder()->findByPk($idProcessing);
 		
@@ -729,7 +800,6 @@ class ProcessingTbs extends MainConf
 			$Oil_Recovered_Total_isi_BST1 = $record->bst1_cpo_isi * $record->etc_bst1_kg_cm * $this->getTempVariable($record->temp_bst1) + $record->etc_bst1_kg * $this->getTempVariable($record->temp_bst1);
 		else
 			$Oil_Recovered_Total_isi_BST1 = 0;
-		
 		
 		if($record->bst2_cpo_isi > 0)
 			$Oil_Recovered_Total_isi_BST2 = $record->bst2_cpo_isi * $record->etc_bst2_kg_cm * $this->getTempVariable($record->temp_bst2) + $record->etc_bst2_kg * $this->getTempVariable($record->temp_bst2);
@@ -773,107 +843,113 @@ class ProcessingTbs extends MainConf
 		$cpo_in_process = $Oil_In_Process_CST1_Kg + $Oil_In_Process_CST2_Kg + $Oil_In_Process_CST2_Kg + $Oil_In_Process_OT1_Kg + $Oil_In_Process_OT2_Kg + $Oil_In_Process_RCV1_Kg + $Oil_In_Process_RCV2_Kg + $Oil_In_Process_RCV3_Kg;
 		$cpo_total = $cpo_bst1 + $cpo_cut_bst1 + $cpo_bst2 + $cpo_cut_bst2 + $cpo_in_process;
 		
-		$StockCPORecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ? ','10','0');
-		if($StockCPORecord)
+		if($statusProcessing == 1)
 		{
-			$stokAwal = $StockCPORecord->stok;
-			$stokIn = $cpo_total;
-			$stokOut = 0;
-			$stokAkhir = $StockCPORecord->stok + $cpo_total;
+			$StockCPORecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ? ','10','0');
+			if($StockCPORecord)
+			{
+				$stokAwal = $StockCPORecord->stok;
+				$stokIn = $cpo_total;
+				$stokOut = 0;
+				$stokAkhir = $StockCPORecord->stok + $cpo_total;
+				
+				$StockCPORecord->stok = $stokAkhir;
+				$StockCPORecord->save();
+			}
+			else
+			{
+				$stokAwal = 0;
+				$stokIn = $cpo_total;
+				$stokOut = 0;
+				$stokAkhir = $cpo_total;
+				
+				$StockCPORecord = new StockBarangRecord();
+				$StockCPORecord->id_barang = '10';
+				$StockCPORecord->stok = $cpo_total;
+				$StockCPORecord->expired_date = '0000-00-00';
+				$StockCPORecord->deleted = '0';
+				$StockCPORecord->save();
+			}
 			
-			$StockCPORecord->stok = $stokAkhir;
-			$StockCPORecord->save();
-		}
-		else
-		{
-			$stokAwal = 0;
-			$stokIn = $cpo_total;
-			$stokOut = 0;
-			$stokAkhir = $cpo_total;
+			$StockInOutRecord = new StockInOutRecord();
+			$StockInOutRecord->id_barang = '10';
+			$StockInOutRecord->stok_awal = $stokAwal;
+			$StockInOutRecord->stok_in = $stokIn;
+			$StockInOutRecord->nilai_in = 0;
+			$StockInOutRecord->stok_out = $stokOut;
+			$StockInOutRecord->nilai_out = 0;
+			$StockInOutRecord->stok_akhir = $stokAkhir;
+			$StockInOutRecord->keterangan = '';
+			$StockInOutRecord->id_transaksi = $idProcessing;
+			$StockInOutRecord->jns_transaksi = "9";
+			$StockInOutRecord->tgl = date("Y-m-d");
+			$StockInOutRecord->wkt= date("G:i:s");
+			$StockInOutRecord->username = $this->User->IsUser;
+			$StockInOutRecord->save();
 			
-			$StockCPORecord = new StockBarangRecord();
-			$StockCPORecord->id_barang = '10';
-			$StockCPORecord->stok = $cpo_total;
-			$StockCPORecord->expired_date = '0000-00-00';
-			$StockCPORecord->deleted = '0';
-			$StockCPORecord->save();
-		}
-		
-		$StockInOutRecord = new StockInOutRecord();
-		$StockInOutRecord->id_barang = '10';
-		$StockInOutRecord->stok_awal = $stokAwal;
-		$StockInOutRecord->stok_in = $stokIn;
-		$StockInOutRecord->nilai_in = 0;
-		$StockInOutRecord->stok_out = $stokOut;
-		$StockInOutRecord->nilai_out = 0;
-		$StockInOutRecord->stok_akhir = $stokAkhir;
-		$StockInOutRecord->keterangan = '';
-		$StockInOutRecord->id_transaksi = $idProcessing;
-		$StockInOutRecord->jns_transaksi = "9";
-		$StockInOutRecord->tgl = date("Y-m-d");
-		$StockInOutRecord->wkt= date("G:i:s");
-		$StockInOutRecord->username = $this->User->IsUser;
-		$StockInOutRecord->save();
-		
-		$BarangHargaRecord = new BarangHargaRecord();
-		$BarangHargaRecord->id_barang = '10';
-		$BarangHargaRecord->tgl = date("Y-m-d");
-		$BarangHargaRecord->harga = $hargaSatuanBesar;
-		$BarangHargaRecord->deleted = '0';
-		$BarangHargaRecord->save();
-							
+			$BarangHargaRecord = new BarangHargaRecord();
+			$BarangHargaRecord->id_barang = '10';
+			$BarangHargaRecord->tgl = date("Y-m-d");
+			$BarangHargaRecord->harga = $hargaSatuanBesar;
+			$BarangHargaRecord->deleted = '0';
+			$BarangHargaRecord->save();
+		}	
+						
 		$pk_bsk = $BSK1_Kg + $BSK2_Kg + $BSK3_Kg + $record->bsk_lantai;
 		$pk_ks = $KS1_Kg + $KS2_Kg + $KS3_Kg + $record->kernel_silo_lantai;
 		
-		$StockBSKRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ? ','11','0');
-		if($StockBSKRecord)
+		if($statusProcessing == 1)
 		{
-			$stokAwal = $StockBSKRecord->stok;
-			$stokIn = $pk_bsk;
-			$stokOut = 0;
-			$stokAkhir = $StockBSKRecord->stok + $pk_bsk;
+			$StockBSKRecord = StockBarangRecord::finder()->find('id_barang = ? AND deleted = ? ','11','0');
+			if($StockBSKRecord)
+			{
+				$stokAwal = $StockBSKRecord->stok;
+				$stokIn = $pk_bsk;
+				$stokOut = 0;
+				$stokAkhir = $StockBSKRecord->stok + $pk_bsk;
+				
+				$StockBSKRecord->stok = $stokAkhir;
+				$StockBSKRecord->save();
+			}
+			else
+			{
+				$stokAwal = 0;
+				$stokIn = $pk_bsk;
+				$stokOut = 0;
+				$stokAkhir = $pk_bsk;
+				
+				$StockBSKRecord = new StockBarangRecord();
+				$StockBSKRecord->id_barang = '11';
+				$StockBSKRecord->stok = $pk_bsk;
+				$StockBSKRecord->expired_date = '0000-00-00';
+				$StockBSKRecord->deleted = '0';
+				$StockBSKRecord->save();
+			}
 			
-			$StockBSKRecord->stok = $stokAkhir;
-			$StockBSKRecord->save();
-		}
-		else
-		{
-			$stokAwal = 0;
-			$stokIn = $pk_bsk;
-			$stokOut = 0;
-			$stokAkhir = $pk_bsk;
 			
-			$StockBSKRecord = new StockBarangRecord();
-			$StockBSKRecord->id_barang = '11';
-			$StockBSKRecord->stok = $pk_bsk;
-			$StockBSKRecord->expired_date = '0000-00-00';
-			$StockBSKRecord->deleted = '0';
-			$StockBSKRecord->save();
+			$StockInOutRecord = new StockInOutRecord();
+			$StockInOutRecord->id_barang = '11';
+			$StockInOutRecord->stok_awal = $stokAwal;
+			$StockInOutRecord->stok_in = $stokIn;
+			$StockInOutRecord->nilai_in = 0;
+			$StockInOutRecord->stok_out = $stokOut;
+			$StockInOutRecord->nilai_out = 0;
+			$StockInOutRecord->stok_akhir = $stokAkhir;
+			$StockInOutRecord->keterangan = '';
+			$StockInOutRecord->id_transaksi = $idProcessing;
+			$StockInOutRecord->jns_transaksi = "9";
+			$StockInOutRecord->tgl = date("Y-m-d");
+			$StockInOutRecord->wkt= date("G:i:s");
+			$StockInOutRecord->username = $this->User->IsUser;
+			$StockInOutRecord->save();
+			
+			$BarangHargaRecord = new BarangHargaRecord();
+			$BarangHargaRecord->id_barang = '11';
+			$BarangHargaRecord->tgl = date("Y-m-d");
+			$BarangHargaRecord->harga = $hargaSatuanBesar;
+			$BarangHargaRecord->deleted = '0';
+			$BarangHargaRecord->save();
 		}
-		
-		
-		$StockInOutRecord = new StockInOutRecord();
-		$StockInOutRecord->id_barang = '11';
-		$StockInOutRecord->stok_awal = $stokAwal;
-		$StockInOutRecord->stok_in = $stokIn;
-		$StockInOutRecord->nilai_in = 0;
-		$StockInOutRecord->stok_out = $stokOut;
-		$StockInOutRecord->nilai_out = 0;
-		$StockInOutRecord->stok_akhir = $stokAkhir;
-		$StockInOutRecord->keterangan = '';
-		$StockInOutRecord->id_transaksi = $idProcessing;
-		$StockInOutRecord->jns_transaksi = "9";
-		$StockInOutRecord->tgl = date("Y-m-d");
-		$StockInOutRecord->wkt= date("G:i:s");
-		$StockInOutRecord->username = $this->User->IsUser;
-		$StockInOutRecord->save();
-		
-		$BarangHargaRecord = new BarangHargaRecord();
-		$BarangHargaRecord->id_barang = '11';
-		$BarangHargaRecord->tgl = date("Y-m-d");
-		$BarangHargaRecord->harga = $hargaSatuanBesar;
-		$BarangHargaRecord->deleted = '0';
-		$BarangHargaRecord->save();
 		
 		$nut_silo = $NS1_Kg + $NS2_Kg + $NS3_Kg + $NS4_Kg + $record->nut_silo_lantai;
 
@@ -969,26 +1045,26 @@ class ProcessingTbs extends MainConf
 				$ProcessingTbsReportingRecord->id_processing = $idProcessing;
 			}
 				
-				$ProcessingTbsReportingRecord->tbs_kebun_sum = 0;
-				$ProcessingTbsReportingRecord->tbs_luar_sum = 0;
-				$ProcessingTbsReportingRecord->tbs_potongan_sum = 0;
-				$ProcessingTbsReportingRecord->tbs_persediaan_sum = 0;
-				$ProcessingTbsReportingRecord->tbs_olah_netto_sum = 0;
-				$ProcessingTbsReportingRecord->tbs_olah_brutto_sum = 0;
-				$ProcessingTbsReportingRecord->kirim_cpo_sum = 0;
-				$ProcessingTbsReportingRecord->kirim_pk_sum = 0;
-				$ProcessingTbsReportingRecord->kirim_cangkang_sum = 0;
-				$ProcessingTbsReportingRecord->kirim_fibre_sum = 0;
-				$ProcessingTbsReportingRecord->kirim_limbah_sum = 0;
-				$ProcessingTbsReportingRecord->kirim_jangkos_sum = 0;
-				$ProcessingTbsReportingRecord->jam_olah_tbs_sum = 0;
-				$ProcessingTbsReportingRecord->jam_olah_nut_sum = 0;
-				$ProcessingTbsReportingRecord->jam_main_sum = 0;
-				$ProcessingTbsReportingRecord->jam_down_sum = 0;
-				$ProcessingTbsReportingRecord->cpo_sum = 0;
-				$ProcessingTbsReportingRecord->pk_sum = 0;
-				$ProcessingTbsReportingRecord->reject_cpo_sum = 0;
-				$ProcessingTbsReportingRecord->reject_kernel_sum = 0;
+				$ProcessingTbsReportingRecord->tbs_kebun_sum = $record->tbs_kebun;
+				$ProcessingTbsReportingRecord->tbs_luar_sum = $record->tbs_luar;
+				$ProcessingTbsReportingRecord->tbs_potongan_sum = $record->tbs_potongan;
+				$ProcessingTbsReportingRecord->tbs_persediaan_sum = $Persediaan_Today;
+				$ProcessingTbsReportingRecord->tbs_olah_netto_sum = $Olah_Netto_today;
+				$ProcessingTbsReportingRecord->tbs_olah_brutto_sum = $Olah_Brutto_today;
+				$ProcessingTbsReportingRecord->kirim_cpo_sum = $record->pengiriman_cpo + 0 - $record->reject_cpo;
+				$ProcessingTbsReportingRecord->kirim_pk_sum = $record->pengiriman_kernel;
+				$ProcessingTbsReportingRecord->kirim_cangkang_sum = $record->pengiriman_cangkang; 
+				$ProcessingTbsReportingRecord->kirim_fibre_sum = $record->pengiriman_fibre; 
+				$ProcessingTbsReportingRecord->kirim_limbah_sum = $record->pengiriman_limbah; 
+				$ProcessingTbsReportingRecord->kirim_jangkos_sum = $record->pengiriman_jangkos; 
+				$ProcessingTbsReportingRecord->jam_olah_tbs_sum = $this->AddPlayTime(array("00:00:00",$Jam_Olah_Tbs_Today));
+				$ProcessingTbsReportingRecord->jam_olah_nut_sum = $this->AddPlayTime(array("00:00:00",$Jam_Olah_Nut_Today));
+				$ProcessingTbsReportingRecord->jam_main_sum = $this->AddPlayTime(array("00:00:00",$Jam_Main_Today));
+				$ProcessingTbsReportingRecord->jam_down_sum = $this->AddPlayTime(array("00:00:00",$Jam_Down_Today));
+				$ProcessingTbsReportingRecord->cpo_sum = $CPO_Today;
+				$ProcessingTbsReportingRecord->pk_sum = $PK_Today;
+				$ProcessingTbsReportingRecord->reject_cpo_sum = $record->reject_cpo;
+				$ProcessingTbsReportingRecord->reject_kernel_sum = $record->reject_kernel;
 				$ProcessingTbsReportingRecord->save();
 		}
 		
@@ -1023,6 +1099,7 @@ class ProcessingTbs extends MainConf
 	public function checkProcessing()
 	{
 		$Record =  ProcessingTbsRecord::finder()->find('tgl_processing = ? AND deleted = ?',date("Y-m-d"),'0');
+		$Record2 =  ProcessingTbsRecord::finder()->find('status = ? AND deleted = ?','0','0');
 		$queryStockBuahKebun = "SELECT
 									SUM(tbd_stok_barang.stok) AS stok
 								FROM
@@ -1048,6 +1125,15 @@ class ProcessingTbs extends MainConf
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
 						toastr.error("Data Processing Hari Ini Sudah Dimasukkan Sebelumnya !");
+						clearForm();
+						jQuery("#modal-1").modal("hide");
+						unloadContent();');	
+		}
+		elseif($Record2)
+		{
+			$this->getPage()->getClientScript()->registerEndScript
+						('','
+						toastr.error("Masih Ada Processing TBS yang belum diproses !");
 						clearForm();
 						jQuery("#modal-1").modal("hide");
 						unloadContent();');	
@@ -1082,7 +1168,8 @@ class ProcessingTbs extends MainConf
 				$bst_in_process = '';
 				$pk_bsk_akhir = '';
 			}
-		
+			$this->statusProcessing->Value = 0;
+			$this->submitBtn->Text = "Submit";
 			$this->getPage()->getClientScript()->registerEndScript
 						('','
 						clearForm();

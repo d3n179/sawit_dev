@@ -172,7 +172,7 @@ class BayarTbsOrder extends MainConf
 				$tblBody .= '<td>'.$row['pemasok'].'</td>';
 				$tblBody .= '<td>'.$row['barang'].'</td>';
 				$tblBody .= '<td>'.$row['jml_kendaraan'].'</td>';
-				$tblBody .= '<td>'.$row['Total_Berat'].' '.$nmSatuan.'</td>';
+				$tblBody .= '<td>'.number_format($row['Total_Berat'],2,'.',',').' '.$nmSatuan.'</td>';
 				//$tblBody .= '<td>'.$row['barang'].'</td>';
 				//$tblBody .= '<td>'.$row['netto_2'].'</td>';
 				//$tblBody .= '<td>'.$row['kategori_tbs'].'</td>';

@@ -111,7 +111,7 @@
 							</div>
 							
 						</div>
-						<div class="row">
+						<div class="row" Style="Display:None;">
 							<div class="col-md-3">
 								<div class="form-group">
 									<label class="control-label" for="DDCategory">Revenue Category</label>
@@ -120,6 +120,7 @@
 										PromptText="--Revenue Category--"
 										PromptValue="empty"
 										AutoPostBack="true"
+										Enabled="false"
 										CausesValidation="true"
 										OnSelectedIndexChanged="revenueCategoryChanged"
 										DataTextField="nama"
@@ -137,7 +138,7 @@
 											  InitialValue="empty"/>
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-3" Style="Display:None;">
 								<div class="form-group">
 									<label class="control-label" for="DDRevenue">Revenue</label>
 									 <com:TActiveDropDownList 
@@ -223,9 +224,10 @@
 									<label class="control-label" for="DDCoa">COA</label>
 									 <com:TActiveTextBox 
 										ID="DDCoa" 
-										Text = "415"
-										Enabled="false"
-										CssClass="" />
+										Enabled="true"
+										Attributes.url="index.php?page=loadCoa&kelompokCoa=REVENUE"
+										Width="400px"
+										CssClass="form-control easyui-combotree"  />
 									<com:TRequiredFieldValidator 
 										  ControlToValidate="DDCoa"										 
 										  ErrorMessage=""
@@ -269,7 +271,7 @@
 					jQuery('.form-control').val('');
 					jQuery('a[href="#formTab"]').hide();
 					jQuery('#<%= $this->idRevenueTransaction->getClientID()%>').val('');
-					bindSelect2();
+					//bindSelect2();
 					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
 				});
 				
@@ -282,7 +284,7 @@
 						jQuery(target +' input:first').focus();
 					});
 				});
-				bindSelect2();
+				//bindSelect2();
 				BindGrid();
 			});
 			
@@ -308,6 +310,7 @@
 									table_name:"tbm_coa",
 									field_name:"CONCAT(kode_coa,' - ',nama)",
 									field_sortby:"nama",
+									custom_query:[["deleted","EQUAL","0"],["kode_coa","STARTS_WITH","4",]],
 									page_number: page // page number
 								};
 							},

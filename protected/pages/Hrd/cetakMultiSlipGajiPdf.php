@@ -110,7 +110,8 @@ $style = '
       margin:0;
       padding:0;
       height:100%;
-      border:none
+      border:none;
+	  font-style:Arial;
    }
 	 
 	a{
@@ -180,7 +181,7 @@ $style = '
 	}
 	
 	table, tr, td{
-		padding:5px;	
+		padding:3px;	
 	}
 	
 	table.nopadding{
@@ -198,11 +199,14 @@ $queryKaryawan = "SELECT
 					INNER JOIN tbm_department ON tbm_department.id = tbm_jabatan.id_department
 					WHERE
 						tbm_karyawan.deleted = '0'
+					AND tbm_karyawan.aktif = '0'
 					AND tbm_jabatan.deleted = '0'
+					
 					AND tbm_department.deleted = '0'
 					GROUP BY
 						tbm_karyawan.id ";
 $arrKaryawan = $this->queryAction($queryKaryawan,'S');
+$x=1;
 foreach($arrKaryawan as $rowKaryawan)
 {
 $nik = $rowKaryawan['nik'];
@@ -434,15 +438,18 @@ $html = '</br></br><table width="100%" cellpadding="0">
 		  <tr>
 			<td align="center" style="font-size:20px"><b>Desa Pasir Jae, Kecamatan Sosa, Kabupaten Padang Lawas</b></td>
 		  </tr>
-		   <tr>
-			<td align="center" style="font-size:15px"><b>SLIP GAJI KARYAWAN</b></td>
-		  </tr>
-		</table></br></br>
-		<table width="100%" border="0" cellpadding="0"  cellspacing="0" style="font-family:Courier;font-size:5pt;">
 		  <tr>
-			<th width="15%">NIK</th>
+			<td style="font-size:20px">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</td>
+		  </tr>
+		   <tr>
+		   		<td align="center" style="font-size:15px"><b>SLIP GAJI KARYAWAN</b></td>
+				</tr>
+		</table></br></br>
+		<table width="100%" border="0" cellpadding="0"  cellspacing="0" style="font-family:Arial;font-size:6pt;">
+		  <tr>
+			<th width="7%">NIK</th>
 			<th width="1%">:</th>
-			<th width="15%">'.$KaryawanRecord->nik.'</th>
+			<th width="23%">'.$KaryawanRecord->nik.'</th>
 			<th width="3%" rowspan="8"></th>
 			<th width="15%">Gaji Pokok</th>
 			<th width="1%">:</th>
@@ -532,7 +539,7 @@ $html = '</br></br><table width="100%" cellpadding="0">
 		  <tr>
 			<td colspan="4" rowspan="7"></td>
 			<td colspan="3" rowspan="7">
-				<table border="0" width="100%">
+				<table border="0" width="100%" style="margin-bottom:-20px !important;">
 				  <tr>
 					<th width="25%"><strong>Lembur</strong></th>
 					<th width="4%"></th>
@@ -618,58 +625,18 @@ $html = '</br></br><table width="100%" cellpadding="0">
 			<td class="tg-yw4l"></td>
 			<td class="tg-yw4l"></td>
 		  </tr>
-		</table><br />';
+		</table>
 		
-		/*"<table border="1" >
-				  <tr>
-					<th width="12%"><strong>Lembur</strong></th>
-					<th width="1%"></th>
-					<th width="10%" align="center">Jam</th>
-					<th width="12%" align="center">Tarif</th>
-					<th width="12%" align="center">Jumlah Bayar<br></th>
-				  </tr>
-				  <tr>
-					<td class="tg-031e">LPP</td>
-					<td class="tg-031e">:</td>
-					<td class="tg-031e"></td>
-					<td class="tg-031e"></td>
-					<td class="tg-yw4l"></td>
-				  </tr>
-				  <tr>
-					<td class="tg-031e">LPPML</td>
-					<td class="tg-031e">:</td>
-					<td class="tg-031e"></td>
-					<td class="tg-031e"></td>
-					<td class="tg-yw4l"></td>
-				  </tr>
-				  <tr>
-					<td class="tg-yw4l">LPPLK</td>
-					<td class="tg-yw4l">:</td>
-					<td class="tg-yw4l"></td>
-					<td class="tg-yw4l"></td>
-					<td class="tg-yw4l"></td>
-				  </tr>
-				  <tr>
-					<td class="tg-yw4l">Total Lembur<br></td>
-					<td class="tg-yw4l">:</td>
-					<td class="tg-yw4l"></td>
-					<td class="tg-yw4l"></td>
-					<td class="tg-yw4l"></td>
-				  </tr>
-				</table>"*/
-$pdf->writeHTML($html, true, false, true, false, '');
-$pdf->Ln(1);
-$html = '<table width="100%" cellpadding="0" border="0">
+		<table width="100%" cellpadding="0" border="0">
+			<td style="font-size:20px">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</td>
+		  </tr>
 		  <tr>
 			<td width="35%" align="center" style="font-size:18px; text-decoration: underline;"><b>PT SINAR HALOMOAN</b></td>
 			<td width="30%"></td>
 			<td width="35%" align="center" style="font-size:18px; text-decoration: underline;"><b>Diterima Oleh,</b></td>
 		  </tr>
 		   <tr>
-			<td></td>
-			<td></td>
-			<td></td>
-		  </tr>
+		   </tr>
 		  <tr>
 			<td></td>
 			<td></td>
@@ -685,9 +652,16 @@ $html = '<table width="100%" cellpadding="0" border="0">
 			<td></td>
 			<td align="center" style="font-size:20px;"><b style="text-decoration: underline;">......................................................</b><br/><b>Nama : '.$KaryawanRecord->nama.'</b></td>
 		  </tr>
+		  <td style="font-size:20px">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</td>
+		  
 		</table>';
 $pdf->writeHTML($html, true, false, true, false, '');
-$pdf->Ln(5);
+if($x%3==0){
+$pdf->AddPage();
+}
+
+
+$x++;
 }
 // reset pointer to the last page
 $pdf->lastPage();

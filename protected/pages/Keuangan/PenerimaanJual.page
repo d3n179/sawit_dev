@@ -14,7 +14,7 @@
 				<div class="modal-body">
 					<div class="form-body">
 						<div class="row">
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="tgl_transaksi">Tanggal Transaksi</label>
 									<com:TActiveHiddenField ID="idPenjualan"/>
@@ -33,7 +33,7 @@
 											  ValidationGroup="val" />
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="tgl_penerimaan">Tanggal Penerimaan</label>
 									<com:TActiveTextBox 
@@ -49,7 +49,7 @@
 											  ValidationGroup="val" />
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="commodity_type">Commodity Type</label>
 									 <com:TActiveDropDownList 
@@ -77,7 +77,7 @@
 											
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="pembeli">Pembeli</label>
 									 <com:TActiveTextBox 
@@ -98,7 +98,180 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-3">
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="bruto_kirim">Bruto Kirim (Kg)</label>
+									 <com:TActiveTextBox 
+											ID="bruto_kirim" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="bruto_kirim"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="tarra_kirim">Tarra Kirim (Kg)</label>
+									 <com:TActiveTextBox 
+											ID="tarra_kirim" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="tarra_kirim"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="potongan_kirim">Potongan (%)</label>
+									 <com:TActiveTextBox 
+											ID="potongan_kirim" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="potongan_kirim"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="netto_kirim">Netto Kirim (Kg)</label>
+									 <com:TActiveTextBox 
+											ID="netto_kirim" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="netto_kirim"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="bruto_diterima">Bruto Diterima (Kg)</label>
+									 <com:TActiveTextBox 
+											ID="bruto_diterima" 
+											Enabled="true"
+											Attributes.OnChange="hitungTotal();"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="bruto_diterima"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="tarra_diterima">Tarra Diterima (Kg)</label>
+									 <com:TActiveTextBox 
+											ID="tarra_diterima" 
+											Enabled="true"
+											Attributes.OnChange="hitungTotal();"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="tarra_diterima"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="netto_diterima">Netto Diterima (Kg)</label>
+									 <com:TActiveTextBox 
+											ID="netto_diterima" 
+											Enabled="false"
+											Attributes.OnChange="hitungTotal();"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="netto_diterima"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="ffa_diterima">FFA</label>
+									 <com:TActiveTextBox 
+											ID="ffa_diterima" 
+											Enabled="true"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="dobi_diterima">Dobi</label>
+									 <com:TActiveTextBox 
+											ID="dobi_diterima" 
+											Enabled="true"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+											
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="mi_diterima">M & I</label>
+									 <com:TActiveTextBox 
+											ID="mi_diterima" 
+											Enabled="true"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+											
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-2" style="Display:None;">
 								<div class="form-group">
 									<label class="control-label" for="jumlah_kirim">Jumlah Dikirim (Kg)</label>
 									 <com:TActiveTextBox 
@@ -117,7 +290,7 @@
 											
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2" style="Display:None;">
 								<div class="form-group">
 									<label class="control-label" for="jumlah_diterima">Jumlah Diterima(Kg)</label>
 									 <com:TActiveTextBox 
@@ -136,7 +309,7 @@
 											
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="quantity">Jumlah Susut(Kg)</label>
 									 <com:TActiveTextBox 
@@ -156,7 +329,7 @@
 											
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="harga">Harga</label>
 									 <com:TActiveTextBox 
@@ -175,7 +348,26 @@
 											
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
+								<div class="form-group">
+									<label class="control-label" for="ppn">ppn</label>
+									 <com:TActiveTextBox 
+											ID="ppn" 
+											Enabled="false"
+											CssClass="form-control mask_decimal" 
+											Attributes.PlaceHolder="0"/>
+									<com:TRequiredFieldValidator 
+											  ControlToValidate="ppn"											 
+											  ErrorMessage=""
+											  Display="Dynamic"
+											  FocusOnError="true" 
+											  CssClass="valRequired"
+											  ControlCssClass="valctrl"
+											  ValidationGroup="val" />
+											
+								</div>
+							</div>	
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="total_penjualan">Total Penjualan</label>
 									 <com:TActiveTextBox 
@@ -194,9 +386,9 @@
 											
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
-									<label class="control-label" for="total_bayar_sebelumnya">Total Pembayaran Sebelumnya</label>
+									<label class="control-label" for="total_bayar_sebelumnya">Total Pembayaran</label>
 									 <com:TActiveTextBox 
 											ID="total_bayar_sebelumnya" 
 											CssClass="form-control mask_currency" 
@@ -213,7 +405,7 @@
 											
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="sisa_bayar">Sisa Pembayaran</label>
 									 <com:TActiveTextBox 
@@ -232,7 +424,7 @@
 											
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 									<label class="control-label" for="total_pembayaran">Pembayaran</label>
 									 <com:TActiveTextBox 
@@ -252,13 +444,11 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 								<label class="control-label" for="DDCoa">Coa</label>
 									<com:TActiveTextBox 
 											ID="DDCoa" 
-											Text = "401"
-											Enabled="false"
 											CssClass="" />
 										<com:TRequiredFieldValidator 
 											  ControlToValidate="DDCoa"										 
@@ -270,7 +460,7 @@
 											  ValidationGroup="val" />
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 								<label class="control-label" for="DDJnsBayar">Jenis Pembayaran</label>
 								 <com:TActiveDropDownList 
@@ -295,7 +485,7 @@
 											  InitialValue="empty"/>
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
 								<label class="control-label" for="DDBank">Bank</label>
 											  
@@ -321,9 +511,9 @@
 											  InitialValue="empty"/>
 								</div>
 							</div>	
-							<div class="col-md-3">
+							<div class="col-md-2">
 								<div class="form-group">
-								<label class="control-label" for="noRef">No Referensi / No Rekening</label>
+								<label class="control-label" for="noRef">No Referensi</label>
 										<com:TActiveTextBox 
 											ID="noRef" 
 											Enabled="false"
@@ -400,6 +590,8 @@
 					<thead>
 						<tr>
 							<th width="150px">No Transaksi</th>
+							<th width="150px">No Kontrak</th>
+							<th width="150px">No DO</th>
 							<th width="150px">Tgl Transaksi</th>
 							<th width="150px">Pembeli</th>
 							<th width="150px">Commodity Type</th>
@@ -454,6 +646,7 @@
 									table_name:"tbm_coa",
 									field_name:"CONCAT(kode_coa,' - ',nama)",
 									field_sortby:"nama",
+									custom_query:[["deleted","EQUAL","0"],["kode_coa","STARTS_WITH","4",]],
 									page_number: page // page number
 								};
 							},
@@ -514,6 +707,13 @@
 				jQuery('#<%= $this->jumlah_diterima->getClientID()%>').prop('disabled',false);
 				jQuery('#<%= $this->harga->getClientID()%>').prop('disabled',false);
 				
+				jQuery('#<%= $this->bruto_diterima->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->tarra_diterima->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->netto_diterima->getClientID()%>').prop('disabled',true);
+				jQuery('#<%= $this->ffa_diterima->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->dobi_diterima->getClientID()%>').prop('disabled',false);
+				jQuery('#<%= $this->mi_diterima->getClientID()%>').prop('disabled',false);
+				
 				Prado.Validation.reset('val');
 				jQuery('.form-body select').val('empty');
 				jQuery('.form-control').val('');
@@ -523,13 +723,24 @@
 			
 			function hitungTotal()
 			{
-				var jumlah_kirim = parseFloat(jQuery('#<%= $this->jumlah_kirim->getClientID()%>').val());
-				var jumlah_diterima = parseFloat(jQuery('#<%= $this->jumlah_diterima->getClientID()%>').val());
-				var jumlah_susut = jumlah_kirim - jumlah_diterima;
+				
+				var netto_kirim = parseFloat(jQuery('#<%= $this->netto_kirim->getClientID()%>').val());
+				var bruto_diterima = parseFloat(jQuery('#<%= $this->bruto_diterima->getClientID()%>').val());
+				var tarra_diterima = parseFloat(jQuery('#<%= $this->tarra_diterima->getClientID()%>').val());
+				var netto_diterima = bruto_diterima - tarra_diterima;
+				jQuery('#<%= $this->netto_diterima->getClientID()%>').val(netto_diterima);
+				var jumlah_susut = netto_kirim - netto_diterima;
+				
+				//var jumlah_kirim = parseFloat(jQuery('#<%= $this->jumlah_kirim->getClientID()%>').val());
+				//var jumlah_diterima = parseFloat(jQuery('#<%= $this->jumlah_diterima->getClientID()%>').val());
+				//var jumlah_susut = jumlah_kirim - jumlah_diterima;
+				
+				jQuery('#<%= $this->jumlah_diterima->getClientID()%>').val(netto_diterima);
+				
 				jQuery('#<%= $this->jumlah_susut->getClientID()%>').val(jumlah_susut);
 				
 				var harga = parseFloat(jQuery('#<%= $this->harga->getClientID()%>').val().replace(/\,/g,''));
-				var totalPenjualan = harga * jumlah_diterima;
+				var totalPenjualan = harga * netto_diterima;
 				jQuery('#<%= $this->total_penjualan->getClientID()%>').val(totalPenjualan);
 				jQuery('#<%= $this->sisa_bayar->getClientID()%>').val(totalPenjualan);
 			}

@@ -120,6 +120,7 @@ class cetakLaporanGajiHarianKaryawanPdf extends MainConf
 							tbm_department.deleted = '0'
 							AND tbm_jabatan.deleted ='0'
 							AND tbm_karyawan.deleted ='0'
+							AND tbm_karyawan.aktif ='0'
 							AND tbm_department.id_parent = '0' 
 							GROUP BY tbm_department.id ";
 							
@@ -251,6 +252,7 @@ class cetakLaporanGajiHarianKaryawanPdf extends MainConf
 							INNER JOIN tbm_jabatan ON tbm_jabatan.id = tbm_karyawan.id_jabatan
 						WHERE
 							tbm_karyawan.deleted = '0' 
+							AND tbm_karyawan.aktif = '0' 
 							AND tbm_jabatan.deleted ='0'
 							AND tbm_jabatan.id_department = '".$idDeparment."' ";
 			$arrTrans = $this->queryAction($sqlTrans,'S');

@@ -9,6 +9,12 @@ class PenerimaanPenjualanRecord extends TActiveRecord
 	public $id;
 	public $id_penjualan;
 	public $tgl_penerimaan;
+	public $bruto_diterima;
+	public $tarra_diterima;
+	public $netto_diterima;
+	public $ffa_diterima;
+	public $dobi_diterima;
+	public $mi_diterima;
 	public $jumlah_dikirim;
 	public $jumlah_diterima;
 	public $jumlah_susut;

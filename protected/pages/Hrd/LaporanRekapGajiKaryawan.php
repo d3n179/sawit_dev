@@ -109,6 +109,7 @@ class LaporanRekapGajiKaryawan extends MainConf
 					INNER JOIN tbm_karyawan ON tbm_karyawan.id = tbt_rekap_gaji_detail.id_karyawan
 					WHERE
 						tbm_karyawan.deleted = '0'
+                    AND tbm_karyawan.aktif = '0'   
 					AND tbt_rekap_gaji_detail.deleted = '0'
 					AND tbt_rekap_gaji.bulan = '".$this->DDBulan->SelectedValue."' AND tbt_rekap_gaji.tahun = '".$this->DDTahun->SelectedValue."'";
 		

@@ -119,7 +119,7 @@
 							</div>
 							
 						</div>
-						<div class="row">
+						<div class="row" Style="Display:None;">
 							<div class="col-md-3">
 								<div class="form-group">
 									<label class="control-label" for="DDCategory">Expense Category</label>
@@ -129,6 +129,7 @@
 										PromptValue="empty"
 										AutoPostBack="true"
 										CausesValidation="true"
+										Enabled="false"
 										OnSelectedIndexChanged="expenseCategoryChanged"
 										DataTextField="nama"
 										DataValueField="id"
@@ -145,7 +146,7 @@
 											  InitialValue="empty"/>
 								</div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-3" Style="Display:None;">
 								<div class="form-group">
 									<label class="control-label" for="DDExpense">Expense</label>
 									 <com:TActiveDropDownList 
@@ -231,9 +232,10 @@
 									<label class="control-label" for="DDCoa">COA</label>
 									 <com:TActiveTextBox 
 										ID="DDCoa" 
-										Text = "462"
-										Enabled="false"
-										CssClass=""  />
+										Enabled="true"
+										Attributes.url="index.php?page=loadCoa&kelompokCoa=EXPENSE"
+										Width="400px"
+										CssClass="form-control easyui-combotree"  />
 									<com:TRequiredFieldValidator 
 										  ControlToValidate="DDCoa"										 
 										  ErrorMessage=""
@@ -242,8 +244,10 @@
 										  CssClass="valRequired"
 										  ControlCssClass="valctrl"
 										  ValidationGroup="val" />
+									
 								</div>
 							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -277,7 +281,7 @@
 					jQuery('.form-control').val('');
 					jQuery('a[href="#formTab"]').hide();
 					jQuery('#<%= $this->idExpenseTransaction->getClientID()%>').val('');
-					bindSelect2();
+					//bindSelect2();
 					jQuery('a[href="#formTab"]').empty().append('<i class="fa fa-plus"></i> Tambah Data');
 				});
 				
@@ -290,7 +294,7 @@
 						jQuery(target +' input:first').focus();
 					});
 				});
-				bindSelect2();
+				//bindSelect2();
 				BindGrid();
 			});
 			
@@ -317,6 +321,7 @@
 									table_name:"tbm_coa",
 									field_name:"CONCAT(kode_coa,' - ',nama)",
 									field_sortby:"nama",
+									custom_query:[["deleted","EQUAL","0"],["kode_coa","STARTS_WITH","5",1],["kode_coa","STARTS_WITH","6",1],["kode_coa","STARTS_WITH","7"]],
 									page_number: page // page number
 								};
 							},

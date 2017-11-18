@@ -79,6 +79,7 @@ class cetakLaporanRekapGajiKaryawanPdf extends MainConf
 							tbm_department.deleted = '0'
 							AND tbm_jabatan.deleted ='0'
 							AND tbm_karyawan.deleted ='0'
+							AND tbm_karyawan.aktif ='0'
 							AND tbm_department.id_parent = '0' 
 							GROUP BY tbm_department.id ";
 							
@@ -243,6 +244,7 @@ class cetakLaporanRekapGajiKaryawanPdf extends MainConf
 						tbm_karyawan.deleted = '0'
 					AND tbt_rekap_gaji_detail.deleted = '0'
 					AND tbm_jabatan.deleted ='0'
+				    AND tbm_karyawan.aktif = '0'
 					AND tbm_jabatan.id_department = '".$idDeparment."' 
 					AND tbt_rekap_gaji.bulan = '".$bln."' AND tbt_rekap_gaji.tahun = '".$thn."'";
 							

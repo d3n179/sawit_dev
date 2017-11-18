@@ -65,7 +65,7 @@ class ExpenseTransaction extends MainConf
 					tbt_expense_transaction.deleted
 				FROM
 					tbt_expense_transaction
-				INNER JOIN tbm_expense ON tbm_expense.id = tbt_expense_transaction.expense_id
+				LEFT JOIN tbm_expense ON tbm_expense.id = tbt_expense_transaction.expense_id
 				INNER JOIN tbm_bank ON tbm_bank.id = tbt_expense_transaction.bank_id
 				WHERE
 					tbt_expense_transaction.deleted = '0'
@@ -365,6 +365,8 @@ class ExpenseTransaction extends MainConf
 			}
 		}
 	}
+	
+	
 	
 	public function submitBtnClicked($sender,$param)
 	{

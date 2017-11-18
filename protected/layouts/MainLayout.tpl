@@ -94,6 +94,8 @@
 	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/js/rickshaw/rickshaw.min.css'%>">
 	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/js/daterangepicker/daterangepicker-bs3.css'%>">
 	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/css/font-icons/font-awesome/css/font-awesome.min.css'%>">
+	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/js/jquery-easyui-1.5.3/themes/default/easyui.css'%>">
+	<link rel="stylesheet" type="text/css" href="<%=$this->Page->Theme->BaseUrl.'/assets/js/jquery-easyui-1.5.3/themes/icon.css'%>">
 	
 	<!-- Bottom scripts (common) -->
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/gsap/main-gsap.js'%>" type="text/javascript"></script>
@@ -130,6 +132,7 @@
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/accounting.js'%>" type="text/javascript"></script>
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/bootstrap-datepicker-1.6.4/js/bootstrap-datepicker.js'%>" type="text/javascript"></script>
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/bootstrap-datepicker-1.6.4/locales/bootstrap-datepicker.id.min.js'%>" type="text/javascript"></script>
+	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/jquery-easyui-1.5.3/jquery.easyui.min.js'%>" type="text/javascript"></script>
 	
 	<!-- JavaScripts initializations and stuff -->
 	<script src="<%=$this->Page->Theme->BaseUrl.'/assets/js/neon-custom.js'%>" type="text/javascript"></script>

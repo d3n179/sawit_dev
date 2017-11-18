@@ -254,7 +254,8 @@ class cetakLapRekapGajiKaryawan extends XlsGen
 					FROM 
 						tbm_karyawan
 					WHERE
-						tbm_karyawan.deleted = '0' ";
+						tbm_karyawan.deleted = '0' 
+						AND tbm_karyawan.aktif ='1'";
 		$arrTrans = $this->queryAction($sqlTrans,'S');
 		foreach($arrTrans as $row)
 		{	

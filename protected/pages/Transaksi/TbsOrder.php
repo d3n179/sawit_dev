@@ -280,7 +280,7 @@ class TbsOrder extends MainConf
 				$tblBody .= '<td>'.$row['pemasok'].'</td>';
 				$tblBody .= '<td>'.$row['barang'].'</td>';
 				$tblBody .= '<td>'.$row['jumlah_kendaraan'].'</td>';
-				$tblBody .= '<td>'.$row['total_berat'].'</td>';
+				$tblBody .= '<td>'.number_format($row['total_berat'],2,'.',',').'</td>';
 				$tblBody .= '<td>';
 				$tblBody .= $actionBtn;
 				$tblBody .=	'</td>';			
@@ -309,6 +309,7 @@ class TbsOrder extends MainConf
 				INNER JOIN tbm_setting_komidel ON tbm_setting_komidel.id = tbt_tbs_order_detail.id_komidel
 				WHERE
 					tbt_tbs_order.deleted = '0'
+					AND  tbt_tbs_order_detail.deleted='0'
 				AND tbt_tbs_order.tgl_transaksi = CURDATE()
 				GROUP BY
 					tbm_barang.id,
@@ -329,7 +330,7 @@ class TbsOrder extends MainConf
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['nama'].'</td>';
 				$tblBody .= '<td>'.$row['kategori_tbs'].'</td>';	
-				$tblBody .= '<td>'.$row['jml_masuk'].'</td>';
+				$tblBody .= '<td>'.number_format($row['jml_masuk'],2,'.',',').'</td>';
 				$tblBody .= '</tr>';
 				$JmlBuah += $row['jml_masuk'];
 			}
@@ -341,7 +342,7 @@ class TbsOrder extends MainConf
 		$tblfoot = '';
 		$tblfoot .= '<tr>';
 		$tblfoot .= '<td colspan=\"2\" align=\"center\"><Strong>TOTAL</Strong></td>';
-		$tblfoot .= '<td><Strong>'.$JmlBuah.'</Strong></td>';	
+		$tblfoot .= '<td><Strong>'.number_format($JmlBuah,2,'.',',').'</Strong></td>';	
 		$tblfoot .= '</tr>';
 		
 		$this->getPage()->getClientScript()->registerEndScript

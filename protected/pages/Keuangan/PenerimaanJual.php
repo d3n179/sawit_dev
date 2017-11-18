@@ -50,6 +50,8 @@ class PenerimaanJual extends MainConf
 					tbt_commodity_transaction.id,
 					tbt_commodity_transaction.`status`,
 					tbt_commodity_transaction.transaction_no,
+					tbt_contract_sales.sales_no,
+					tbt_contract_sales.no_do,
 					tbt_commodity_transaction.tgl_transaksi,
 					tbt_commodity_transaction.commodity_type,
 					tbt_commodity_transaction.pembeli,
@@ -57,6 +59,7 @@ class PenerimaanJual extends MainConf
 					tbt_commodity_transaction.harga
 				FROM
 					tbt_commodity_transaction
+					LEFT JOIN tbt_contract_sales ON tbt_contract_sales.id = tbt_commodity_transaction.id_kontrak
 				WHERE
 					tbt_commodity_transaction.deleted = '0'
 					AND tbt_commodity_transaction.status = '1'
@@ -86,15 +89,35 @@ class PenerimaanJual extends MainConf
 				
 				$totalHarga = $row['jumlah_commodity'] * $row['harga'];
 				
+				$Record = CommodityTransactionRecord::finder()->findByPk($row['id']);
+				$jnsKontrak = $Record->jns_kontrak;
+				$idKontrak = $Record->id_kontrak;
+				$ppn = 0;
+				if($jnsKontrak == '1')
+				{
+					$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($idKontrak);
+					if($ContractSalesRecord)
+					{
+						$ppn = $ContractSalesRecord->ppn;;
+					}
+				}
 				
+				if($ppn > 0)
+				{
+					$ppnTotal = $totalHarga * ($ppn / 100);
+					$totalHarga += $ppnTotal;
+				}
+			
 				
 				$tglTransaksi = $this->ConvertDate($row['tgl_transaksi'],'3');
 				$tblBody .= '<tr>';
 				$tblBody .= '<td>'.$row['transaction_no'].'</td>';
+				$tblBody .= '<td>'.$row['sales_no'].'</td>';
+				$tblBody .= '<td>'.$row['no_do'].'</td>';
 				$tblBody .= '<td>'.$tglTransaksi.'</td>';
 				$tblBody .= '<td>'.$row['pembeli'].'</td>';
 				$tblBody .= '<td>'.$commodity_type.'</td>';
-				$tblBody .= '<td>'.$row['jumlah_commodity'].'</td>';
+				$tblBody .= '<td>'.number_format($row['jumlah_commodity'],2,'.',',').'</td>';
 				$tblBody .= '<td>'.number_format($row['harga'],2,'.',',').'</td>';
 				$tblBody .= '<td>'.number_format($totalHarga,2,'.',',').'</td>';
 				$tblBody .= '<td>';
@@ -123,14 +146,45 @@ class PenerimaanJual extends MainConf
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
 			$this->pembeli->Text = $Record->pembeli;
 			$this->tgl_transaksi->Text = $this->ConvertDate($Record->tgl_transaksi,'1');
+			$this->bruto_kirim->Text = $Record->bruto;
+			$this->tarra_kirim->Text = $Record->tarra;
+			$this->potongan_kirim->Text = $Record->potongan;
+			$this->netto_kirim->Text = $Record->netto_2;
+			
+			$this->bruto_diterima->Text = $Record->bruto;
+			$this->tarra_diterima->Text = $Record->tarra;
+			$this->netto_diterima->Text = $Record->netto_2;
+			
 			$this->jumlah_kirim->Text = $Record->netto_2;
 			$this->jumlah_diterima->Text = $Record->netto_2;
 			$this->jumlah_susut->Text = 0;
 			$this->harga->Text = $Record->harga;
+			
+			
+			$jnsKontrak = $Record->jns_kontrak;
+			$idKontrak = $Record->id_kontrak;
+			$ppn = 0;
+			if($jnsKontrak == '1')
+			{
+				$ContractSalesRecord = ContractSalesRecord::finder()->findByPk($idKontrak);
+				if($ContractSalesRecord)
+				{
+					$dpContract = $ContractSalesRecord->dp_contract;
+					$this->ppn->Text = $ContractSalesRecord->ppn;
+					$ppn = $ContractSalesRecord->ppn;;
+				}
+			}
+			
 			$totalJual = $Record->harga * $Record->netto_2;
+			if($ppn > 0)
+			{
+				$ppnTotal = $totalJual * ($ppn / 100);
+				$totalJual += $ppnTotal;
+			}
 			$this->total_penjualan->Text = $totalJual;
 			$this->sisa_bayar->Text = $totalJual;
 			
+			$totalSudahDibayar = 0;
 			$RecordBayar = PenerimaanPenjualanRecord::finder()->find('id_penjualan = ?',$id);
 			if($RecordBayar)
 			{
@@ -139,6 +193,20 @@ class PenerimaanJual extends MainConf
 				$this->tgl_penerimaan->Enabled = false;
 				$this->jumlah_diterima->Enabled = false;
 				$this->harga->Enabled = false;
+				$this->bruto_diterima->Enabled = false;
+				$this->tarra_diterima->Enabled = false;
+				$this->netto_diterima->Enabled = false;
+				$this->ffa_diterima->Enabled = false;
+				$this->dobi_diterima->Enabled = false;
+				$this->mi_diterima->Enabled = false;
+				
+				$this->bruto_diterima->Text = $RecordBayar->bruto_diterima;
+				$this->tarra_diterima->Text = $RecordBayar->tarra_diterima;
+				$this->netto_diterima->Text = $RecordBayar->netto_diterima;
+				$this->ffa_diterima->Text = $RecordBayar->ffa_diterima;
+				$this->dobi_diterima->Text = $RecordBayar->dobi_diterima;
+				$this->mi_diterima->Text = $RecordBayar->mi_diterima;
+				
 				$this->jumlah_diterima->Text = $RecordBayar->jumlah_diterima;
 				$this->jumlah_susut->Text = $RecordBayar->jumlah_susut;
 				$this->harga->Text = $RecordBayar->harga;
@@ -148,13 +216,15 @@ class PenerimaanJual extends MainConf
 				$sql = "SELECT SUM(tbt_penerimaan_penjualan_detail.total_pembayaran) AS total_pembayaran FROM tbt_penerimaan_penjualan_detail WHERE id_parent = '".$RecordBayar->id."' ";
 				$arr = $this->queryAction($sql,'S');
 				
-				$this->total_bayar_sebelumnya->Text = $arr[0]['total_pembayaran'];
-				
-				$this->sisa_bayar->Text = $totalJual- $arr[0]['total_pembayaran'];
+				$totalSudahDibayar += $arr[0]['total_pembayaran'];
 			
 			}
+			$totalSudahDibayar += $dpContract;
 			
+			$this->total_bayar_sebelumnya->Text = $totalSudahDibayar;
 			
+				
+			$this->sisa_bayar->Text = $totalJual- $totalSudahDibayar;
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
 					unloadContent();
@@ -164,6 +234,14 @@ class PenerimaanJual extends MainConf
 						jQuery("#'.$this->tgl_penerimaan->getClientID().'").prop("disabled",true);
 						jQuery("#'.$this->jumlah_diterima->getClientID().'").prop("disabled",true);
 						jQuery("#'.$this->harga->getClientID().'").prop("disabled",true);
+						
+						jQuery("#'.$this->bruto_diterima->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->tarra_diterima->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->netto_diterima->getClientID().'").prop("disabled",true);
+						
+						jQuery("#'.$this->ffa_diterima->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->dobi_diterima->getClientID().'").prop("disabled",true);
+						jQuery("#'.$this->mi_diterima->getClientID().'").prop("disabled",true);
 					
 					}
 					
@@ -190,6 +268,14 @@ class PenerimaanJual extends MainConf
 			$Record = new PenerimaanPenjualanRecord();
 			$Record->id_penjualan = $this->idPenjualan->Value;
 			$Record->tgl_penerimaan = $this->ConvertDate($this->tgl_penerimaan->Text,'2');
+			
+			$Record->bruto_diterima = $this->bruto_diterima->Text;
+			$Record->tarra_diterima = $this->tarra_diterima->Text;
+			$Record->netto_diterima = $this->netto_diterima->Text;
+			$Record->ffa_diterima = $this->ffa_diterima->Text;
+			$Record->dobi_diterima = $this->dobi_diterima->Text;
+			$Record->mi_diterima = $this->mi_diterima->Text;
+				
 			$Record->jumlah_dikirim = $this->jumlah_kirim->Text;
 			$Record->jumlah_diterima = $this->jumlah_diterima->Text;
 			$Record->jumlah_susut = $this->jumlah_susut->Text;

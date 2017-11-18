@@ -18,6 +18,10 @@ class ContractSales extends MainConf
 		
 		if(!$this->Page->IsPostBack && !$this->Page->IsCallBack)  
 		{
+			$sql = "SELECT id,nama FROM tbm_bank WHERE deleted !='1' ";
+			$this->DDBank->DataSource = $this->queryAction($sql,'S');
+			$this->DDBank->DataBind();
+			
 			$tblBody = $this->BindGrid();
 			$this->getPage()->getClientScript()->registerEndScript
 						('','jQuery("#table-1 tbody").append("'.$tblBody.'");');
@@ -133,6 +137,7 @@ class ContractSales extends MainConf
 					tbt_contract_sales.commodity_type,
 					tbt_contract_sales.quantity AS jumlah,
 					tbt_contract_sales.delivered_quantity AS jumlah_dikirim,
+					tbt_contract_sales.dp_contract,
 					(tbt_contract_sales.quantity - tbt_contract_sales.delivered_quantity) AS sisa_dikirim,
 					tbm_satuan.nama AS satuan,
 					tbt_contract_sales.pricing AS harga
@@ -142,7 +147,7 @@ class ContractSales extends MainConf
 				WHERE
 					tbt_contract_sales.deleted = '0'
 				ORDER BY 
-					tbt_contract_sales.id ASC ";
+					tbt_contract_sales.status ASC ";
 		$arr = $this->queryAction($sql,'S');
 		
 		$count = count($arr);
@@ -158,15 +163,20 @@ class ContractSales extends MainConf
 					$status = '<div class=\"label label-secondary\">NEW</div>';
 					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Kontrak</a>&nbsp;&nbsp;</br>';
 					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-primary btn-sm btn-icon icon-left\" OnClick=\"prosesClicked('.$row['id'].')\"><i class=\"entypo-check\" ></i>Proses</a>&nbsp;&nbsp;</br>';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].')\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;</br>';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;';	
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].',0)\"><i class=\"entypo-pencil\" ></i>Edit</a>&nbsp;&nbsp;</br>';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-danger btn-sm btn-icon icon-left\" OnClick=\"deleteClicked('.$row['id'].')\"><i class=\"entypo-cancel\"></i>Hapus</a>&nbsp;&nbsp;</br>';	
 				}
 				elseif($row['status'] == '1' || $row['status'] == '3')
 				{
 					$status = '<div class=\"label label-success\">APPROVED</div>';
 					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-info btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Kontrak</a>&nbsp;&nbsp;</br>';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakDoClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;';
-					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakSkpClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak SKP</a>&nbsp;&nbsp;';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakDoClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;</br>';
+					$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"cetakSkpClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak SKP</a>&nbsp;&nbsp;</br>';
+					
+					if($row['jumlah_dikirim'] == 0 && ($row['dp_contract'] == 0 || $row['dp_contract'] == ''))
+					{
+						$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-default btn-sm btn-icon icon-left\" OnClick=\"editClicked('.$row['id'].',1)\"><i class=\"entypo-pencil\" ></i>Masukkan DP</a>&nbsp;&nbsp;</br>';
+					}
 					//$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-orange btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak DO</a>&nbsp;&nbsp;</br>';
 					//$actionBtn .= '<a href=\"javascript:void(0)\" class=\"btn btn-gold btn-sm btn-icon icon-left\" OnClick=\"cetakClicked('.$row['id'].')\"><i class=\"entypo-print\" ></i>Cetak Surat Kuasa</a>&nbsp;&nbsp;';
 				}
@@ -201,9 +211,9 @@ class ContractSales extends MainConf
 				$tblBody .= '<td>'.$tglKontrak.'</td>';
 				$tblBody .= '<td>'.$row['pembeli'].'</td>';
 				$tblBody .= '<td>'.$commodity_type.'</td>';
-				$tblBody .= '<td>'.$row['jumlah'].' '.$row['satuan'].'</td>';
-				$tblBody .= '<td>'.$row['jumlah_dikirim'].' '.$row['satuan'].'</td>';
-				$tblBody .= '<td>'.$row['sisa_dikirim'].' '.$row['satuan'].'</td>';
+				$tblBody .= '<td>'.number_format($row['jumlah'],2,'.',',').' '.$row['satuan'].'</td>';
+				$tblBody .= '<td>'.number_format($row['jumlah_dikirim'],2,'.',',').' '.$row['satuan'].'</td>';
+				$tblBody .= '<td>'.number_format($row['sisa_dikirim'],2,'.',',').' '.$row['satuan'].'</td>';
 				$tblBody .= '<td>'.number_format($row['harga'],2,'.',',').'</td>';
 				$tblBody .= '<td>'.number_format($totalHarga,2,'.',',').'</td>';
 				$tblBody .= '<td>';
@@ -229,6 +239,7 @@ class ContractSales extends MainConf
 		{
 			$this->modalJudul->Text = 'Proses Kontrak Penjualan';
 			$this->idKontrak->Value = $id;
+			$this->jnsKontrak->SelectedValue = $Record->jns_kontrak;
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
 			$this->commodityChanged();
 			$this->id_pembeli->Text = $Record->id_pembeli;
@@ -239,6 +250,9 @@ class ContractSales extends MainConf
 			$this->DDSatuan->SelectedValue = $Record->satuan_commodity;
 			$this->quality->Text = $Record->quality;
 			$this->pricing->Text = $Record->pricing;
+			$this->total_contract->Text = $Record->total_contract;
+			$this->dp_contract->Text = $Record->dp_contract;
+			$this->ppn->text = $Record->ppn;
 			$this->delivery->Text = $Record->delivery;
 			$this->term_of_payment->Text = $Record->term_of_payment;
 			$this->remark->Text = $Record->remark;
@@ -262,6 +276,7 @@ class ContractSales extends MainConf
 	public function editForm($sender,$param)
 	{
 		$id = $param->CallbackParameter->id;
+		$status = $param->CallbackParameter->status;
 		$Record = ContractSalesRecord::finder()->findByPk($id);
 		if($Record)
 		{
@@ -271,6 +286,7 @@ class ContractSales extends MainConf
 			$this->commodity_type->SelectedValue = $Record->commodity_type;
 			$this->commodityChanged();
 			$this->id_pembeli->Text = $Record->id_pembeli;
+			$this->jnsKontrak->SelectedValue = $Record->jns_kontrak;
 			$this->alamat_pembeli->text = $Record->alamat_pembeli;
 			$this->npwp->text = $Record->npwp;
 			$this->tgl_kontrak->Text = $this->ConvertDate($Record->tgl_kontrak,'1');
@@ -278,9 +294,27 @@ class ContractSales extends MainConf
 			$this->DDSatuan->SelectedValue = $Record->satuan_commodity;
 			$this->quality->Text = $Record->quality;
 			$this->pricing->Text = $Record->pricing;
+			$this->total_contract->Text = $Record->total_contract;
+			$this->dp_contract->Text = $Record->dp_contract;
+			$this->ppn->text = $Record->ppn;
 			$this->delivery->Text = $Record->delivery;
 			$this->term_of_payment->Text = $Record->term_of_payment;
 			$this->remark->Text = $Record->remark;
+			
+			/*$this->jnsKontrak->Enabled = false;
+			$this->alamat_pembeli->Enabled = false;
+			$this->npwp->Enabled = false;
+			$this->tgl_kontrak->Enabled = false;
+			$this->quantity->Enabled = false;
+			$this->DDSatuan->Enabled = false;
+			$this->quality->Enabled = false;
+			$this->pricing->Enabled = false;
+			$this->total_contract->Enabled = false;
+			$this->dp_contract->Enabled = true;
+			$this->ppn->Enabled = false;
+			$this->delivery->Enabled = false;
+			$this->term_of_payment->Enabled = false;
+			$this->remark->Enabled = false;*/
 			
 			$this->getPage()->getClientScript()->registerEndScript
 					('','
@@ -523,20 +557,108 @@ class ContractSales extends MainConf
 				$Record->sales_no = $this->GenerateNoSales($bln,$thn,$tipeCommodity);
 		}
 		
+		if($this->stDp->Value != '1')
+		{
+			$Record->tgl_kontrak = $this->ConvertDate($this->tgl_kontrak->Text,'2');
+			$Record->id_pembeli = strtoupper($this->id_pembeli->Text);
+			$Record->alamat_pembeli = $this->alamat_pembeli->text;
+			$Record->npwp = $this->npwp->text;
+			$Record->commodity_type = $this->commodity_type->SelectedValue;
+			$Record->jns_kontrak = $this->jnsKontrak->SelectedValue;
+			$Record->quantity = $this->quantity->text;
+			$Record->satuan_commodity = $this->DDSatuan->SelectedValue;
+			$Record->quality = $this->quality->text;
+			$Record->pricing = str_replace(",","",$this->pricing->text);
+			$Record->total_contract = str_replace(",","",$this->total_contract->text);
+			$Record->dp_contract = str_replace(",","",$this->dp_contract->text);
+			$Record->ppn = $this->ppn->text;
+			
+			$Record->delivery = $this->delivery->text;
+			$Record->term_of_payment = $this->term_of_payment->text;
+			$Record->remark = $this->remark->text;
+			$Record->status = '0';
+		}
+		else
+		{
+			$msg = "Dp Berhasil Dimasukkan";
+			$dp =  str_replace(",","",$this->dp_contract->text);
+			if($dp > 0)
+			{
+				$Record->bank_id = $this->DDBank->SelectedValue;
+				$Record->dp_contract = $dp;
+				
+				if($this->DDBank->SelectedValue == '8')
+					$namaAkun = 'Kas';
+				else
+					$namaAkun = 'Kas Bank';
+				
+				$this->UbahSaldoKas('0',$this->DDBank->SelectedValue,$dp);
+					
+				$this->InsertJurnalUmum($Record->id,
+									'12',
+									'0',
+									date("Y-m-d"),
+									date("G:i:s"),
+									$namaAkun,
+									$dp,
+									$Record->sales_no,
+									$this->DDBank->SelectedValue);
+				
+				$this->InsertJurnalUmum($Record->id,
+									'12',
+									'1',
+									date("Y-m-d"),
+									date("G:i:s"),
+									'Pendapatan Lain-lain',
+									$dp,
+									$Record->sales_no);
+				
+				$this->InsertJurnalBukuBesar($Record->id,
+												'12',
+												'0',
+												$Record->sales_no,
+												date("Y-m-d"),
+												date("G:i:s"),
+												'28',
+												$this->DDBank->SelectedValue,
+												$namaAkun,
+												'Penerimaan Uang Muka Kontrak Commodity No. '.$Record->sales_no,
+												$dp);
+				
+				$this->InsertJurnalBukuBesar($Record->id,
+												'12',
+												'0',
+												$Record->sales_no,
+												date("Y-m-d"),
+												date("G:i:s"),
+												'28',
+												$this->DDBank->SelectedValue,
+												'Pendapatan Lain-lain',
+												'Penerimaan Uang Muka Kontrak Commodity No. '.$Record->sales_no,
+												$dp);
+												
+				$this->InsertLabaRugi($Record->id,
+										'12',
+										'0',
+										date("Y-m-d"),
+										date("G:i:s"),
+										'Penerimaan Uang Muka Kontrak Commodity No. '.$Record->sales_no,
+										$dp,
+										$Record->sales_no);
+										
+				$this->InsertJurnalPenerimaanKas($Record->id,
+												$Record->sales_no,
+												'12',
+												date("Y-m-d"),
+												date("G:i:s"),
+												'Penerimaan Uang Muka Kontrak Commodity No. '.$Record->sales_no,
+												$namaAkun,
+												$Record->sales_no,
+												$dp,
+												0);
+			}
+		}
 		
-		$Record->tgl_kontrak = $this->ConvertDate($this->tgl_kontrak->Text,'2');
-		$Record->id_pembeli = strtoupper($this->id_pembeli->Text);
-		$Record->alamat_pembeli = $this->alamat_pembeli->text;
-		$Record->npwp = $this->npwp->text;
-		$Record->commodity_type = $this->commodity_type->SelectedValue;
-		$Record->quantity = $this->quantity->text;
-		$Record->satuan_commodity = $this->DDSatuan->SelectedValue;
-		$Record->quality = $this->quality->text;
-		$Record->pricing = $this->pricing->text;
-		$Record->delivery = $this->delivery->text;
-		$Record->term_of_payment = $this->term_of_payment->text;
-		$Record->remark = $this->remark->text;
-		$Record->status = '0';
 		$Record->save();
 				
 		$tblBody = $this->BindGrid();

@@ -1,27 +1,19 @@
 <com:TContent ID="Main">
-	<h2>Laporan Pengiriman Commodity</h2>
+	<h2>Laporan Sales CPO</h2>
 	<hr>
 	 <com:TActivePanel CssClass="form"><!--form begin-->
 	<div class="row">
-		<div class="col-md-1">
+		<div class="col-md-2">
 			<div class="form-group">
-				<label for="noSp" class="control-label">No Tiket</label>
+				<label for="noSp" class="control-label">No Kontrak</label>
 				<com:TActiveTextBox 
-					ID="noTiket" 
+					ID="noKontrak" 
 					CssClass="form-control" />
 			</div>	
 		</div>
 		<div class="col-md-2">
 			<div class="form-group">
-				<label for="nmPemasok" class="control-label">No DO</label>
-				<com:TActiveTextBox 
-					ID="noDO" 
-					CssClass="form-control" />
-			</div>	
-		</div>	
-		<div class="col-md-2">
-			<div class="form-group">
-				<label for="nmPembeli" class="control-label">Pembeli</label>
+				<label for="nmPemasok" class="control-label">Nama Pembeli</label>
 				<com:TActiveTextBox 
 					ID="nmPembeli" 
 					CssClass="form-control" />
@@ -34,7 +26,9 @@
 						ID="commodity_type"
 						PromptText="--Commodity Type--"
 						PromptValue="empty"
+						Enabled="false"
 						AutoPostBack="false"
+						SelectedValue="0"
 						CausesValidation="true"
 						CssClass="form-control">
 							<com:TListItem Value = "0" Text="CPO - Crude Palm Oil"/>
@@ -57,6 +51,7 @@
 									AutoPostBack="true"
 									CausesValidation="false"
 									SelectedValue = "0"
+									Enabled="false"
 									OnSelectedIndexChanged = "periodeChanged"
 									CssClass="form-control">
 									<com:TListItem Text="Bulanan" Value="0"/>
@@ -166,13 +161,18 @@
 			<table class="table table-bordered datatable" id="table-1">
 				<thead>
 					<tr>
-					<th>No Tiket</th>
+					<th>No Kontrak</th>
 					<th>No DO</th>
-					<th>Tgl Kirim</th>
+					<th>No POLISI</th>
 					<th>Pembeli</th>
-					<th>Tipe Commodity</th>
-					<th>Jumlah Dikirim</th>
-					<th>Total Pengiriman</th>
+					<th>Tgl Dikirim</th>
+					<th>Bruto Dikirim</th>
+					<th>Tarra Dikirim</th>
+					<th>Netto Dikirim</th>
+					<th>Tgl Diterima</th>
+					<th>Bruto Diterima</th>
+					<th>Tarra Diterima</th>
+					<th>Netto Diterima</th>
 				</tr>
 				</thead>
 				<tbody>

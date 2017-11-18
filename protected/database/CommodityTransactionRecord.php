@@ -12,6 +12,7 @@ class CommodityTransactionRecord extends TActiveRecord
 	public $no_do;
 	public $no_surat_kuasa;
 	public $no_kendaraan;
+	public $nama_supir;
 	public $transporter;
 	public $tgl_transaksi;
 	public $wkt_transaksi;
